@@ -34,7 +34,7 @@
             <ignore step="EFAPS_UPDATE" />
             <ignore step="DBPROPERTIES_UPDATE" />
         </lifecyle>
-        <script type="rhino" name="org/efaps/installations/eFaps-Kernel/CreateAll.js" function="eFapsCreateAll()" />
+        <script type="rhino" name="CreateAll.js" function="eFapsCreateAll()" />
     </version>
     <version number="2" reloadCache="true">
         <description>Install SQL Tables.</description>

@@ -16,7 +16,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          tmo
+ Author:          The eFaps Team
  Revision:        $Rev$
  Last Changed:    $Date$
  Last Changed By: $Author$
@@ -27,89 +27,87 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <!-- ************************************************************************
-  * Parent Module Definition
-  ************************************************************************* -->
-  <parent>
+    <!-- ************************************************************************
+    * Module Definition
+    ************************************************************************* -->
+    <packaging>jar</packaging>
     <groupId>org.efaps</groupId>
-    <artifactId>efaps</artifactId>
+    <artifactId>efaps-kernel-install</artifactId>
     <version>1.0-SNAPSHOT</version>
-  </parent>
 
-  <!-- ************************************************************************
-  * Module Definition
-  ************************************************************************* -->
-  <packaging>jar</packaging>
-  <groupId>org.efaps</groupId>
-  <artifactId>efaps-kernel-install</artifactId>
+    <name>eFaps-Kernel-Install</name>
+    <description>
+        eFaps-Kernel-Install contains all definitions for the kernel in form
+        of various XML  Files, pictures etc. The whole Data will be imported
+        into the eFaps-DataBase on the first installation of eFaps.
+    </description>
 
-  <name>eFaps-Kernel-Install</name>
-  <description>eFaps-Kernel-Install contains all definitions for the kernel in form
-  of various xml-Files, pictures etc. The whole Data will be imported into the 
-  eFaps-DataBase on the first installation of eFaps.</description>
+    <!-- ************************************************************************
+    * Project itself
+    ************************************************************************* -->
+    <build>
+        <plugins>
+            <!--
+                Compiler Settings:
+                - Java 1.5 is needed!
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
 
-  <!-- ************************************************************************
-  * Project itself
-  ************************************************************************* -->
-  <build>
+            <!--
+                eFaps plugin used to compile
+            -->
+            <plugin>
+                <groupId>org.efaps.maven</groupId>
+                <artifactId>maven-efaps-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>generate-installation</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <userName>Administrator</userName>
+                    <passWord>Administrator</passWord>
+                    <transactionTimeout>900</transactionTimeout>
+                    <rootPackage>org/efaps/installations</rootPackage>
+                    <excludes>
+                        <exclude>**/CreateAll.js</exclude>
+                        <excludes>**/versions.xml</excludes>
+                    </excludes>
+                </configuration>
+                <dependencies>
+                    <!-- Connection Pooling -->
+                    <dependency>
+                        <groupId>commons-dbcp</groupId>
+                        <artifactId>commons-dbcp</artifactId>
+                        <version>1.2.1</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
 
-    <plugins>
-
-     <!--
-        eFaps plugin used to compile
-      -->
-      <plugin>
-        <groupId>org.efaps.maven</groupId>
-        <artifactId>maven-efaps-plugin</artifactId>
-        <version>${project.version}</version>
-        <executions>
-          <execution>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>generate-installation</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <userName>Administrator</userName>
-          <passWord>Administrator</passWord>
-          <rootPackage>org/efaps/installations</rootPackage>
-          <excludes>
-            <exclude>**/CreateAll.js</exclude>
-            <excludes>**/versions.xml</excludes>
-          </excludes>
-        </configuration>
-        <dependencies>
-          <!-- Connection Pooling -->
-          <dependency>
-            <groupId>commons-dbcp</groupId>
-            <artifactId>commons-dbcp</artifactId>
-            <version>1.2.1</version>
-          </dependency>
-          <!-- kernel install (must be defined because otherwise the 
-               Javascript class does not exists... -->
-          <!-- dependency>
+    <!-- ************************************************************************
+    * Dependencies
+    ************************************************************************* -->
+    <dependencies>
+        <!-- eFaps kernel (needed for development) -->
+        <dependency>
             <groupId>org.efaps</groupId>
-            <artifactId>eFaps-Kernel-Install</artifactId>
+            <artifactId>eFaps-Kernel</artifactId>
             <version>${project.version}</version>
-          </dependency -->
-        </dependencies>
-      </plugin>
-
-    </plugins>
-  </build>
-
-  <!-- ************************************************************************
-  * Dependencies
-  ************************************************************************* -->
-  <dependencies>
-    <!-- eFaps kernel -->
-    <dependency>
-      <groupId>org.efaps</groupId>
-      <artifactId>eFaps-Kernel</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-  </dependencies>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 </project>
