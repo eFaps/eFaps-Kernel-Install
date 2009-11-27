@@ -37,6 +37,7 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.export.JExcelApiExporter;
 import net.sf.jasperreports.engine.export.JRRtfExporter;
 import net.sf.jasperreports.engine.export.JRTextExporter;
 import net.sf.jasperreports.engine.export.JRTextExporterParameter;
@@ -187,6 +188,14 @@ public abstract class StandartReport_Base implements EventExecution
             file = File.createTempFile("ODS", ".ods");
             final FileOutputStream os = new FileOutputStream(file);
             final JROdsExporter exporter = new JROdsExporter();
+            exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
+            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, os);
+            exporter.exportReport();
+            os.close();
+        } else if ("xls".equalsIgnoreCase(_mime)) {
+            file = File.createTempFile("XLS", ".xls");
+            final FileOutputStream os = new FileOutputStream(file);
+            final JExcelApiExporter exporter = new JExcelApiExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
             exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, os);
             exporter.exportReport();
