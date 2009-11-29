@@ -62,7 +62,7 @@
       <key>DataBaseTimeZone</key>
       <value>America/Lima</value>
       <description>
-        This attribute defines the timezone the database server is running in. This 
+        This attribute defines the timezone the database server is running in. This
         is necessary to use the current timezone functionalities from the database
         server. If the value is not set. The timezone UTC will be used.
       </description>
@@ -71,9 +71,18 @@
       <key>JavaScriptCompiled_Warn</key>
       <value>false</value>
       <description>
+        Boolean (true/false):
         This Attribute defines if in case of compiling JavaScript the warnings
         related to the JavaScript should be presented or not.
       </description>
+    </attribute>
+    <attribute>
+        <key>JavaScript_deactivate_Compression</key>
+        <value>false</value>
+        <description>
+            Boolean (true/false): If set to true the javascript stored in the eFaps Database
+            will not be compressed on compile.
+        </description>
     </attribute>
     <attribute>
       <key>DefaultMenu</key>
