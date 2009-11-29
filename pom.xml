@@ -44,6 +44,11 @@
         into the eFaps-DataBase on the first installation of eFaps.
     </description>
 
+    <properties>
+        <!-- correct encoding -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <!-- ************************************************************************
     * Project itself
     ************************************************************************* -->
@@ -51,14 +56,16 @@
         <plugins>
             <!--
                 Compiler Settings:
-                - Java 1.5 is needed!
+                - Java 1.6 is needed!
+                - encoding UTF8
             -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
 
@@ -70,7 +77,6 @@
                 <artifactId>maven-efaps-plugin</artifactId>
                 <executions>
                     <execution>
-                        <phase>generate-resources</phase>
                         <goals>
                             <goal>generate-installation</goal>
                         </goals>
@@ -107,7 +113,6 @@
             <groupId>org.efaps</groupId>
             <artifactId>efaps-kernel</artifactId>
             <version>${project.version}</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
