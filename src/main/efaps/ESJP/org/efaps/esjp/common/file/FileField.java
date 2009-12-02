@@ -85,61 +85,60 @@ import org.efaps.admin.ui.field.Field;
  * </pre>
  *
  *
- * @author tmo
+ * @author The eFaps Team
  * @version $Id$
  */
 @EFapsUUID("7f08c93d-96fd-474a-a1f0-772d610deaba")
 @EFapsRevision("$Rev$")
-public class FileField {
+public class FileField
+{
+    /**
+     * Key to the property defining the name of the field that should be filled
+     * with the name of the file.
+     */
+    private static String PROPERTYKEY_FILEFIELD = "FileNameField";
 
-  /**
-   * Key to the property defining the name of the field that should be filled
-   * with the name of the file.
-   */
-  private static String PROPERTYKEY_FILEFIELD = "FileNameField";
-
-  /**
-   * Method to get the FieldValue for the FileField.
-   * @param _parameter Parameter as passed by the eFaps.
-   * @return  Return
-   */
-  public Return getFieldValueUI(final Parameter _parameter) {
-    final FieldValue fieldvalue =
+    /**
+     * Method to get the FieldValue for the FileField.
+     * @param _parameter Parameter as passed by the eFaps.
+     * @return  Return
+     */
+    public final Return getFieldValueUI(final Parameter _parameter)
+    {
+        final FieldValue fieldvalue =
                           (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-    final Field field = fieldvalue.getField();
-    final Map<?, ?> properties
-                      = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-    final StringBuilder ret = new StringBuilder();
+        final Field field = fieldvalue.getField();
+        final Map<?, ?> properties  = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final StringBuilder ret = new StringBuilder();
 
-    if (properties.containsKey(PROPERTYKEY_FILEFIELD)) {
-      ret.append("<script type=\"text/javascript\">")
-        .append("function setFileName(_str) {\n")
-        .append("  var sv = _str.lastIndexOf('/');\n")
-        .append("  if (sv < 0) {\n")
-        .append("    sv = _str.lastIndexOf('\\\\');\n")
-        .append("  }\n")
-        .append("  if (sv >= 0) {")
-        .append("    _str=_str.substr(sv+1);")
-        .append("  }")
-        .append("  document.getElementsByName('")
-          .append(properties.get(PROPERTYKEY_FILEFIELD))
-          .append("')[0].value=_str;")
-        .append("}")
-        .append("</script>");
+        if (properties.containsKey(FileField.PROPERTYKEY_FILEFIELD)) {
+            ret.append("<script type=\"text/javascript\">")
+                .append("function setFileName(_str) {\n")
+                .append("  var sv = _str.lastIndexOf('/');\n")
+                .append("  if (sv < 0) {\n")
+                .append("    sv = _str.lastIndexOf('\\\\');\n")
+                .append("  }\n")
+                .append("  if (sv >= 0) {")
+                .append("    _str=_str.substr(sv+1);")
+                .append("  }")
+                .append("  document.getElementsByName('")
+                  .append(properties.get(FileField.PROPERTYKEY_FILEFIELD))
+                  .append("')[0].value=_str;")
+                .append("}")
+                .append("</script>");
+        }
+
+        ret.append("<input")
+            .append(" name=\"").append(field.getName()).append("\" ")
+            .append(" type=\"file\" ")
+            .append(" size=\"").append(field.getCols()).append("\" ");
+
+        if (properties.containsKey(FileField.PROPERTYKEY_FILEFIELD)) {
+            ret.append(" onChange=\"setFileName(this.value)\"");
+        }
+        ret.append("/>");
+        final Return retVal = new Return();
+        retVal.put(ReturnValues.SNIPLETT, ret);
+        return retVal;
     }
-
-    ret.append("<input")
-      .append(" name=\"").append(field.getName()).append("\" ")
-      .append(" type=\"file\" ")
-      .append(" size=\"").append(field.getCols()).append("\" ");
-
-    if (properties.containsKey(PROPERTYKEY_FILEFIELD)) {
-     ret.append(" onChange=\"setFileName(this.value)\"");
-    }
-    ret.append("/>");
-
-    final Return retVal = new Return();
-    retVal.put(ReturnValues.SNIPLETT, ret);
-    return retVal;
-  }
 }
