@@ -82,6 +82,7 @@ abstract class EFapsDataSource_Base implements JRDataSource
                     expandChild = "true".equalsIgnoreCase(para.getPropertiesMap().getProperty("expandChildTypes"));
                     useInstance = "true".equalsIgnoreCase(para.getPropertiesMap().getProperty("Instance"));
                 }
+                break;
             }
         }
         final List<Instance> instances = new ArrayList<Instance>();
@@ -111,10 +112,12 @@ abstract class EFapsDataSource_Base implements JRDataSource
         }
         if (instances.size() > 0) {
             this.print = new MultiPrintQuery(instances);
-            for (final JRField field : _jasperReport.getMainDataset().getFields()) {
-                final String select = field.getPropertiesMap().getProperty("Select");
-                if (select != null) {
-                    this.print.addSelect(select);
+            if (_jasperReport.getMainDataset().getFields() != null) {
+                for (final JRField field : _jasperReport.getMainDataset().getFields()) {
+                    final String select = field.getPropertiesMap().getProperty("Select");
+                    if (select != null) {
+                        this.print.addSelect(select);
+                    }
                 }
             }
             this.print.execute();

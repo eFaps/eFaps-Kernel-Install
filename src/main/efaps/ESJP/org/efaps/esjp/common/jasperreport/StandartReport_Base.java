@@ -57,6 +57,7 @@ import org.efaps.db.Checkout;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.SearchQuery;
+import org.efaps.esjp.common.file.FileUtil;
 import org.efaps.util.EFapsException;
 
 
@@ -79,18 +80,27 @@ public abstract class StandartReport_Base implements EventExecution
     private final HashMap<String, Object> jrParameters = new HashMap<String, Object>();
 
     /**
+     * The name for the returned file.
+     */
+    private String fileName = null;
+
+    /**
      * @see org.efaps.admin.event.EventExecution#execute(org.efaps.admin.event.Parameter)
      * @param _parameter parameter as passed fom the eFaps esjp API
      * @return Return
      * @throws EFapsException on error
      */
-    public Return execute(final Parameter _parameter) throws EFapsException
+    public Return execute(final Parameter _parameter)
+        throws EFapsException
     {
         final Return ret = new Return();
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
 
         final String name = (String) properties.get("JasperReport");
         final String dataSourceClass = (String) properties.get("DataSourceClass");
+        if (this.fileName == null) {
+            this.fileName = (String) properties.get("FileName");
+        }
 
         this.jrParameters.put(JRParameter.REPORT_FILE_RESOLVER, new JasperFileResolver());
         this.jrParameters.put(JRParameter.REPORT_LOCALE, Context.getThreadContext().getLocale());
@@ -162,22 +172,27 @@ public abstract class StandartReport_Base implements EventExecution
 
     /**
      * Method to get the File.
+     *
      * @param _jasperPrint jasperprint the file will be created for
-     * @param _mime          mimetype of the file, default pdf
-     * @return  File
+     * @param _mime mimetype of the file, default pdf
+     * @return File
      * @throws IOException on error
      * @throws JRException on error
+     * @throws EFapsException on error
      */
-    protected File getFile(final JasperPrint _jasperPrint, final String _mime) throws IOException, JRException
+    protected File getFile(final JasperPrint _jasperPrint,
+                           final String _mime)
+        throws IOException, JRException, EFapsException
     {
         File file = null;
+
         if ("pdf".equalsIgnoreCase(_mime) || _mime == null) {
-            file = File.createTempFile("PDF", ".pdf");
+            file = FileUtil.getFile(this.fileName == null ? "PDF" : this.fileName, "pdf");
             final FileOutputStream os = new FileOutputStream(file);
             JasperExportManager.exportReportToPdfStream(_jasperPrint, os);
             os.close();
         } else if ("odt".equalsIgnoreCase(_mime)) {
-            file = File.createTempFile("ODT", ".odt");
+            file = FileUtil.getFile(this.fileName == null ? "ODT" : this.fileName, "odt");
             final FileOutputStream os = new FileOutputStream(file);
             final JROdtExporter exporter = new JROdtExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
@@ -185,7 +200,7 @@ public abstract class StandartReport_Base implements EventExecution
             exporter.exportReport();
             os.close();
         } else if ("ods".equalsIgnoreCase(_mime)) {
-            file = File.createTempFile("ODS", ".ods");
+            file = FileUtil.getFile(this.fileName == null ? "ODS" : this.fileName, "ods");
             final FileOutputStream os = new FileOutputStream(file);
             final JROdsExporter exporter = new JROdsExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
@@ -193,7 +208,7 @@ public abstract class StandartReport_Base implements EventExecution
             exporter.exportReport();
             os.close();
         } else if ("xls".equalsIgnoreCase(_mime)) {
-            file = File.createTempFile("XLS", ".xls");
+            file = FileUtil.getFile(this.fileName == null ? "XLS" : this.fileName, "xls");
             final FileOutputStream os = new FileOutputStream(file);
             final JExcelApiExporter exporter = new JExcelApiExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
@@ -201,7 +216,7 @@ public abstract class StandartReport_Base implements EventExecution
             exporter.exportReport();
             os.close();
         } else if ("rtf".equalsIgnoreCase(_mime)) {
-            file = File.createTempFile("RTF", ".rtf");
+            file = FileUtil.getFile(this.fileName == null ? "RTF" : this.fileName, "rtf");
             final FileOutputStream os = new FileOutputStream(file);
             final JRRtfExporter exporter = new JRRtfExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
@@ -209,7 +224,7 @@ public abstract class StandartReport_Base implements EventExecution
             exporter.exportReport();
             os.close();
         } else if ("docx".equalsIgnoreCase(_mime)) {
-            file = File.createTempFile("DOCX", ".docx");
+            file = FileUtil.getFile(this.fileName == null ? "DOCX" : this.fileName, "docx");
             final FileOutputStream os = new FileOutputStream(file);
             final JRDocxExporter exporter = new JRDocxExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
@@ -217,7 +232,7 @@ public abstract class StandartReport_Base implements EventExecution
             exporter.exportReport();
             os.close();
         } else if ("txt".equalsIgnoreCase(_mime)) {
-            file = File.createTempFile("TXT", ".txt");
+            file = FileUtil.getFile(this.fileName == null ? "TXT" : this.fileName, "txt");
             final FileOutputStream os = new FileOutputStream(file);
             final JRTextExporter exporter = new JRTextExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
@@ -238,6 +253,26 @@ public abstract class StandartReport_Base implements EventExecution
     public HashMap<String, Object> getJrParameters()
     {
         return this.jrParameters;
+    }
+
+    /**
+     * Getter method for instance variable {@link #fileName}.
+     *
+     * @return value of instance variable {@link #fileName}
+     */
+    public String getFileName()
+    {
+        return this.fileName;
+    }
+
+    /**
+     * Setter method for instance variable {@link #fileName}.
+     *
+     * @param _fileName value for instance variable {@link #fileName}
+     */
+    public void setFileName(final String _fileName)
+    {
+        this.fileName = _fileName;
     }
 }
 
