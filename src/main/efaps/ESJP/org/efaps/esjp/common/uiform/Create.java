@@ -67,7 +67,8 @@ public class Create implements EventExecution
      * @return new empty Return
      * @throws EFapsException on error
      */
-    public Return execute(final Parameter _parameter) throws EFapsException
+    public Return execute(final Parameter _parameter)
+        throws EFapsException
     {
 
         // create the basic object
@@ -89,7 +90,8 @@ public class Create implements EventExecution
      * @return Instance on the insert
      * @throws EFapsException on error
      */
-    protected Instance basicInsert(final Parameter _parameter) throws EFapsException
+    public Instance basicInsert(final Parameter _parameter)
+        throws EFapsException
     {
         final AbstractCommand command = (AbstractCommand) _parameter.get(ParameterValues.UIOBJECT);
         final Instance parent = _parameter.getInstance();
@@ -142,8 +144,9 @@ public class Create implements EventExecution
      * @param _fieldsets    fieldsets to insert
      * @throws EFapsException on error
      */
-    protected void insertFieldSets(final Parameter _parameter, final Instance _instance,
-                                   final List<FieldSet> _fieldsets)
+    public void insertFieldSets(final Parameter _parameter,
+                                final Instance _instance,
+                                final List<FieldSet> _fieldsets)
         throws EFapsException
     {
         final Map<?, ?> others = (HashMap<?, ?>) _parameter.get(ParameterValues.OTHERS);
@@ -196,7 +199,8 @@ public class Create implements EventExecution
      * @param _instance Instance of the new object
      * @throws EFapsException on error
      */
-    protected void connect(final Parameter _parameter, final Instance _instance) throws EFapsException
+    public void connect(final Parameter _parameter,
+                        final Instance _instance) throws EFapsException
     {
         final Instance parent = _parameter.getInstance();
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
@@ -220,7 +224,8 @@ public class Create implements EventExecution
      * @param _instance Instance of the new object
      * @throws EFapsException on error
      */
-    protected void fileUpload(final Parameter _parameter, final Instance _instance) throws EFapsException
+    public void fileUpload(final Parameter _parameter,
+                           final Instance _instance) throws EFapsException
     {
         final Context context = Context.getThreadContext();
 
@@ -251,7 +256,9 @@ public class Create implements EventExecution
      * @param _instance Instance of the new object
      * @throws EFapsException on error
      */
-    protected void insertClassification(final Parameter _parameter, final Instance _instance) throws EFapsException
+    public void insertClassification(final Parameter _parameter,
+                                     final Instance _instance)
+        throws EFapsException
     {
         if (_parameter.get(ParameterValues.CLASSIFICATIONS) != null) {
 
