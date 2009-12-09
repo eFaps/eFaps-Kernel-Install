@@ -30,6 +30,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Checkout;
 import org.efaps.db.SearchQuery;
+import org.efaps.esjp.common.file.FileUtil;
 import org.efaps.util.EFapsException;
 
 /**
@@ -78,7 +79,7 @@ public abstract class JasperFileResolver_Base implements FileResolver
             if (query.next()) {
                 final Checkout checkout = new Checkout((String) query.get("OID"));
                 checkout.preprocess();
-                file = File.createTempFile(checkout.getFileName(), "jasper");
+                file = FileUtil.getFile(checkout.getFileName(), "jasper");
                 final FileOutputStream out = new FileOutputStream(file);
                 checkout.execute(out);
                 out.close();
