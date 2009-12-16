@@ -36,17 +36,17 @@
     <name>Admin_Common_SystemConfigurationAttributeTable</name>
     <!-- fields -->
     <field name="name">
-      <property name="Expression">Key</property>
+      <property name="Attribute">Key</property>
       <property name="Label">Admin_Common_SystemConfigurationAttribute/Key.Label</property>
       <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
       <property name="ShowTypeIcon">true</property>
     </field>
     <field name="value">
-      <property name="Expression">Value</property>
+      <property name="Attribute">Value</property>
       <property name="Label">Admin_Common_SystemConfigurationAttribute/Value.Label</property>
     </field>
     <field name="description">
-      <property name="Expression">Description</property>
+      <property name="Attribute">Description</property>
       <property name="Label">Admin_Common_SystemConfigurationAttribute/Description.Label</property>
     </field>
   </definition>

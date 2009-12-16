@@ -38,7 +38,7 @@
     <target>
       <menu>Admin_Common_SystemConfigurationTree_Attributes_Menu</menu>
       <table>Admin_Common_SystemConfigurationAttributeTable</table>
-      <evaluate program="org.efaps.esjp.common.uitable.QueryExpand">
+      <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
         <property name="Expand">Admin_Common_SystemConfigurationAttribute\AbstractLink</property>
       </evaluate>
     </target>
