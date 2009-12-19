@@ -24,6 +24,7 @@ import java.io.StringReader;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -31,6 +32,7 @@ import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.beans.ValueList;
 import org.efaps.beans.valueparser.ParseException;
 import org.efaps.beans.valueparser.ValueParser;
@@ -45,7 +47,7 @@ import org.efaps.util.EFapsException;
  * map is the ID of the Objects. The sorting is done by using a TreeMap, that
  * means that the Objects are sorted by their natural order. Both value and key
  * are String.
- * The value can also be an expression as defiened for DBProperties.
+ * The value can also be an expression as defined for DBProperties.
  * e.g. $&lt;Name&gt; - $&lt;Value&gt;
  *
  * @author The eFaps Team
@@ -66,13 +68,14 @@ public class RangesValue implements EventExecution
     {
         final Return ret = new Return();
 
-        final String type = (String) ((Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES)).get("Type");
+        final Map<?, ?> properties = ((Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES));
+        final String type = (String) properties.get("Type");
 
         final SearchQuery query = new SearchQuery();
         query.setQueryTypes(type);
         query.addSelect("ID");
 
-        final String value = (String) ((Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES)).get("Value");
+        final String value = (String) properties.get("Value");
 
         ValueList list = null;
         if (value.contains("$<")) {
@@ -112,6 +115,12 @@ public class RangesValue implements EventExecution
             }
         }
         query.close();
+
+        if (_parameter.get(ParameterValues.ACCESSMODE).equals(TargetMode.CREATE)
+                        && properties.containsKey("Default")) {
+            final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+            fieldValue.setValue(properties.get("Default"));
+        }
 
         ret.put(ReturnValues.VALUES, map);
 
