@@ -26,14 +26,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.Map.Entry;
 
-import org.joda.time.DateMidnight;
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.datamodel.attributetype.DateTimeType;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -44,7 +38,12 @@ import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.db.Instance;
 import org.efaps.db.SearchQuery;
+import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateMidnight;
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO comment!
@@ -196,32 +195,27 @@ public class MultiPrint
             // Date or DateTime
             if (UUID.fromString("68ce3aa6-e3e8-40bb-b48f-2a67948c2e7e").equals(attrTypeUUId)
                             || UUID.fromString("e764db0f-70f2-4cd4-b2fe-d23d3da72f78").equals(attrTypeUUId)) {
-                final DateTimeType dateType = new DateTimeType();
                 DateTime dateFrom = null;
                 DateTime dateTo = null;
-                if (from == null || to == null) {
+                if ((from == null) || (to == null)) {
                     if ("today".equalsIgnoreCase(_field.getFilterDefault())) {
-                        dateType.set(new DateTime[] { new DateTime() });
-                        dateFrom = dateType.getValue().toDateMidnight().toDateTime().plusSeconds(1);
+                        dateFrom = DateTimeUtil.translateFromUI(new DateTime())
+                                               .toDateMidnight().toDateTime().plusSeconds(1);
                         dateTo = dateFrom.plusDays(1).minusSeconds(1);
                     } else if ("week".equalsIgnoreCase(_field.getFilterDefault())) {
-                        dateType.set(new DateTime[] { new DateTime() });
-                        DateMidnight tmp = dateType.getValue().toDateMidnight();
+                        DateMidnight tmp = DateTimeUtil.translateFromUI(new DateTime()).toDateMidnight();
                         tmp = tmp.minusDays(tmp.getDayOfWeek() - 1);
                         dateFrom = tmp.toDateTime().plusSeconds(1);
                         dateTo = tmp.toDateTime().plusWeeks(1).minusSeconds(1);
                     } else if ("month".equalsIgnoreCase(_field.getFilterDefault())) {
-                        dateType.set(new DateTime[] { new DateTime() });
-                        DateMidnight tmp = dateType.getValue().toDateMidnight();
+                        DateMidnight tmp = DateTimeUtil.translateFromUI(new DateTime()).toDateMidnight();
                         tmp = tmp.minusDays(tmp.getDayOfMonth() - 1);
                         dateFrom = tmp.toDateTime().plusSeconds(1);
                         dateTo = tmp.toDateTime().plusMonths(1).minusSeconds(1);
                     }
                 } else {
-                    dateType.set(new String[] { from });
-                    dateFrom = dateType.getValue().plusSeconds(1);
-                    dateType.set(new String[] { to });
-                    dateTo = dateType.getValue().plusDays(1).minusSeconds(1);
+                    dateFrom = DateTimeUtil.translateFromUI(from).plusSeconds(1);
+                    dateTo = DateTimeUtil.translateFromUI(to).plusDays(1).minusSeconds(1);
                 }
                 _query.addWhereExprLessValue(_attrNames[0], dateFrom);
                 _query.addWhereExprGreaterValue(_attrNames[1], dateTo);
@@ -259,32 +253,27 @@ public class MultiPrint
             // Date or DateTime
             if (UUID.fromString("68ce3aa6-e3e8-40bb-b48f-2a67948c2e7e").equals(attrTypeUUId)
                             || UUID.fromString("e764db0f-70f2-4cd4-b2fe-d23d3da72f78").equals(attrTypeUUId)) {
-                final DateTimeType dateType = new DateTimeType();
                 DateTime dateFrom = null;
                 DateTime dateTo = null;
                 if (from == null || to == null) {
                     if ("today".equalsIgnoreCase(_field.getFilterDefault())) {
-                        dateType.set(new DateTime[] { new DateTime() });
-                        dateFrom = dateType.getValue().toDateMidnight().toDateTime().minusSeconds(1);
+                        dateFrom = DateTimeUtil.translateFromUI(new DateTime())
+                                               .toDateMidnight().toDateTime().minusSeconds(1);
                         dateTo = dateFrom.plusDays(1).plusSeconds(1);
                     } else if ("week".equalsIgnoreCase(_field.getFilterDefault())) {
-                        dateType.set(new DateTime[] { new DateTime() });
-                        DateMidnight tmp = dateType.getValue().toDateMidnight();
+                        DateMidnight tmp = DateTimeUtil.translateFromUI(new DateTime()).toDateMidnight();
                         tmp = tmp.minusDays(tmp.getDayOfWeek() - 1);
                         dateFrom = tmp.toDateTime().minusSeconds(1);
                         dateTo = tmp.toDateTime().plusWeeks(1);
                     } else if ("month".equalsIgnoreCase(_field.getFilterDefault())) {
-                        dateType.set(new DateTime[] { new DateTime() });
-                        DateMidnight tmp = dateType.getValue().toDateMidnight();
+                        DateMidnight tmp = DateTimeUtil.translateFromUI(new DateTime()).toDateMidnight();
                         tmp = tmp.minusDays(tmp.getDayOfMonth() - 1);
                         dateFrom = tmp.toDateTime().minusSeconds(1);
                         dateTo = tmp.toDateTime().plusMonths(1);
                     }
                 } else {
-                    dateType.set(new String[] { from });
-                    dateFrom = dateType.getValue().minusSeconds(1);
-                    dateType.set(new String[] { to });
-                    dateTo = dateType.getValue().plusDays(1);
+                    dateFrom = DateTimeUtil.translateFromUI(from).minusSeconds(1);
+                    dateTo = DateTimeUtil.translateFromUI(to).plusDays(1);
                 }
                 _query.addWhereExprGreaterValue(_attrName, dateFrom);
                 _query.addWhereExprLessValue(_attrName, dateTo);
