@@ -147,9 +147,10 @@ public class Person
         final String jaassystemid = getJAASSystemID();
         if (jaassystemid != null) {
             final Object[] key = (Object[]) values.get(instance.getType().getAttribute("Name"));
-            final Update update = new Update("Admin_User_JAASKey", getJAASUserID(instance.getId()));
-            update.add("Key", key[0]);
-            update.execute();
+            if (key != null) {
+                final Update update = new Update("Admin_User_JAASKey", getJAASUserID(instance.getId()));
+                update.add("Key", key[0]);
+            }
         }
         return null;
     }
