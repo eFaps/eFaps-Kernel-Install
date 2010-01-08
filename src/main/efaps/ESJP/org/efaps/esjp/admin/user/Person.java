@@ -30,6 +30,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.SearchQuery;
+import org.efaps.db.Update;
 import org.efaps.util.EFapsException;
 
 /**
@@ -43,7 +44,6 @@ import org.efaps.util.EFapsException;
 @EFapsRevision("$Rev$")
 public class Person
 {
-
     /**
      * Method called to connect a Person to a Role.
      *
@@ -51,7 +51,8 @@ public class Person
      * @return empty Return
      * @throws EFapsException on error
      */
-    public Return connectUser2UserUI(final Parameter _parameter) throws EFapsException
+    public Return connectUser2UserUI(final Parameter _parameter)
+        throws EFapsException
     {
 
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
@@ -85,7 +86,8 @@ public class Person
      * @return null
      * @throws EFapsException on error
      */
-    public Return insertJaaskeyTrg(final Parameter _parameter) throws EFapsException
+    public Return insertJaaskeyTrg(final Parameter _parameter)
+        throws EFapsException
     {
         final Instance instance = _parameter.getInstance();
 
@@ -109,7 +111,8 @@ public class Person
      * @return ID of the JAASSYSTEM, NULL if not found
      * @throws EFapsException on error
      */
-    private String getJAASSystemID() throws EFapsException
+    private String getJAASSystemID()
+        throws EFapsException
     {
         String objId = null;
 
@@ -123,6 +126,53 @@ public class Person
         }
         query.close();
 
+        return objId;
+    }
+
+    /**
+     * This method updates the JAASKey for a User into the eFaps-Database.<br>
+     * It is executed on a UPDATE_POST Trigger on the Type User_Person.
+     *
+     * @param _parameter Parameter as past from eFaps to en esjp
+     * @return null
+     * @throws EFapsException on error
+     */
+    public Return updateJaaskeyTrg(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance instance = _parameter.getInstance();
+
+        final Map<?, ?> values = (Map<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
+
+        final String jaassystemid = getJAASSystemID();
+        if (jaassystemid != null) {
+            final Object[] key = (Object[]) values.get(instance.getType().getAttribute("Name"));
+            final Update update = new Update("Admin_User_JAASKey", getJAASUserID(instance.getId()));
+            update.add("Key", key[0]);
+            update.execute();
+        }
+        return null;
+    }
+
+    /**
+     * Get the ID of the JAASKey for eFaps.
+     * @param _instance instance the JAASUSerId is searched for
+     * @return ID of the JAASKey, NULL if not found
+     * @throws EFapsException on error
+     */
+    private String getJAASUserID(final Long _instance)
+        throws EFapsException
+    {
+        String objId = null;
+        final SearchQuery query = new SearchQuery();
+        query.setQueryTypes("Admin_User_JAASKey");
+        query.addWhereExprEqValue("UserLink", _instance);
+        query.addSelect("ID");
+        query.execute();
+        if (query.next()) {
+            objId = query.get("ID").toString();
+        }
+        query.close();
         return objId;
     }
 }
