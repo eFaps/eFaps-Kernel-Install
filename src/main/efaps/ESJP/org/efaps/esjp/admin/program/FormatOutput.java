@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2009 The eFaps Team
+ * Copyright 2003 - 2010 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -33,6 +35,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Checkout;
 import org.efaps.db.Instance;
+import org.efaps.db.SearchQuery;
 import org.efaps.util.EFapsException;
 
 /**
@@ -43,139 +46,224 @@ import org.efaps.util.EFapsException;
  */
 @EFapsUUID("27dcb0e6-bd78-4442-a9d6-05f491a2900f")
 @EFapsRevision("$Rev$")
-public class FormatOutput implements EventExecution {
+public class FormatOutput implements EventExecution
+{
 
-  /**
-   * not used!
-   *
-   * @param _parameter as passed from eFaps
-   * @throws EFapsException on error
-   * @return Return with value for field
-   */
-  public Return execute(final Parameter _parameter) throws EFapsException {
-    return new Return();
-  }
-
-  /**
-   * Method is called as UI_FIELD_VALUE event from inside form
-   * "Admin_Program_CSSForm".
-   *
-   * @param _parameter as passed from eFaps
-   * @throws EFapsException on error
-   * @return Return with value for field
-   */
-  public Return css(final Parameter _parameter) throws EFapsException {
-    final Return ret = new Return();
-
-    final Instance instance = _parameter.getCallInstance();
-
-    final Checkout checkout = new Checkout(instance);
-    final InputStream ins = checkout.execute();
-    final BufferedReader reader
-                               = new BufferedReader(new InputStreamReader(ins));
-    final StringBuilder strb = new StringBuilder();
-
-    String line = null;
-    try {
-      while ((line = reader.readLine()) != null) {
-        strb.append(line.replaceAll("\\s", "&nbsp;"));
-        strb.append("<br/>");
-      }
-    } catch (final IOException e) {
-      e.printStackTrace();
-    } finally {
-      try {
-        ins.close();
-      } catch (final IOException e) {
-        e.printStackTrace();
-      }
+    /**
+     * not used!
+     *
+     * @param _parameter as passed from eFaps
+     * @throws EFapsException on error
+     * @return Return with value for field
+     */
+    public Return execute(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new Return();
     }
 
-    ret.put(ReturnValues.SNIPLETT, strb.toString());
+    /**
+     * Method is called as UI_FIELD_VALUE event from inside form
+     * "Admin_Program_CSSForm".
+     *
+     * @param _parameter as passed from eFaps
+     * @throws EFapsException on error
+     * @return Return with value for field
+     */
+    public Return css(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
 
-    return ret;
-  }
+        final Instance instance = _parameter.getCallInstance();
 
-  /**
-   * Method is called as UI_FIELD_VALUE event from inside form
-   * "Admin_Program_JavaForm".
-   *
-   * @param _parameter as passed from eFaps
-   * @throws EFapsException on error
-   * @return Return with value for field
-   */
-  public Return java(final Parameter _parameter) throws EFapsException {
-    final Return ret = new Return();
+        final Checkout checkout = new Checkout(instance);
+        final InputStream ins = checkout.execute();
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
+        final StringBuilder strb = new StringBuilder();
 
-    final Instance instance = _parameter.getCallInstance();
+        String line = null;
+        try {
+            while ((line = reader.readLine()) != null) {
+                strb.append(line.replaceAll("\\s", "&nbsp;"));
+                strb.append("<br/>");
+            }
+        } catch (final IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                ins.close();
+            } catch (final IOException e) {
+                e.printStackTrace();
+            }
+        }
 
-    final Checkout checkout = new Checkout(instance);
-    final InputStream ins = checkout.execute();
-    final BufferedReader reader
-                               = new BufferedReader(new InputStreamReader(ins));
-    final StringBuilder strb = new StringBuilder();
+        ret.put(ReturnValues.SNIPLETT, strb.toString());
 
-    String line = null;
-    try {
-      while ((line = reader.readLine()) != null) {
-        strb.append(line.replaceAll("\\s", "&nbsp;").replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;").replaceAll("\\s", "&nbsp;"));
-        strb.append("<br/>");
-      }
-    } catch (final IOException e) {
-      e.printStackTrace();
-    } finally {
-      try {
-        ins.close();
-      } catch (final IOException e) {
-        e.printStackTrace();
-      }
+        return ret;
     }
 
-    ret.put(ReturnValues.SNIPLETT, strb.toString());
+    /**
+     * Method is called as UI_FIELD_VALUE event from inside form
+     * "Admin_Program_JavaForm".
+     *
+     * @param _parameter as passed from eFaps
+     * @throws EFapsException on error
+     * @return Return with value for field
+     */
+    public Return java(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
 
-    return ret;
-  }
+        final Instance instance = _parameter.getCallInstance();
 
-  /**
-   * TODO the format does not work always!
-   * Method is called as UI_FIELD_VALUE event from inside form
-   * "Admin_Program_JavaScriptForm".
-   *
-   * @param _parameter as passed from eFaps
-   * @throws EFapsException on error
-   * @return Return with value for field
-   */
-  public Return javascript(final Parameter _parameter) throws EFapsException {
-    final Return ret = new Return();
+        final Checkout checkout = new Checkout(instance);
+        final InputStream ins = checkout.execute();
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
+        final StringBuilder strb = new StringBuilder();
 
-    final Instance instance = _parameter.getCallInstance();
+        String line = null;
+        try {
+            while ((line = reader.readLine()) != null) {
+                strb.append(line.replaceAll("\\s", "&nbsp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+                                .replaceAll("\\s", "&nbsp;"));
+                strb.append("<br/>");
+            }
+        } catch (final IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                ins.close();
+            } catch (final IOException e) {
+                e.printStackTrace();
+            }
+        }
 
-    final Checkout checkout = new Checkout(instance);
-    final InputStream ins = checkout.execute();
-    final BufferedReader reader
-                               = new BufferedReader(new InputStreamReader(ins));
-    final StringBuilder strb = new StringBuilder();
+        ret.put(ReturnValues.SNIPLETT, strb.toString());
 
-    String line = null;
-    try {
-      while ((line = reader.readLine()) != null) {
-        strb.append(line.replaceAll("\\s", "&nbsp;").replaceAll("<", "&lt;")
-                        .replaceAll(">", "&gt;").replaceAll("\\s", "&nbsp;"));
-        strb.append("<br/>");
-      }
-    } catch (final IOException e) {
-      e.printStackTrace();
-    } finally {
-      try {
-        ins.close();
-      } catch (final IOException e) {
-        e.printStackTrace();
-      }
+        return ret;
     }
 
-    ret.put(ReturnValues.SNIPLETT, strb.toString());
+    /**
+     * TODO the format does not work always! Method is called as UI_FIELD_VALUE
+     * event from inside form "Admin_Program_JavaScriptForm".
+     *
+     * @param _parameter as passed from eFaps
+     * @throws EFapsException on error
+     * @return Return with value for field
+     */
+    public Return javascript(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
 
-    return ret;
-  }
+        final Instance instance = _parameter.getCallInstance();
+
+        final Checkout checkout = new Checkout(instance);
+        final InputStream ins = checkout.execute();
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
+        final StringBuilder strb = new StringBuilder();
+
+        String line = null;
+        try {
+            while ((line = reader.readLine()) != null) {
+                strb.append(line.replaceAll("\\s", "&nbsp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+                                .replaceAll("\\s", "&nbsp;"));
+                strb.append("<br/>");
+            }
+        } catch (final IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                ins.close();
+            } catch (final IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        ret.put(ReturnValues.SNIPLETT, strb.toString());
+
+        return ret;
+    }
+
+    /**
+     * Method is called as UI_FIELD_VALUE event from inside form
+     * "Admin_Program_Wiki".
+     *
+     * @param _parameter as passed from eFaps
+     * @throws EFapsException on error
+     * @return Return with value for field
+     */
+    public Return wiki(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Instance instance = _parameter.getCallInstance();
+        final Checkout checkout = new Checkout(instance);
+        final InputStream ins = checkout.execute();
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
+        final StringBuilder strb = new StringBuilder();
+
+        String line = null;
+        try {
+            while ((line = reader.readLine()) != null) {
+                final String tmp = StringEscapeUtils.escapeHtml(line);
+                strb.append(tmp.replaceAll("\\s", "&nbsp;"));
+                strb.append("<br/>");
+            }
+        } catch (final IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                ins.close();
+            } catch (final IOException e) {
+                e.printStackTrace();
+            }
+        }
+        ret.put(ReturnValues.SNIPLETT, strb.toString());
+        return ret;
+    }
+
+    /**
+     * Method is called as UI_FIELD_VALUE event from inside form
+     * "Admin_Program_Wiki".
+     *
+     * @param _parameter as passed from eFaps
+     * @throws EFapsException on error
+     * @return Return with value for field
+     */
+    public Return wikiHtml(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Instance instance = _parameter.getCallInstance();
+        final SearchQuery query = new SearchQuery();
+        query.setExpand(instance, "Admin_Program_WikiCompiled\\ProgramLink");
+        query.addSelect("OID");
+        query.execute();
+        if (query.next()) {
+            final Checkout checkout = new Checkout((String) query.get("OID"));
+            final InputStream ins = checkout.execute();
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
+            final StringBuilder strb = new StringBuilder();
+            String line = null;
+            try {
+                while ((line = reader.readLine()) != null) {
+                    strb.append(line);
+                }
+            } catch (final IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    ins.close();
+                } catch (final IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            ret.put(ReturnValues.SNIPLETT, strb.toString());
+        }
+        return ret;
+    }
 }
