@@ -27,7 +27,7 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>d28991aa-91c9-4870-9508-5aedbbba5b41</uuid>
-    <bundle name="efaps_Admin_Program_Java" sequence="1" />
+    <bundle name="efaps_Admin_Program_Wiki" sequence="1" />
     <resource>
         <type>Properties</type>
         <language></language>
