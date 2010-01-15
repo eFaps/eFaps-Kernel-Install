@@ -27,6 +27,7 @@ import java.io.InputStreamReader;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
+import org.efaps.admin.EFapsClassNames;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -237,33 +238,36 @@ public class FormatOutput implements EventExecution
         throws EFapsException
     {
         final Return ret = new Return();
-        final Instance instance = _parameter.getCallInstance();
-        final SearchQuery query = new SearchQuery();
-        query.setExpand(instance, "Admin_Program_WikiCompiled\\ProgramLink");
-        query.addSelect("OID");
-        query.execute();
-        if (query.next()) {
-            final Checkout checkout = new Checkout((String) query.get("OID"));
-            final InputStream ins = checkout.execute();
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
-            final StringBuilder strb = new StringBuilder();
-            String line = null;
+        Instance instance = _parameter.getCallInstance();
+        if (instance.getType().getUUID().equals(EFapsClassNames.ADMIN_PROGRAM_WIKI.getUuid())) {
+            final SearchQuery query = new SearchQuery();
+            query.setExpand(instance, "Admin_Program_WikiCompiled\\ProgramLink");
+            query.addSelect("OID");
+            query.execute();
+            if (query.next()) {
+                instance = Instance.get((String) query.get("OID"));
+            }
+        }
+
+        final Checkout checkout = new Checkout(instance);
+        final InputStream ins = checkout.execute();
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
+        final StringBuilder strb = new StringBuilder();
+        String line = null;
+        try {
+            while ((line = reader.readLine()) != null) {
+                strb.append(line);
+            }
+        } catch (final IOException e) {
+            e.printStackTrace();
+        } finally {
             try {
-                while ((line = reader.readLine()) != null) {
-                    strb.append(line);
-                }
+                ins.close();
             } catch (final IOException e) {
                 e.printStackTrace();
-            } finally {
-                try {
-                    ins.close();
-                } catch (final IOException e) {
-                    e.printStackTrace();
-                }
             }
-
-            ret.put(ReturnValues.SNIPLETT, strb.toString());
         }
+        ret.put(ReturnValues.SNIPLETT, strb.toString());
         return ret;
     }
 }
