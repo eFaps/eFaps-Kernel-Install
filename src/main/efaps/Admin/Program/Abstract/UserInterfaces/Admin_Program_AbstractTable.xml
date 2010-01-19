@@ -51,6 +51,13 @@
       <property name="Expression">Revision</property>
       <property name="Label">Admin_Program_Abstract/Revision.Label</property>
     </field>
+    <field name="checkout">
+      <icon>Action_View</icon>
+      <property name="HRef">${ROOTURL}/servlet/checkout</property>
+      <property name="Target">popup</property>
+      <property name="SortAble">false</property>
+      <property name="Width">15px</property>
+    </field>
     <field name="buttonOpenInNewWindow">
       <icon>eFapsActionNewWindow</icon>
       <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
