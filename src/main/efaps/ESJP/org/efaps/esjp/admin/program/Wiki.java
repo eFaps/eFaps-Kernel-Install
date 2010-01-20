@@ -40,7 +40,6 @@ import org.efaps.util.EFapsException;
 import org.efaps.wikiutil.export.html.WEMHtml;
 import org.efaps.wikiutil.parser.gwiki.GWikiParser;
 import org.efaps.wikiutil.parser.gwiki.javacc.ParseException;
-import org.efaps.wikiutil.wem.WEMDebug;
 
 /**
  * TODO comment!
@@ -77,8 +76,7 @@ public class Wiki
             checkin.execute(print.<String> getAttribute("FileName"), in, in.available());
 
             final WEMHtml wemhtml = new WEMHtml();
-
-            GWikiParser.parse(new WEMDebug(System.out, wemhtml), new ByteArrayInputStream(wiki.getBytes("UTF8")), "UTF-8");
+            GWikiParser.parse(wemhtml, new ByteArrayInputStream(wiki.getBytes("UTF8")), "UTF-8");
             final ByteArrayInputStream compiled = new ByteArrayInputStream(wemhtml.getHtml().getBytes("UTF8"));
             final String compiledOid = print.<String>getSelect("linkfrom[Admin_Program_WikiCompiled#ProgramLink].oid");
             final String compiledFileName =
