@@ -34,7 +34,7 @@
         <!-- fields -->
         <field name="wiki">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="Label">Admin_Program_WikiEditForm.wiki.Label</property>
+            <property name="HideLabel">true</property>
             <property name="Columns">80</property>
             <property name="Rows">30</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
