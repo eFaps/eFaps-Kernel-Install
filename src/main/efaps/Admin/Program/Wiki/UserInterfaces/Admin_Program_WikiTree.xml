@@ -34,10 +34,15 @@
         <name>Admin_Program_WikiTree</name>
         <!-- targets -->
         <target>
+            <menu>Admin_Program_WikiTree_Menu</menu>
             <form>Admin_Program_WikiForm</form>
         </target>
         <!-- type tree for -->
         <type>Admin_Program_Wiki</type>
+
+        <childs>
+            <child>Admin_Program_WikiTree_UsedBy</child>
+        </childs>
         <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
