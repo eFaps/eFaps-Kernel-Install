@@ -57,7 +57,7 @@ import org.efaps.db.Checkout;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.SearchQuery;
-import org.efaps.esjp.common.file.FileUtil;
+import org.efaps.esjp.common.file.FileUtil_Base;
 import org.efaps.util.EFapsException;
 
 
@@ -115,6 +115,8 @@ public abstract class StandartReport_Base implements EventExecution
         Instance instance = null;
         if (query.next()) {
             instance = Instance.get((String) query.get("OID"));
+        } else {
+            throw new EFapsException(StandartReport_Base.class, "execute.ReportNotFound");
         }
         final Checkout checkout = new Checkout(instance);
         final InputStream iin = checkout.execute();
@@ -140,32 +142,23 @@ public abstract class StandartReport_Base implements EventExecution
             ret.put(ReturnValues.TRUE, true);
 
         } catch (final ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new EFapsException(StandartReport_Base.class, "execute.ClassNotFoundException", e);
         } catch (final SecurityException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new EFapsException(StandartReport_Base.class, "execute.SecurityException", e);
         } catch (final NoSuchMethodException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new EFapsException(StandartReport_Base.class, "execute.NoSuchMethodException", e);
         } catch (final InstantiationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new EFapsException(StandartReport_Base.class, "execute.InstantiationException", e);
         } catch (final IllegalAccessException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new EFapsException(StandartReport_Base.class, "execute.IllegalAccessException", e);
         } catch (final IllegalArgumentException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new EFapsException(StandartReport_Base.class, "execute.IllegalArgumentException", e);
         } catch (final InvocationTargetException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new EFapsException(StandartReport_Base.class, "execute.InvocationTargetException", e);
         } catch (final JRException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new EFapsException(StandartReport_Base.class, "execute.JRException", e);
         } catch (final IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new EFapsException(StandartReport_Base.class, "execute.IOException", e);
         }
         return ret;
     }
@@ -187,12 +180,12 @@ public abstract class StandartReport_Base implements EventExecution
         File file = null;
 
         if ("pdf".equalsIgnoreCase(_mime) || _mime == null) {
-            file = FileUtil.getFile(this.fileName == null ? "PDF" : this.fileName, "pdf");
+            file = FileUtil_Base.getFile(this.fileName == null ? "PDF" : this.fileName, "pdf");
             final FileOutputStream os = new FileOutputStream(file);
             JasperExportManager.exportReportToPdfStream(_jasperPrint, os);
             os.close();
         } else if ("odt".equalsIgnoreCase(_mime)) {
-            file = FileUtil.getFile(this.fileName == null ? "ODT" : this.fileName, "odt");
+            file = FileUtil_Base.getFile(this.fileName == null ? "ODT" : this.fileName, "odt");
             final FileOutputStream os = new FileOutputStream(file);
             final JROdtExporter exporter = new JROdtExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
@@ -200,7 +193,7 @@ public abstract class StandartReport_Base implements EventExecution
             exporter.exportReport();
             os.close();
         } else if ("ods".equalsIgnoreCase(_mime)) {
-            file = FileUtil.getFile(this.fileName == null ? "ODS" : this.fileName, "ods");
+            file = FileUtil_Base.getFile(this.fileName == null ? "ODS" : this.fileName, "ods");
             final FileOutputStream os = new FileOutputStream(file);
             final JROdsExporter exporter = new JROdsExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
@@ -208,7 +201,7 @@ public abstract class StandartReport_Base implements EventExecution
             exporter.exportReport();
             os.close();
         } else if ("xls".equalsIgnoreCase(_mime)) {
-            file = FileUtil.getFile(this.fileName == null ? "XLS" : this.fileName, "xls");
+            file = FileUtil_Base.getFile(this.fileName == null ? "XLS" : this.fileName, "xls");
             final FileOutputStream os = new FileOutputStream(file);
             final JExcelApiExporter exporter = new JExcelApiExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
@@ -216,7 +209,7 @@ public abstract class StandartReport_Base implements EventExecution
             exporter.exportReport();
             os.close();
         } else if ("rtf".equalsIgnoreCase(_mime)) {
-            file = FileUtil.getFile(this.fileName == null ? "RTF" : this.fileName, "rtf");
+            file = FileUtil_Base.getFile(this.fileName == null ? "RTF" : this.fileName, "rtf");
             final FileOutputStream os = new FileOutputStream(file);
             final JRRtfExporter exporter = new JRRtfExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
@@ -224,7 +217,7 @@ public abstract class StandartReport_Base implements EventExecution
             exporter.exportReport();
             os.close();
         } else if ("docx".equalsIgnoreCase(_mime)) {
-            file = FileUtil.getFile(this.fileName == null ? "DOCX" : this.fileName, "docx");
+            file = FileUtil_Base.getFile(this.fileName == null ? "DOCX" : this.fileName, "docx");
             final FileOutputStream os = new FileOutputStream(file);
             final JRDocxExporter exporter = new JRDocxExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
@@ -232,7 +225,7 @@ public abstract class StandartReport_Base implements EventExecution
             exporter.exportReport();
             os.close();
         } else if ("txt".equalsIgnoreCase(_mime)) {
-            file = FileUtil.getFile(this.fileName == null ? "TXT" : this.fileName, "txt");
+            file = FileUtil_Base.getFile(this.fileName == null ? "TXT" : this.fileName, "txt");
             final FileOutputStream os = new FileOutputStream(file);
             final JRTextExporter exporter = new JRTextExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
