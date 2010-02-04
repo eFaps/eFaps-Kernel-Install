@@ -38,7 +38,7 @@
             <execute program="org.efaps.esjp.common.uiform.Create" />
         </target>
         <!-- properties -->
-        <property name="Target">popup</property>
+        <property name="Target">modal</property>
         <property name="TargetCreateType">Admin_Help_Menu</property>
         <property name="TargetMode">create</property>
     </definition>
