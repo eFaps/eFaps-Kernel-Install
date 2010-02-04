@@ -33,6 +33,10 @@
         <type>Properties</type>
         <language></language>
         <file>Admin_Common_NumberGenerator.properties</file>
+    </resource>
+    <resource>
+        <type>Properties</type>
+        <language>es</language>
         <file>Admin_Common_NumberGenerator_es.properties</file>
     </resource>
 </dbproperties>
