@@ -159,6 +159,7 @@
         <attributeset>
             <name>EmailSet</name>
             <type>MultiLineArray</type>
+            <parent>Admin_User_PersonAttributeAbstract</parent>
             <sqltable>Admin_User_PersonAttributeSQLTable</sqltable>
             <sqlcolumn>PERSONID</sqlcolumn>
             <attribute>
@@ -172,6 +173,19 @@
                 <type>Boolean</type>
                 <sqltable>Admin_User_PersonAttributeSQLTable</sqltable>
                 <sqlcolumn>FLAG</sqlcolumn>
+            </attribute>
+        </attributeset>
+        <attributeset>
+            <name>PhoneSet</name>
+            <type>MultiLineArray</type>
+            <parent>Admin_User_PersonAttributeAbstract</parent>
+            <sqltable>Admin_User_PersonAttributeSQLTable</sqltable>
+            <sqlcolumn>PERSONID</sqlcolumn>
+            <attribute>
+                <name>Phone</name>
+                <type>String</type>
+                <sqltable>Admin_User_PersonAttributeSQLTable</sqltable>
+                <sqlcolumn>VALUE</sqlcolumn>
             </attribute>
         </attributeset>
         <attribute>
@@ -200,6 +214,8 @@
             <sqltable>Admin_User_PersonSQLTable</sqltable>
             <sqlcolumn>LOGINTRIES</sqlcolumn>
         </attribute>
+
+
         <!-- triggers -->
         <trigger name="Admin_User_Person_ACCESSCHECK"
             event="ACCESSCHECK"

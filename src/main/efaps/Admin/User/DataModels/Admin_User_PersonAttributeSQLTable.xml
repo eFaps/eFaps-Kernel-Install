@@ -42,6 +42,10 @@
       <column name="TYPEID"       type="INTEGER"        not-null="true"/>
       <column name="PERSONID"     type="INTEGER"        not-null="true"/>
       <column name="VALUE"        type="STRING_SHORT"   not-null="true"     length="255"/>
+      <column name="CREATOR"      type="INTEGER"                      not-null="true"/>
+      <column name="CREATED"      type="DATETIME"                     not-null="true"/>
+      <column name="MODIFIER"     type="INTEGER"                      not-null="true"/>
+      <column name="MODIFIED"     type="DATETIME"                     not-null="true"/>
       <column name="FLAG"         type="BOOLEAN" />
       <!-- constrains -->
       <foreign name="T_USERPERSONATTR_FK_ABST"   key="PERSONID"   reference="T_USERPERSON(ID)"/>
@@ -58,6 +62,10 @@
       <column name="TYPEID"       type="INTEGER"        not-null="true"/>
       <column name="PERSONID"     type="INTEGER"        not-null="true"/>
       <column name="VALUE"        type="STRING_SHORT"   not-null="true"     length="255"/>
+      <column name="CREATOR"      type="INTEGER"                      not-null="true"/>
+      <column name="CREATED"      type="DATETIME"                     not-null="true"/>
+      <column name="MODIFIER"     type="INTEGER"                      not-null="true"/>
+      <column name="MODIFIED"     type="DATETIME"                     not-null="true"/>
       <column name="FLAG"         type="BOOLEAN" />
      </database>
   </definition>
