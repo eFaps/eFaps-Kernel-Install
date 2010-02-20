@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2009 The eFaps Team
+ * Copyright 2003 - 2010 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,15 +24,21 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.AttributeSet;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.attributetype.AbstractFileType;
+import org.efaps.admin.event.EventDefinition;
 import org.efaps.admin.event.EventExecution;
+import org.efaps.admin.event.EventType;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -44,6 +50,7 @@ import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.admin.ui.field.FieldClassification;
 import org.efaps.admin.ui.field.FieldSet;
+import org.efaps.admin.ui.field.FieldTable;
 import org.efaps.db.Checkin;
 import org.efaps.db.Context;
 import org.efaps.db.Delete;
@@ -60,14 +67,17 @@ import org.efaps.util.EFapsException;
  */
 @EFapsUUID("d9ba2b85-8b9a-46b0-929e-8e938e7d5577")
 @EFapsRevision("$Rev$")
-public class Edit implements EventExecution
+public class Edit
+    implements EventExecution
 {
+
     /**
      * @param _parameter Parameter as provided by eFaps for a esjp
      * @throws EFapsException on error
      * @return empty Return
      */
-    public Return execute(final Parameter _parameter) throws EFapsException
+    public Return execute(final Parameter _parameter)
+        throws EFapsException
     {
 
         final Instance instance = _parameter.getInstance();
@@ -82,8 +92,8 @@ public class Edit implements EventExecution
         if (context.getFileParameters().size() > 0) {
             for (final Field field : command.getTargetForm().getFields()) {
                 final String attrName = field.getExpression() == null
-                                            ? field.getAttribute()
-                                            : field.getExpression();
+                                ? field.getAttribute()
+                                : field.getExpression();
                 if (attrName == null && field.isEditableDisplay(TargetMode.EDIT)) {
                     final Context.FileParameter fileItem = context.getFileParameters().get(field.getName());
                     if (fileItem != null) {
@@ -97,7 +107,6 @@ public class Edit implements EventExecution
                 }
             }
         }
-
         if (classifcationName != null) {
             updateClassifcation(_parameter, instance, classifcationName);
         }
@@ -107,17 +116,20 @@ public class Edit implements EventExecution
     /**
      * Method updates the main elements from the form.
      *
-     * @param _parameter    _parameter Parameter as provided by eFaps for a esjp
-     * @param _form         from used for the update
-     * @param _instance     instance that must be updated
-     * @return  the name of a classification if found in the form, else null
+     * @param _parameter _parameter Parameter as provided by eFaps for a esjp
+     * @param _form from used for the update
+     * @param _instance instance that must be updated
+     * @return the name of a classification if found in the form, else null
      * @throws EFapsException on error
      */
-    protected String updateMainElements(final Parameter _parameter, final Form _form, final Instance _instance)
+    public String updateMainElements(final Parameter _parameter,
+                                     final Form _form,
+                                     final Instance _instance)
         throws EFapsException
     {
         String ret = null;
         final List<FieldSet> fieldsets = new ArrayList<FieldSet>();
+        final List<FieldTable> fieldTables = new ArrayList<FieldTable>();
         final List<Field> fields = new ArrayList<Field>();
 
         final SearchQuery query = new SearchQuery();
@@ -125,12 +137,14 @@ public class Edit implements EventExecution
         for (final Field field : _form.getFields()) {
             if (field instanceof FieldSet) {
                 fieldsets.add((FieldSet) field);
+            } else if (field instanceof FieldTable) {
+                fieldTables.add((FieldTable) field);
             } else if (field instanceof FieldClassification) {
                 ret = ((FieldClassification) field).getClassificationName();
             } else {
                 final String attrName = field.getExpression() == null
-                                            ? field.getAttribute()
-                                            : field.getExpression();
+                                ? field.getAttribute()
+                                : field.getExpression();
                 if (attrName != null && field.isEditableDisplay(TargetMode.EDIT)) {
                     final Attribute attr = _instance.getType().getAttribute(attrName);
                     // check if not a fileupload
@@ -150,8 +164,8 @@ public class Edit implements EventExecution
                 if (context.getParameters().containsKey(field.getName())) {
                     final String newValue = context.getParameter(field.getName());
                     final String attrName = field.getExpression() == null
-                                                ? field.getAttribute()
-                                                : field.getExpression();
+                                    ? field.getAttribute()
+                                    : field.getExpression();
                     final Object object = query.get(attrName);
                     final String oldValue = object != null ? object.toString() : null;
                     if (!newValue.equals(oldValue)) {
@@ -168,19 +182,21 @@ public class Edit implements EventExecution
             update.execute();
         }
         updateFieldSets(_parameter, _instance, fieldsets);
+        updateFieldTable(_parameter, _instance, fieldTables);
         return ret;
     }
 
     /**
      * Method to update the related fieldsets if parameters are given for them.
      *
-     * @param _parameter    Parameter as passed from the efaps API.
-     * @param _instance     Instance of the new object
-     * @param _fieldsets    fieldsets to insert
+     * @param _parameter Parameter as passed from the efaps API.
+     * @param _instance Instance of the new object
+     * @param _fieldsets fieldsets to insert
      * @throws EFapsException on error
      */
-    protected void updateFieldSets(final Parameter _parameter, final Instance _instance,
-                                   final List<FieldSet> _fieldsets)
+    public void updateFieldSets(final Parameter _parameter,
+                                final Instance _instance,
+                                final List<FieldSet> _fieldsets)
         throws EFapsException
     {
         final NumberFormat nf = NumberFormat.getInstance();
@@ -189,20 +205,23 @@ public class Edit implements EventExecution
 
         for (final FieldSet fieldset : _fieldsets) {
             final String setName = fieldset.getExpression() == null
-                                        ? fieldset.getAttribute()
-                                        : fieldset.getExpression();
+                            ? fieldset.getAttribute()
+                            : fieldset.getExpression();
             final AttributeSet set = AttributeSet.find(_instance.getType().getName(), setName);
 
-            // first already existing values must be updated, if they were altered
+            // first already existing values must be updated, if they were
+            // altered
             boolean updateExisting = true;
             int yCoord = 0;
             while (updateExisting) {
-                //check in the context if already existing values might have been altered, by
-                //using the hidden field that is added when existing values for a fieldset are shown
+                // check in the context if already existing values might have
+                // been altered, by
+                // using the hidden field that is added when existing values for
+                // a fieldset are shown
                 final String idfield = "hiddenId_" + fieldset.getName() + "_" + nf.format(yCoord);
                 if (_parameter.getParameters().containsKey(idfield)) {
                     final String id = _parameter.getParameterValue(idfield);
-                    //check the values in the database
+                    // check the values in the database
                     final PrintQuery printQuery = new PrintQuery(set, id);
                     for (final Attribute attr : set.getAttributes().values()) {
                         printQuery.addAttribute(attr);
@@ -222,7 +241,7 @@ public class Edit implements EventExecution
                             if (!newValue.equals(oldValue)) {
                                 if (child.hasUoM()) {
                                     setupdate.add(child, new Object[] { newValue,
-                                                                     _parameter.getParameterValue(fieldName + "UoM") });
+                                                    _parameter.getParameterValue(fieldName + "UoM") });
                                 } else {
                                     setupdate.add(child, newValue);
                                 }
@@ -289,8 +308,9 @@ public class Edit implements EventExecution
      * @param _classifcationName name of the classificationto be updated
      * @throws EFapsException on error
      */
-    protected void updateClassifcation(final Parameter _parameter, final Instance _instance,
-                                       final String _classifcationName)
+    public void updateClassifcation(final Parameter _parameter,
+                                    final Instance _instance,
+                                    final String _classifcationName)
         throws EFapsException
     {
 
@@ -301,7 +321,7 @@ public class Edit implements EventExecution
         // get the already existing classifications
         final SearchQuery relQuery = new SearchQuery();
         relQuery.setExpand(_instance, classType.getClassifyRelationType().getName() + "\\"
-                                                                                + classType.getRelLinkAttributeName());
+                        + classType.getRelLinkAttributeName());
         relQuery.addSelect(classType.getRelTypeAttributeName());
         relQuery.addSelect("OID");
         relQuery.execute();
@@ -320,8 +340,8 @@ public class Edit implements EventExecution
             final Form form = Form.getTypeForm(subClassType);
             for (final Field field : form.getFields()) {
                 final String attrName = field.getExpression() == null
-                                                ? field.getAttribute()
-                                                : field.getExpression();
+                                ? field.getAttribute()
+                                : field.getExpression();
                 if (attrName != null && field.isEditableDisplay(TargetMode.EDIT)) {
                     final Attribute attr = subClassType.getAttribute(attrName);
                     // check if not a fileupload
@@ -336,8 +356,8 @@ public class Edit implements EventExecution
             if (subquery.next()) {
                 for (final Field field : fields) {
                     final String attrName = field.getExpression() == null
-                                                    ? field.getAttribute()
-                                                    : field.getExpression();
+                                    ? field.getAttribute()
+                                    : field.getExpression();
                     values.put(field.getName(), subquery.get(attrName));
                 }
                 values.put("OID", subquery.get("OID"));
@@ -367,18 +387,18 @@ public class Edit implements EventExecution
                             fieldsets.add((FieldSet) field);
                         } else {
                             final String attrName = field.getExpression() == null
-                                                        ? field.getAttribute()
-                                                        : field.getExpression();
+                                            ? field.getAttribute()
+                                            : field.getExpression();
                             if (attrName != null && field.isEditableDisplay(TargetMode.EDIT)) {
                                 final Attribute attr = classification.getAttribute(attrName);
                                 if (attr != null
-                                        && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType()
-                                                        .getClassRepr())) {
+                                                && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType()
+                                                .getClassRepr())) {
                                     if (_parameter.getParameters().containsKey(field.getName())) {
                                         final String value = _parameter.getParameterValue(field.getName());
                                         if (attr.hasUoM()) {
                                             classInsert.add(attr, new Object[] { value,
-                                                              _parameter.getParameterValue(field.getName() + "UoM") });
+                                                            _parameter.getParameterValue(field.getName() + "UoM") });
                                         } else {
                                             classInsert.add(attr, value);
                                         }
@@ -399,13 +419,13 @@ public class Edit implements EventExecution
                             fieldsets.add((FieldSet) field);
                         } else {
                             final String attrName = field.getExpression() == null
-                                                        ? field.getAttribute()
-                                                        : field.getExpression();
+                                            ? field.getAttribute()
+                                            : field.getExpression();
                             if (attrName != null && field.isEditableDisplay(TargetMode.EDIT)) {
                                 final Attribute attr = classification.getAttribute(attrName);
                                 if (attr != null
                                                 && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType()
-                                                                .getClassRepr())) {
+                                                .getClassRepr())) {
                                     if (_parameter.getParameters().containsKey(field.getName())) {
                                         final String newValue = _parameter.getParameterValue(field.getName());
                                         final Object value = values.get(field.getName());
@@ -441,4 +461,312 @@ public class Edit implements EventExecution
             }
         }
     }
+
+    /**
+     * Method to update the fieldtables.
+     * @param _parameter     Parameter as passed from the eFaps API
+     * @param _instance     instance
+     * @param _fieldTables  list of fieldtables
+     * @throws EFapsException on error
+     */
+    public void updateFieldTable(final Parameter _parameter,
+                                 final Instance _instance,
+                                 final List<FieldTable> _fieldTables)
+        throws EFapsException
+    {
+        if (_fieldTables.size() > 0) {
+            final List<RowUpdate> rows = analyseFieldTables(_parameter, _fieldTables);
+            updateAddRows(_parameter, rows);
+            deleteRows(_parameter, rows);
+        }
+    }
+
+    /**
+     * Delete removed rows.
+    *  @param _parameter    Parameter as passed from the eFaps API
+     * @param _rows         rows to be updated or added
+     * @throws EFapsException on error
+     */
+    public void deleteRows(final Parameter _parameter,
+                           final List<RowUpdate> _rows)
+        throws EFapsException
+    {
+        final Map<?, ?> oids = (Map<?, ?>) _parameter.get(ParameterValues.OIDMAP4UI);
+        final Map<String, Set<String>> exist = new HashMap<String, Set<String>>();
+        for (final RowUpdate row : _rows) {
+            if (oids.containsKey(row.getRowId())) {
+                Set<String> set;
+                if (exist.containsKey(row.getExpand())) {
+                    set = exist.get(row.getExpand());
+                } else {
+                    set = new HashSet<String>();
+                    exist.put(row.getExpand(), set);
+                }
+                set.add((String) oids.get(row.getRowId()));
+            }
+        }
+
+        for (final Entry<String, Set<String>> entry : exist.entrySet()) {
+            final SearchQuery query = new SearchQuery();
+            query.setExpand(_parameter.getInstance(),  entry.getKey());
+            query.addSelect("OID");
+            query.execute();
+            while (query.next()) {
+                final String oid = (String) query.get("OID");
+                if (!entry.getValue().contains(oid)) {
+                    final Delete del = new Delete(oid);
+                    del.execute();
+                }
+            }
+        }
+    }
+
+    /**
+     * Update and add new Rows.
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @param _rows         rows to be updated or added
+     * @throws EFapsException on error
+     */
+    public void updateAddRows(final Parameter _parameter,
+                              final List<RowUpdate> _rows)
+        throws EFapsException
+    {
+        //TODO compare with database before update??
+        final Map<?, ?> oids = (Map<?, ?>) _parameter.get(ParameterValues.OIDMAP4UI);
+        for (final RowUpdate row : _rows) {
+            final String oid = (String) oids.get(row.getRowId());
+            final Update update;
+            if (oid != null) {
+                update = new Update(oid);
+            } else {
+                update = new Insert(row.getType());
+                update.add(row.getLinkAttrName(), _parameter.getInstance().getId());
+            }
+            for (final String[] value : row.getValues()) {
+                update.add(value[0], value[1]);
+            }
+            update.execute();
+        }
+    }
+
+    /**
+     * Analyze the table values row by row.
+     * @param _parameter    Parameter as passed fromthe eFaps API
+     * @param _fieldTables  list of fieldtables
+     * @return list of rows
+     */
+    public List<RowUpdate> analyseFieldTables(final Parameter _parameter,
+                                              final List<FieldTable> _fieldTables)
+    {
+        final List<RowUpdate> rows = new ArrayList<RowUpdate>();
+        // get all rows
+        for (final String rowId : _parameter.getParameterValues("eFapsTableRowID")) {
+            rows.add(new RowUpdate(rowId));
+        }
+        final Iterator<RowUpdate> rowiter = rows.iterator();
+        for (final FieldTable fieldTable : _fieldTables) {
+            if (fieldTable.isEditableDisplay(TargetMode.EDIT)) {
+                // get the type of the table object
+                final List<EventDefinition> events = fieldTable.getEvents(EventType.UI_TABLE_EVALUATE);
+                if (events.size() > 0) {
+                    final EventDefinition event = events.get(0);
+                    final String expand = event.getProperty("Expand");
+                    final String[] typeatt = expand.split("\\\\");
+                    final String typeStr = typeatt[0];
+                    final Type type = Type.get(typeStr);
+                    final String conattr = typeatt[1];
+
+                    int i = 0;
+                    boolean more = true;
+                    boolean first = true;
+                    while (more && rowiter.hasNext()) {
+                        RowUpdate row = null;
+                        if (!first) {
+                            row = rowiter.next();
+                            row.setIndex(i);
+                            row.setType(type);
+                            row.setExpand(expand);
+                            row.setLinkAttrName(conattr);
+                        }
+                        for (final Field field : fieldTable.getTargetTable().getFields()) {
+                            final String attrName = field.getAttribute();
+                            if (attrName != null && field.isEditableDisplay(TargetMode.EDIT)) {
+                                final String[] values = _parameter.getParameterValues(field.getName());
+                                if (values.length > i) {
+                                    if (first) {
+                                        row = rowiter.next();
+                                        row.setIndex(i);
+                                        row.setType(type);
+                                        row.setExpand(expand);
+                                        row.setLinkAttrName(conattr);
+                                        first = false;
+                                    }
+                                    row.addValue(attrName, values[i]);
+                                } else {
+                                    more = false;
+                                    break;
+                                }
+                            }
+                        }
+                        i++;
+                    }
+                }
+            }
+
+        }
+        return rows;
+    }
+
+    public class RowUpdate
+    {
+        /**
+         * Id of this row.
+         */
+        private final String rowId;
+
+        /**
+         * index of this row.
+         */
+        private int index;
+
+        /**
+         * Type for this row.
+         */
+        private Type type;
+
+        /**
+         * Values in this row.
+         */
+        private final Set<String[]> values = new HashSet<String[]>();
+
+        /**
+         * Expand.
+         */
+        private String expand;
+
+        /**
+         * Name of the link attribute.
+         */
+        private String linkAttrName;
+
+        /**
+         * @param _rowId id of the row
+         */
+        public RowUpdate(final String _rowId)
+        {
+            this.rowId = _rowId;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #rowId}.
+         *
+         * @return value of instance variable {@link #rowId}
+         */
+        public String getRowId()
+        {
+            return this.rowId;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #index}.
+         *
+         * @return value of instance variable {@link #index}
+         */
+        public int getIndex()
+        {
+            return this.index;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #type}.
+         *
+         * @return value of instance variable {@link #type}
+         */
+        public Type getType()
+        {
+            return this.type;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #values}.
+         *
+         * @return value of instance variable {@link #values}
+         */
+        public Set<String[]> getValues()
+        {
+            return this.values;
+        }
+
+        /**
+         * @param _attrName name of the attribute
+         * @param _value    value
+         */
+        public void addValue(final String _attrName,
+                             final String _value)
+        {
+            this.values.add(new String[] { _attrName, _value });
+        }
+
+        /**
+         * Setter method for instance variable {@link #type}.
+         *
+         * @param _type value for instance variable {@link #type}
+         */
+        public void setType(final Type _type)
+        {
+            this.type = _type;
+        }
+
+        /**
+         * Setter method for instance variable {@link #index}.
+         *
+         * @param _index value for instance variable {@link #index}
+         */
+        public void setIndex(final int _index)
+        {
+            this.index = _index;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #expand}.
+         *
+         * @return value of instance variable {@link #expand}
+         */
+        public String getExpand()
+        {
+            return this.expand;
+        }
+
+        /**
+         * Setter method for instance variable {@link #expand}.
+         *
+         * @param _expand value for instance variable {@link #expand}
+         */
+        public void setExpand(final String _expand)
+        {
+            this.expand = _expand;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #linkAttrName}.
+         *
+         * @return value of instance variable {@link #linkAttrName}
+         */
+        public String getLinkAttrName()
+        {
+            return this.linkAttrName;
+        }
+
+        /**
+         * Setter method for instance variable {@link #linkAttrName}.
+         *
+         * @param _linkAttrName value for instance variable {@link #linkAttrName}
+         */
+
+        public void setLinkAttrName(final String _linkAttrName)
+        {
+            this.linkAttrName = _linkAttrName;
+        }
+    }
+
 }
