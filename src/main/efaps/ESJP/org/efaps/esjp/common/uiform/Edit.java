@@ -137,7 +137,7 @@ public class Edit
         for (final Field field : _form.getFields()) {
             if (field instanceof FieldSet) {
                 fieldsets.add((FieldSet) field);
-            } else if (field instanceof FieldTable) {
+            } else if (field instanceof FieldTable && field.isEditableDisplay(TargetMode.EDIT)) {
                 fieldTables.add((FieldTable) field);
             } else if (field instanceof FieldClassification) {
                 ret = ((FieldClassification) field).getClassificationName();
