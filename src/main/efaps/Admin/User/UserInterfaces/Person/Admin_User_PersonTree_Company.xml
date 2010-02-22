@@ -27,28 +27,28 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>294c3449-3ff9-401f-9fb6-c09a3a0bac0e</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>294c3449-3ff9-401f-9fb6-c09a3a0bac0e</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_User_PersonTree_Company</name>
-    <!-- target definitions -->
-    <access>
-      <role>Administration</role>
-    </access>
-    <target>
-      <menu>Admin_User_PersonTree_Company_Menu</menu>
-      <table>Admin_User_AbstractTable</table>
-      <evaluate program="org.efaps.esjp.common.uitable.QueryExpand">
-        <property name="Expand">Admin_User_Person2Company\UserLink.CompanyLink</property>
-      </evaluate>
-    </target>
-    <!-- properties -->
-    <property name="Target">content</property>
-    <property name="TargetMode">view</property>
-    <property name="TargetShowCheckBoxes">true</property>
-  </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_User_PersonTree_Company</name>
+        <!-- target definitions -->
+        <access>
+            <role>Administration</role>
+        </access>
+        <target>
+            <menu>Admin_User_PersonTree_Company_Menu</menu>
+            <table>Admin_User2User_AbstractTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Expand">Admin_User_Person2Company\UserLink</property>
+            </evaluate>
+        </target>
+        <!-- properties -->
+        <property name="Target">content</property>
+        <property name="TargetMode">view</property>
+        <property name="TargetShowCheckBoxes">true</property>
+    </definition>
 
 </ui-command>

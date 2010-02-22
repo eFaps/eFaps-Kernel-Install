@@ -202,7 +202,7 @@
         </field>
         <field name="rolestable" character="Target">
             <table>Admin_User_AbstractTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.QueryExpand">
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Expand">Admin_User_Person2Role\UserFromLink.UserToLink</property>
             </evaluate>
         </field>
@@ -214,7 +214,7 @@
         </field>
         <field name="companietable" character="Target">
             <table>Admin_User_AbstractTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.QueryExpand">
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Expand">Admin_User_Person2Company\UserLink.CompanyLink</property>
             </evaluate>
         </field>

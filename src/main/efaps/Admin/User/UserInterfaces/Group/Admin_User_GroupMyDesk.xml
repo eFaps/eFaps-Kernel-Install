@@ -44,7 +44,7 @@
     <target>
       <menu>Admin_User_GroupMyDesk_Menu</menu>
       <table>Admin_User_AbstractTable</table>
-      <evaluate program="org.efaps.esjp.common.uitable.QueryEvaluate">
+      <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
         <property name="Types">Admin_User_Group</property>
       </evaluate>
     </target>

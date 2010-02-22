@@ -39,7 +39,7 @@
     <target>
       <form>Admin_User_AbstractForm</form>
       <table>Admin_User_AbstractTable</table>
-      <evaluate program="org.efaps.esjp.common.uisearch.QuerySearch">
+      <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
         <property name="Types">Admin_User_Company</property>
       </evaluate>
     </target>
