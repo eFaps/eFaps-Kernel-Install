@@ -26,17 +26,42 @@
 <import xmlns="http://www.efaps.org/xsd"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <object type="Admin_User_Person2Role">
-    <linkattribute name="UserFromLink" type="Admin_User_Person">
-      <queryattribute name="Name">Administrator</queryattribute>
-    </linkattribute>
+    <object type="Admin_User_JAASKey">
+        <attribute name="Key">DF_Admin</attribute>
+        <linkattribute name="UserLink" type="Admin_User_Role">
+            <queryattribute name="Name">DF_Admin</queryattribute>
+        </linkattribute>
+        <linkattribute name="JAASSystemLink" type="Admin_User_JAASSystem">
+            <queryattribute name="Name">eFaps</queryattribute>
+        </linkattribute>
+    </object>
 
-    <linkattribute name="UserToLink" type="Admin_User_Role">
-      <queryattribute name="Name">Common_Main_PwdChg</queryattribute>
-    </linkattribute>
 
-    <linkattribute name="UserJAASSystem" type="Admin_User_JAASSystem">
-      <queryattribute name="Name">eFaps</queryattribute>
-    </linkattribute>
-  </object>
+    <object type="Admin_User_Person2Role">
+        <linkattribute name="UserFromLink" type="Admin_User_Person">
+            <queryattribute name="Name">Administrator</queryattribute>
+        </linkattribute>
+
+        <linkattribute name="UserToLink" type="Admin_User_Role">
+            <queryattribute name="Name">Common_Main_PwdChg</queryattribute>
+        </linkattribute>
+
+        <linkattribute name="UserJAASSystem" type="Admin_User_JAASSystem">
+            <queryattribute name="Name">eFaps</queryattribute>
+        </linkattribute>
+    </object>
+    <object type="Admin_User_Person2Role">
+        <linkattribute name="UserFromLink" type="Admin_User_Person">
+            <queryattribute name="Name">Administrator</queryattribute>
+        </linkattribute>
+
+        <linkattribute name="UserToLink" type="Admin_User_Role">
+            <queryattribute name="Name">Admin_REST</queryattribute>
+        </linkattribute>
+
+        <linkattribute name="UserJAASSystem" type="Admin_User_JAASSystem">
+            <queryattribute name="Name">eFaps</queryattribute>
+        </linkattribute>
+    </object>
+
 </import>
