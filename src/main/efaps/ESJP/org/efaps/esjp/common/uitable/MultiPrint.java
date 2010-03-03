@@ -198,21 +198,9 @@ public class MultiPrint
                 DateTime dateFrom = null;
                 DateTime dateTo = null;
                 if ((from == null) || (to == null)) {
-                    if ("today".equalsIgnoreCase(_field.getFilterDefault())) {
-                        dateFrom = DateTimeUtil.translateFromUI(new DateTime())
-                                               .toDateMidnight().toDateTime().plusSeconds(1);
-                        dateTo = dateFrom.plusDays(1).minusSeconds(1);
-                    } else if ("week".equalsIgnoreCase(_field.getFilterDefault())) {
-                        DateMidnight tmp = DateTimeUtil.translateFromUI(new DateTime()).toDateMidnight();
-                        tmp = tmp.minusDays(tmp.getDayOfWeek() - 1);
-                        dateFrom = tmp.toDateTime().plusSeconds(1);
-                        dateTo = tmp.toDateTime().plusWeeks(1).minusSeconds(1);
-                    } else if ("month".equalsIgnoreCase(_field.getFilterDefault())) {
-                        DateMidnight tmp = DateTimeUtil.translateFromUI(new DateTime()).toDateMidnight();
-                        tmp = tmp.minusDays(tmp.getDayOfMonth() - 1);
-                        dateFrom = tmp.toDateTime().plusSeconds(1);
-                        dateTo = tmp.toDateTime().plusMonths(1).minusSeconds(1);
-                    }
+                    final DateTime[] dates = getFromTo(_field);
+                    dateFrom = dates[0];
+                    dateTo = dates[1];
                 } else {
                     dateFrom = DateTimeUtil.translateFromUI(from).plusSeconds(1);
                     dateTo = DateTimeUtil.translateFromUI(to).plusDays(1).minusSeconds(1);
@@ -256,21 +244,9 @@ public class MultiPrint
                 DateTime dateFrom = null;
                 DateTime dateTo = null;
                 if (from == null || to == null) {
-                    if ("today".equalsIgnoreCase(_field.getFilterDefault())) {
-                        dateFrom = DateTimeUtil.translateFromUI(new DateTime())
-                                               .toDateMidnight().toDateTime().minusSeconds(1);
-                        dateTo = dateFrom.plusDays(1).plusSeconds(1);
-                    } else if ("week".equalsIgnoreCase(_field.getFilterDefault())) {
-                        DateMidnight tmp = DateTimeUtil.translateFromUI(new DateTime()).toDateMidnight();
-                        tmp = tmp.minusDays(tmp.getDayOfWeek() - 1);
-                        dateFrom = tmp.toDateTime().minusSeconds(1);
-                        dateTo = tmp.toDateTime().plusWeeks(1);
-                    } else if ("month".equalsIgnoreCase(_field.getFilterDefault())) {
-                        DateMidnight tmp = DateTimeUtil.translateFromUI(new DateTime()).toDateMidnight();
-                        tmp = tmp.minusDays(tmp.getDayOfMonth() - 1);
-                        dateFrom = tmp.toDateTime().minusSeconds(1);
-                        dateTo = tmp.toDateTime().plusMonths(1);
-                    }
+                    final DateTime[] dates = getFromTo(_field);
+                    dateFrom = dates[0];
+                    dateTo = dates[1];
                 } else {
                     dateFrom = DateTimeUtil.translateFromUI(from).minusSeconds(1);
                     dateTo = DateTimeUtil.translateFromUI(to).plusDays(1);
@@ -280,5 +256,36 @@ public class MultiPrint
             }
         }
         return ret;
+    }
+
+    protected DateTime[] getFromTo(final Field _field) {
+        final String filter = _field.getFilterDefault();
+        final String[] parts = filter.split(":");
+        final String range = parts[0];
+        final int sub = parts.length > 1 ? Integer.parseInt(parts[1]) : 0;
+        DateTime dateFrom = new DateTime();
+        DateTime dateTo = new DateTime();
+        if ("today".equalsIgnoreCase(range)) {
+            final DateMidnight tmp = DateTimeUtil.translateFromUI(new DateTime()).toDateMidnight();
+            dateFrom = tmp.toDateTime().minusDays(sub).minusSeconds(1);
+            dateTo = dateFrom.plusDays(1).plusSeconds(1);
+        } else if ("week".equalsIgnoreCase(range)) {
+            DateMidnight tmp = DateTimeUtil.translateFromUI(new DateTime()).toDateMidnight();
+            tmp = tmp.minusDays(tmp.getDayOfWeek() - 1);
+            dateFrom = tmp.toDateTime().minusWeeks(sub).minusSeconds(1);
+            dateTo = tmp.toDateTime().plusWeeks(1);
+        } else if ("month".equalsIgnoreCase(range)) {
+            DateMidnight tmp = DateTimeUtil.translateFromUI(new DateTime()).toDateMidnight();
+            tmp = tmp.minusDays(tmp.getDayOfMonth() - 1);
+            dateFrom = tmp.toDateTime().minusMonths(sub).minusSeconds(1);
+            dateTo = tmp.toDateTime().plusMonths(1);
+        } else if ("year".equalsIgnoreCase(range)) {
+            DateMidnight tmp = DateTimeUtil.translateFromUI(new DateTime()).toDateMidnight();
+            tmp = tmp.minusDays(tmp.getDayOfYear() - 1);
+            dateFrom = tmp.toDateTime().minusYears(sub).minusSeconds(1);
+            dateTo = tmp.toDateTime().plusYears(1);
+        }
+
+        return new DateTime[]{dateFrom, dateTo};
     }
 }
