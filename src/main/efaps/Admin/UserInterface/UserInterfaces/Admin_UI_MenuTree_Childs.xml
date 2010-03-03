@@ -28,25 +28,25 @@
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
   <uuid>c45b5b98-484c-4b89-be2f-172c8d9865dd</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_UI_MenuTree_Childs</name>
-    <!-- target definitions -->
-    <target>
-      <menu>Admin_UI_MenuTree_Childs_Menu</menu>
-      <table>Admin_UI_Menu_Childs</table>
-      <evaluate program="org.efaps.esjp.common.uitable.QueryExpand">
-        <property name="Expand">Admin_UI_Menu2Command\FromMenu.ToCommand</property>
-      </evaluate>
-    </target>
-    <!-- properties -->
-    <property name="Target">content</property>
-    <property name="TargetMode">view</property>
-    <property name="TargetShowCheckBoxes">true</property>
-    <property name="TargetTableSortKey">sortid</property>
-  </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_UI_MenuTree_Childs</name>
+        <!-- target definitions -->
+        <target>
+            <menu>Admin_UI_MenuTree_Childs_Menu</menu>
+            <table>Admin_UI_Menu_Childs</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Expand">Admin_UI_Menu2Command\FromMenu</property>
+            </evaluate>
+        </target>
+        <!-- properties -->
+        <property name="Target">content</property>
+        <property name="TargetMode">view</property>
+        <property name="TargetShowCheckBoxes">true</property>
+        <property name="TargetTableSortKey">sortid</property>
+    </definition>
 
 </ui-command>
