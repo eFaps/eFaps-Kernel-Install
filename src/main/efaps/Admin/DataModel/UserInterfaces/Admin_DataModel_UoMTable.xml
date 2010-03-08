@@ -27,35 +27,35 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>11f76e3f-cfbb-4d74-9cd9-c2b619dc70be</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>11f76e3f-cfbb-4d74-9cd9-c2b619dc70be</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_DataModel_UoMTable</name>
-    <!-- fields -->
-    <field name="name">
-      <property name="Expression">Name</property>
-      <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-      <property name="Label">Admin_DataModel_UoM/Name.Label</property>
-      <property name="ShowTypeIcon">true</property>
-    </field>
-    <field name="numerator">
-      <property name="Expression">Numerator</property>
-      <property name="Label">Admin_DataModel_UoM/Numerator.Label</property>
-    </field>
-    <field name="denominator">
-      <property name="Expression">Denominator</property>
-      <property name="Label">Admin_DataModel_UoM/Denominator.Label</property>
-    </field>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_DataModel_UoMTable</name>
+        <!-- fields -->
+        <field name="name">
+            <property name="Attribute">Name</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Admin_DataModel_UoM/Name.Label</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="numerator">
+            <property name="Attribute">Numerator</property>
+            <property name="Label">Admin_DataModel_UoM/Numerator.Label</property>
+        </field>
+        <field name="denominator">
+            <property name="Attribute">Denominator</property>
+            <property name="Label">Admin_DataModel_UoM/Denominator.Label</property>
+        </field>
         <field name="buttonOpenInNewWindow">
-      <icon>eFapsActionNewWindow</icon>
-      <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-      <property name="Target">popup</property>
-      <property name="SortAble">false</property>
-      <property name="Width">15px</property>
-    </field>
-  </definition>
+            <icon>eFapsActionNewWindow</icon>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Target">popup</property>
+            <property name="SortAble">false</property>
+            <property name="Width">15px</property>
+        </field>
+    </definition>
 
 </ui-table>
