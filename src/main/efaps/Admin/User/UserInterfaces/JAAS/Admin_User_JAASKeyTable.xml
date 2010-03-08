@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2010 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          tmo
+ Author:          The eFaps Team
  Revision:        $Rev$
  Last Changed:    $Date$
  Last Changed By: $Author$
@@ -27,42 +27,32 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>791a9b49-232d-4f84-93c7-704a52335c16</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>791a9b49-232d-4f84-93c7-704a52335c16</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_User_JAASKeyTable</name>
-    <!-- fields -->
-    <field name="userlink">
-      <property name="AlternateOID">UserLink.OID</property>
-      <property name="Expression">UserLink.Name</property>
-      <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-      <property name="Label">Admin_User_JAASKey/UserLink.Label</property>
-      <property name="ShowTypeIcon">true</property>
-    </field>
-    <field name="jaassystemlink">
-      <property name="AlternateOID">JAASSystemLink.OID</property>
-      <property name="Expression">JAASSystemLink.Name</property>
-      <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-      <property name="Label">Admin_User_JAASKey/JAASSystemLink.Label</property>
-      <property name="ShowTypeIcon">true</property>
-    </field>
-    <field name="key">
-      <property name="AlternateOID">Key.OID</property>
-      <property name="Expression">Key</property>
-      <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-      <property name="Label">Admin_User_JAASKey/Key.Label</property>
-      <property name="ShowTypeIcon">true</property>
-    </field>
-    <field name="buttonOpenInNewWindow">
-      <icon>eFapsActionNewWindow</icon>
-      <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-      <property name="Target">popup</property>
-      <property name="SortAble">false</property>
-      <property name="Width">15px</property>
-    </field>
-  </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_User_JAASKeyTable</name>
+        <!-- fields -->
+        <field name="userlink">
+            <property name="SelectAlternateOID">linkto[UserLink].oid</property>
+            <property name="Select">linkto[UserLink].attribute[Name]</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Admin_User_JAASKey/UserLink.Label</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="jaassystemlink">
+            <property name="SelectAlternateOID">linkto[JAASSystemLink].oid</property>
+            <property name="Select">linkto[JAASSystemLink].attribute[Name]</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Admin_User_JAASKey/JAASSystemLink.Label</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="key">
+            <property name="Attribute">Key</property>
+            <property name="Label">Admin_User_JAASKey/Key.Label</property>
+        </field>
+    </definition>
 
 </ui-table>
