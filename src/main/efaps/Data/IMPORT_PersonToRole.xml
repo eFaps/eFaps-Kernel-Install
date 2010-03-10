@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-  Copyright 2003 - 2009 The eFaps Team
+  Copyright 2003 - 2010 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -26,16 +26,6 @@
 <import xmlns="http://www.efaps.org/xsd"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <object type="Admin_User_JAASKey">
-        <attribute name="Key">DF_Admin</attribute>
-        <linkattribute name="UserLink" type="Admin_User_Role">
-            <queryattribute name="Name">DF_Admin</queryattribute>
-        </linkattribute>
-        <linkattribute name="JAASSystemLink" type="Admin_User_JAASSystem">
-            <queryattribute name="Name">eFaps</queryattribute>
-        </linkattribute>
-    </object>
-
 
     <object type="Admin_User_Person2Role">
         <linkattribute name="UserFromLink" type="Admin_User_Person">
