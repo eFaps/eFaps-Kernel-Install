@@ -82,7 +82,16 @@ public class StatusValue implements EventExecution
 
 
     /**
-     * Method to set the Status for an Instance.
+     * Method to set the Status for an Instance.<br>
+     *
+     * <pre>
+     * <code>
+     *  &lt;execute program=&quot;org.efaps.esjp.admin.datamodel.StatusValue&quot; method=&quot;setStatus&quot;&gt;
+     *      &lt;property name=&quot;Status&quot;&gt;Open&lt;/property&gt;
+     *  &lt;/execute&gt;
+     *  <br>
+     * </code>
+     * </pre>
      * @param _parameter parameter as defined by the efaps api
      * @return empty Return
      * @throws EFapsException on error
