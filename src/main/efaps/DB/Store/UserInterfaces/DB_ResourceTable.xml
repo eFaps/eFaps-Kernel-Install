@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2010 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -27,24 +27,24 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>591dcf94-5963-4f52-a69e-d4411fadd097</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>591dcf94-5963-4f52-a69e-d4411fadd097</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>DB_ResourceTable</name>
-    <!-- fields -->
-    <field name="type">
-      <property name="Expression">Type</property>
-      <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-      <property name="Label">DB_Resource/Type.Label</property>
-      <property name="ShowTypeIcon">true</property>
-    </field>
-    <field name="name">
-      <property name="Expression">Name</property>
-      <property name="Label">DB_Resource/Name.Label</property>
-    </field>
-   </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>DB_ResourceTable</name>
+        <!-- fields -->
+        <field name="type">
+            <property name="Attribute">Type</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">DB_Resource/Type.Label</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="name">
+            <property name="Attribute">Name</property>
+            <property name="Label">DB_Resource/Name.Label</property>
+        </field>
+    </definition>
 
 </ui-table>

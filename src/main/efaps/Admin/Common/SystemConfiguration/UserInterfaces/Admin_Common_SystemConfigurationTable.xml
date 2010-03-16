@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2010 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -27,24 +27,24 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>ffd4f060-3984-444c-8647-5207a60af44c</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>ffd4f060-3984-444c-8647-5207a60af44c</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_Common_SystemConfigurationTable</name>
-    <!-- fields -->
-    <field name="name">
-      <property name="Expression">Name</property>
-      <property name="Label">Admin_Common_SystemConfiguration/Name.Label</property>
-      <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-      <property name="ShowTypeIcon">true</property>
-    </field>
-    <field name="uuid">
-      <property name="Expression">UUID</property>
-      <property name="Label">Admin_Common_SystemConfiguration/UUID.Label</property>
-    </field>
-  </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_Common_SystemConfigurationTable</name>
+        <!-- fields -->
+        <field name="name">
+            <property name="Attribute">Name</property>
+            <property name="Label">Admin_Common_SystemConfiguration/Name.Label</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="uuid">
+            <property name="Attribute">UUID</property>
+            <property name="Label">Admin_Common_SystemConfiguration/UUID.Label</property>
+        </field>
+    </definition>
 
 </ui-table>

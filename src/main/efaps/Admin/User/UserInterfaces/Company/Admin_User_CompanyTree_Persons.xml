@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2010 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -27,25 +27,25 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>99eeaf1b-ff06-467d-8a39-66b4aaafb660</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>99eeaf1b-ff06-467d-8a39-66b4aaafb660</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_User_CompanyTree_Persons</name>
-    <!-- target definitions -->
-    <target>
-      <menu>Admin_User_CompanyTree_Persons_Menu</menu>
-      <table>Admin_User_PersonTable</table>
-      <evaluate program="org.efaps.esjp.common.uitable.QueryExpand">
-        <property name="Expand">Admin_User_Person2Company\CompanyLink.UserLink</property>
-      </evaluate>
-    </target>
-    <!-- properties -->
-    <property name="Target">content</property>
-    <property name="TargetMode">view</property>
-    <property name="TargetShowCheckBoxes">true</property>
-  </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_User_CompanyTree_Persons</name>
+        <!-- target definitions -->
+        <target>
+            <menu>Admin_User_CompanyTree_Persons_Menu</menu>
+            <table>Admin_User_PersonTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Expand">Admin_User_Person2Company\CompanyLink.UserLink</property>
+            </evaluate>
+        </target>
+        <!-- properties -->
+        <property name="Target">content</property>
+        <property name="TargetMode">view</property>
+        <property name="TargetShowCheckBoxes">true</property>
+    </definition>
 
 </ui-command>

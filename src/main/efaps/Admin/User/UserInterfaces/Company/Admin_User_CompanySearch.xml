@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2010 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -27,24 +27,24 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>3ef6d851-f8c8-464a-b8d6-52f1a1d3401d</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>3ef6d851-f8c8-464a-b8d6-52f1a1d3401d</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_User_CompanySearch</name>
-    <icon>Admin_User_CompanyImage</icon>
-    <!-- target definitions -->
-    <target>
-      <form>Admin_User_AbstractForm</form>
-      <table>Admin_User_AbstractTable</table>
-      <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-        <property name="Types">Admin_User_Company</property>
-      </evaluate>
-    </target>
-    <!-- properties -->
-    <property name="TargetMode">search</property>
-  </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_User_CompanySearch</name>
+        <icon>Admin_User_CompanyImage</icon>
+        <!-- target definitions -->
+        <target>
+            <form>Admin_User_AbstractForm</form>
+            <table>Admin_User_AbstractTable</table>
+            <evaluate program="org.efaps.esjp.common.uisearch.Search">
+                <property name="Types">Admin_User_Company</property>
+            </evaluate>
+        </target>
+        <!-- properties -->
+        <property name="TargetMode">search</property>
+    </definition>
 
 </ui-command>

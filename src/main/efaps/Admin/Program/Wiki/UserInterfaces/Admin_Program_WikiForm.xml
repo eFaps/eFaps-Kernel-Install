@@ -81,42 +81,49 @@
             <property name="ModeSearch">EDITABLE</property>
         </field>
         <field name="wiki">
+            <property name="ModeEdit">NONE</property>
             <property name="Label">Admin_Program_WikiForm.wiki.Label</property>
             <trigger name="Admin_Program_WikiForm.css.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE"
-                program="org.efaps.esjp.admin.program.FormatOutput"
-                method="wiki" />
+                     event="UI_FIELD_VALUE"
+                     program="org.efaps.esjp.admin.program.FormatOutput"
+                     method="wiki" />
         </field>
         <field name="compiledheader" character="Heading">
+            <property name="ModeEdit">NONE</property>
             <property name="Level">1</property>
             <property name="Label">Admin_Program_WikiForm.compiledheader.Heading</property>
         </field>
         <field name="compiledtable" character="Target">
+            <property name="ModeEdit">NONE</property>
             <table>Admin_Program_JavaClassTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.QueryExpand">
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Expand">Admin_Program_WikiCompiled\ProgramLink</property>
             </evaluate>
         </field>
         <field name="linkheader" character="Heading">
+            <property name="ModeEdit">NONE</property>
             <property name="Level">1</property>
             <property name="Label">Admin_Program_WikiForm.linkheader.Heading</property>
         </field>
         <field name="extendtable" character="Target">
+            <property name="ModeEdit">NONE</property>
             <table>Admin_Program_AbstractTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.QueryExpand">
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Expand">Admin_Program_Wiki2Wiki\From.To</property>
             </evaluate>
         </field>
         <field name="htmlheader" character="Heading">
+            <property name="ModeEdit">NONE</property>
             <property name="Level">1</property>
             <property name="Label">Admin_Program_WikiForm.htmlheader.Heading</property>
         </field>
         <field name="wikiHtml">
+            <property name="ModeEdit">NONE</property>
             <property name="Label">Admin_Program_WikiForm.wikiHtml.Label</property>
             <trigger name="Admin_Program_WikiForm.css.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE"
-                program="org.efaps.esjp.admin.program.FormatOutput"
-                method="wikiHtml" />
+                     event="UI_FIELD_VALUE"
+                     program="org.efaps.esjp.admin.program.FormatOutput"
+                     method="wikiHtml" />
         </field>
     </definition>
 </ui-form>

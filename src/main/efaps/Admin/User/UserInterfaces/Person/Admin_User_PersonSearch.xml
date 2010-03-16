@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2010 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          tmo
+ Author:          The eFaps Team
  Revision:        $Rev$
  Last Changed:    $Date$
  Last Changed By: $Author$
@@ -27,24 +27,24 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>18183952-a803-41e8-970c-295b350b4ce3</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>18183952-a803-41e8-970c-295b350b4ce3</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_User_PersonSearch</name>
-    <icon>Admin_User_PersonImage</icon>
-    <!-- target definitions -->
-    <target>
-      <form>Admin_User_PersonForm</form>
-      <table>Admin_User_PersonTable</table>
-      <evaluate program="org.efaps.esjp.common.uisearch.QuerySearch">
-        <property name="Types">Admin_User_Person</property>
-      </evaluate>
-    </target>
-    <!-- properties -->
-    <property name="TargetMode">search</property>
-  </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_User_PersonSearch</name>
+        <icon>Admin_User_PersonImage</icon>
+        <!-- target definitions -->
+        <target>
+            <form>Admin_User_PersonForm</form>
+            <table>Admin_User_PersonTable</table>
+            <evaluate program="org.efaps.esjp.common.uisearch.Search">
+                <property name="Types">Admin_User_Person</property>
+            </evaluate>
+        </target>
+        <!-- properties -->
+        <property name="TargetMode">search</property>
+    </definition>
 
 </ui-command>

@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2010 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -27,38 +27,38 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>b82e4e4c-ce95-4f7f-9541-61893abb3763</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>b82e4e4c-ce95-4f7f-9541-61893abb3763</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_DataModel_DimensionTable</name>
-    <!-- fields -->
-    <field name="name">
-      <property name="Expression">Name</property>
-      <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-      <property name="Label">Admin_DataModel_Dimension/Name.Label</property>
-      <property name="ShowTypeIcon">true</property>
-    </field>
-    <field name="descr">
-      <property name="Expression">Description</property>
-      <property name="Label">Admin_DataModel_Dimension/Description.Label</property>
-    </field>
-    <field name="revision">
-      <property name="AlternateOID">BaseUoM.OID</property>
-      <property name="Expression">BaseUoM.Name</property>
-      <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-      <property name="Label">Admin_DataModel_Dimension/BaseUoM.Label</property>
-      <property name="ShowTypeIcon">true</property>
-    </field>
-    <field name="buttonOpenInNewWindow">
-      <icon>eFapsActionNewWindow</icon>
-      <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-      <property name="Target">popup</property>
-      <property name="SortAble">false</property>
-      <property name="Width">15px</property>
-    </field>
-  </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_DataModel_DimensionTable</name>
+        <!-- fields -->
+        <field name="name">
+            <property name="Attribute">Name</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Admin_DataModel_Dimension/Name.Label</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="descr">
+            <property name="Attribute">Description</property>
+            <property name="Label">Admin_DataModel_Dimension/Description.Label</property>
+        </field>
+        <field name="revision">
+            <property name="SelectAlternateOID">linkto[BaseUoM].oid</property>
+            <property name="Select">linkto[BaseUoM].attribute[Name]</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Admin_DataModel_Dimension/BaseUoM.Label</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="buttonOpenInNewWindow">
+            <icon>eFapsActionNewWindow</icon>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Target">popup</property>
+            <property name="SortAble">false</property>
+            <property name="Width">15px</property>
+        </field>
+    </definition>
 
 </ui-table>

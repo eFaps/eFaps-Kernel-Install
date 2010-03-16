@@ -27,42 +27,37 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>32adf71a-9cf3-4656-a6fb-ae5429e06d9a</uuid>
+    <uuid>1798a388-768b-4ceb-95ce-99498da44fb3</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_UI_LinkList4Links</name>
+        <name>Admin_Access_AccessSet2TypeTable</name>
         <!-- fields -->
-        <field name="type">
-            <property name="Attribute">Type</property>
-            <property name="Label">Admin_UI_LinkList/Type4Links.Label</property>
-            <property name="ShowTypeIcon">true</property>
-        </field>
-        <field name="totype">
-            <property name="SelectAlternateOID">linkto[To].oid</property>
-            <property name="Select">linkto[To].attribute[Type]</property>
-            <property name="Label">Admin_UI_LinkList/ToType.Label</property>
-            <property name="ShowTypeIcon">true</property>
-        </field>
-        <field name="toname">
-            <property name="SelectAlternateOID">linkto[To].oid</property>
-            <property name="Select">linkto[To].attribute[Name]</property>
+        <field name="name">
+            <property name="SelectAlternateOID">linkto[AccessTypeLink].oid</property>
+            <property name="Select">linkto[AccessTypeLink].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Admin_UI_LinkList/ToName.Label</property>
+            <property name="Label">Admin_Access_AccessType/Name.Label</property>
+            <property name="ShowTypeIcon">true</property>
+            <property name="ModeSearch">READONLY</property>
         </field>
-        <field name="touuid">
-            <property name="SelectAlternateOID">linkto[To].oid</property>
-            <property name="Select">linkto[To].attribute[UUID]</property>
-            <property name="Label">Admin_UI_LinkList/ToUUID.Label</property>
+        <field name="uuid">
+            <property name="Select">linkto[AccessTypeLink].attribute[UUID]</property>
+            <property name="Label">Admin_Access_AccessType/UUID.Label</property>
+            <property name="ModeSearch">READONLY</property>
+        </field>
+        <field name="revision">
+            <property name="Select">linkto[AccessTypeLink].attribute[Revision]</property>
+            <property name="Label">Admin_Access_AccessType/Revision.Label</property>
         </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
-            <property name="SelectAlternateOID">linkto[To].oid</property>
-            <property name="Select">linkto[To].attribute[OID]</property>
+            <property name="SelectAlternateOID">linkto[AccessTypeLink].oid</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Target">popup</property>
+            <property name="SortAble">false</property>
             <property name="Width">15px</property>
         </field>
     </definition>

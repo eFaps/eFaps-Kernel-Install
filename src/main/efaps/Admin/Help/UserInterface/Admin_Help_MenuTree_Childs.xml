@@ -35,9 +35,9 @@
         <!-- target definitions -->
         <target>
             <menu>Admin_Help_MenuTree_Childs_Menu</menu>
-            <table>Admin_UI_Menu_Childs</table>
-            <evaluate program="org.efaps.esjp.common.uitable.QueryExpand">
-                <property name="Expand">Admin_Help_Menu2Menu\FromLink.ToLink</property>
+            <table>Admin_Help_Menu2MenuTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Expand">Admin_Help_Menu2Menu\FromLink</property>
             </evaluate>
         </target>
         <!-- properties -->

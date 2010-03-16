@@ -38,7 +38,7 @@
             <execute program="org.efaps.esjp.common.uisearch.Connect">
                 <property name="ConnectChildAttribute">ToLink</property>
                 <property name="ConnectParentAttribute">FromLink</property>
-                <property name="ConnectType">Admin_Program_Wiki</property>
+                <property name="ConnectType">Admin_Help_Menu2Wiki</property>
             </execute>
         </target>
         <!-- properties -->
