@@ -17,9 +17,9 @@
   limitations under the License.
 
   Author:          The eFaps Team
-  Revision:        $Rev: 3190 $
-  Last Changed:    $Date: 2009-10-21 18:54:24 -0500 (Wed, 21 Oct 2009) $
-  Last Changed By: $Author: tim.moxter $
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
 
 -->
 
@@ -28,7 +28,7 @@
            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>2d142645-140d-46ad-af67-835161a8d732</uuid>
     <file-application>eFaps-Kernel</file-application>
-    <file-revision>$Rev: 3190 $</file-revision>
+    <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==4) || (version==latest)</version-expression>

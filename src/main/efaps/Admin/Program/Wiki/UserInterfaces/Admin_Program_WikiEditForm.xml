@@ -17,9 +17,9 @@
   limitations under the License.
 
   Author:          The eFaps Team
-  Revision:        $Rev: 3618 $
-  Last Changed:    $Date: 2010-01-13 08:48:38 -0500 (Wed, 13 Jan 2010) $
-  Last Changed By: $Author: jan.moxter $
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
 
 -->
 
@@ -27,7 +27,7 @@
   xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>fd8e742d-721c-4837-85c9-ef70551099a7</uuid>
     <file-application>eFaps-Kernel</file-application>
-    <file-revision>$Rev: 3618 $</file-revision>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Program_WikiEditForm</name>

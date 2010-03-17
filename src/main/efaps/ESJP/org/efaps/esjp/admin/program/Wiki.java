@@ -45,10 +45,10 @@ import org.efaps.wikiutil.parser.gwiki.javacc.ParseException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: $
+ * @version $Id$
  */
 @EFapsUUID("3bff1883-e01d-4843-be12-d72bb8e920c7")
-@EFapsRevision("$Rev: 3625 $")
+@EFapsRevision("$Rev$")
 public class Wiki
 {
 
