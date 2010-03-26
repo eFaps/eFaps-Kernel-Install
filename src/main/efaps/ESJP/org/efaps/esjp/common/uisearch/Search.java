@@ -21,11 +21,10 @@
 package org.efaps.esjp.common.uisearch;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Set;
 
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
@@ -40,6 +39,8 @@ import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.SearchQuery;
 import org.efaps.util.EFapsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author The eFaps Team
@@ -69,6 +70,14 @@ public class Search implements EventExecution
 
         final String types = (String) properties.get("Types");
 
+        final Set<String> ignoreFields = new HashSet<String>();
+        final String ignoreFieldsStr = (String) properties.get("IgnoreCase4Fields");
+        if (ignoreFieldsStr != null) {
+            final String[] ignore = ignoreFieldsStr.split(";");
+            for (final String ignoreField : ignore) {
+                ignoreFields.add(ignoreField);
+            }
+        }
         final boolean expandChildTypes = "true".equals(properties.get("ExpandChildTypes"));
 
         if (Search.LOG.isDebugEnabled()) {
@@ -82,7 +91,8 @@ public class Search implements EventExecution
             final String value = context.getParameter(field.getName());
             if ((value != null) && (value.length() > 0) && (!value.equals("*"))) {
                 query.addWhereExprMatchValue(field.getExpression() == null
-                                            ? field.getAttribute() : field.getExpression(), value);
+                                            ? field.getAttribute() : field.getExpression(), value)
+                                            .setIgnoreCase(ignoreFields.contains(field.getName()));
             }
         }
         query.addSelect("OID");
