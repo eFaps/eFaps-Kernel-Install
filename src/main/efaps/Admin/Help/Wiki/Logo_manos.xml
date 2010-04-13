@@ -33,7 +33,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>software-update.jpg</name>
-        <file>software-update.jpg</file>
+        <name>header2.gif</name>
+        <file>header2.gif</file>
     </definition>
 </wiki-image>

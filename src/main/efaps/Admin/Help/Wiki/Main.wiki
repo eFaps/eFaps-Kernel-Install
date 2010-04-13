@@ -4,15 +4,16 @@
 @eFapsRevision $Rev$
 </wiki:comment>
 
-#summary eFaps Default Page
+http://Logo_moxter-net.png
+http://page-bg.jpg
+http://header2.gif
+
+#summary INDICE
 <wiki:toc max_depth="3"/>
 
 ----
 
-= Introduction =
-
-This is the default Page for the eFaps included Wiki.
-
-eFaps is brought to you thanks to
-
-http://Logo_moxter-net.png
+ # PREFACIO
+ # COMENZANDO
+ # NAVEGANDO POR LA INTERFAZ DE USUARIO DE eFaps
+ # USANDO eFaps

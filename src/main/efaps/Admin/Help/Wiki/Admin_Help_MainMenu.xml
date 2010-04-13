@@ -38,6 +38,7 @@
         </target>
         <childs>
             <child>Admin_Help_AdminMenu</child>
+            <child>Admin_Help_CopyrightMenu</child>
         </childs>
     </definition>
 </help-menu>

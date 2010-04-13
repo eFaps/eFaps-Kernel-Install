@@ -34,6 +34,6 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Logo_moxter-net.png</name>
-        <file>logo_moxternet_small.png</file>
+        <file>header1.gif</file>
     </definition>
 </wiki-image>

@@ -1,0 +1,32 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki
+@eFapsUUID     068471d6-7d72-4013-bbb5-d43417555a62
+@eFapsRevision $Rev: 3826 $
+</wiki:comment>
+
+
+#summary Copyright 2003 - 2010
+<wiki:toc max_depth="3"/>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Author:          The eFaps Team
+Revision:        $Rev:1563 $
+Last Changed:    $Date:2007-10-28 15:07:41 +0100 (So, 28 Okt 2007) $
+Las organizaciones no gubernamentales (ONG) pueden copiar y distribuir este material libremente, siempre y cuando no lo vendan ni
+distribuyan con propósitos comerciales. Otros derechos de propiedad intelectual quedan reservados. Este manual se escribió con la ayuda del equipo eFaps protegido por copyright, 
+fundaciones. Para obtener más información, visite el sitio web del proyecto
+Martus en http://blog.efaps.org/
+El softwaeFaps ha sido desarrollado y se distribuye bajo una licencia libre o de código abierto. Para saber
+más y entender cómo usarlo legítimamente, por favor visite http://code.google.com/p/efaps. eFaps es una
+marca y servicio registrado de propiedad de Moxter.net. El registro formal está pendiente en Alemania y en el resto del mundo. Por favor, reconozca esta marca registrada usando el símbolo eFaps la primera vez
+que se refiera a eFaps en otros documentos. Moxter.net afirma tener derecho de propiedad a nivel mundial sobre la
+marca registrada eFaps para este conjunto particular de usos y servicios.
