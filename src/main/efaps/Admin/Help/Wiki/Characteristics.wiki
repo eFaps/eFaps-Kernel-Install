@@ -1,0 +1,14 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki
+@eFapsUUID     0cf9ce97-404a-4c04-b77f-8aadd0cbddd3
+@eFapsRevision $Rev: 3826 $
+</wiki:comment>
+
+
+
+#summary Características Esenciales
+<wiki:toc max_depth="3"/>
+
+----
+
+Características

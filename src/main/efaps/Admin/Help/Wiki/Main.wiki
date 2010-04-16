@@ -5,8 +5,7 @@
 </wiki:comment>
 
 http://Logo_moxter-net.png
-http://page-bg.jpg
-http://header2.gif
+
 
 #summary INDICE
 <wiki:toc max_depth="3"/>

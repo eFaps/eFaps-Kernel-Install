@@ -36,6 +36,11 @@
         <target>
             <wiki>org.efaps.wiki.Prefacio.wiki</wiki>
         </target>
-        <!-- childs -->
+        <childs>
+            <child>Admin_Help_CopyrightMenu</child>
+            <child>Admin_Help_AboutManualMenu</child>
+            <child>Admin_Help_Characteristics</child>
+            <child>Admin_Help_Documents</child>
+        </childs>
     </definition>
 </help-menu>

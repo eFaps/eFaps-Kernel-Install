@@ -4,16 +4,14 @@
 @eFapsRevision $Rev: 3826 $
 </wiki:comment>
 
-http://Logo_moxter-net.png
-http://page-bg.jpg
-http://header2.gif
+
 
 #summary PREFACIO
 <wiki:toc max_depth="3"/>
 
 ----
 
- # DERECHOS RESERVADOS
+ # COPYRIGHT
  # ACERCA DE ESTE DOCUMENTO
  # CARACTERÍSTICAS ESENCIALES
  # DOCUMENTOS RELACIONADOS
