@@ -33,7 +33,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>page-bg.jpg.xml</name>
-        <file>page-bg.jpg</file>
+        <name>software-update.jpg</name>
+        <file>software-update.jpg</file>
     </definition>
 </wiki-image>
