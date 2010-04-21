@@ -50,7 +50,7 @@
     </attribute>
     <attribute>
       <name>ID</name>
-      <type>Integer</type>
+      <type>Long</type>
       <sqltable>Admin_User_AttributeAbstractSQLTable</sqltable>
       <sqlcolumn>ID</sqlcolumn>
     </attribute>
