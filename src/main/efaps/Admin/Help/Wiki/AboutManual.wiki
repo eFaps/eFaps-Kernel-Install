@@ -10,5 +10,14 @@
 <wiki:toc max_depth="3"/>
 
 ----
+¡Bienvenidos al Sistema de Gestión Empresarial eFaps!
 
-Este manual
+
+ En este Manual de Usuario usted encontrará toda la información necesaria referente a la inicialización y uso de los módulos del sistema eFaps, de manera que usted esté informado para tomar decisiones acerca de la implementación integrada de los módulos, logrando con ello lograr la máxima eficiencia y potencialidad de su nuevo sistema eFaps. El manual de usuario de eFaps es entendido como una referencia para el usuario final y proporciona dirección respecto del uso y las características de eFaps desde una perspectiva funcional.
+
+Este documento explica:
+    * Como operar la interface de usuario.
+    * La función de cada pantalla.
+    * Como ejecutar los principales procesos de negocio..
+
+Los lectores no requieren ningún conocimiento de desarrollo de software ni de programación.

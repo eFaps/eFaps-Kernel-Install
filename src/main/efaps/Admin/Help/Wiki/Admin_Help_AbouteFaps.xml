@@ -17,31 +17,25 @@
   limitations under the License.
 
   Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
+  Revision:        $Rev: 3826 $
+  Last Changed:    $Date: 2010-03-17 13:12:03 -0500 (Wed, 17 Mar 2010) $
+  Last Changed By: $Author: Liz Zegarra Linares $
 
 -->
 
 <help-menu xmlns="http://www.efaps.org/xsd"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>58877264-9714-4cb8-b4a7-6e8e3613f1b9</uuid>
+    <uuid>4a2d697a-26b5-4c62-ac42-8fdd5245130a</uuid>
     <file-application>eFaps-Kernel</file-application>
-    <file-revision>$Rev$</file-revision>
+    <file-revision>$Rev: 3826 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Help_AdminMenu</name>
+        <name>Admin_Help_AbouteFaps</name>
         <!-- targets -->
         <target>
-            <wiki>org.efaps.wiki.Prefacio.wiki</wiki>
+            <wiki>org.efaps.wiki.AbouteFaps.wiki</wiki>
         </target>
-        <childs>
-            <child>Admin_Help_CopyrightMenu</child>
-            <child>Admin_Help_AbouteFaps</child>
-            <child>Admin_Help_AboutManualMenu</child>
-            <child>Admin_Help_Characteristics</child>
-            <child>Admin_Help_Documents</child>
-        </childs>
+        <!-- childs -->
     </definition>
 </help-menu>

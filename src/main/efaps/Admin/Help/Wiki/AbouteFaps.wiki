@@ -1,0 +1,15 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki
+@eFapsUUID     e90e0928-dcb7-42a2-b590-c4613a7a8b1e
+@eFapsRevision $Rev: 3826 $
+</wiki:comment>
+
+
+
+#summary Acerca de eFaps
+<wiki:toc max_depth="3"/>
+
+----
+¡Bienvenidos al Sistema de Gestión Empresarial eFaps!
+
+
