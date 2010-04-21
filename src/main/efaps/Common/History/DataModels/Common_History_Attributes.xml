@@ -42,7 +42,7 @@
     </attribute>
     <attribute>
       <name>ID</name>
-      <type>Integer</type>
+      <type>Long</type>
       <sqltable>Common_History_AttributesSQLTable</sqltable>
       <sqlcolumn>ID</sqlcolumn>
     </attribute>

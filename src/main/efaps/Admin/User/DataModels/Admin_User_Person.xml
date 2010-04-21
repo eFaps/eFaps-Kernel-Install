@@ -64,7 +64,7 @@
         </attribute>
         <attribute>
             <name>Language</name>
-            <type>Integer</type>
+            <type>Long</type>
             <sqltable>Admin_User_PersonSQLTable</sqltable>
             <sqlcolumn>LANG</sqlcolumn>
         </attribute>

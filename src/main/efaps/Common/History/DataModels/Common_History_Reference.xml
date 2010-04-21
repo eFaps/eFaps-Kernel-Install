@@ -44,7 +44,7 @@
     </attribute>
     <attribute>
       <name>ToID</name>
-      <type>Integer</type>
+      <type>Long</type>
       <sqltable>Common_History_ReferenceSQLTable</sqltable>
       <sqlcolumn>TOID</sqlcolumn>
     </attribute>

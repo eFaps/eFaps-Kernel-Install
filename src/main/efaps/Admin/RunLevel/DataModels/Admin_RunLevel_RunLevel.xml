@@ -61,7 +61,7 @@
     </attribute>
     <attribute>
       <name>Parent</name>
-      <type>Integer</type>
+      <type>Long</type>
       <sqltable>Admin_RunLevel_RunLevelSQLTable</sqltable>
       <sqlcolumn>PARENT</sqlcolumn>
     </attribute>

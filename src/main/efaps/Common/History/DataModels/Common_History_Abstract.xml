@@ -49,13 +49,13 @@
     </attribute>
     <attribute>
       <name>ID</name>
-      <type>Integer</type>
+      <type>Long</type>
       <sqltable>Common_History_AbstractSQLTable</sqltable>
       <sqlcolumn>ID</sqlcolumn>
     </attribute>
     <attribute>
       <name>ForID</name>
-      <type>Integer</type>
+      <type>Long</type>
       <sqltable>Common_History_AbstractSQLTable</sqltable>
       <sqlcolumn>FORID</sqlcolumn>
     </attribute>
