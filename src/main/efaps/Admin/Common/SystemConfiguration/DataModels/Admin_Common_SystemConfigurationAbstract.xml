@@ -48,7 +48,7 @@
     </attribute>
     <attribute>
       <name>ID</name>
-      <type>Integer</type>
+      <type>Long</type>
       <sqltable>Admin_Common_SystemConfigurationSQLTable</sqltable>
       <sqlcolumn>ID</sqlcolumn>
     </attribute>
