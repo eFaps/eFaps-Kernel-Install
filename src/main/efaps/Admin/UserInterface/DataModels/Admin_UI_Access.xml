@@ -43,7 +43,7 @@
     </attribute>
     <attribute>
       <name>ID</name>
-      <type>Integer</type>
+      <type>Long</type>
       <sqltable>Admin_UI_AccessSQLTable</sqltable>
       <sqlcolumn>ID</sqlcolumn>
     </attribute>
