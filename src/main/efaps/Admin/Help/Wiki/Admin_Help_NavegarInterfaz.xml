@@ -17,30 +17,28 @@
   limitations under the License.
 
   Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
+  Revision:        $Rev: 4224 $
+  Last Changed:    $Date: 2010-04-21 16:41:25 -0500 (Wed, 21 Apr 2010) $
+  Last Changed By: $Author: liz.y.zegarra $
 
 -->
 
 <help-menu xmlns="http://www.efaps.org/xsd"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>dead549e-5cc6-49f9-9a79-8e33aa139f6d</uuid>
+    <uuid>14979e84-9ddf-4367-a4d7-c4e6fac60405</uuid>
     <file-application>eFaps-Kernel</file-application>
-    <file-revision>$Rev$</file-revision>
+    <file-revision>$Rev: 4224 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Help_MainMenu</name>
+        <name>Admin_Help_NavegarInterfaz</name>
         <!-- targets -->
         <target>
-            <wiki>org.efaps.wiki.Main.wiki</wiki>
+            <wiki>org.efaps.wiki.Navegando.wiki</wiki>
         </target>
         <childs>
-            <child>Admin_Help_AdminMenu</child>
-            <child>Admin_Help_Comenzando</child>
-            <child>Admin_Help_NavegarInterfaz</child>
-            <child>Admin_Help_Usandoefaps</child>
+            <child>Admin_Help_Menu</child>
+            <child>Admin_Help_AreaTrabajo</child>
         </childs>
     </definition>
 </help-menu>
