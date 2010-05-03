@@ -25,7 +25,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.Map.Entry;
 
+import org.efaps.admin.datamodel.Attribute;
+import org.efaps.admin.datamodel.Type;
+import org.efaps.admin.datamodel.attributetype.StringType;
+import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -37,7 +43,8 @@ import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
-import org.efaps.db.SearchQuery;
+import org.efaps.db.InstanceQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,29 +90,86 @@ public class Search implements EventExecution
         if (Search.LOG.isDebugEnabled()) {
             Search.LOG.debug("types=" + types);
         }
+        final Type type = Type.get(types);
+        final QueryBuilder queryBldr = new QueryBuilder(type);
 
-        final SearchQuery query = new SearchQuery();
-        query.setQueryTypes(types);
-        query.setExpandChildTypes(expandChildTypes);
         for (final Field field : command.getTargetForm().getFields()) {
             final String value = context.getParameter(field.getName());
             if ((value != null) && (value.length() > 0) && (!value.equals("*"))) {
-                query.addWhereExprMatchValue(field.getExpression() == null
-                                            ? field.getAttribute() : field.getExpression(), value)
-                                            .setIgnoreCase(ignoreFields.contains(field.getName()));
+                if (type.getAttribute(field.getAttribute()) != null) {
+                    final Attribute attribute = type.getAttribute(field.getAttribute());
+                    if (attribute.getAttributeType().getDbAttrType() instanceof StringType) {
+                        queryBldr.addWhereAttrMatchValue(field.getAttribute(), value)
+                                        .setIgnoreCase(ignoreFields.contains(field.getName()));
+                    } else {
+                        queryBldr.addWhereAttrEqValue(field.getAttribute(), value);
+                    }
+                } else {
+                    queryBldr.addWhereAttrMatchValue(field.getExpression() == null
+                                                        ? field.getAttribute() : field.getExpression(), value)
+                                                        .setIgnoreCase(ignoreFields.contains(field.getName()));
+                }
             }
         }
-        query.addSelect("OID");
+        final InstanceQuery query = queryBldr.getQuery();
+        query.setIncludeChildTypes(expandChildTypes);
         query.execute();
 
         final List<Instance> instances = new ArrayList<Instance>();
         while (query.next()) {
-            final String oid = (String) query.get("OID");
-            if (oid != null) {
-                instances.add(Instance.get(oid));
+            if (query.getCurrentInstance().isValid()) {
+                instances.add(query.getCurrentInstance());
             }
         }
         ret.put(ReturnValues.VALUES, instances);
+        return ret;
+    }
+
+    /**
+     * Render a dropdown with the types.
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return Return containing HTML snipplet
+     */
+    public Return typeFieldValue(final Parameter _parameter)
+    {
+        final Return ret = new Return();
+        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final String typeStr = (String) properties.get("Types");
+        final Type type = Type.get(typeStr);
+
+        final Map<String, Long> values = new TreeMap<String, Long>();
+        final Set<Type> types = getChildTypes(type);
+        for (final Type atype : types) {
+            if (!atype.isAbstract()) {
+                values.put(atype.getLabel(), atype.getId());
+            }
+        }
+
+        final StringBuilder html = new StringBuilder();
+        html.append("<select size=\"1\" name=\"").append(fieldValue.getField().getName()).append("\">");
+        html.append("<option value=\"*\">*</option>");
+        for (final Entry<String, Long> value : values.entrySet()) {
+            html.append("<option value=\"").append(value.getValue()).append("\">").append(value.getKey())
+                .append("</option>");
+        }
+        html.append("</select>");
+        ret.put(ReturnValues.SNIPLETT, html.toString());
+        return ret;
+    }
+
+    /**
+     * Recursive method to get all types.
+     * @param _parent parent type
+     * @return all children
+     */
+    protected Set<Type> getChildTypes(final Type _parent)
+    {
+        final Set<Type> ret = new HashSet<Type>();
+        ret.add(_parent);
+        for (final Type child : _parent.getChildTypes()) {
+            ret.addAll(getChildTypes(child));
+        }
         return ret;
     }
 }
