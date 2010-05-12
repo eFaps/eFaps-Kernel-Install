@@ -139,7 +139,7 @@
             EFAPS_LOGGER.info("    Check if JAASKEY for Role ADMIN_REST must be imported");
             SearchQuery query4 = new SearchQuery();
             query4.setQueryTypes("Admin_User_JAASKey");
-            query4.addWhereExprEqValue("Key", "ADMIN_REST");
+            query4.addWhereExprEqValue("Key", "Admin_REST");
             query4.addSelect("OID");
             query4.execute();
             if (!query4.next()) {
