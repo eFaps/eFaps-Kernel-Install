@@ -28,14 +28,18 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JRDesignField;
 
 import org.efaps.admin.datamodel.Attribute;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.attributetype.FormatedStringType;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.db.SearchQuery;
 import org.efaps.util.EFapsException;
 
@@ -51,6 +55,11 @@ abstract class EFapsDataSource_Base implements JRDataSource
 {
 
     /**
+     * Field name.
+     */
+    public static final String OIDFIELDNAME = "eFaps_Field_4_Parent_2_Child_Relation";
+
+    /**
      * PrintQuery for this datasource.
      */
     private MultiPrintQuery print;
@@ -59,64 +68,105 @@ abstract class EFapsDataSource_Base implements JRDataSource
      * has this report a subreport? Used to return on the first call of
      * {@link #next()} true in all cases.
      */
-    private boolean subReport;
+    private boolean hasSubReport;
+
+    /**
+     * Is this datasource inside a subreport.
+     */
+    private boolean isSubDataSource = false;
+
+    /**
+     * Instance.
+     */
+    private Instance instance;
+
+    private JRDataSource parentSource;
+
+    private final List<String> selects = new ArrayList<String>();
+
+    private String expand;
+
+    private String typeName;
+
+    private boolean expandChild;
+
+    private boolean useInstance;
+
+    private Parameter parameter;
+
+    private JasperReport jasperReport;
 
     /**
      * Method to initialize this datasource.
      * @param _jasperReport jasperreport this datasource belongs to
      * @param _parameter    Parameter as passed to an esjp by eFaps
+     * @param _parentSource parent source
      * @throws EFapsException on error
      */
-    public void init(final JasperReport _jasperReport, final Parameter _parameter) throws EFapsException
+    public void init(final JasperReport _jasperReport,
+                     final Parameter _parameter,
+                     final JRDataSource _parentSource) throws EFapsException
     {
-        String typeName = null;
-        String expand = null;
-        boolean expandChild = false;
-        boolean useInstance = false;
-        for (final JRParameter para : _jasperReport.getMainDataset().getParameters()) {
+        this.parameter = _parameter;
+        this.jasperReport = _jasperReport;
+        for (final JRParameter para : this.jasperReport.getMainDataset().getParameters()) {
             if ("EFAPS_DEFINITION".equals(para.getName())) {
                 if (para.hasProperties()) {
-                    typeName  = para.getPropertiesMap().getProperty("Type");
-                    expand  = para.getPropertiesMap().getProperty("Expand");
-                    this.subReport = "true".equalsIgnoreCase(para.getPropertiesMap().getProperty("hasSubReport"));
-                    expandChild = "true".equalsIgnoreCase(para.getPropertiesMap().getProperty("expandChildTypes"));
-                    useInstance = "true".equalsIgnoreCase(para.getPropertiesMap().getProperty("Instance"));
+                    this.typeName  = para.getPropertiesMap().getProperty("Type");
+                    this.expand  = para.getPropertiesMap().getProperty("Expand");
+                    this.hasSubReport = "true".equalsIgnoreCase(para.getPropertiesMap().getProperty("hasSubReport"));
+                    this.expandChild = !"false".equalsIgnoreCase(para.getPropertiesMap()
+                                    .getProperty("expandChildTypes"));
+                    this.useInstance = "true".equalsIgnoreCase(para.getPropertiesMap().getProperty("Instance"));
+                    this.isSubDataSource = "true".equalsIgnoreCase(para.getPropertiesMap()
+                                    .getProperty("useInstanceFromParent"));
                 }
                 break;
             }
         }
-        final List<Instance> instances = new ArrayList<Instance>();
-        if (typeName != null) {
-            final SearchQuery query = new SearchQuery();
-            query.setQueryTypes(typeName);
-            query.setExpandChildTypes(expandChild);
-            query.addSelect("OID");
-            query.execute();
-            while (query.next()) {
-                instances.add(Instance.get((String) query.get("OID")));
+        this.parentSource = _parentSource;
+        try {
+            this.instance = this.parameter.getInstance();
+            if (this.isSubDataSource) {
+                this.instance = getParentInstance();
             }
-            query.close();
+            analyze();
+        } catch (final JRException e) {
+            throw new EFapsException(EFapsDataSource_Base.class, "init.JRException", e);
+        }
+    }
 
-        } else  if (expand != null) {
+    protected void analyze()
+        throws EFapsException
+    {
+        final List<Instance> instances = new ArrayList<Instance>();
+        if (this.typeName != null) {
+            final QueryBuilder queryBuilder = new QueryBuilder(Type.get(this.typeName));
+            final InstanceQuery query = queryBuilder.getQuery();
+            query.setIncludeChildTypes(this.expandChild);
+            query.execute();
+            instances.addAll(query.getInstances());
+        } else  if (this.expand != null) {
             final SearchQuery query = new SearchQuery();
-            query.setExpand(_parameter.getInstance(), expand);
-            query.setExpandChildTypes(expandChild);
+            query.setExpand(this.instance, this.expand);
+            query.setExpandChildTypes(this.expandChild);
             query.addSelect("OID");
             query.execute();
             while (query.next()) {
                 instances.add(Instance.get((String) query.get("OID")));
             }
             query.close();
-        } else if (useInstance) {
-            instances.add(_parameter.getInstance());
+        } else if (this.useInstance) {
+            instances.add(this.parameter.getInstance());
         }
         if (instances.size() > 0) {
             this.print = new MultiPrintQuery(instances);
-            if (_jasperReport.getMainDataset().getFields() != null) {
-                for (final JRField field : _jasperReport.getMainDataset().getFields()) {
+            if (this.jasperReport.getMainDataset().getFields() != null) {
+                for (final JRField field : this.jasperReport.getMainDataset().getFields()) {
                     final String select = field.getPropertiesMap().getProperty("Select");
                     if (select != null) {
                         this.print.addSelect(select);
+                        this.selects.add(select);
                     }
                 }
             }
@@ -125,23 +175,23 @@ abstract class EFapsDataSource_Base implements JRDataSource
     }
 
     /**
-     * Getter method for instance variable {@link #subReport}.
+     * Getter method for instance variable {@link #hasSubReport}.
      *
-     * @return value of instance variable {@link #subReport}
+     * @return value of instance variable {@link #hasSubReport}
      */
     public boolean isSubReport()
     {
-        return this.subReport;
+        return this.hasSubReport;
     }
 
     /**
-     * Setter method for instance variable {@link #subReport}.
+     * Setter method for instance variable {@link #hasSubReport}.
      *
-     * @param _subReport value for instance variable {@link #subReport}
+     * @param _subReport value for instance variable {@link #hasSubReport}
      */
     public void setSubReport(final boolean _subReport)
     {
-        this.subReport = _subReport;
+        this.hasSubReport = _subReport;
     }
 
     /**
@@ -173,20 +223,32 @@ abstract class EFapsDataSource_Base implements JRDataSource
     public Object getFieldValue(final JRField _field) throws JRException
     {
         Object ret = null;
-        final String select = _field.getPropertiesMap().getProperty("Select");
-        if (select != null) {
-            try {
-                ret = this.print.getSelect(select);
-                final Attribute attr = this.print.getAttribute4Select(select);
-                if (attr != null && attr.getAttributeType().getClassRepr().equals(FormatedStringType.class)) {
-                    ret = HtmlMarkupConverter.getConvertedString((String) ret);
+        if (_field.getName().equals(EFapsDataSource_Base.OIDFIELDNAME)) {
+            ret = this.print.getCurrentInstance();
+        } else {
+            final String select = _field.getPropertiesMap().getProperty("Select");
+            if (select != null) {
+                try {
+                    ret = this.print.getSelect(select);
+                    final Attribute attr = this.print.getAttribute4Select(select);
+                    if (attr != null && attr.getAttributeType().getClassRepr().equals(FormatedStringType.class)) {
+                        ret = HtmlMarkupConverter_Base.getConvertedString((String) ret);
+                    }
+                } catch (final EFapsException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
                 }
-            } catch (final EFapsException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
             }
         }
         return ret;
+    }
+
+    protected Instance getParentInstance()
+        throws JRException
+    {
+        final JRDesignField field = new JRDesignField();
+        field.setName(EFapsDataSource_Base.OIDFIELDNAME);
+        return (Instance) this.parentSource.getFieldValue(field);
     }
 
     /**
@@ -194,11 +256,23 @@ abstract class EFapsDataSource_Base implements JRDataSource
      * @return true if a next value exist, else false
      * @throws JRException on error
      */
-    public boolean next() throws JRException
+    public boolean next()
+        throws JRException
     {
-        final boolean tmp = this.subReport;
-        if (this.subReport) {
-            this.subReport = false;
+        final boolean tmp = this.hasSubReport;
+        if (this.hasSubReport) {
+            this.hasSubReport = false;
+        }
+
+        if (this.isSubDataSource && this.instance != null) {
+            if (!this.instance.equals(getParentInstance())) {
+                try {
+                    this.instance = getParentInstance();
+                    analyze();
+                } catch (final EFapsException e) {
+                    throw new JRException(e);
+                }
+            }
         }
         return this.print == null ? tmp : this.print.next();
     }

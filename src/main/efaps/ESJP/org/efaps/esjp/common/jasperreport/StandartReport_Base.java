@@ -47,6 +47,8 @@ import net.sf.jasperreports.engine.export.oasis.JROdtExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
 import net.sf.jasperreports.engine.util.JRLoader;
 
+import org.efaps.admin.EFapsClassNames;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -57,7 +59,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Checkout;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
-import org.efaps.db.SearchQuery;
+import org.efaps.db.InstanceQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.common.file.FileUtil_Base;
 import org.efaps.util.EFapsException;
 
@@ -106,16 +109,14 @@ public abstract class StandartReport_Base implements EventExecution
         this.jrParameters.put(JRParameter.REPORT_FILE_RESOLVER, new JasperFileResolver());
         this.jrParameters.put(JRParameter.REPORT_LOCALE, Context.getThreadContext().getLocale());
         this.jrParameters.put(JRParameter.REPORT_RESOURCE_BUNDLE, new EFapsResourceBundle());
-        this.jrParameters.put("EFAPS_SUBREPORT", new SubReportContainer(_parameter, dataSourceClass));
 
-        final SearchQuery query = new SearchQuery();
-        query.setQueryTypes("Admin_Program_JasperReportCompiled");
-        query.addWhereExprEqValue("Name", name);
-        query.addSelect("OID");
+        final QueryBuilder queryBldr = new QueryBuilder(Type.get(EFapsClassNames.ADMIN_PROGRAM_JASPERREPORTCOMPILED));
+        queryBldr.addWhereAttrEqValue("Name", name);
+        final InstanceQuery query = queryBldr.getQuery();
         query.execute();
         Instance instance = null;
         if (query.next()) {
-            instance = Instance.get((String) query.get("OID"));
+            instance = query.getCurrentInstance();
         } else {
             throw new EFapsException(StandartReport_Base.class, "execute.ReportNotFound");
         }
@@ -126,13 +127,16 @@ public abstract class StandartReport_Base implements EventExecution
             JRDataSource dataSource;
             if (dataSourceClass != null) {
                 final Class<?> clazz = Class.forName(dataSourceClass);
-                final Method method = clazz.getMethod("init", new Class[] { JasperReport.class, Parameter.class });
+                final Method method = clazz.getMethod("init",
+                                new Class[] { JasperReport.class, Parameter.class, JRDataSource.class});
                 dataSource = (JRDataSource) clazz.newInstance();
-                method.invoke(dataSource, jasperReport, _parameter);
+                method.invoke(dataSource, jasperReport, _parameter, null);
             } else {
                 dataSource = new EFapsDataSource();
-                ((EFapsDataSource) dataSource).init(jasperReport, _parameter);
+                ((EFapsDataSource) dataSource).init(jasperReport, _parameter, null);
             }
+            this.jrParameters.put("EFAPS_SUBREPORT", new SubReportContainer(_parameter, dataSource));
+
             final JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, this.jrParameters, dataSource);
 
             String mime = (String) properties.get("Mime");

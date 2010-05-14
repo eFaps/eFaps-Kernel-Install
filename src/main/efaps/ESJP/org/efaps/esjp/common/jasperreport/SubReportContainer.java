@@ -20,6 +20,8 @@
 
 package org.efaps.esjp.common.jasperreport;
 
+import net.sf.jasperreports.engine.JRDataSource;
+
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -44,11 +46,12 @@ public class SubReportContainer extends SubReportContainer_Base
     /**
      * Constructor.
      * @param _parameter        Parameters for an esjp
-     * @param _dataSourceClass  name of a datasourclass if not the default must be used
+     * @param _dataSource       datasourclass if not the default must be used
      */
-    public SubReportContainer(final Parameter _parameter, final String _dataSourceClass)
+    public SubReportContainer(final Parameter _parameter,
+                              final JRDataSource _dataSource)
     {
-        super(_parameter, _dataSourceClass);
+        super(_parameter, _dataSource);
     }
 
 }

@@ -30,12 +30,15 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 
+import org.efaps.admin.EFapsClassNames;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Checkout;
 import org.efaps.db.Instance;
-import org.efaps.db.SearchQuery;
+import org.efaps.db.InstanceQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.util.EFapsException;
 
 /**
@@ -59,20 +62,20 @@ abstract class SubReportContainer_Base extends HashMap<String, JRDataSource>
     private final Parameter parameter;
 
     /**
-     * Name of a datasource that will be used for the subreports,
-     * if null the default will be used.
+     * JRDataSource used for this subreport.
      */
-    private final String dataSourceClass;
+    private final JRDataSource dataSource;
 
     /**
      * Constructor.
-     * @param _parameter Parameter
-     * @param _dataSourceClass name of a datasoucrceclass that will be used
+     * @param _parameter   Parameter
+     * @param _dataSource  JRDataSource used for this subreport
      */
-    public SubReportContainer_Base(final Parameter _parameter, final String _dataSourceClass)
+    public SubReportContainer_Base(final Parameter _parameter,
+                                   final JRDataSource _dataSource)
     {
         this.parameter = _parameter;
-        this.dataSourceClass = _dataSourceClass;
+        this.dataSource = _dataSource;
     }
 
     /**
@@ -86,30 +89,31 @@ abstract class SubReportContainer_Base extends HashMap<String, JRDataSource>
         JRDataSource ret = super.get(_key);
         if (ret == null) {
             try {
-                final SearchQuery query = new SearchQuery();
-                query.setQueryTypes("Admin_Program_JasperReportCompiled");
-                query.addWhereExprEqValue("Name", (String) _key);
-                query.addSelect("OID");
+                final QueryBuilder queryBldr = new QueryBuilder(
+                                Type.get(EFapsClassNames.ADMIN_PROGRAM_JASPERREPORTCOMPILED));
+                queryBldr.addWhereAttrEqValue("Name", _key);
+                final InstanceQuery query = queryBldr.getQuery();
                 query.execute();
                 Instance instance = null;
                 if (query.next()) {
-                    instance = Instance.get((String) query.get("OID"));
+                    instance = query.getCurrentInstance();
                 }
                 final Checkout checkout = new Checkout(instance);
                 final InputStream iin = checkout.execute();
                 final JasperReport jasperReport = (JasperReport) JRLoader.loadObject(iin);
 
-                JRDataSource dataSource;
-                if (this.dataSourceClass != null) {
-                    final Class<?> clazz = Class.forName(this.dataSourceClass);
-                    final Method method = clazz.getMethod("init", new Class[] { JasperReport.class, Parameter.class });
-                    dataSource = (JRDataSource) clazz.newInstance();
-                    method.invoke(dataSource, jasperReport, this.parameter);
+                JRDataSource dataSourceNew;
+                if (this.dataSource != null) {
+                    final Class<?> clazz = Class.forName(this.dataSource.getClass().getName());
+                    final Method method = clazz.getMethod("init",
+                                    new Class[] { JasperReport.class, Parameter.class, JRDataSource.class });
+                    dataSourceNew = (JRDataSource) clazz.newInstance();
+                    method.invoke(dataSourceNew, jasperReport, this.parameter, this.dataSource);
                 } else {
-                    dataSource = new EFapsDataSource();
-                    ((EFapsDataSource) dataSource).init(jasperReport, this.parameter);
+                    dataSourceNew = new EFapsDataSource();
+                    ((EFapsDataSource) dataSourceNew).init(jasperReport, this.parameter, this.dataSource);
                 }
-                ret = dataSource;
+                ret = dataSourceNew;
                 super.put((String) _key, ret);
             } catch (final JRException e) {
                 // TODO Auto-generated catch block
