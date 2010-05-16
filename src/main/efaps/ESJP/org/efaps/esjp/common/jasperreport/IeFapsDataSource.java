@@ -18,25 +18,39 @@
  * Last Changed By: $Author$
  */
 
+
 package org.efaps.esjp.common.jasperreport;
 
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JasperReport;
+
+import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-
+import org.efaps.util.EFapsException;
 
 
 /**
- * This class must be replaced for customization, therefore it is left empty.
- * Functional description can be found in the related "<code>_Base</code>"
- * class.
+ * Interface for DataSources use dby the StandartReport.
  *
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("3c4931f5-b960-4960-bdc2-4ed5d41d7ff9")
+@EFapsUUID("bdbde7bc-7a28-4b71-a77f-ec70662fa7c5")
 @EFapsRevision("$Rev$")
-public class EFapsDataSource
-    extends EFapsDataSource_Base
+public interface IeFapsDataSource
+    extends JRDataSource
 {
-
+    /**
+     * Executed on initialization of the DataSource.
+     * @param _jasperReport JasperReport this DataSource belongs to
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @param _parentSource parent DataSource in case that this DataSource
+     *                      belongs to a subreport
+     * @throws EFapsException on error
+     */
+    void init(final JasperReport _jasperReport,
+              final Parameter _parameter,
+              final JRDataSource _parentSource)
+        throws EFapsException;
 }

@@ -102,16 +102,16 @@ abstract class SubReportContainer_Base extends HashMap<String, JRDataSource>
                 final InputStream iin = checkout.execute();
                 final JasperReport jasperReport = (JasperReport) JRLoader.loadObject(iin);
 
-                JRDataSource dataSourceNew;
+                IeFapsDataSource dataSourceNew;
                 if (this.dataSource != null) {
                     final Class<?> clazz = Class.forName(this.dataSource.getClass().getName());
                     final Method method = clazz.getMethod("init",
                                     new Class[] { JasperReport.class, Parameter.class, JRDataSource.class });
-                    dataSourceNew = (JRDataSource) clazz.newInstance();
+                    dataSourceNew = (IeFapsDataSource) clazz.newInstance();
                     method.invoke(dataSourceNew, jasperReport, this.parameter, this.dataSource);
                 } else {
                     dataSourceNew = new EFapsDataSource();
-                    ((EFapsDataSource) dataSourceNew).init(jasperReport, this.parameter, this.dataSource);
+                    dataSourceNew.init(jasperReport, this.parameter, this.dataSource);
                 }
                 ret = dataSourceNew;
                 super.put((String) _key, ret);

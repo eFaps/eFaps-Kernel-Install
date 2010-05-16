@@ -51,9 +51,9 @@ import org.efaps.util.EFapsException;
  */
 @EFapsUUID("4675dffe-6551-477b-b069-8968901aeff4")
 @EFapsRevision("$Rev$")
-abstract class EFapsDataSource_Base implements JRDataSource
+public abstract class EFapsDataSource_Base
+    implements IeFapsDataSource
 {
-
     /**
      * Field name.
      */
@@ -275,5 +275,244 @@ abstract class EFapsDataSource_Base implements JRDataSource
             }
         }
         return this.print == null ? tmp : this.print.next();
+    }
+
+    /**
+     * Setter method for instance variable {@link #parameter}.
+     *
+     * @param _parameter value for instance variable {@link #parameter}
+     */
+
+    public void setParameter(final Parameter _parameter)
+    {
+        this.parameter = _parameter;
+    }
+
+
+    /**
+     * Getter method for the instance variable {@link #hasSubReport}.
+     *
+     * @return value of instance variable {@link #hasSubReport}
+     */
+    public boolean isHasSubReport()
+    {
+        return this.hasSubReport;
+    }
+
+
+    /**
+     * Setter method for instance variable {@link #hasSubReport}.
+     *
+     * @param _hasSubReport value for instance variable {@link #hasSubReport}
+     */
+
+    public void setHasSubReport(final boolean _hasSubReport)
+    {
+        this.hasSubReport = _hasSubReport;
+    }
+
+
+    /**
+     * Getter method for the instance variable {@link #isSubDataSource}.
+     *
+     * @return value of instance variable {@link #isSubDataSource}
+     */
+    public boolean isSubDataSource()
+    {
+        return this.isSubDataSource;
+    }
+
+
+    /**
+     * Setter method for instance variable {@link #isSubDataSource}.
+     *
+     * @param _isSubDataSource value for instance variable {@link #isSubDataSource}
+     */
+
+    public void setSubDataSource(final boolean _isSubDataSource)
+    {
+        this.isSubDataSource = _isSubDataSource;
+    }
+
+
+    /**
+     * Getter method for the instance variable {@link #instance}.
+     *
+     * @return value of instance variable {@link #instance}
+     */
+    public Instance getInstance()
+    {
+        return this.instance;
+    }
+
+
+    /**
+     * Setter method for instance variable {@link #instance}.
+     *
+     * @param _instance value for instance variable {@link #instance}
+     */
+
+    public void setInstance(final Instance _instance)
+    {
+        this.instance = _instance;
+    }
+
+
+    /**
+     * Getter method for the instance variable {@link #parentSource}.
+     *
+     * @return value of instance variable {@link #parentSource}
+     */
+    public JRDataSource getParentSource()
+    {
+        return this.parentSource;
+    }
+
+
+    /**
+     * Setter method for instance variable {@link #parentSource}.
+     *
+     * @param _parentSource value for instance variable {@link #parentSource}
+     */
+
+    public void setParentSource(final JRDataSource _parentSource)
+    {
+        this.parentSource = _parentSource;
+    }
+
+
+    /**
+     * Getter method for the instance variable {@link #expand}.
+     *
+     * @return value of instance variable {@link #expand}
+     */
+    public String getExpand()
+    {
+        return this.expand;
+    }
+
+
+    /**
+     * Setter method for instance variable {@link #expand}.
+     *
+     * @param _expand value for instance variable {@link #expand}
+     */
+
+    public void setExpand(final String _expand)
+    {
+        this.expand = _expand;
+    }
+
+
+    /**
+     * Getter method for the instance variable {@link #typeName}.
+     *
+     * @return value of instance variable {@link #typeName}
+     */
+    public String getTypeName()
+    {
+        return this.typeName;
+    }
+
+
+    /**
+     * Setter method for instance variable {@link #typeName}.
+     *
+     * @param _typeName value for instance variable {@link #typeName}
+     */
+
+    public void setTypeName(final String _typeName)
+    {
+        this.typeName = _typeName;
+    }
+
+
+    /**
+     * Getter method for the instance variable {@link #expandChild}.
+     *
+     * @return value of instance variable {@link #expandChild}
+     */
+    public boolean isExpandChild()
+    {
+        return this.expandChild;
+    }
+
+
+    /**
+     * Setter method for instance variable {@link #expandChild}.
+     *
+     * @param _expandChild value for instance variable {@link #expandChild}
+     */
+
+    public void setExpandChild(final boolean _expandChild)
+    {
+        this.expandChild = _expandChild;
+    }
+
+
+    /**
+     * Getter method for the instance variable {@link #useInstance}.
+     *
+     * @return value of instance variable {@link #useInstance}
+     */
+    public boolean isUseInstance()
+    {
+        return this.useInstance;
+    }
+
+
+    /**
+     * Setter method for instance variable {@link #useInstance}.
+     *
+     * @param _useInstance value for instance variable {@link #useInstance}
+     */
+
+    public void setUseInstance(final boolean _useInstance)
+    {
+        this.useInstance = _useInstance;
+    }
+
+
+    /**
+     * Getter method for the instance variable {@link #jasperReport}.
+     *
+     * @return value of instance variable {@link #jasperReport}
+     */
+    public JasperReport getJasperReport()
+    {
+        return this.jasperReport;
+    }
+
+
+    /**
+     * Setter method for instance variable {@link #jasperReport}.
+     *
+     * @param _jasperReport value for instance variable {@link #jasperReport}
+     */
+
+    public void setJasperReport(final JasperReport _jasperReport)
+    {
+        this.jasperReport = _jasperReport;
+    }
+
+
+    /**
+     * Getter method for the instance variable {@link #selects}.
+     *
+     * @return value of instance variable {@link #selects}
+     */
+    public List<String> getSelects()
+    {
+        return this.selects;
+    }
+
+    /**
+     * Getter method for the instance variable {@link #parameter}.
+     *
+     * @return value of instance variable {@link #parameter}
+     */
+    public Parameter getParameter()
+    {
+        return this.parameter;
     }
 }

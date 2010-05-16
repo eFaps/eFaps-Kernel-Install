@@ -18,11 +18,11 @@
  * Last Changed By: $Author$
  */
 
+
 package org.efaps.esjp.common.jasperreport;
 
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-
 
 
 /**
@@ -33,10 +33,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("3c4931f5-b960-4960-bdc2-4ed5d41d7ff9")
+@EFapsUUID("7944197f-d27c-4d5d-a691-bbed8afd5c2f")
 @EFapsRevision("$Rev$")
-public class EFapsDataSource
-    extends EFapsDataSource_Base
+public class EFapsMapDataSource
+    extends EFapsMapDataSource_Base
 {
 
 }

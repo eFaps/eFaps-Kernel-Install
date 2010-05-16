@@ -124,16 +124,16 @@ public abstract class StandartReport_Base implements EventExecution
         final InputStream iin = checkout.execute();
         try {
             final JasperReport jasperReport = (JasperReport) JRLoader.loadObject(iin);
-            JRDataSource dataSource;
+            IeFapsDataSource dataSource;
             if (dataSourceClass != null) {
                 final Class<?> clazz = Class.forName(dataSourceClass);
                 final Method method = clazz.getMethod("init",
                                 new Class[] { JasperReport.class, Parameter.class, JRDataSource.class});
-                dataSource = (JRDataSource) clazz.newInstance();
+                dataSource = (IeFapsDataSource) clazz.newInstance();
                 method.invoke(dataSource, jasperReport, _parameter, null);
             } else {
                 dataSource = new EFapsDataSource();
-                ((EFapsDataSource) dataSource).init(jasperReport, _parameter, null);
+                dataSource.init(jasperReport, _parameter, null);
             }
             this.jrParameters.put("EFAPS_SUBREPORT", new SubReportContainer(_parameter, dataSource));
 
