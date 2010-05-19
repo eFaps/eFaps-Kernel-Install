@@ -39,7 +39,7 @@
             <menu>Admin_UI_MenuTree_Childs_Menu</menu>
             <table>Admin_UI_Menu_Childs</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Admin_UI_Menu2Command\FromMenu.ToCommand</property>
+                <property name="Expand">Admin_UI_Menu2Command\FromMenu</property>
             </evaluate>
         </target>
         <!-- properties -->
