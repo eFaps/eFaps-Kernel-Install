@@ -27,12 +27,15 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Delete;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
-import org.efaps.db.SearchQuery;
+import org.efaps.db.InstanceQuery;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.db.Update;
 import org.efaps.util.EFapsException;
 
@@ -61,44 +64,64 @@ public class UIUpdate
                          final Integer _pos)
         throws EFapsException
     {
+        add2Menu(_uuidAdd, _uuidMenu, _pos,
+                new String[] { "Admin_UI_Command", "Admin_UI_Menu", "Admin_UI_Menu2Command", "FromMenu", "ToCommand" });
+    }
+
+    /**
+     * Method is used to add a Command/Menu/Help to an existing Menu in a defined
+     * position. This esjp is only used from the install scripts.
+     *
+     * @param _uuidAdd      UUID of the command or menu to add
+     * @param _uuidMenu     UUID of the menu the command or menu will be added to
+     * @param _pos          position in the menu, to ignore this "-1" can be used
+     * @param _types        types used for the queries
+     * @throws EFapsException on error
+     * @throws EFapsException on error
+     */
+    protected void add2Menu(final String _uuidAdd,
+                            final String _uuidMenu,
+                            final Integer _pos,
+                            final String[] _types)
+        throws EFapsException
+    {
         // get the Menu/Command to be connected
-        final SearchQuery query = new SearchQuery();
-        query.setQueryTypes("Admin_UI_Command");
-        query.setExpandChildTypes(true);
-        query.addWhereExprEqValue("UUID", _uuidAdd);
-        query.addSelect("OID");
+        final QueryBuilder queryBldr = new QueryBuilder(Type.get(_types[0]));
+        queryBldr.addWhereAttrEqValue("UUID", _uuidAdd);
+        final InstanceQuery query = queryBldr.getQuery();
         query.execute();
         if (query.next()) {
-            final Instance addInst = Instance.get((String) query.get("OID"));
+            final Instance addInst = query.getCurrentInstance();
             // get the Menu that the Menu must be connected to
-            final SearchQuery queryMenu = new SearchQuery();
-            queryMenu.setQueryTypes("Admin_UI_Menu");
-            queryMenu.addWhereExprEqValue("UUID", _uuidMenu);
-            queryMenu.addSelect("OID");
+            final QueryBuilder queryBldrMenu = new QueryBuilder(Type.get(_types[1]));
+            queryBldrMenu.addWhereAttrEqValue("UUID", _uuidMenu);
+            final InstanceQuery queryMenu = queryBldrMenu.getQuery();
             queryMenu.execute();
             if (queryMenu.next()) {
                 // get the relation and if it does not exist create one
-                final Instance menuInst = Instance.get((String) queryMenu.get("OID"));
-                final SearchQuery rel = new SearchQuery();
-                rel.setQueryTypes("Admin_UI_Menu2Command");
-                rel.addWhereExprEqValue("FromMenu", menuInst.getId());
-                rel.addWhereExprEqValue("ToCommand", addInst.getId());
-                rel.execute();
-                if (!rel.next()) {
-                    final Insert insert = new Insert("Admin_UI_Menu2Command");
-                    insert.add("FromMenu", menuInst.getId());
-                    insert.add("ToCommand", addInst.getId());
+                final Instance menuInst = queryMenu.getCurrentInstance();
+
+                final QueryBuilder queryBldrRel = new QueryBuilder(Type.get(_types[2]));
+                queryBldrRel.addWhereAttrEqValue(_types[3], menuInst.getId());
+                queryBldrRel.addWhereAttrEqValue(_types[4], addInst.getId());
+                final InstanceQuery queryRel = queryBldrRel.getQuery();
+                queryRel.execute();
+
+                if (!queryRel.next()) {
+                    final Insert insert = new Insert(_types[2]);
+                    insert.add(_types[3], menuInst.getId());
+                    insert.add(_types[4], addInst.getId());
                     insert.execute();
                     if (_pos > -1) {
                         // sort the instances so that the new one is add the given position
-                        final SearchQuery sortQuery = new SearchQuery();
-                        sortQuery.setExpand(menuInst, "Admin_UI_Menu2Command\\FromMenu");
-                        sortQuery.addSelect("ID");
-                        sortQuery.addSelect("ToCommand");
-                        sortQuery.execute();
+                        final QueryBuilder queryBldrSort = new QueryBuilder(Type.get(_types[2]));
+                        queryBldrSort.addWhereAttrEqValue(_types[3], menuInst.getId());
+                        final MultiPrintQuery multi = queryBldrSort.getPrint();
+                        multi.addAttribute("ID", _types[4]);
+                        multi.execute();
                         final Map<Long, Long> pos2cmds = new TreeMap<Long, Long>();
-                        while (sortQuery.next()) {
-                            pos2cmds.put((Long) sortQuery.get("ID"), (Long) sortQuery.get("ToCommand"));
+                        while (multi.next()) {
+                            pos2cmds.put(multi.<Long>getAttribute("ID"), multi.<Long>getAttribute(_types[4]));
                         }
                         final List<Long> target = new ArrayList<Long>();
                         for (final Entry<Long, Long> entry : pos2cmds.entrySet()) {
@@ -110,8 +133,8 @@ public class UIUpdate
                         }
                         final Iterator<Long> iter = target.iterator();
                         for (final Entry<Long, Long> entry : pos2cmds.entrySet()) {
-                            final Update update = new Update("Admin_UI_Menu2Command", entry.getKey().toString());
-                            update.add("ToCommand", iter.next());
+                            final Update update = new Update(_types[2], entry.getKey().toString());
+                            update.add(_types[4], iter.next());
                             update.execute();
                         }
                     }
@@ -125,6 +148,48 @@ public class UIUpdate
             throw new EFapsException(UIUpdate.class, "missingCmdMenu2Add", _uuidAdd);
         }
     }
+
+
+    /**
+     * Method is used to disconnect a command or menu from a menu.
+     * This esjp is only used from the install scripts. The caches
+     * are not used so that the kernel runlevel is enough to execute
+     * this method.
+     * @param _uuidRemove   uuid of the command,menu to be disconnected
+     * @param _uuidMenu     uuid of the menu the <code>_uuidRemove</code> will
+     *                      be removed from
+     * @param _types        types used for the queries
+     * @throws EFapsException on error
+     */
+    protected void removeFromMenu(final String _uuidRemove,
+                                  final String _uuidMenu,
+                                  final String[] _types)
+        throws EFapsException
+    {
+        // get the command to be removed
+        final QueryBuilder queryBldrRem = new QueryBuilder(Type.get(_types[0]));
+        queryBldrRem.addWhereAttrEqValue("UUID", _uuidRemove);
+        final InstanceQuery queryRem = queryBldrRem.getQuery();
+        queryRem.execute();
+        if (queryRem.next()) {
+            final QueryBuilder queryBldrMenu = new QueryBuilder(Type.get(_types[0]));
+            queryBldrMenu.addWhereAttrEqValue("UUID", _uuidMenu);
+            final InstanceQuery queryMenu = queryBldrMenu.getQuery();
+            queryMenu.execute();
+            if (queryMenu.next()) {
+                final QueryBuilder queryBldr = new QueryBuilder(Type.get(_types[1]));
+                queryBldr.addWhereAttrEqValue(_types[2], queryMenu.getCurrentInstance().getId());
+                queryBldr.addWhereAttrEqValue(_types[3], queryRem.getCurrentInstance().getId());
+                final InstanceQuery query = queryBldr.getQuery();
+                query.execute();
+                if (query.next()) {
+                    final Delete del = new Delete(query.getCurrentInstance());
+                    del.execute();
+                }
+            }
+        }
+    }
+
 
     /**
      * Method is used to disconnect a command or menu from a menu.
@@ -140,34 +205,43 @@ public class UIUpdate
                                final String _uuidMenu)
         throws EFapsException
     {
-        // get the command to be removed
-        final SearchQuery remQuery = new SearchQuery();
-        remQuery.setQueryTypes("Admin_UI_Command");
-        remQuery.setExpandChildTypes(true);
-        remQuery.addWhereExprEqValue("UUID", _uuidRemove);
-        remQuery.addSelect("ID");
-        remQuery.execute();
-        if (remQuery.next()) {
-            final Long remId = (Long) remQuery.get("ID");
-            final SearchQuery menuQuery = new SearchQuery();
-            menuQuery.setQueryTypes("Admin_UI_Command");
-            menuQuery.setExpandChildTypes(true);
-            menuQuery.addWhereExprEqValue("UUID", _uuidMenu);
-            menuQuery.addSelect("ID");
-            menuQuery.execute();
-            if (menuQuery.next()) {
-                final Long menuId = (Long) menuQuery.get("ID");
-                final SearchQuery query = new SearchQuery();
-                query.setQueryTypes("Admin_UI_Menu2Command");
-                query.addWhereExprEqValue("FromMenu", menuId);
-                query.addWhereExprEqValue("ToCommand", remId);
-                query.addSelect("OID");
-                query.execute();
-                if (query.next()) {
-                    final Delete del = new Delete(Instance.get((String) query.get("OID")));
-                    del.execute();
-                }
-            }
-        }
+        removeFromMenu(_uuidRemove, _uuidMenu,
+                        new String[] {"Admin_UI_Command", "Admin_UI_Menu2Command", "FromMenu", "ToCommand" });
+    }
+
+    /**
+     * Method is used to add a HelpMenu an existing HelpMenu in a defined
+     * position. This esjp is only used from the install scripts.
+     *
+     * @param _uuidAdd      UUID of the HelpMenu to add
+     * @param _uuidMenu     UUID of the HelpMenu be added to
+     * @param _pos          position in the menu, to ignore this "-1" can be used
+     * @throws EFapsException on error
+     */
+    public void add2Help(final String _uuidAdd,
+                         final String _uuidMenu,
+                         final Integer _pos)
+        throws EFapsException
+    {
+        add2Menu(_uuidAdd, _uuidMenu, _pos,
+                   new String[] { "Admin_Help_Menu", "Admin_Help_Menu", "Admin_Help_Menu2Menu", "FromLink", "ToLink" });
+    }
+
+    /**
+     * Method is used to disconnect a HelpMenu from a HelpMenu.
+     * This esjp is only used from the install scripts. The caches
+     * are not used so that the kernel runlevel is enough to execute
+     * this method.
+     * @param _uuidRemove   uuid of the command,menu to be disconnected
+     * @param _uuidMenu     uuid of the menu the <code>_uuidRemove</code> will
+     *                      be removed from
+     * @throws EFapsException on error
+     */
+    public void removeFromHelp(final String _uuidRemove,
+                               final String _uuidMenu)
+        throws EFapsException
+    {
+        removeFromMenu(_uuidRemove, _uuidMenu,
+                        new String[] {"Admin_Help_Menu", "Admin_Help_Menu2Menu", "FromLink", "ToLink" });
     }
 }
