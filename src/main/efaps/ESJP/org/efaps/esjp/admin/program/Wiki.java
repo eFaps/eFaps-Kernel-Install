@@ -86,11 +86,11 @@ public class Wiki
             compiledCheckin.execute(compiledFileName, compiled, compiled.available());
 
         } catch (final UnsupportedEncodingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            // TODO  add to DBProperties
+            throw new EFapsException(Wiki.class, "updateWiki.UnsupportedEncodingException", e);
         } catch (final ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            // TODO add to DBProperties
+            throw new EFapsException(Wiki.class, "updateWiki.ParseException", e);
         }
         return new Return();
     }
@@ -108,24 +108,22 @@ public class Wiki
         final Instance instance = _parameter.getCallInstance();
         final Checkout checkout = new Checkout(instance);
         final InputStream ins = checkout.execute();
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
         final StringBuilder strb = new StringBuilder();
-
-        String line = null;
         try {
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(ins, "UTF-8"));
+            String line = null;
             while ((line = reader.readLine()) != null) {
                 strb.append(line).append("\n");
             }
         } catch (final IOException e) {
-            e.printStackTrace();
+            throw new EFapsException(Wiki.class, "getWikiFieldValue.IOException", e);
         } finally {
             try {
                 ins.close();
             } catch (final IOException e) {
-                e.printStackTrace();
+                throw new EFapsException(Wiki.class, "getWikiFieldValue.IOException", e);
             }
         }
-
         ret.put(ReturnValues.VALUES, strb.toString());
         return ret;
     }
