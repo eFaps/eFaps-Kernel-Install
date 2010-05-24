@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+  Copyright 2003 - 2010 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author:          The eFaps Team
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
+
+-->
+
+<import xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <!-- Karsten Kunkel -->
+    <object type="Admin_User_Person">
+        <attribute name="Name">QuartzTrigger</attribute>
+        <attribute name="FirstName">The</attribute>
+        <attribute name="LastName">QuartzTrigger</attribute>
+        <attribute name="TimeZone">UTC</attribute>
+        <attribute name="Status">true</attribute>
+        <attribute name="Locale">en</attribute>
+        <linkattribute name="Language" type="Admin_Language">
+            <queryattribute name="Language">en</queryattribute>
+        </linkattribute>
+    </object>
+    <object type="Admin_User_JAASKey">
+        <attribute name="Key">QuartzTrigger</attribute>
+        <linkattribute name="UserLink" type="Admin_User_Person">
+            <queryattribute name="Name">QuartzTrigger</queryattribute>
+        </linkattribute>
+        <linkattribute name="JAASSystemLink" type="Admin_User_JAASSystem">
+            <queryattribute name="Name">eFaps</queryattribute>
+        </linkattribute>
+    </object>
+
+    <object type="Admin_User_Person2Role">
+        <linkattribute name="UserFromLink" type="Admin_User_Person">
+            <queryattribute name="Name">QuartzTrigger</queryattribute>
+        </linkattribute>
+        <linkattribute name="UserToLink" type="Admin_User_Role">
+            <queryattribute name="Name">Administration</queryattribute>
+        </linkattribute>
+        <linkattribute name="UserJAASSystem" type="Admin_User_JAASSystem">
+            <queryattribute name="Name">eFaps</queryattribute>
+        </linkattribute>
+    </object>
+</import>
