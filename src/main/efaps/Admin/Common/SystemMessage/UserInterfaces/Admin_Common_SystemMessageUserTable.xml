@@ -27,32 +27,35 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>5a6552a8-5f4e-4159-80ee-9ffc2f3eadb6</uuid>
+    <uuid>324a74a4-e3e0-4ec5-b683-59cc73508374</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Common_SystemMessageTable</name>
+        <name>Admin_Common_SystemMessageUserTable</name>
         <!-- fields -->
          <field name="type">
             <property name="Attribute">Type</property>
-            <property name="Label">Admin_Common_SystemMessageAbstract/Type.Label</property>
+            <property name="Label">Admin_Common_SystemMessageUserTable/Type.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ShowTypeIcon">true</property>
         </field>
-        <field name="description">
+        <field name="message">
+            <property name="SelectAlternateOID">linkto[MessageLink].oid</property>
+            <property name="Select">linkto[MessageLink].attribute[Description]</property>
             <property name="Attribute">Description</property>
-            <property name="Label">Admin_Common_SystemMessageAbstract/Description.Label</property>
+            <property name="Label">Admin_Common_SystemMessageUserTable/MessageLink.Label</property>
         </field>
-        <field name="value">
-            <property name="Attribute">Value</property>
-            <property name="Label">Admin_Common_SystemMessageAbstract/Value.Label</property>
+        <field name="user">
+            <property name="Attribute">UserLink</property>
+            <property name="Label">Admin_Common_SystemMessageUserTable/UserLink.Label</property>
         </field>
-        <field name="key">
-            <property name="Attribute">Key</property>
-            <property name="Label">Admin_Common_SystemMessageAbstract/Key.Label</property>
+        <field name="status">
+            <property name="Attribute">StatusAbstract</property>
+            <property name="Label">Admin_Common_SystemMessageUserTable/StatusAbstract.Label</property>
         </field>
+
     </definition>
 
 </ui-table>

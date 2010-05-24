@@ -44,6 +44,12 @@
             <property name="Attribute">Value</property>
             <property name="Required">true</property>
         </field>
+        <field name="key">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">Key</property>
+            <property name="Required">true</property>
+        </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>
             <property name="ModeCreate">NONE</property>

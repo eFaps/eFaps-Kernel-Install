@@ -41,7 +41,10 @@
         </target>
         <!-- type tree for -->
         <type>Admin_Common_SystemMessageAbstract</type>
-
+        <!-- child -->
+        <childs>
+            <child>Admin_Common_SystemMessageTree_Users</child>
+        </childs>
         <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
