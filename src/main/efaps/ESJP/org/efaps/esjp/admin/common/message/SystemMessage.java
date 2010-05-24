@@ -24,14 +24,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.util.EFapsException;
 
 /**
@@ -73,5 +78,22 @@ public class SystemMessage implements EventExecution
             }
         }
         return new Return();
+    }
+
+    public Return showAlertMessage(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+
+        final String types = (String) properties.get("Types");
+
+        final QueryBuilder queryBldr = new QueryBuilder(Type.get(types));
+        queryBldr.addWhereAttrEqValue("UserLink", Context.getThreadContext().getPerson().getId());
+        final InstanceQuery query = queryBldr.getQuery();
+        query.execute();
+        ret.put(ReturnValues.VALUES, query.getInstances());
+
+        return ret;
     }
 }

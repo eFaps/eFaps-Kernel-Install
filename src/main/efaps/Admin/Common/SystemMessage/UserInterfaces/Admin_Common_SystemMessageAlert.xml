@@ -37,9 +37,9 @@
 
         <!-- target definitions -->
         <target>
-            <table>Admin_Common_SystemMessageTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Common_SystemMessageAbstract</property>
+            <table>Admin_Common_SystemMessageAlertTable</table>
+            <evaluate program="org.efaps.esjp.admin.common.message.SystemMessage" method="showAlertMessage">
+                <property name="Types">Admin_Common_SystemMessage2User</property>
                 <property name="ExpandChildTypes">true</property>
             </evaluate>
         </target>
