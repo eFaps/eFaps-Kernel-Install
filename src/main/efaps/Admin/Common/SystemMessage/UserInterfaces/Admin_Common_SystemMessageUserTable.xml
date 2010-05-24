@@ -35,16 +35,9 @@
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Common_SystemMessageUserTable</name>
         <!-- fields -->
-         <field name="type">
-            <property name="Attribute">Type</property>
-            <property name="Label">Admin_Common_SystemMessageUserTable/Type.Label</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="ShowTypeIcon">true</property>
-        </field>
         <field name="message">
             <property name="SelectAlternateOID">linkto[MessageLink].oid</property>
             <property name="Select">linkto[MessageLink].attribute[Description]</property>
-            <property name="Attribute">Description</property>
             <property name="Label">Admin_Common_SystemMessageUserTable/MessageLink.Label</property>
         </field>
         <field name="user">
@@ -55,7 +48,5 @@
             <property name="Attribute">StatusAbstract</property>
             <property name="Label">Admin_Common_SystemMessageUserTable/StatusAbstract.Label</property>
         </field>
-
     </definition>
-
 </ui-table>
