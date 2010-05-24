@@ -27,28 +27,20 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>45dbe038-9a9e-472a-a60d-bb4f25aedf66</uuid>
+    <uuid>aaaa489e-5da6-4d36-b5e4-533c2cf04e05</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Common_SystemMessageMyDesk</name>
-        <!-- access -->
-        <access>
-            <role>Administration</role>
-        </access>
+        <name>Admin_Common_SystemMessageMyDesk_Menu_Action_Delete</name>
         <!-- target definitions -->
         <target>
-            <menu>Admin_Common_SystemMessageMyDesk_Menu</menu>
-            <table>Admin_Common_SystemMessageTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Common_SystemMessageAbstract</property>
-            </evaluate>
+            <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
         </target>
         <!-- properties -->
-        <property name="Target">content</property>
-        <property name="TargetTableSortKey">description</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
     </definition>
 
 </ui-command>

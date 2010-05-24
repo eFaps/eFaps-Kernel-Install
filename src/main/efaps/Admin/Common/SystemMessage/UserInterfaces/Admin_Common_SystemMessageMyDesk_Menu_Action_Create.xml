@@ -27,28 +27,22 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>45dbe038-9a9e-472a-a60d-bb4f25aedf66</uuid>
+    <uuid>222852d1-2097-4808-b75f-8fa19bbfd239</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Common_SystemMessageMyDesk</name>
-        <!-- access -->
-        <access>
-            <role>Administration</role>
-        </access>
+        <name>Admin_Common_SystemMessageMyDesk_Menu_Action_Create</name>
         <!-- target definitions -->
         <target>
-            <menu>Admin_Common_SystemMessageMyDesk_Menu</menu>
-            <table>Admin_Common_SystemMessageTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Common_SystemMessageAbstract</property>
-            </evaluate>
+            <form>Admin_Common_SystemMessageForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Create" />
         </target>
         <!-- properties -->
-        <property name="Target">content</property>
-        <property name="TargetTableSortKey">description</property>
+        <property name="Target">modal</property>
+        <property name="TargetMode">create</property>
+        <property name="TargetCreateType">Admin_Common_SystemMessageAbstract</property>
     </definition>
 
 </ui-command>
