@@ -94,5 +94,19 @@
         by setting the Property "TargetDefaultMenu" to "none".
       </description>
     </attribute>
+    <attribute>
+        <key>SystemMessageTriggerActivated</key>
+        <value>true</value>
+        <description>
+            Boolean (true/false): activate the automatic search for messages.
+        </description>
+    </attribute>
+    <attribute>
+        <key>SystemMessageTriggerInterval</key>
+        <value>1</value>
+        <description>
+            Integer: Interval in minutes for the system message trigger.
+        </description>
+    </attribute>
   </definition>
 </common-systemconfiguration>
