@@ -34,7 +34,6 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Common_SystemMessage2User</name>
-        <purpose abstract="true"/>
         <attribute>
             <name>OID</name>
             <type>OID</type>

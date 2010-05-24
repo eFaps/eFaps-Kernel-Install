@@ -66,6 +66,12 @@
             <sqlcolumn>VALUE</sqlcolumn>
         </attribute>
         <attribute>
+            <name>Key</name>
+            <type>String</type>
+            <sqltable>Admin_Common_SystemMessageSQLTable</sqltable>
+            <sqlcolumn>KEY</sqlcolumn>
+        </attribute>
+        <attribute>
             <name>Creator</name>
             <type>CreatorLink</type>
             <sqltable>Admin_Common_SystemMessageSQLTable</sqltable>
