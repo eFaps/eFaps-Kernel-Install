@@ -50,10 +50,10 @@ import org.efaps.util.EFapsException;
 public class SystemMessage implements EventExecution
 {
     /**
-     * Method used to set the value for the NumberGenerator.
+     * Method for create a new connection of user's.
      * @param _parameter Parameter as passed from the eFaps API.
-     * @return new empty Return
-     * @throws EFapsException
+     * @return new empty Return.
+     * @throws EFapsException on error.
      */
     public Return execute(final Parameter _parameter)
         throws EFapsException
@@ -80,6 +80,12 @@ public class SystemMessage implements EventExecution
         return new Return();
     }
 
+    /**
+     * Method for show alerts message of any user in case existing.
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return ret Return.
+     * @throws EFapsException on error.
+     */
     public Return showAlertMessage(final Parameter _parameter)
         throws EFapsException
     {
