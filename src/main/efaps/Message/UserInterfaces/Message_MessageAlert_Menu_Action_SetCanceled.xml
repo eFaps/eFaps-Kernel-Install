@@ -36,7 +36,7 @@
         <name>Message_MessageAlert_Menu_Action_SetCanceled</name>
         <!-- target definitions -->
         <target>
-            <execute program="org.efaps.esjp.admin.common.SystemMessage" method="setStatus" >
+            <execute program="org.efaps.esjp.message.Message" method="setStatus" >
                 <property name="Status">Canceled</property>
             </execute>
         </target>

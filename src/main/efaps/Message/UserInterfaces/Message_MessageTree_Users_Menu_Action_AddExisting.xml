@@ -16,7 +16,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          tmo
+ Author:          The eFaps Team
  Revision:        $Rev$
  Last Changed:    $Date$
  Last Changed By: $Author$
@@ -36,7 +36,7 @@
         <name>Message_MessageTree_Users_Menu_Action_AddExisting</name>
         <!-- target definitions -->
         <target>
-            <search>Message_MessageTree_Users_Menu_Action_AddExisting_Search</search>
+            <search>org.efaps.esjp.message.Message</search>
             <execute program="org.efaps.esjp.admin.common.SystemMessage">
                 <property name="ConnectChildAttribute">UserLink</property>
                 <property name="ConnectParentAttribute">MessageLink</property>
