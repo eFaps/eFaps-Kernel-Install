@@ -36,8 +36,8 @@
         <name>Message_MessageTree_Users_Menu_Action_AddExisting</name>
         <!-- target definitions -->
         <target>
-            <search>org.efaps.esjp.message.Message</search>
-            <execute program="org.efaps.esjp.admin.common.SystemMessage">
+            <search>Message_MessageTree_Users_Menu_Action_AddExisting_Search</search>
+            <execute program="org.efaps.esjp.message.Message">
                 <property name="ConnectChildAttribute">UserLink</property>
                 <property name="ConnectParentAttribute">MessageLink</property>
                 <property name="ConnectType">Message_Message2User</property>
