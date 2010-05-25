@@ -50,6 +50,7 @@
         <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetTableSortKey">description</property>
+        <property name="TargetShowCheckBoxes">true</property>
     </definition>
 
 </ui-command>
