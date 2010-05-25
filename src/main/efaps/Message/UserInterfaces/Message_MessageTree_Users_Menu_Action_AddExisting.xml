@@ -34,6 +34,9 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Message_MessageTree_Users_Menu_Action_AddExisting</name>
+        <access>
+            <role>Administration</role>
+        </access>
         <!-- target definitions -->
         <target>
             <search>Message_MessageTree_Users_Menu_Action_AddExisting_Search</search>
