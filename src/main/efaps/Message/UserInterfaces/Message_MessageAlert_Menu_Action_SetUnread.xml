@@ -34,9 +34,6 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Message_MessageAlert_Menu_Action_SetUnread</name>
-        <access>
-            <role>Administration</role>
-        </access>
         <!-- target definitions -->
         <target>
             <execute program="org.efaps.esjp.message.Message" method="setStatus" >

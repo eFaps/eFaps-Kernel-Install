@@ -27,17 +27,20 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>c8e69e0c-7e56-423a-a754-bab3ca4e3347</uuid>
+    <uuid>d5f496ec-99fd-4b5f-8ea3-fef433e7b9a3</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Message_MessageAlert_Menu_Action_SetRead</name>
+        <name>Message_MessageTree_Users_Menu_Action_SetUnread</name>
+        <access>
+            <role>Administration</role>
+        </access>
         <!-- target definitions -->
         <target>
             <execute program="org.efaps.esjp.message.Message" method="setStatus" >
-                <property name="Status">Read</property>
+                <property name="Status">Unread</property>
             </execute>
         </target>
         <!-- properties -->

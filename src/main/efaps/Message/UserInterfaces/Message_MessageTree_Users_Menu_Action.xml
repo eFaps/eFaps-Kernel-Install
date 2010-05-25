@@ -37,9 +37,9 @@
         <childs>
             <child>Message_MessageTree_Users_Menu_Action_AddExisting</child>
             <child>Message_MessageTree_Users_Menu_Action_Disconnect</child>
-            <child>Message_MessageAlert_Menu_Action_SetUnread</child>
-            <child>Message_MessageAlert_Menu_Action_SetRead</child>
-            <child>Message_MessageAlert_Menu_Action_SetCanceled</child>
+            <child>Message_MessageTree_Users_Menu_Action_SetUnread</child>
+            <child>Message_MessageTree_Users_Menu_Action_SetRead</child>
+            <child>Message_MessageTree_Users_Menu_Action_SetCanceled</child>
         </childs>
     </definition>
 
