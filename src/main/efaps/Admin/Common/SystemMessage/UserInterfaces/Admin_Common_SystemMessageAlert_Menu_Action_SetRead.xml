@@ -16,10 +16,10 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          tmo
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
+ Author:          The eFaps Team
+ Revision:        $Rev: 4527 $
+ Last Changed:    $Date: 2010-05-24 13:43:24 -0500 (Mon, 24 May 2010) $
+ Last Changed By: $Author: miguel.a.aranya $
 
 -->
 
@@ -27,24 +27,22 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>d63253d8-2cbf-47f9-a418-e173b0a0ca4c</uuid>
+    <uuid>c8e69e0c-7e56-423a-a754-bab3ca4e3347</uuid>
     <file-application>eFaps-Kernel</file-application>
-    <file-revision>$Rev$</file-revision>
+    <file-revision>$Rev: 4527 $</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Common_SystemMessageTree_Users_Menu_Action_AddExisting</name>
+        <name>Admin_Common_SystemMessageAlert_Menu_Action_SetRead</name>
         <!-- target definitions -->
         <target>
-            <search>Admin_Common_SystemMessageTree_Users_Menu_Action_AddExisting_Search</search>
-            <execute program="org.efaps.esjp.admin.common.SystemMessage">
-                <property name="ConnectChildAttribute">UserLink</property>
-                <property name="ConnectParentAttribute">MessageLink</property>
-                <property name="ConnectType">Admin_Common_SystemMessage2User</property>
+            <execute program="org.efaps.esjp.admin.common.SystemMessage" method="setStatus" >
+                <property name="Status">Read</property>
             </execute>
         </target>
         <!-- properties -->
-        <property name="Target">popup</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
     </definition>
 
 </ui-command>

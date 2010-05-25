@@ -45,7 +45,7 @@
             <property name="Label">Admin_Common_SystemMessageUserTable/UserLink.Label</property>
         </field>
         <field name="status">
-            <property name="Attribute">StatusAbstract</property>
+            <property name="Attribute">Status</property>
             <property name="Label">Admin_Common_SystemMessageUserTable/StatusAbstract.Label</property>
         </field>
     </definition>

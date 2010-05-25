@@ -52,14 +52,13 @@
             <property name="Select">linkto[MessageLink].attribute[Value]</property>
             <property name="Label">Admin_Common_SystemMessageAbstract/Value.Label</property>
         </field>
-        <field name="key">
-            <property name="SelectAlternateOID">linkto[MessageLink].oid</property>
-            <property name="Select">linkto[MessageLink].attribute[Key]</property>
-            <property name="Label">Admin_Common_SystemMessageAbstract/Key.Label</property>
-        </field>
         <field name="status">
-            <property name="Attribute">StatusAbstract</property>
+            <property name="Attribute">Status</property>
             <property name="Label">Admin_Common_SystemMessageAbstract/StatusAbstract.Label</property>
+        </field>
+        <field name="created">
+            <property name="Select">linkto[MessageLink].attribute[Created]</property>
+            <property name="Label">Admin_Common_SystemMessageAbstract/Created.Label</property>
         </field>
     </definition>
 

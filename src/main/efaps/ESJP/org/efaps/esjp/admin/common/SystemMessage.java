@@ -18,7 +18,7 @@
  * Last Changed By: $Author$
  */
 
-package org.efaps.esjp.admin.common.message;
+package org.efaps.esjp.admin.common;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,6 +37,7 @@ import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.Update;
 import org.efaps.util.EFapsException;
 
 /**
@@ -47,7 +48,8 @@ import org.efaps.util.EFapsException;
  */
 @EFapsUUID("6e4c3e39-5a28-4c5e-9485-f4a0028827db")
 @EFapsRevision("$Rev$")
-public class SystemMessage implements EventExecution
+public class SystemMessage
+    implements EventExecution
 {
     /**
      * Method for create a new connection of user's.
@@ -73,7 +75,7 @@ public class SystemMessage implements EventExecution
                 final Insert insert = new Insert(type);
                 insert.add(parentAttr, "" + parent.getId());
                 insert.add(childAttr, "" + child.getId());
-                insert.add("StatusAbstract", Status.find("Admin_Common_SystemMessageStatus", "Unread").getId());
+                insert.add("Status", Status.find("Admin_Common_SystemMessageStatus", "Unread").getId());
                 insert.execute();
             }
         }
@@ -96,10 +98,33 @@ public class SystemMessage implements EventExecution
 
         final QueryBuilder queryBldr = new QueryBuilder(Type.get(types));
         queryBldr.addWhereAttrEqValue("UserLink", Context.getThreadContext().getPerson().getId());
+        queryBldr.addWhereAttrNotEqValue("Status",
+                        Status.find("Admin_Common_SystemMessageStatus", "Canceled").getId());
         final InstanceQuery query = queryBldr.getQuery();
         query.execute();
         ret.put(ReturnValues.VALUES, query.getInstances());
 
         return ret;
+    }
+
+    /**
+     * Set the status.
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return ret Return.
+     * @throws EFapsException on error.
+     */
+    public Return setStatus(final Parameter _parameter)
+        throws EFapsException
+    {
+        final String[] allOids = (String[]) _parameter.get(ParameterValues.OTHERS);
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+
+        for (final String rowOid : allOids) {
+            final Update update = new Update(rowOid);
+            update.add("Status",
+                            Status.find("Admin_Common_SystemMessageStatus", (String) properties.get("Status")).getId());
+            update.execute();
+        }
+        return new Return();
     }
 }

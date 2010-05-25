@@ -60,7 +60,7 @@
             <sqlcolumn>USERID</sqlcolumn>
         </attribute>
         <attribute>
-            <name>StatusAbstract</name>
+            <name>Status</name>
             <type>Status</type>
             <typelink>Admin_DataModel_StatusAbstract</typelink>
             <sqltable>Admin_Common_SystemMessage2UserSQLTable</sqltable>
