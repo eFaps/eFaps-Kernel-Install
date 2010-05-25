@@ -41,7 +41,7 @@
       <child>Admin_Common_VersionMyDesk</child>
       <child>DB_StoreMyDesk</child>
       <child>Admin_Common_NumberGeneratorMyDesk</child>
-      <child>Admin_Common_SystemMessageMyDesk</child>
+      <child>Message_MessageMyDesk</child>
     </childs>
   </definition>
 
