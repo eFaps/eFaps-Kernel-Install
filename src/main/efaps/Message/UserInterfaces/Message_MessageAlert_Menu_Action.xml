@@ -23,26 +23,22 @@
 
 -->
 
-<datamodel-statusgroup  xmlns="http://www.efaps.org/xsd"
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>87b82fee-69d3-4e45-aced-0d57c6a0cd1d</uuid>
+<ui-menu xmlns="http://www.efaps.org/xsd"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>27e11641-01f5-4428-80db-241d83d67d79</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Message_MessageStatus</name>
-        <parent>Admin_DataModel_StatusAbstract</parent>
-        <status key="Unread">
-            <description>The message was not read yet.
-            </description>
-        </status>
-        <status key="Read">
-            <description>The message was read.</description>
-        </status>
-        <status key="Canceled">
-            <description>The message was canceled.</description>
-        </status>
+        <name>Message_MessageAlert_Menu_Action</name>
+        <childs>
+            <child>Message_MessageAlert_Menu_Action_SetUnread</child>
+            <child>Message_MessageAlert_Menu_Action_SetRead</child>
+            <child>Message_MessageAlert_Menu_Action_SetCanceled</child>
+        </childs>
     </definition>
 
-</datamodel-statusgroup>
+</ui-menu>
