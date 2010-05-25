@@ -37,6 +37,9 @@
         <childs>
             <child>Admin_Common_SystemMessageTree_Users_Menu_Action_AddExisting</child>
             <child>Admin_Common_SystemMessageTree_Users_Menu_Action_Disconnect</child>
+            <child>Admin_Common_SystemMessageAlert_Menu_Action_SetUnread</child>
+            <child>Admin_Common_SystemMessageAlert_Menu_Action_SetRead</child>
+            <child>Admin_Common_SystemMessageAlert_Menu_Action_SetCanceled</child>
         </childs>
     </definition>
 
