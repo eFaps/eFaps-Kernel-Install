@@ -26,42 +26,48 @@
 <import xmlns="http://www.efaps.org/xsd"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <object type="Admin_RunLevel_RunLevel">
-    <attribute name="RunLevel">webapp</attribute>
-    <attribute name="UUID">590ba27b-26eb-4bdf-ac30-1e1704c5f557</attribute>
-    <linkattribute name="Parent" type="Admin_RunLevel_RunLevel">
-      <queryattribute name="RunLevel">shell</queryattribute>
-    </linkattribute>
+    <object type="Admin_RunLevel_RunLevel">
+        <attribute name="RunLevel">webapp</attribute>
+        <attribute name="UUID">590ba27b-26eb-4bdf-ac30-1e1704c5f557</attribute>
+        <linkattribute name="Parent" type="Admin_RunLevel_RunLevel">
+            <queryattribute name="RunLevel">shell</queryattribute>
+        </linkattribute>
 
-    <object type="Admin_RunLevel_Definition">
-      <parentattribute name="RunLevelID" />
-      <attribute name="Priority">1</attribute>
-      <attribute name="Class">org.efaps.admin.access.AccessType</attribute>
-      <attribute name="Method">initialize</attribute>
+        <object type="Admin_RunLevel_Definition">
+            <parentattribute name="RunLevelID" />
+            <attribute name="Priority">1</attribute>
+            <attribute name="Class">org.efaps.admin.access.AccessType</attribute>
+            <attribute name="Method">initialize</attribute>
+        </object>
+        <object type="Admin_RunLevel_Definition">
+            <parentattribute name="RunLevelID" />
+            <attribute name="Priority">2</attribute>
+            <attribute name="Class">org.efaps.admin.access.AccessSet</attribute>
+            <attribute name="Method">initialize</attribute>
+        </object>
+        <object type="Admin_RunLevel_Definition">
+            <parentattribute name="RunLevelID" />
+            <attribute name="Priority">3</attribute>
+            <attribute name="Class">org.efaps.admin.ui.AbstractUserInterfaceObject</attribute>
+            <attribute name="Method">initialize</attribute>
+        </object>
+        <object type="Admin_RunLevel_Definition">
+            <parentattribute name="RunLevelID" />
+            <attribute name="Priority">4</attribute>
+            <attribute name="Class">org.efaps.admin.event.EventDefinition</attribute>
+            <attribute name="Method">initialize</attribute>
+        </object>
+        <object type="Admin_RunLevel_Definition">
+            <parentattribute name="RunLevelID" />
+            <attribute name="Priority">5</attribute>
+            <attribute name="Class">org.efaps.admin.common.NumberGenerator</attribute>
+            <attribute name="Method">initialize</attribute>
+        </object>
+        <object type="Admin_RunLevel_Definition">
+            <parentattribute name="RunLevelID" />
+            <attribute name="Priority">6</attribute>
+            <attribute name="Class">org.efaps.admin.common.Quartz</attribute>
+            <attribute name="Method">initialize</attribute>
+        </object>
     </object>
-    <object type="Admin_RunLevel_Definition">
-      <parentattribute name="RunLevelID" />
-      <attribute name="Priority">2</attribute>
-      <attribute name="Class">org.efaps.admin.access.AccessSet</attribute>
-      <attribute name="Method">initialize</attribute>
-    </object>
-    <object type="Admin_RunLevel_Definition">
-      <parentattribute name="RunLevelID" />
-      <attribute name="Priority">3</attribute>
-      <attribute name="Class">org.efaps.admin.ui.AbstractUserInterfaceObject</attribute>
-      <attribute name="Method">initialize</attribute>
-    </object>
-    <object type="Admin_RunLevel_Definition">
-      <parentattribute name="RunLevelID" />
-      <attribute name="Priority">4</attribute>
-      <attribute name="Class">org.efaps.admin.event.EventDefinition</attribute>
-      <attribute name="Method">initialize</attribute>
-    </object>
-    <object type="Admin_RunLevel_Definition">
-      <parentattribute name="RunLevelID" />
-      <attribute name="Priority">5</attribute>
-      <attribute name="Class">org.efaps.admin.common.NumberGenerator</attribute>
-      <attribute name="Method">initialize</attribute>
-    </object>
-  </object>
 </import>
