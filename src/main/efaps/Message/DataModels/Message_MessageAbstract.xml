@@ -66,6 +66,12 @@
             <sqlcolumn>VALUE</sqlcolumn>
         </attribute>
         <attribute>
+            <name>Priority</name>
+            <type>Integer</type>
+            <sqltable>Message_MessageSQLTable</sqltable>
+            <sqlcolumn>PRIORITY</sqlcolumn>
+        </attribute>
+        <attribute>
             <name>Key</name>
             <type>String</type>
             <sqltable>Message_MessageSQLTable</sqltable>
