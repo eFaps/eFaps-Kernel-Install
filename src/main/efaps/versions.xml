@@ -154,10 +154,10 @@
             query5.addWhereExprEqValue("Name", "QuartzTrigger");
             query5.addSelect("OID");
             query5.execute();
-            if (!query4.next()) {
+            if (!query5.next()) {
                 DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_QuartzTriggerUser.xml"))
                           .updateInDB();
             }
-    </script>
+        </script>
     </version>
 </install>
