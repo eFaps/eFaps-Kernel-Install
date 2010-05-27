@@ -37,6 +37,9 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.db.SearchQuery;
 import org.efaps.util.EFapsException;
 
@@ -147,36 +150,43 @@ public class ConnectEventToAbstract
         final FieldValue fieldvalue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         final TargetMode mode = fieldvalue.getTargetMode();
 
-        // selected program (if mode edit)
         long selectedId = 0;
         if (mode.equals(TargetMode.EDIT)) {
             final Instance callInstance = _parameter.getCallInstance();
-            final SearchQuery query = new SearchQuery();
-            query.setObject(callInstance);
-            query.addSelect("JavaProg");
-            query.execute();
-            query.next();
-            selectedId = (Long) query.get("JavaProg");
-            query.close();
+            final PrintQuery print = new PrintQuery(callInstance);
+            //Admin_Common_QuartzTriggerAbstract
+            final boolean check = callInstance.getType().getParentType()
+                                        .getUUID().toString().equals("b1267287-1532-4a33-9197-144f06f4944c");
+            if (!check) {
+                print.addAttribute("JavaProg");
+            } else {
+                print.addAttribute("ESJPLink");
+            }
+            if (print.execute()) {
+                if (!check) {
+                    selectedId = print.<Long>getAttribute("JavaProg");
+                } else {
+                    selectedId = print.<Long>getAttribute("ESJPLink");
+                }
+            }
         }
 
         // search for all programs
-        final SearchQuery query = new SearchQuery();
-        query.setQueryTypes(Type.get(ConnectEventToAbstract.UUID_PROGRAM).getName());
-        query.addSelect("Name");
-        query.addSelect("ID");
-        query.execute();
-
-        final Map<String, Long> name2id = new TreeMap<String, Long>();
-        while (query.next()) {
-            name2id.put((String) query.get("Name"), (Long) query.get("ID"));
+        final QueryBuilder queryBldr = new QueryBuilder(Type.get(ConnectEventToAbstract.UUID_PROGRAM));
+        final MultiPrintQuery print = queryBldr.getPrint();
+        print.addAttribute("Name","ID");
+        print.execute();
+        final Map<String, Integer> name2id = new TreeMap<String, Integer>();
+        while (print.next()) {
+            name2id.put( print.<String>getAttribute("Name"), print.<Integer>getAttribute("ID"));
         }
+
         // build drop down list
         final String fieldName = fieldvalue.getField().getName();
         final StringBuilder ret = new StringBuilder();
         ret.append("<select name=\"").append(fieldName).append("\" size=\"1\">");
-        for (final Entry<String, Long> entry : name2id.entrySet()) {
-            final long id = entry.getValue();
+        for (final Entry<String, Integer> entry : name2id.entrySet()) {
+            final int id = entry.getValue();
             final String name =  entry.getKey();
             ret.append("<option value=\"").append(id).append("\"");
             if (id == selectedId) {
