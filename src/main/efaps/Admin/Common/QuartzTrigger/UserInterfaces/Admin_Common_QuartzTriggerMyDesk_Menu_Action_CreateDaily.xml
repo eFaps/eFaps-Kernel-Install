@@ -16,33 +16,30 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          jmox
+ Author:          The eFaps Team
  Revision:        $Rev$
  Last Changed:    $Date$
  Last Changed By: $Author$
 
 -->
 
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>4177cc04-cc21-4894-8b51-a6f085adc462</uuid>
+<ui-command xmlns="http://www.efaps.org/xsd"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>9b7038b8-2528-472b-894b-28dd83785fb5</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Common_AbstractMyDesk</name>
-        <childs>
-            <child>Admin_Common_DBPropertiesMyDesk</child>
-            <child>Admin_Common_DBPropertiesBundleMyDesk</child>
-            <child>Admin_Common_SystemConfigurationMyDesk</child>
-            <child>Admin_Common_VersionMyDesk</child>
-            <child>DB_StoreMyDesk</child>
-            <child>Admin_Common_NumberGeneratorMyDesk</child>
-            <child>Admin_Common_QuartzTriggerMyDesk</child>
-        </childs>
+        <name>Admin_Common_QuartzTriggerMyDesk_Menu_Action_CreateDaily</name>
+        <!-- target definitions -->
+        <target>
+            <form>Admin_Common_QuartzTriggerDailyForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Create" />
+        </target>
+        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetMode">create</property>
+        <property name="TargetCreateType">Admin_Common_QuartzTriggerDaily</property>
     </definition>
-
-</ui-menu>
+</ui-command>
