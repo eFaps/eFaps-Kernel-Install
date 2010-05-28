@@ -176,17 +176,17 @@ public class ConnectEventToAbstract
         final MultiPrintQuery print = queryBldr.getPrint();
         print.addAttribute("Name","ID");
         print.execute();
-        final Map<String, Integer> name2id = new TreeMap<String, Integer>();
+        final Map<String, Long> name2id = new TreeMap<String, Long>();
         while (print.next()) {
-            name2id.put( print.<String>getAttribute("Name"), print.<Integer>getAttribute("ID"));
+            name2id.put( print.<String>getAttribute("Name"), print.<Long>getAttribute("ID"));
         }
 
         // build drop down list
         final String fieldName = fieldvalue.getField().getName();
         final StringBuilder ret = new StringBuilder();
         ret.append("<select name=\"").append(fieldName).append("\" size=\"1\">");
-        for (final Entry<String, Integer> entry : name2id.entrySet()) {
-            final int id = entry.getValue();
+        for (final Entry<String, Long> entry : name2id.entrySet()) {
+            final long id = entry.getValue();
             final String name =  entry.getKey();
             ret.append("<option value=\"").append(id).append("\"");
             if (id == selectedId) {
