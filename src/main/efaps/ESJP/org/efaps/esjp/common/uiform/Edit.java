@@ -36,6 +36,8 @@ import org.efaps.admin.datamodel.AttributeSet;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.attributetype.AbstractFileType;
+import org.efaps.admin.datamodel.attributetype.RateType;
+import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.EventDefinition;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.EventType;
@@ -132,8 +134,7 @@ public class Edit
         final List<FieldTable> fieldTables = new ArrayList<FieldTable>();
         final List<Field> fields = new ArrayList<Field>();
 
-        final SearchQuery query = new SearchQuery();
-        query.setObject(_instance);
+        final PrintQuery print = new PrintQuery(_instance);
         for (final Field field : _form.getFields()) {
             if (field instanceof FieldSet) {
                 fieldsets.add((FieldSet) field);
@@ -150,15 +151,14 @@ public class Edit
                     // check if not a fileupload
                     if (attr != null
                                   && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType().getClassRepr())) {
-                        query.addSelect(attrName);
+                        print.addAttribute(attrName);
                         fields.add(field);
                     }
                 }
             }
         }
-        query.execute();
         final Context context = Context.getThreadContext();
-        if (query.next()) {
+        if (print.execute()) {
             final Update update = new Update(_instance);
             for (final Field field : fields) {
                 if (context.getParameters().containsKey(field.getName())) {
@@ -166,16 +166,11 @@ public class Edit
                     final String attrName = field.getExpression() == null
                                     ? field.getAttribute()
                                     : field.getExpression();
-                    final Object object = query.get(attrName);
+                    final Object object =  print.getAttribute(attrName);
                     final String oldValue = object != null ? object.toString() : null;
                     if (!newValue.equals(oldValue)) {
                         final Attribute attr = _instance.getType().getAttribute(attrName);
-                        if (attr.hasUoM()) {
-                            update.add(attr, new Object[] { context.getParameter(field.getName()),
-                                            context.getParameter(field.getName() + "UoM") });
-                        } else {
-                            update.add(attr, newValue);
-                        }
+                        add2Update(update, attr, field.getName());
                     }
                 }
             }
@@ -184,6 +179,32 @@ public class Edit
         updateFieldSets(_parameter, _instance, fieldsets);
         updateFieldTable(_parameter, _instance, fieldTables);
         return ret;
+    }
+
+    /**
+     * Add to the given update.
+     * @param _update   Update
+     * @param _attr     Attribute
+     * @param _fieldName name of the Field
+     * @throws EFapsException on error
+     */
+    protected void add2Update(final Update _update,
+                              final Attribute _attr,
+                              final String _fieldName)
+        throws EFapsException
+    {
+        final Context context = Context.getThreadContext();
+        if (_attr.hasUoM()) {
+            _update.add(_attr, new Object[] { context.getParameter(_fieldName),
+                            context.getParameter(_fieldName + "UoM") });
+        } else if (_attr.getAttributeType().getDbAttrType() instanceof RateType) {
+            final String value = context.getParameter(_fieldName);
+            final boolean inverted = "true".equalsIgnoreCase(context.getParameter(_fieldName
+                            + RateUI.INVERTEDSUFFIX));
+            _update.add(_attr, new Object[] { inverted ? 1 : value, inverted ? value : 1 });
+        } else {
+            _update.add(_attr, context.getParameter(_fieldName));
+        }
     }
 
     /**
@@ -239,12 +260,7 @@ public class Edit
                             final String oldValue = object != null ? object.toString() : null;
                             final String newValue = _parameter.getParameterValue(fieldName);
                             if (!newValue.equals(oldValue)) {
-                                if (child.hasUoM()) {
-                                    setupdate.add(child, new Object[] { newValue,
-                                                    _parameter.getParameterValue(fieldName + "UoM") });
-                                } else {
-                                    setupdate.add(child, newValue);
-                                }
+                                add2Update(setupdate, child, fieldName);
                                 update = true;
                             }
                         }
@@ -275,12 +291,7 @@ public class Edit
                             final String fieldName = fieldset.getName() + "_eFapsNew_"
                                             + nf.format(Integer.parseInt(ayCoord)) + nf.format(xCoord);
                             if (_parameter.getParameters().containsKey(fieldName)) {
-                                if (child.hasUoM()) {
-                                    insert.add(child, new Object[] { _parameter.getParameterValue(fieldName),
-                                                    _parameter.getParameterValue(fieldName + "UoM") });
-                                } else {
-                                    insert.add(child, _parameter.getParameterValue(fieldName));
-                                }
+                                add2Update(insert, child, fieldName);
                             }
                             xCoord++;
                         }
@@ -391,17 +402,10 @@ public class Edit
                                             : field.getExpression();
                             if (attrName != null && field.isEditableDisplay(TargetMode.EDIT)) {
                                 final Attribute attr = classification.getAttribute(attrName);
-                                if (attr != null
-                                                && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType()
+                                if (attr != null && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType()
                                                 .getClassRepr())) {
                                     if (_parameter.getParameters().containsKey(field.getName())) {
-                                        final String value = _parameter.getParameterValue(field.getName());
-                                        if (attr.hasUoM()) {
-                                            classInsert.add(attr, new Object[] { value,
-                                                            _parameter.getParameterValue(field.getName() + "UoM") });
-                                        } else {
-                                            classInsert.add(attr, value);
-                                        }
+                                        add2Update(classInsert, attr, field.getName());
                                     }
                                 }
                             }
@@ -423,8 +427,7 @@ public class Edit
                                             : field.getExpression();
                             if (attrName != null && field.isEditableDisplay(TargetMode.EDIT)) {
                                 final Attribute attr = classification.getAttribute(attrName);
-                                if (attr != null
-                                                && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType()
+                                if (attr != null && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType()
                                                 .getClassRepr())) {
                                     if (_parameter.getParameters().containsKey(field.getName())) {
                                         final String newValue = _parameter.getParameterValue(field.getName());
@@ -432,12 +435,7 @@ public class Edit
                                         final String oldValue = value != null ? value.toString() : null;
                                         if (!newValue.equals(oldValue)) {
                                             execUpdate = true;
-                                            if (attr.hasUoM()) {
-                                                update.add(attr, new Object[] { newValue,
-                                                               _parameter.getParameterValue(field.getName() + "UoM") });
-                                            } else {
-                                                update.add(attr, newValue);
-                                            }
+                                            add2Update(update, attr, field.getName());
                                         }
                                     }
                                 }
@@ -612,7 +610,6 @@ public class Edit
                     }
                 }
             }
-
         }
         return rows;
     }

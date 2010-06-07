@@ -31,6 +31,8 @@ import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.AttributeSet;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.attributetype.AbstractFileType;
+import org.efaps.admin.datamodel.attributetype.RateType;
+import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -113,13 +115,7 @@ public class Create implements EventExecution
                     if (attr != null
                                   && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType().getClassRepr())) {
                         if (_parameter.getParameters().containsKey(field.getName())) {
-                            final String value = _parameter.getParameterValue(field.getName());
-                            if (attr.hasUoM()) {
-                                final String uom = _parameter.getParameterValue(field.getName() + "UoM");
-                                insert.add(attr, new Object[] { value, uom });
-                            } else {
-                                insert.add(attr, value);
-                            }
+                            add2Insert(insert, attr, field.getName());
                         }
                     }
                 }
@@ -135,6 +131,33 @@ public class Create implements EventExecution
 
         return instance;
     }
+
+    /**
+     * Add to the given update.
+     * @param _insert   Insert
+     * @param _attr     Attribute
+     * @param _fieldName name of the Field
+     * @throws EFapsException on error
+     */
+    protected void add2Insert(final Insert _insert,
+                              final Attribute _attr,
+                              final String _fieldName)
+        throws EFapsException
+    {
+        final Context context = Context.getThreadContext();
+        if (_attr.hasUoM()) {
+            _insert.add(_attr, new Object[] { context.getParameter(_fieldName),
+                            context.getParameter(_fieldName + "UoM") });
+        } else if (_attr.getAttributeType().getDbAttrType() instanceof RateType) {
+            final String value = context.getParameter(_fieldName);
+            final boolean inverted = "true".equalsIgnoreCase(context.getParameter(_fieldName
+                            + RateUI.INVERTEDSUFFIX));
+            _insert.add(_attr, new Object[] { inverted ? 1 : value, inverted ? value : 1 });
+        } else {
+            _insert.add(_attr, context.getParameter(_fieldName));
+        }
+    }
+
 
     /**
      * Method to create the related fieldsets if parameters are given for them.
@@ -175,12 +198,7 @@ public class Create implements EventExecution
                             final String fieldName = fieldset.getName() + "_eFapsNew_"
                                             + nf.format(Integer.parseInt(yCoord)) + nf.format(xCoord);
                             if (_parameter.getParameters().containsKey(fieldName)) {
-                                if (child.hasUoM()) {
-                                    insert.add(child, new Object[] { _parameter.getParameterValue(fieldName),
-                                                    _parameter.getParameterValue(fieldName + "UoM") });
-                                } else {
-                                    insert.add(child, _parameter.getParameterValue(fieldName));
-                                }
+                                add2Insert(insert, child, fieldName);
                             }
                             xCoord++;
                         }
@@ -285,18 +303,11 @@ public class Create implements EventExecution
                         if (field instanceof FieldSet) {
                             fieldsets.add((FieldSet) field);
                         } else {
-
                             final Attribute attr = classification.getAttribute(attrName);
                             if (attr != null
                                   && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType().getClassRepr())) {
                                 if (_parameter.getParameters().containsKey(field.getName())) {
-                                    final String value = _parameter.getParameterValue(field.getName());
-                                    if (attr.hasUoM()) {
-                                        final String uom = _parameter.getParameterValue(field.getName() + "UoM");
-                                        classInsert.add(attr, new Object[] { value, uom });
-                                    } else {
-                                        classInsert.add(attr, value);
-                                    }
+                                    add2Insert(classInsert, attr, field.getName());
                                 }
                             }
                         }
