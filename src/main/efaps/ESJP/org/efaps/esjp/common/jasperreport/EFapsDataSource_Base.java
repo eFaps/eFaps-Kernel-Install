@@ -145,7 +145,7 @@ public abstract class EFapsDataSource_Base
             final InstanceQuery query = queryBuilder.getQuery();
             query.setIncludeChildTypes(this.expandChild);
             query.execute();
-            instances.addAll(query.getInstances());
+            instances.addAll(query.getValues());
         } else  if (this.expand != null) {
             final SearchQuery query = new SearchQuery();
             query.setExpand(this.instance, this.expand);

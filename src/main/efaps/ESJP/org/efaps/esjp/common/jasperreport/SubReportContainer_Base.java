@@ -96,7 +96,7 @@ abstract class SubReportContainer_Base extends HashMap<String, JRDataSource>
                 query.execute();
                 Instance instance = null;
                 if (query.next()) {
-                    instance = query.getCurrentInstance();
+                    instance = query.getCurrentValue();
                 }
                 final Checkout checkout = new Checkout(instance);
                 final InputStream iin = checkout.execute();

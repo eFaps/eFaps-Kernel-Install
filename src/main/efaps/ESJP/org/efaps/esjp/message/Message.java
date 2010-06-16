@@ -104,7 +104,7 @@ public class Message
                         Status.find(UUID.fromString("87b82fee-69d3-4e45-aced-0d57c6a0cd1d"), "Canceled").getId());
         final InstanceQuery query = queryBldr.getQuery();
         query.execute();
-        ret.put(ReturnValues.VALUES, query.getInstances());
+        ret.put(ReturnValues.VALUES, query.getValues());
 
         return ret;
     }

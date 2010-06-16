@@ -117,8 +117,8 @@ public class Search implements EventExecution
 
         final List<Instance> instances = new ArrayList<Instance>();
         while (query.next()) {
-            if (query.getCurrentInstance().isValid()) {
-                instances.add(query.getCurrentInstance());
+            if (query.getCurrentValue().isValid()) {
+                instances.add(query.getCurrentValue());
             }
         }
         ret.put(ReturnValues.VALUES, instances);

@@ -116,7 +116,7 @@ public abstract class StandartReport_Base implements EventExecution
         query.execute();
         Instance instance = null;
         if (query.next()) {
-            instance = query.getCurrentInstance();
+            instance = query.getCurrentValue();
         } else {
             throw new EFapsException(StandartReport_Base.class, "execute.ReportNotFound");
         }

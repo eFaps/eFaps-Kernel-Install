@@ -91,7 +91,7 @@ public class UIUpdate
         final InstanceQuery query = queryBldr.getQuery();
         query.execute();
         if (query.next()) {
-            final Instance addInst = query.getCurrentInstance();
+            final Instance addInst = query.getCurrentValue();
             // get the Menu that the Menu must be connected to
             final QueryBuilder queryBldrMenu = new QueryBuilder(Type.get(_types[1]));
             queryBldrMenu.addWhereAttrEqValue("UUID", _uuidMenu);
@@ -99,7 +99,7 @@ public class UIUpdate
             queryMenu.execute();
             if (queryMenu.next()) {
                 // get the relation and if it does not exist create one
-                final Instance menuInst = queryMenu.getCurrentInstance();
+                final Instance menuInst = queryMenu.getCurrentValue();
 
                 final QueryBuilder queryBldrRel = new QueryBuilder(Type.get(_types[2]));
                 queryBldrRel.addWhereAttrEqValue(_types[3], menuInst.getId());
@@ -178,12 +178,12 @@ public class UIUpdate
             queryMenu.execute();
             if (queryMenu.next()) {
                 final QueryBuilder queryBldr = new QueryBuilder(Type.get(_types[1]));
-                queryBldr.addWhereAttrEqValue(_types[2], queryMenu.getCurrentInstance().getId());
-                queryBldr.addWhereAttrEqValue(_types[3], queryRem.getCurrentInstance().getId());
+                queryBldr.addWhereAttrEqValue(_types[2], queryMenu.getCurrentValue().getId());
+                queryBldr.addWhereAttrEqValue(_types[3], queryRem.getCurrentValue().getId());
                 final InstanceQuery query = queryBldr.getQuery();
                 query.execute();
                 if (query.next()) {
-                    final Delete del = new Delete(query.getCurrentInstance());
+                    final Delete del = new Delete(query.getCurrentValue());
                     del.execute();
                 }
             }
