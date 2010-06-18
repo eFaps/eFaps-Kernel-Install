@@ -17,9 +17,9 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
+ Revision:        $Rev: 3936 $
+ Last Changed:    $Date: 2010-03-31 19:21:12 -0500 (Wed, 31 Mar 2010) $
+ Last Changed By: $Author: jan.moxter $
 
 -->
 
@@ -27,30 +27,20 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>9a46eb9e-6c36-4e6f-a118-bafbfac73d26</uuid>
+    <uuid>3d4e371c-7a54-45a1-811c-bb1bed3954f0</uuid>
     <file-application>eFaps-Kernel</file-application>
-    <file-revision>$Rev$</file-revision>
+    <file-revision>$Rev: 3936 $</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Event_Definition_MyDesk</name>
-        <icon>Admin_Event_DefinitionImage</icon>
-        <!-- access -->
-        <access>
-            <role>Administration</role>
-        </access>
+        <name>Admin_Event_Definition_MyDesk_Menu_Action_Delete</name>
+        <icon>Admin_Event_Definition+Delete+Image</icon>
         <!-- target definitions -->
         <target>
-            <table>Admin_Event_DefinitionTable</table>
-            <!--menu>TeamWork_RootCollectionMyDesk_Menu</menu-->
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Event_Definition</property>
-                <property name="ExpandChildTypes">true</property>
-            </evaluate>
+            <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
         </target>
         <!-- properties -->
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
     </definition>
-
 </ui-command>
