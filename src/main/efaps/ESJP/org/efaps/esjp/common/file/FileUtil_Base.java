@@ -30,14 +30,15 @@ import org.efaps.db.Context;
 import org.efaps.util.EFapsException;
 
 /**
- * TODO comment!
+ * Utility class used to create empty files in a user depended temporarily
+ * file-folder architecture.
  *
  * @author The eFaps Team
  * @version $Id$
  */
 @EFapsUUID("b3bae05a-8db6-4a89-9f84-37564945049d")
 @EFapsRevision("$Rev$")
-public class FileUtil_Base
+public abstract class FileUtil_Base
 {
     /**
      * Name of the temp folder.
@@ -46,13 +47,26 @@ public class FileUtil_Base
 
     /**
      * Method to get a file with given name and ending.
+     * Spaces will be replaced by underscores.
      * @param _name     name for the file
      * @param _ending   ending for the file
      * @return file
      * @throws EFapsException on error
      */
-    public static File getFile(final String _name,
-                               final String _ending)
+    public File getFile(final String _name,
+                        final String _ending)
+        throws EFapsException
+    {
+        return getFile(_name.replace(File.separator, "_").replace(" ", "_") + "." + _ending);
+    }
+
+    /**
+     * Method to get a file with given name and ending.
+     * @param _name     name for the file
+     * @return file
+     * @throws EFapsException on error
+     */
+    public File getFile(final String _name)
         throws EFapsException
     {
         File ret = null;
@@ -68,10 +82,9 @@ public class FileUtil_Base
             if (!userFolder.exists()) {
                 userFolder.mkdirs();
             }
-            ret = new File(userFolder, _name.replace(File.separator, "_").replace(" ", "_") + "." + _ending);
+            ret = new File(userFolder, _name);
         } catch (final IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new EFapsException(FileUtil_Base.class, "IOException", e);
         }
         return ret;
     }

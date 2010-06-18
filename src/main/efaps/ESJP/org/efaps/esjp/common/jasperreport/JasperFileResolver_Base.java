@@ -26,12 +26,16 @@ import java.io.IOException;
 
 import net.sf.jasperreports.engine.util.FileResolver;
 
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Checkout;
-import org.efaps.db.SearchQuery;
+import org.efaps.db.InstanceQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.common.file.FileUtil;
 import org.efaps.util.EFapsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class is used to load files from the eFaps Database into an JasperReport.
@@ -52,8 +56,13 @@ import org.efaps.util.EFapsException;
  */
 @EFapsUUID("4733dd43-2ef3-4572-a1e9-c820567e9a36")
 @EFapsRevision("$Rev$")
-public abstract class JasperFileResolver_Base implements FileResolver
+public abstract class JasperFileResolver_Base
+    implements FileResolver
 {
+    /**
+     * Logging instance used to give logging information of this class.
+     */
+    protected static final Logger LOG = LoggerFactory.getLogger(JasperFileResolver_Base.class);
 
     /**
      * @see net.sf.jasperreports.engine.util.FileResolver#resolveFile(java.lang.String)
@@ -64,32 +73,30 @@ public abstract class JasperFileResolver_Base implements FileResolver
     {
         File file = null;
         try {
-            final SearchQuery query = new SearchQuery();
+            final QueryBuilder queryBldr;
             String name = null;
             if (_jasperFileName.startsWith("JasperImage.")) {
                 name = _jasperFileName.replace("JasperImage.", "");
-                query.setQueryTypes("Admin_Program_JasperImage");
-            } else if (_jasperFileName.startsWith("JasperReport.")) {
+                queryBldr = new QueryBuilder(Type.get("Admin_Program_JasperImage"));
+            } else {
                 name = _jasperFileName.replace("JasperReport.", "");
-                query.setQueryTypes("Admin_Program_JasperReportCompiled");
+                queryBldr = new QueryBuilder(Type.get("Admin_Program_JasperReportCompiled"));
             }
-            query.addWhereExprEqValue("Name", name);
-            query.addSelect("OID");
+            queryBldr.addWhereAttrEqValue("Name", name);
+            final InstanceQuery query = queryBldr.getQuery();
             query.execute();
             if (query.next()) {
-                final Checkout checkout = new Checkout((String) query.get("OID"));
+                final Checkout checkout = new Checkout(query.getCurrentValue());
                 checkout.preprocess();
-                file = FileUtil.getFile(checkout.getFileName(), "jasper");
+                file = new FileUtil().getFile(checkout.getFileName(), "jasper");
                 final FileOutputStream out = new FileOutputStream(file);
                 checkout.execute(out);
                 out.close();
             }
         } catch (final EFapsException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            JasperFileResolver_Base.LOG.error("error in JasperFileResolver.resolveFile", e);
         } catch (final IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            JasperFileResolver_Base.LOG.error("error in JasperFileResolver.resolveFile", e);
         }
         return file;
     }

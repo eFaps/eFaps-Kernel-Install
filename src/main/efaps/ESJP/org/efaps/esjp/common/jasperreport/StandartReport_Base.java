@@ -61,13 +61,11 @@ import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
-import org.efaps.esjp.common.file.FileUtil_Base;
+import org.efaps.esjp.common.file.FileUtil;
 import org.efaps.util.EFapsException;
 
 
 /**
- * TODO comment!
- *
  * "Mime" as property in the calling command, or "mime" as parameter from a form.
  * Command overrules!
  *
@@ -76,7 +74,8 @@ import org.efaps.util.EFapsException;
  */
 @EFapsUUID("c3a1f5f8-b263-4ad4-b144-db68437074cc")
 @EFapsRevision("$Rev$")
-public abstract class StandartReport_Base implements EventExecution
+public abstract class StandartReport_Base
+    implements EventExecution
 {
     /**
      * Parameter map that will be passed to the jasper FillManager.
@@ -185,12 +184,12 @@ public abstract class StandartReport_Base implements EventExecution
         File file = null;
 
         if ("pdf".equalsIgnoreCase(_mime) || _mime == null) {
-            file = FileUtil_Base.getFile(this.fileName == null ? "PDF" : this.fileName, "pdf");
+            file = new FileUtil().getFile(this.fileName == null ? "PDF" : this.fileName, "pdf");
             final FileOutputStream os = new FileOutputStream(file);
             JasperExportManager.exportReportToPdfStream(_jasperPrint, os);
             os.close();
         } else if ("odt".equalsIgnoreCase(_mime)) {
-            file = FileUtil_Base.getFile(this.fileName == null ? "ODT" : this.fileName, "odt");
+            file = new FileUtil().getFile(this.fileName == null ? "ODT" : this.fileName, "odt");
             final FileOutputStream os = new FileOutputStream(file);
             final JROdtExporter exporter = new JROdtExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
@@ -198,7 +197,7 @@ public abstract class StandartReport_Base implements EventExecution
             exporter.exportReport();
             os.close();
         } else if ("ods".equalsIgnoreCase(_mime)) {
-            file = FileUtil_Base.getFile(this.fileName == null ? "ODS" : this.fileName, "ods");
+            file = new FileUtil().getFile(this.fileName == null ? "ODS" : this.fileName, "ods");
             final FileOutputStream os = new FileOutputStream(file);
             final JROdsExporter exporter = new JROdsExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
@@ -206,7 +205,7 @@ public abstract class StandartReport_Base implements EventExecution
             exporter.exportReport();
             os.close();
         } else if ("xls".equalsIgnoreCase(_mime)) {
-            file = FileUtil_Base.getFile(this.fileName == null ? "XLS" : this.fileName, "xls");
+            file = new FileUtil().getFile(this.fileName == null ? "XLS" : this.fileName, "xls");
             final FileOutputStream os = new FileOutputStream(file);
             final JRXlsExporter  exporter = new JRXlsExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
@@ -221,7 +220,7 @@ public abstract class StandartReport_Base implements EventExecution
             exporter.exportReport();
             os.close();
         } else if ("rtf".equalsIgnoreCase(_mime)) {
-            file = FileUtil_Base.getFile(this.fileName == null ? "RTF" : this.fileName, "rtf");
+            file = new FileUtil().getFile(this.fileName == null ? "RTF" : this.fileName, "rtf");
             final FileOutputStream os = new FileOutputStream(file);
             final JRRtfExporter exporter = new JRRtfExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
@@ -229,7 +228,7 @@ public abstract class StandartReport_Base implements EventExecution
             exporter.exportReport();
             os.close();
         } else if ("docx".equalsIgnoreCase(_mime)) {
-            file = FileUtil_Base.getFile(this.fileName == null ? "DOCX" : this.fileName, "docx");
+            file = new FileUtil().getFile(this.fileName == null ? "DOCX" : this.fileName, "docx");
             final FileOutputStream os = new FileOutputStream(file);
             final JRDocxExporter exporter = new JRDocxExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
@@ -237,7 +236,7 @@ public abstract class StandartReport_Base implements EventExecution
             exporter.exportReport();
             os.close();
         } else if ("txt".equalsIgnoreCase(_mime)) {
-            file = FileUtil_Base.getFile(this.fileName == null ? "TXT" : this.fileName, "txt");
+            file = new FileUtil().getFile(this.fileName == null ? "TXT" : this.fileName, "txt");
             final FileOutputStream os = new FileOutputStream(file);
             final JRTextExporter exporter = new JRTextExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
