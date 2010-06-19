@@ -208,7 +208,8 @@ public abstract class StandartReport_Base
         } else if ("xls".equalsIgnoreCase(_mime)) {
             file = new FileUtil().getFile(this.fileName == null ? "XLS" : this.fileName, "xls");
             final FileOutputStream os = new FileOutputStream(file);
-            final JRXlsExporter  exporter = new JRXlsExporter();
+            final JRXlsExporter exporter = new JRXlsExporter();
+            _jasperPrint.setName(_jasperPrint.getName().replace("/", "-"));
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
             exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, os);
             exporter.setParameter(JRXlsAbstractExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
