@@ -20,8 +20,6 @@
 
 package org.efaps.esjp.db;
 
-import org.efaps.admin.EFapsClassNames;
-import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
@@ -31,6 +29,7 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
+import org.efaps.ci.CIDB;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.util.EFapsException;
@@ -49,19 +48,19 @@ public class Store implements EventExecution
     public Return execute(final Parameter _parameter) throws EFapsException
     {
         final Return ret = new Return();
-        final Insert insert = new Insert(Type.get(EFapsClassNames.DB_STORE));
+        final Insert insert = new Insert(CIDB.Store);
         insert.add("Name", _parameter.getParameterValue("name"));
         insert.add("UUID", _parameter.getParameterValue("uuid"));
         insert.add("Revision", _parameter.getParameterValue("revision"));
         insert.execute();
         final Instance instance = insert.getInstance();
 
-        final Insert resourceInsert = new Insert(Type.get(EFapsClassNames.DB_RESOURCE));
+        final Insert resourceInsert = new Insert(CIDB.Resource);
         resourceInsert.add("Name", _parameter.getParameterValue("resource4create"));
         resourceInsert.execute();
         final Instance resource = resourceInsert.getInstance();
 
-        final Insert connect = new Insert(Type.get(EFapsClassNames.DB_STORE2RESOURCE));
+        final Insert connect = new Insert(CIDB.Store2Resource);
         connect.add("From", ((Long) instance.getId()).toString());
         connect.add("To", ((Long) resource.getId()).toString());
         connect.execute();

@@ -30,11 +30,10 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 
-import org.efaps.admin.EFapsClassNames;
-import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIAdminProgram;
 import org.efaps.db.Checkout;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -89,8 +88,7 @@ abstract class SubReportContainer_Base extends HashMap<String, JRDataSource>
         JRDataSource ret = super.get(_key);
         if (ret == null) {
             try {
-                final QueryBuilder queryBldr = new QueryBuilder(
-                                Type.get(EFapsClassNames.ADMIN_PROGRAM_JASPERREPORTCOMPILED));
+                final QueryBuilder queryBldr = new QueryBuilder(CIAdminProgram.JasperReportCompiled);
                 queryBldr.addWhereAttrEqValue("Name", _key);
                 final InstanceQuery query = queryBldr.getQuery();
                 query.execute();

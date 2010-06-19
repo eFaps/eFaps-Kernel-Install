@@ -47,8 +47,6 @@ import net.sf.jasperreports.engine.export.oasis.JROdtExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
 import net.sf.jasperreports.engine.util.JRLoader;
 
-import org.efaps.admin.EFapsClassNames;
-import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -56,6 +54,7 @@ import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIAdminProgram;
 import org.efaps.db.Checkout;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
@@ -63,6 +62,8 @@ import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.common.file.FileUtil;
 import org.efaps.util.EFapsException;
+
+
 
 
 /**
@@ -80,7 +81,7 @@ public abstract class StandartReport_Base
     /**
      * Parameter map that will be passed to the jasper FillManager.
      */
-    private final HashMap<String, Object> jrParameters = new HashMap<String, Object>();
+    private final Map<String, Object> jrParameters = new HashMap<String, Object>();
 
     /**
      * The name for the returned file.
@@ -109,7 +110,7 @@ public abstract class StandartReport_Base
         this.jrParameters.put(JRParameter.REPORT_LOCALE, Context.getThreadContext().getLocale());
         this.jrParameters.put(JRParameter.REPORT_RESOURCE_BUNDLE, new EFapsResourceBundle());
 
-        final QueryBuilder queryBldr = new QueryBuilder(Type.get(EFapsClassNames.ADMIN_PROGRAM_JASPERREPORTCOMPILED));
+        final QueryBuilder queryBldr = new QueryBuilder(CIAdminProgram.JasperReportCompiled);
         queryBldr.addWhereAttrEqValue("Name", name);
         final InstanceQuery query = queryBldr.getQuery();
         query.execute();
@@ -254,7 +255,7 @@ public abstract class StandartReport_Base
      *
      * @return value of instance variable {@link #jrParameters}
      */
-    public HashMap<String, Object> getJrParameters()
+    public Map<String, Object> getJrParameters()
     {
         return this.jrParameters;
     }

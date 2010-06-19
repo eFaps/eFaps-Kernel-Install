@@ -26,14 +26,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.apache.commons.lang.StringEscapeUtils;
-
-import org.efaps.admin.EFapsClassNames;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIAdminProgram;
 import org.efaps.db.Checkout;
 import org.efaps.db.Instance;
 import org.efaps.db.SearchQuery;
@@ -239,7 +238,7 @@ public class FormatOutput implements EventExecution
     {
         final Return ret = new Return();
         Instance instance = _parameter.getCallInstance();
-        if (instance.getType().getUUID().equals(EFapsClassNames.ADMIN_PROGRAM_WIKI.getUuid())) {
+        if (instance.getType().getUUID().equals(CIAdminProgram.Wiki.uuid)) {
             final SearchQuery query = new SearchQuery();
             query.setExpand(instance, "Admin_Program_WikiCompiled\\ProgramLink");
             query.addSelect("OID");
