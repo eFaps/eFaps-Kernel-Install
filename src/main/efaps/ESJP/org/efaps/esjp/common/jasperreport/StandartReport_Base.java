@@ -124,6 +124,7 @@ public abstract class StandartReport_Base
         final InputStream iin = checkout.execute();
         try {
             final JasperReport jasperReport = (JasperReport) JRLoader.loadObject(iin);
+            checkout.close();
             IeFapsDataSource dataSource;
             if (dataSourceClass != null) {
                 final Class<?> clazz = Class.forName(dataSourceClass);
