@@ -20,6 +20,7 @@
 
 package org.efaps.esjp.common.jasperreport;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -40,6 +41,8 @@ import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.util.EFapsException;
 
+import common.Logger;
+
 /**
  * TODO comment!
  *
@@ -48,8 +51,14 @@ import org.efaps.util.EFapsException;
  */
 @EFapsUUID("ef631aef-45d8-4192-90c9-56898175228d")
 @EFapsRevision("$Rev$")
-abstract class SubReportContainer_Base extends HashMap<String, JRDataSource>
+abstract class SubReportContainer_Base
+    extends HashMap<String, JRDataSource>
 {
+    /**
+     * Logger used fort his class.
+     */
+    protected static final Logger LOG = Logger.getLogger(SubReportContainer_Base.class);
+
     /**
      * Needed for serialization.
      */
@@ -99,7 +108,7 @@ abstract class SubReportContainer_Base extends HashMap<String, JRDataSource>
                 final Checkout checkout = new Checkout(instance);
                 final InputStream iin = checkout.execute();
                 final JasperReport jasperReport = (JasperReport) JRLoader.loadObject(iin);
-
+                iin.close();
                 IeFapsDataSource dataSourceNew;
                 if (this.dataSource != null) {
                     final Class<?> clazz = Class.forName(this.dataSource.getClass().getName());
@@ -114,32 +123,25 @@ abstract class SubReportContainer_Base extends HashMap<String, JRDataSource>
                 ret = dataSourceNew;
                 super.put((String) _key, ret);
             } catch (final JRException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                SubReportContainer_Base.LOG.error("error accessing JRDataSource from SubReportContainer", e);
             } catch (final EFapsException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                SubReportContainer_Base.LOG.error("error accessing JRDataSource from SubReportContainer", e);
             } catch (final ClassNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                SubReportContainer_Base.LOG.error("error accessing JRDataSource from SubReportContainer", e);
             } catch (final SecurityException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                SubReportContainer_Base.LOG.error("error accessing JRDataSource from SubReportContainer", e);
             } catch (final NoSuchMethodException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                SubReportContainer_Base.LOG.error("error accessing JRDataSource from SubReportContainer", e);
             } catch (final InstantiationException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                SubReportContainer_Base.LOG.error("error accessing JRDataSource from SubReportContainer", e);
             } catch (final IllegalAccessException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                SubReportContainer_Base.LOG.error("error accessing JRDataSource from SubReportContainer", e);
             } catch (final IllegalArgumentException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                SubReportContainer_Base.LOG.error("error accessing JRDataSource from SubReportContainer", e);
             } catch (final InvocationTargetException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                SubReportContainer_Base.LOG.error("error accessing JRDataSource from SubReportContainer", e);
+            } catch (final IOException e) {
+                SubReportContainer_Base.LOG.error("error accessing JRDataSource from SubReportContainer", e);
             }
         }
         return ret;
