@@ -49,6 +49,7 @@
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="name">
+            <property name="SelectAlternateOID">linkto[ToCommand].oid</property>
             <property name="Select">linkto[ToCommand].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Admin_UI_Abstract/Name.Label</property>
