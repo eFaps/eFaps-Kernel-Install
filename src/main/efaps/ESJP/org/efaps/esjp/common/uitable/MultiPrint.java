@@ -85,18 +85,26 @@ public class MultiPrint
             MultiPrint.LOG.debug("types=" + types);
         }
 
-        final SearchQuery query = new SearchQuery();
+        final List<Instance> instances = new ArrayList<Instance>();
+        SearchQuery query = new SearchQuery();
         Type type = null;
         if (types != null) {
-            query.setQueryTypes(types);
-            query.setExpandChildTypes(expandChildTypes);
-            type = Type.get(types);
+            final String[] typesArray = types.split(";");
+            for (int x = 0; x < typesArray.length; x++) {
+                query = new SearchQuery();
+                type = null;
+                query.setQueryTypes(typesArray[x]);
+                query.setExpandChildTypes(expandChildTypes);
+                type = Type.get(typesArray[x]);
+
+                instances.addAll(getInstances(_parameter, filter, query, type));
+            }
         } else if (expand != null) {
             query.setExpand(instance, expand);
             type = Type.get(expand.substring(0, expand.indexOf("\\")));
-        }
 
-        final List<Instance> instances = getInstances(_parameter, filter, query, type);
+            instances.addAll(getInstances(_parameter, filter, query, type));
+        }
 
         if (alternateAttribute != null) {
             final SearchQuery query2 = new SearchQuery();
