@@ -27,6 +27,7 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JRRewindableDataSource;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.design.JRDesignField;
 
@@ -40,11 +41,10 @@ import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
-import org.efaps.db.SearchQuery;
 import org.efaps.util.EFapsException;
 
 /**
- * TODO comment!
+ * Base class for a DataSource as it is needed for a JasperReport.
  *
  * @author The eFaps Team
  * @version $Id$
@@ -52,7 +52,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("4675dffe-6551-477b-b069-8968901aeff4")
 @EFapsRevision("$Rev$")
 public abstract class EFapsDataSource_Base
-    implements IeFapsDataSource
+    implements IeFapsDataSource, JRRewindableDataSource
 {
     /**
      * Field name.
@@ -80,20 +80,44 @@ public abstract class EFapsDataSource_Base
      */
     private Instance instance;
 
+    /**
+     * Parent source for this source.
+     */
     private JRDataSource parentSource;
 
+    /**
+     * List of selects used for the underlying query.
+     */
     private final List<String> selects = new ArrayList<String>();
 
+    /**
+     * Expand string.
+     */
     private String expand;
 
+    /**
+     * Name of the type.
+     */
     private String typeName;
 
+    /**
+     * Must the child types be included or not.
+     */
     private boolean expandChild;
 
+    /**
+     * Should an instance be used.
+     */
     private boolean useInstance;
 
+    /**
+     * Parameter as passed from the calling event.
+     */
     private Parameter parameter;
 
+    /**
+     * JasperReport this datasource belongs to.
+     */
     private JasperReport jasperReport;
 
     /**
@@ -136,6 +160,10 @@ public abstract class EFapsDataSource_Base
         }
     }
 
+    /**
+     * Analyze the datasource and get the data.
+     * @throws EFapsException on error
+     */
     protected void analyze()
         throws EFapsException
     {
@@ -147,15 +175,17 @@ public abstract class EFapsDataSource_Base
             query.execute();
             instances.addAll(query.getValues());
         } else  if (this.expand != null) {
-            final SearchQuery query = new SearchQuery();
-            query.setExpand(this.instance, this.expand);
-            query.setExpandChildTypes(this.expandChild);
-            query.addSelect("OID");
-            query.execute();
-            while (query.next()) {
-                instances.add(Instance.get((String) query.get("OID")));
+            final String[] types = this.expand.split("\\\\");
+            if (types.length != 2) {
+                throw new EFapsException(EFapsDataSource_Base.class, "expand", this.expand);
             }
-            query.close();
+            final Type type = Type.get(types[0]);
+            final QueryBuilder queryBuilder = new QueryBuilder(type);
+            queryBuilder.addWhereAttrEqValue(types[1], this.instance.getId());
+            final InstanceQuery query = queryBuilder.getQuery();
+            query.setIncludeChildTypes(this.expandChild);
+            query.execute();
+            instances.addAll(query.getValues());
         } else if (this.useInstance) {
             instances.add(this.parameter.getInstance());
         }
@@ -172,6 +202,108 @@ public abstract class EFapsDataSource_Base
             }
             this.print.execute();
         }
+    }
+
+    /**
+     * @return Instance of the parent
+     * @throws JRException on error
+     */
+    protected Instance getParentInstance()
+        throws JRException
+    {
+        final JRDesignField field = new JRDesignField();
+        field.setName(EFapsDataSource_Base.OIDFIELDNAME);
+        return (Instance) this.parentSource.getFieldValue(field);
+    }
+
+    /**
+     * @see net.sf.jasperreports.engine.JRDataSource#getFieldValue(net.sf.jasperreports.engine.JRField)
+     * @param _field JRField
+     * @return value for the given field
+     * @throws JRException on error
+     */
+    public Object getFieldValue(final JRField _field) throws JRException
+    {
+        Object ret = null;
+        if (_field.getName().equals(EFapsDataSource_Base.OIDFIELDNAME)) {
+            ret = this.print.getCurrentInstance();
+        } else {
+            final String select = _field.getPropertiesMap().getProperty("Select");
+            if (select != null) {
+                try {
+                    ret = this.print.getSelect(select);
+                    final Attribute attr = this.print.getAttribute4Select(select);
+                    if (attr != null && attr.getAttributeType().getClassRepr().equals(FormatedStringType.class)) {
+                        ret = HtmlMarkupConverter_Base.getConvertedString((String) ret);
+                    }
+                } catch (final EFapsException e) {
+                    throw new JRException("Error while getting value for a field", e);
+                }
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * @see net.sf.jasperreports.engine.JRDataSource#next()
+     * @return true if a next value exist, else false
+     * @throws JRException on error
+     */
+    public boolean next()
+        throws JRException
+    {
+        final boolean tmp = this.hasSubReport;
+        if (this.hasSubReport) {
+            this.hasSubReport = false;
+        }
+
+        if (this.isSubDataSource && this.instance != null) {
+            if (!this.instance.equals(getParentInstance())) {
+                try {
+                    this.instance = getParentInstance();
+                    analyze();
+                } catch (final EFapsException e) {
+                    throw new JRException(e);
+                }
+            }
+        }
+        return this.print == null ? tmp : this.print.next();
+    }
+
+    /**
+     * Move the dataset to the first value. In this case the query is executed
+     * again to get the values.
+     * @throws JRException on error
+     */
+    @Override
+    public void moveFirst()
+        throws JRException
+    {
+        try {
+            analyze();
+        } catch (final EFapsException e) {
+            throw new JRException("Error during new retreival of the values.", e);
+        }
+    }
+
+    /**
+     * Getter method for the instance variable {@link #parameter}.
+     *
+     * @return value of instance variable {@link #parameter}
+     */
+    public Parameter getParameter()
+    {
+        return this.parameter;
+    }
+
+    /**
+     * Setter method for instance variable {@link #parameter}.
+     *
+     * @param _parameter value for instance variable {@link #parameter}
+     */
+    public void setParameter(final Parameter _parameter)
+    {
+        this.parameter = _parameter;
     }
 
     /**
@@ -215,81 +347,6 @@ public abstract class EFapsDataSource_Base
     }
 
     /**
-     * @see net.sf.jasperreports.engine.JRDataSource#getFieldValue(net.sf.jasperreports.engine.JRField)
-     * @param _field JRField
-     * @return value for the given field
-     * @throws JRException on error
-     */
-    public Object getFieldValue(final JRField _field) throws JRException
-    {
-        Object ret = null;
-        if (_field.getName().equals(EFapsDataSource_Base.OIDFIELDNAME)) {
-            ret = this.print.getCurrentInstance();
-        } else {
-            final String select = _field.getPropertiesMap().getProperty("Select");
-            if (select != null) {
-                try {
-                    ret = this.print.getSelect(select);
-                    final Attribute attr = this.print.getAttribute4Select(select);
-                    if (attr != null && attr.getAttributeType().getClassRepr().equals(FormatedStringType.class)) {
-                        ret = HtmlMarkupConverter_Base.getConvertedString((String) ret);
-                    }
-                } catch (final EFapsException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        }
-        return ret;
-    }
-
-    protected Instance getParentInstance()
-        throws JRException
-    {
-        final JRDesignField field = new JRDesignField();
-        field.setName(EFapsDataSource_Base.OIDFIELDNAME);
-        return (Instance) this.parentSource.getFieldValue(field);
-    }
-
-    /**
-     * @see net.sf.jasperreports.engine.JRDataSource#next()
-     * @return true if a next value exist, else false
-     * @throws JRException on error
-     */
-    public boolean next()
-        throws JRException
-    {
-        final boolean tmp = this.hasSubReport;
-        if (this.hasSubReport) {
-            this.hasSubReport = false;
-        }
-
-        if (this.isSubDataSource && this.instance != null) {
-            if (!this.instance.equals(getParentInstance())) {
-                try {
-                    this.instance = getParentInstance();
-                    analyze();
-                } catch (final EFapsException e) {
-                    throw new JRException(e);
-                }
-            }
-        }
-        return this.print == null ? tmp : this.print.next();
-    }
-
-    /**
-     * Setter method for instance variable {@link #parameter}.
-     *
-     * @param _parameter value for instance variable {@link #parameter}
-     */
-
-    public void setParameter(final Parameter _parameter)
-    {
-        this.parameter = _parameter;
-    }
-
-
-    /**
      * Getter method for the instance variable {@link #hasSubReport}.
      *
      * @return value of instance variable {@link #hasSubReport}
@@ -298,7 +355,6 @@ public abstract class EFapsDataSource_Base
     {
         return this.hasSubReport;
     }
-
 
     /**
      * Setter method for instance variable {@link #hasSubReport}.
@@ -311,7 +367,6 @@ public abstract class EFapsDataSource_Base
         this.hasSubReport = _hasSubReport;
     }
 
-
     /**
      * Getter method for the instance variable {@link #isSubDataSource}.
      *
@@ -321,7 +376,6 @@ public abstract class EFapsDataSource_Base
     {
         return this.isSubDataSource;
     }
-
 
     /**
      * Setter method for instance variable {@link #isSubDataSource}.
@@ -334,7 +388,6 @@ public abstract class EFapsDataSource_Base
         this.isSubDataSource = _isSubDataSource;
     }
 
-
     /**
      * Getter method for the instance variable {@link #instance}.
      *
@@ -344,7 +397,6 @@ public abstract class EFapsDataSource_Base
     {
         return this.instance;
     }
-
 
     /**
      * Setter method for instance variable {@link #instance}.
@@ -357,7 +409,6 @@ public abstract class EFapsDataSource_Base
         this.instance = _instance;
     }
 
-
     /**
      * Getter method for the instance variable {@link #parentSource}.
      *
@@ -367,7 +418,6 @@ public abstract class EFapsDataSource_Base
     {
         return this.parentSource;
     }
-
 
     /**
      * Setter method for instance variable {@link #parentSource}.
@@ -380,7 +430,6 @@ public abstract class EFapsDataSource_Base
         this.parentSource = _parentSource;
     }
 
-
     /**
      * Getter method for the instance variable {@link #expand}.
      *
@@ -390,7 +439,6 @@ public abstract class EFapsDataSource_Base
     {
         return this.expand;
     }
-
 
     /**
      * Setter method for instance variable {@link #expand}.
@@ -403,7 +451,6 @@ public abstract class EFapsDataSource_Base
         this.expand = _expand;
     }
 
-
     /**
      * Getter method for the instance variable {@link #typeName}.
      *
@@ -413,7 +460,6 @@ public abstract class EFapsDataSource_Base
     {
         return this.typeName;
     }
-
 
     /**
      * Setter method for instance variable {@link #typeName}.
@@ -426,7 +472,6 @@ public abstract class EFapsDataSource_Base
         this.typeName = _typeName;
     }
 
-
     /**
      * Getter method for the instance variable {@link #expandChild}.
      *
@@ -436,7 +481,6 @@ public abstract class EFapsDataSource_Base
     {
         return this.expandChild;
     }
-
 
     /**
      * Setter method for instance variable {@link #expandChild}.
@@ -449,7 +493,6 @@ public abstract class EFapsDataSource_Base
         this.expandChild = _expandChild;
     }
 
-
     /**
      * Getter method for the instance variable {@link #useInstance}.
      *
@@ -459,7 +502,6 @@ public abstract class EFapsDataSource_Base
     {
         return this.useInstance;
     }
-
 
     /**
      * Setter method for instance variable {@link #useInstance}.
@@ -472,7 +514,6 @@ public abstract class EFapsDataSource_Base
         this.useInstance = _useInstance;
     }
 
-
     /**
      * Getter method for the instance variable {@link #jasperReport}.
      *
@@ -482,7 +523,6 @@ public abstract class EFapsDataSource_Base
     {
         return this.jasperReport;
     }
-
 
     /**
      * Setter method for instance variable {@link #jasperReport}.
@@ -495,7 +535,6 @@ public abstract class EFapsDataSource_Base
         this.jasperReport = _jasperReport;
     }
 
-
     /**
      * Getter method for the instance variable {@link #selects}.
      *
@@ -504,15 +543,5 @@ public abstract class EFapsDataSource_Base
     public List<String> getSelects()
     {
         return this.selects;
-    }
-
-    /**
-     * Getter method for the instance variable {@link #parameter}.
-     *
-     * @return value of instance variable {@link #parameter}
-     */
-    public Parameter getParameter()
-    {
-        return this.parameter;
     }
 }
