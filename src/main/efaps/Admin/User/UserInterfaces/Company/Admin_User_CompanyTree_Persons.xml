@@ -39,7 +39,9 @@
             <menu>Admin_User_CompanyTree_Persons_Menu</menu>
             <table>Admin_User_PersonTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Admin_User_Person2Company\CompanyLink.UserLink</property>
+                <property name="Types">Admin_User_Person2Company</property>
+                <property name="LinkFroms">CompanyLink</property>
+                <property name="Selects">linkto[UserLink].oid</property>
             </evaluate>
         </target>
         <!-- properties -->

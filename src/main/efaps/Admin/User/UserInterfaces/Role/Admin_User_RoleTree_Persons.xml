@@ -39,7 +39,9 @@
             <menu>Admin_User_RoleTree_Persons_Menu</menu>
             <table>Admin_User_PersonTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Admin_User_Person2Role\UserToLink.UserFromLink</property>
+                <property name="Types">Admin_User_Person2Role</property>
+                <property name="LinkFroms">UserToLink</property>
+                <property name="Selects">linkto[UserFromLink].oid</property>
             </evaluate>
         </target>
         <!-- properties -->
