@@ -34,10 +34,16 @@
         <name>Admin_Common_NumGen</name>
         <!-- attributes -->
         <attribute>
+            <name>Type</name>
+            <type>Type</type>
+            <sqltable>Admin_Common_AbstractSQLTable</sqltable>
+            <sqlcolumn>TYPEID</sqlcolumn>
+        </attribute>
+        <attribute>
             <name>OID</name>
             <type>OID</type>
             <sqltable>Admin_Common_AbstractSQLTable</sqltable>
-            <sqlcolumn>ID</sqlcolumn>
+            <sqlcolumn>TYPEID,ID</sqlcolumn>
         </attribute>
         <attribute>
             <name>ID</name>
