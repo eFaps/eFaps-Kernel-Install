@@ -102,7 +102,7 @@ public abstract class MultiPrint_Base
         final String typesStr = (String) properties.get("Types");
         final String linkFromsStr = (String) properties.get("LinkFroms");
         final String selectStr = (String) properties.get("Selects");
-        final boolean includeChildTypes = "true".equals(properties.get("ExpandChildTypes"));
+        final boolean includeChildTypes = !"false".equalsIgnoreCase((String) properties.get("ExpandChildTypes"));
 
         if (MultiPrint_Base.LOG.isDebugEnabled()) {
             final StringBuilder log = new StringBuilder().append("Types: ").append(typesStr).append("\n")
@@ -110,7 +110,6 @@ public abstract class MultiPrint_Base
                 .append("Selects: ").append(selectStr).append("\n")
                 .append("ExpandChildTypes: ").append(includeChildTypes);
             MultiPrint_Base.LOG.debug(log.toString());
-
         }
 
         final String expand = (String) properties.get("Expand");
