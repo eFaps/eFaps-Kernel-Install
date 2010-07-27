@@ -45,6 +45,7 @@
             <table>Admin_UI_AbstractList</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Types">Admin_UI_Menu</property>
+                <property name="ExpandChildTypes">false</property>
             </evaluate>
         </target>
         <!-- properties -->
