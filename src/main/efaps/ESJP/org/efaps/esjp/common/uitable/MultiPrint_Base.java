@@ -98,7 +98,7 @@ public abstract class MultiPrint_Base
                 exec = analyzeTable(_parameter, filter, queryBldr, type);
             }
         } else if (expand != null) {
-            final String[] typeattr = expand.split("\\");
+            final String[] typeattr = expand.split("\\\\");
             if (typeattr.length != 2) {
                 throw new EFapsException(MultiPrint.class, "not posible");
             }
@@ -111,7 +111,7 @@ public abstract class MultiPrint_Base
         if (exec) {
             final InstanceQuery query = queryBldr.getQuery();
             query.setIncludeChildTypes(includeChildTypes);
-            instances.addAll(query.getValues());
+            instances.addAll(query.execute());
             exec = false;
         }
 
@@ -122,7 +122,7 @@ public abstract class MultiPrint_Base
             if (exec) {
                 final InstanceQuery query = queryBldr2.getQuery();
                 query.setIncludeChildTypes(includeChildTypes);
-                instances.addAll(query.getValues());
+                instances.addAll(query.execute());
             }
         }
         ret.put(ReturnValues.VALUES, instances);
