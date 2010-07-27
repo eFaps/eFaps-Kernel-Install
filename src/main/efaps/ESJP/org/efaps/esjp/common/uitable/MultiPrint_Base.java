@@ -38,6 +38,7 @@ import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
+import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
@@ -49,6 +50,29 @@ import org.slf4j.LoggerFactory;
 /**
  * Basic class to get the Instances for a UI-table.
  *
+ * <table>
+ * <tr>
+ *  <th>Property</th><th>Value</th><th>Mandatory</th><th>Default</th><th>Description</th>
+ *  </tr><tr>
+ *  <td>Types</td><td>Array with Names of Types, seperated by ";"</td><td>true</td>
+ *  <td>-</td><td>Array with Names of Types used for the QueryBuilder.</td>
+ *  </tr><tr>
+ *  <td>LinkFroms</td><td>Array with Attributes of the related Type, seperated by ";"</td><td>false</td>
+ *  <td>-</td><td>Array with Names of Attributes of the related Types
+ *  used for the QueryBuilder as part of the Where Criteria.</td>
+ *  </tr><tr>
+ *  <td>Selects</td><td>Array of Selects,  seperated by ";"</td><td>false</td>
+ *  <td>-</td><td>Selects use to expand the returned INnstances to other objects instances.</td>
+ *  </tr><tr>
+ *  <td>ExpandChildTypes</td><td>true/false</td><td>false</td><td>true</td><td>Must the ChildTypes be expanded.</td>
+ *  </tr>
+ * </table>
+ * <br>
+ * Example:<br>
+ * <code>
+ * &lt;property name=&quot;Types&quot;&gt;Admin_User_Person2Company;Admin_User_Person2Role&lt;/property&gt;<br>
+ * &lt;property name=&quot;LinkFroms&quot;&gt;UserLink;UserLink&lt;/property&gt;
+ * </code>
  * @author The eFaps Team
  * @version $Id$
  */
@@ -75,52 +99,58 @@ public abstract class MultiPrint_Base
 
         final Map<?, ?> filter = (Map<?, ?>) _parameter.get(ParameterValues.OTHERS);
 
-        final String types = (String) properties.get("Types");
-
+        final String typesStr = (String) properties.get("Types");
+        final String linkFromsStr = (String) properties.get("LinkFroms");
+        final String selectStr = (String) properties.get("Selects");
         final boolean includeChildTypes = "true".equals(properties.get("ExpandChildTypes"));
 
-        final String expand = (String) properties.get("Expand");
-        final String alternateAttribute = (String) properties.get("AlternateAttribute");
-
         if (MultiPrint_Base.LOG.isDebugEnabled()) {
-            MultiPrint_Base.LOG.debug("types=" + types);
+            final StringBuilder log = new StringBuilder().append("Types: ").append(typesStr).append("\n")
+                .append("LinkFroms: ").append(linkFromsStr).append("\n")
+                .append("Selects: ").append(selectStr).append("\n")
+                .append("ExpandChildTypes: ").append(includeChildTypes);
+            MultiPrint_Base.LOG.debug(log.toString());
+
         }
 
-        final List<Instance> instances = new ArrayList<Instance>();
+        final String expand = (String) properties.get("Expand");
         QueryBuilder queryBldr = null;
         Type type = null;
         boolean exec = false;
-        if (types != null) {
-            final String[] typesArray = types.split(";");
+        if (typesStr != null) {
+            final String[] typesArray = typesStr.split(";");
             for (int x = 0; x < typesArray.length; x++) {
                 type = Type.get(typesArray[x]);
                 queryBldr = new QueryBuilder(type);
+                if (linkFromsStr != null) {
+                    final String[] linkFroms = linkFromsStr.split(";");
+                    queryBldr.addWhereAttrEqValue(linkFroms[x], instance.getId());
+                }
                 exec = analyzeTable(_parameter, filter, queryBldr, type);
             }
         } else if (expand != null) {
+            //TODO remove obolete expand
+            MultiPrint_Base.LOG.error("Illegal expand!!!! in : " + _parameter.get(ParameterValues.UIOBJECT).toString());
             final String[] typeattr = expand.split("\\\\");
-            if (typeattr.length != 2) {
-                throw new EFapsException(MultiPrint.class, "not posible");
-            }
             type = Type.get(typeattr[0]);
             queryBldr = new QueryBuilder(type);
             queryBldr.addWhereAttrEqValue(typeattr[1], instance.getId());
             exec = analyzeTable(_parameter, filter, queryBldr, type);
         }
 
-        if (exec) {
-            final InstanceQuery query = queryBldr.getQuery();
-            query.setIncludeChildTypes(includeChildTypes);
-            instances.addAll(query.execute());
-            exec = false;
-        }
+        final List<Instance> instances = new ArrayList<Instance>();
 
-        if (alternateAttribute != null) {
-            final QueryBuilder queryBldr2 = new QueryBuilder(type);
-            queryBldr2.addWhereAttrEqValue(alternateAttribute, instance.getId());
-            exec = analyzeTable(_parameter, filter, queryBldr2, type);
-            if (exec) {
-                final InstanceQuery query = queryBldr2.getQuery();
+        if (exec) {
+            if (selectStr != null) {
+                final String[] selects = selectStr.split(":");
+                for (final String select : selects) {
+                    final MultiPrintQuery multi = queryBldr.getPrint();
+                    multi.addSelect(selects);
+                    multi.executeWithoutAccessCheck();
+                    instances.addAll(multi.getInstances4Select(select));
+                }
+            } else {
+                final InstanceQuery query = queryBldr.getQuery();
                 query.setIncludeChildTypes(includeChildTypes);
                 instances.addAll(query.execute());
             }
