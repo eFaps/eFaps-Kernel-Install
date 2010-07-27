@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("")
+@EFapsUUID("49c223e8-e500-4c91-a949-576b63c4fb31")
 @EFapsRevision("$Rev$")
 public abstract class MultiPrint_Base
 {
