@@ -97,7 +97,8 @@
             <property name="ModeEdit">NONE</property>
             <table>Admin_Program_JavaClassTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Admin_Program_WikiCompiled\ProgramLink</property>
+                <property name="Types">Admin_Program_WikiCompiled</property>
+                <property name="LinkFroms">ProgramLink</property>
             </evaluate>
         </field>
         <field name="linkheader" character="Heading">
@@ -109,7 +110,9 @@
             <property name="ModeEdit">NONE</property>
             <table>Admin_Program_AbstractTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Admin_Program_Wiki2Wiki\From.To</property>
+                <property name="Types">Admin_Program_Wiki2Wiki</property>
+                <property name="LinkFroms">From</property>
+                <property name="Selects">linkto[To].oid</property>
             </evaluate>
         </field>
         <field name="htmlheader" character="Heading">
