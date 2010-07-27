@@ -38,7 +38,9 @@
         <target>
             <table>Admin_UI_AbstractList</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Admin_UI_Menu2Command\ToCommand.FromMenu</property>
+                <property name="Types">Admin_UI_Menu2Command</property>
+                <property name="LinkFroms">ToCommand</property>
+                <property name="Selects">linkto[FromMenu].oid</property>
             </evaluate>
         </target>
         <!-- properties -->
