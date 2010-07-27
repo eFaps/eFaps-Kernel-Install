@@ -42,7 +42,9 @@
         <target>
             <table>Admin_DataModel_TypeTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Admin_DataModel_Type2Store\To.From</property>
+            <property name="Types">Admin_DataModel_Type2Store</property>
+                <property name="LinkFroms">To</property>
+                <property name="Selects">linkto[From].id</property>
             </evaluate>
         </target>
         <!-- properties -->
