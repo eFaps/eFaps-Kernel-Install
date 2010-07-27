@@ -201,24 +201,24 @@
             <property name="ModeEdit">NONE</property>
         </field>
         <field name="rolestable" character="Target">
-            <table>Admin_User_AbstractTable</table>
+            <table>Admin_User2User_AbstractTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Admin_User_Person2Role\UserFromLink.UserToLink</property>
+                <property name="Types">Admin_User_Person2Role</property>
+                <property name="LinkFroms">UserFromLink</property>
             </evaluate>
         </field>
-
         <field name="companieheader" character="Heading">
             <property name="Level">1</property>
             <property name="Label">Admin_User_PersonForm.companieheader.Heading</property>
             <property name="ModeEdit">NONE</property>
         </field>
         <field name="companietable" character="Target">
-            <table>Admin_User_AbstractTable</table>
+            <table>Admin_User2User_AbstractTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Admin_User_Person2Company\UserLink.CompanyLink</property>
+                <property name="Types">Admin_User_Person2Company</property>
+                <property name="LinkFroms">UserLink</property>
             </evaluate>
         </field>
-
         <field name="jaaskeyheader" character="Heading">
             <property name="Level">1</property>
             <property name="Label">Admin_User_PersonForm.jaaskeyheader.Heading</property>
@@ -227,7 +227,8 @@
         <field name="jaaskeytable" character="Target">
             <table>Admin_User_JAASKeyTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Admin_User_JAASKey\UserLink</property>
+                <property name="Types">Admin_User_JAASKey</property>
+                <property name="LinkFroms">UserLink</property>
             </evaluate>
         </field>
     </definition>
