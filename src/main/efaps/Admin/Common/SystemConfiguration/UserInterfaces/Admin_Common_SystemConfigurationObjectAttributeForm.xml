@@ -23,27 +23,42 @@
 
 -->
 
-<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>21200c0a-a07b-43c7-b08f-9c054c1c5b2f</uuid>
+<ui-form xmlns="http://www.efaps.org/xsd"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>287415a2-ffa5-4763-bb41-84dbe3cd5dca</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Common_SystemConfigurationForm</name>
+        <name>Admin_Common_SystemConfigurationObjectAttributeForm</name>
         <!-- fields -->
-        <field name="name">
+        <field name="key">
             <property name="Columns">40</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <property name="Expression">Name</property>
+            <property name="Expression">Key</property>
             <property name="Required">true</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
-        <field name="uuid">
-            <property name="Columns">80</property>
-            <property name="Expression">UUID</property>
+        <field name="value">
+            <property name="Columns">70</property>
+            <property name="Rows">5</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Expression">Value</property>
             <property name="Required">true</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+        <field name="description">
+            <property name="Rows">5</property>
+            <property name="Columns">70</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Expression">Description</property>
+            <property name="Required">false</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
     </definition>

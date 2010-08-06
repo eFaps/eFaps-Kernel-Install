@@ -27,24 +27,22 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>f3ead280-b429-402f-a239-5dbca138c7d9</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>f3ead280-b429-402f-a239-5dbca138c7d9</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_Common_SystemConfigurationTree_Attributes_Menu_Action_Create</name>
-    <!-- target definitions -->
-    <target>
-      <form>Admin_Common_SystemConfigurationAttributeForm</form>
-      <execute program="org.efaps.esjp.common.uiform.Create"/>
-    </target>
-    <!-- properties -->
-    <property name="Target">modal</property>
-    <property name="TargetCreateType">Admin_Common_SystemConfigurationAttribute</property>
-    <property name="TargetConnectAttribute">Admin_Common_SystemConfigurationAttribute/AbstractLink</property>
-    <property name="TargetMode">create</property>
-    
-  </definition>
-
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_Common_SystemConfigurationTree_Attributes_Menu_Action_Create</name>
+        <!-- target definitions -->
+        <target>
+            <form>Admin_Common_SystemConfigurationAttributeForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Create" />
+        </target>
+        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Admin_Common_SystemConfigurationAttribute</property>
+        <property name="TargetConnectAttribute">Admin_Common_SystemConfigurationAttribute/AbstractLink</property>
+        <property name="TargetMode">create</property>
+    </definition>
 </ui-command>

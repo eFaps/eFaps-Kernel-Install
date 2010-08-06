@@ -27,21 +27,20 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>21c731b4-e717-47dd-92a3-9a6cf731b164</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
-
-  <definition>
-    <version-expression>(version==3) || (version==latest)</version-expression>
-    <name>Admin_Common_SystemConfigurationAttribute</name>
-    <parent>Admin_Common_SystemConfigurationAbstract</parent>
-    <attribute>
-      <name>AbstractLink</name>
-      <type>Link</type>
-      <typelink>Admin_Common_SystemConfiguration</typelink>
-      <sqltable>Admin_Common_SystemConfigurationSQLTable</sqltable>
-      <sqlcolumn>ABSTRACTID</sqlcolumn>
-    </attribute>
-  </definition>
-
+    <uuid>21c731b4-e717-47dd-92a3-9a6cf731b164</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
+    <description>Used to define an attribute for this Configuration that can be accesed by a key.</description>
+    <definition>
+        <version-expression>(version==3) || (version==latest)</version-expression>
+        <name>Admin_Common_SystemConfigurationAttribute</name>
+        <parent>Admin_Common_SystemConfigurationAbstract</parent>
+        <attribute>
+            <name>Link</name>
+            <type>Link</type>
+            <typelink>Admin_Common_SystemConfiguration</typelink>
+            <sqltable>Admin_Common_SystemConfigurationSQLTable</sqltable>
+            <sqlcolumn>ABSTRACTID</sqlcolumn>
+        </attribute>
+    </definition>
 </datamodel-type>

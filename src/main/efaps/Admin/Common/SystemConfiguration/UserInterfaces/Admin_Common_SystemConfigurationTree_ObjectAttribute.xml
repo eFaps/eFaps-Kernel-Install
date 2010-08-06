@@ -27,19 +27,19 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>04a2ae80-ab07-418e-895e-41f6d1bbb95c</uuid>
+    <uuid>fb5324d9-0f70-4932-808e-8813ce26df86</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Common_SystemConfigurationTree_Links</name>
+        <name>Admin_Common_SystemConfigurationTree_ObjectAttribute</name>
         <!-- target definitions -->
         <target>
-            <menu>Admin_Common_SystemConfigurationTree_Links_Menu</menu>
-            <table>Admin_Common_SystemConfigurationLinkTable</table>
+            <menu>Admin_Common_SystemConfigurationTree_ObjectAttribute_Menu</menu>
+            <table>Admin_Common_SystemConfigurationObjectAttributeTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Common_SystemConfigurationLink</property>
+                <property name="Types">Admin_Common_SystemConfigurationObjectAttribute</property>
                 <property name="LinkFroms">Link</property>
             </evaluate>
         </target>

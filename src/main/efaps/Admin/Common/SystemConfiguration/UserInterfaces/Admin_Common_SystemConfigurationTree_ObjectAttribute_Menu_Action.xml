@@ -27,16 +27,17 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>14b2ebbd-59aa-4d67-a113-6aa699d7bfc6</uuid>
+    <uuid>7312c849-19b4-467b-9031-43f1d2b7fd51</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Common_SystemConfigurationTree_Menu</name>
-        <!-- childs -->
+        <name>Admin_Common_SystemConfigurationTree_ObjectAttribute_Menu_Action</name>
         <childs>
-            <child>Admin_Common_SystemConfigurationTree_Menu_Action</child>
+            <child>Admin_Common_SystemConfigurationTree_ObjectAttribute_Menu_Action_Create</child>
+            <child>Admin_Common_SystemConfigurationTree_ObjectAttribute_Menu_Action_Delete</child>
         </childs>
     </definition>
+
 </ui-menu>

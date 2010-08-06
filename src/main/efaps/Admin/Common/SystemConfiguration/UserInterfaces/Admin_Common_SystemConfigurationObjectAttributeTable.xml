@@ -16,7 +16,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          jmox
+ Author:          The eFaps Team
  Revision:        $Rev$
  Last Changed:    $Date$
  Last Changed By: $Author$
@@ -27,27 +27,29 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>9cf4379d-a7f6-4393-846b-a9cce013d61a</uuid>
+    <uuid>be62c952-158f-4556-8157-bf3e68c24b19</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Common_SystemConfigurationAttributeTable</name>
+        <name>Admin_Common_SystemConfigurationObjectAttributeTable</name>
         <!-- fields -->
-        <field name="name">
+        <field name="key">
             <property name="Attribute">Key</property>
-            <property name="Label">Admin_Common_SystemConfigurationAttribute/Key.Label</property>
+            
+            <property name="Label">Admin_Common_SystemConfigurationObjectAttribute/Key.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ShowTypeIcon">true</property>
         </field>
         <field name="value">
             <property name="Attribute">Value</property>
-            <property name="Label">Admin_Common_SystemConfigurationAttribute/Value.Label</property>
+            <property name="Label">Admin_Common_SystemConfigurationObjectAttribute/Value.Label</property>
         </field>
         <field name="description">
             <property name="Attribute">Description</property>
-            <property name="Label">Admin_Common_SystemConfigurationAttribute/Description.Label</property>
+            <property name="Label">Admin_Common_SystemConfigurationObjectAttribute/Description.Label</property>
         </field>
     </definition>
+
 </ui-table>

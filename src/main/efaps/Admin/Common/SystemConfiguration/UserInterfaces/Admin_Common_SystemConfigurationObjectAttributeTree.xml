@@ -27,25 +27,20 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>54b3c1dc-2ad7-4d8e-8866-0fd08cd5a0ab</uuid>
+    <uuid>d009256f-eb68-4851-8880-8618affa9a31</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Common_SystemConfigurationTree</name>
+        <name>Admin_Common_SystemConfigurationObjectAttributeTree</name>
         <!-- targets -->
         <target>
-            <menu>Admin_Common_SystemConfigurationTree_Menu</menu>
-            <form>Admin_Common_SystemConfigurationForm</form>
+            <menu>Admin_Common_SystemConfigurationObjectAttributeTree_Menu</menu>
+            <form>Admin_Common_SystemConfigurationObjectAttributeForm</form>
         </target>
         <!-- type tree for -->
-        <type>Admin_Common_SystemConfiguration</type>
-        <childs>
-            <child>Admin_Common_SystemConfigurationTree_Attributes</child>
-            <child>Admin_Common_SystemConfigurationTree_Links</child>
-            <child>Admin_Common_SystemConfigurationTree_ObjectAttribute</child>
-        </childs>
+        <type>Admin_Common_SystemConfigurationObjectAttribute</type>
         <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>

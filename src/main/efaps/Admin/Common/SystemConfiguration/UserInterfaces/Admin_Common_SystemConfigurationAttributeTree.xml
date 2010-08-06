@@ -16,7 +16,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          jmox
+  Author:          The eFaps Team
   Revision:        $Rev$
   Last Changed:    $Date$
   Last Changed By: $Author$
@@ -27,23 +27,22 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>3265c680-84c8-4f2f-a7e0-ac2629db6bd6</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>3265c680-84c8-4f2f-a7e0-ac2629db6bd6</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_Common_SystemConfigurationAttributeTree</name>
-    <!-- targets -->
-    <target>
-      <menu>Admin_Common_SystemConfigurationAttributeTree_Menu</menu>
-      <form>Admin_Common_SystemConfigurationAttributeForm</form>
-    </target>
-    <!-- type tree for -->
-    <type>Admin_Common_SystemConfigurationAttribute</type>
-    <!-- properties -->
-    <property name="Target">content</property>
-    <property name="TargetMode">view</property>
-  </definition>
-
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_Common_SystemConfigurationAttributeTree</name>
+        <!-- targets -->
+        <target>
+            <menu>Admin_Common_SystemConfigurationAttributeTree_Menu</menu>
+            <form>Admin_Common_SystemConfigurationAttributeForm</form>
+        </target>
+        <!-- type tree for -->
+        <type>Admin_Common_SystemConfigurationAttribute</type>
+        <!-- properties -->
+        <property name="Target">content</property>
+        <property name="TargetMode">view</property>
+    </definition>
 </ui-menu>

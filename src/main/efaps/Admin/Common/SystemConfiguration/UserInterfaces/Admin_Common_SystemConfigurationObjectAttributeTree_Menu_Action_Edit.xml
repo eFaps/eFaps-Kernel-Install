@@ -23,20 +23,24 @@
 
 -->
 
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<ui-command xmlns="http://www.efaps.org/xsd"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>14b2ebbd-59aa-4d67-a113-6aa699d7bfc6</uuid>
+    <uuid>3766e771-0e55-4dd7-91c2-7f8349f1d3f1</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Common_SystemConfigurationTree_Menu</name>
-        <!-- childs -->
-        <childs>
-            <child>Admin_Common_SystemConfigurationTree_Menu_Action</child>
-        </childs>
+        <name>Admin_Common_SystemConfigurationObjectAttributeTree_Menu_Action_Edit</name>
+        <!-- target definitions -->
+        <target>
+            <form>Admin_Common_SystemConfigurationObjectAttributeForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Edit" />
+        </target>
+        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
     </definition>
-</ui-menu>
+</ui-command>

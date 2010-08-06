@@ -20,16 +20,17 @@
 
 package org.efaps.esjp.admin.common;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.runlevel.RunLevel;
+import org.efaps.db.Context;
 import org.efaps.util.EFapsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class to reload the Cache.<br>
@@ -38,31 +39,50 @@ import org.efaps.util.EFapsException;
  *
  * @author The eFaps Team
  * @version $Id:ReloadCache.java 1563 2007-10-28 14:07:41Z tmo $
- * @todo use EFapsException
+ *
  */
 @EFapsUUID("1d4f1263-9315-4f59-bd5e-bd364f907bac")
 @EFapsRevision("$Rev$")
-public class ReloadCache implements EventExecution
+public class ReloadCache
+    implements EventExecution
 {
-  /**
-   * Logger for this class
-   */
-  private static final Logger LOG = LoggerFactory.getLogger(ReloadCache.class);
 
-  /**
-   * @param _parameter
-   */
-  public Return execute(final Parameter _parameter)
-      throws EFapsException
-  {
-    try  {
-      RunLevel.init("webapp");
-      RunLevel.execute();
-    } catch (final Exception e)  {
-      LOG.error("execute\nparameter:\n" + _parameter
-                  + "\nException is:\n" + e);
+    /**
+     * Logger for this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(ReloadCache.class);
+
+    /**
+     * Reload the whole Cache for eFaps.
+     * @param _parameter Parameter as pased from the eFaps API
+     * @throws EFapsException on error
+     * @return new empty Return
+     *
+     */
+    public Return execute(final Parameter _parameter)
+        throws EFapsException
+    {
+        ReloadCache.LOG.info("reload Cache by: " + Context.getThreadContext().getPerson().getName());
+        RunLevel.init("webapp");
+        RunLevel.execute();
+        ReloadCache.LOG.info("reload Cache finished successfully");
+        return new Return();
     }
-    return null;
-  }
+
+    /**
+     * Relaod the SystemConfigurations.
+     * @param _parameter Parameter as pased from the eFaps API
+     * @throws EFapsException on error
+     * @return new empty Return
+     *
+     */
+    public Return reloadSystemConfigurations(final Parameter _parameter)
+        throws EFapsException
+    {
+        ReloadCache.LOG.info("reload SystemConfigurations by: " + Context.getThreadContext().getPerson().getName());
+        SystemConfiguration.initialize();
+        ReloadCache.LOG.info("reload SystemConfigurations finished successfully");
+        return new Return();
+    }
 
 }
