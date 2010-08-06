@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev:1563 $
- * Last Changed:    $Date:2007-10-28 15:07:41 +0100 (So, 28 Okt 2007) $
- * Last Changed By: $Author:tmo $
+ * Revision:        $Rev$
+ * Last Changed:    $Date$
+ * Last Changed By: $Author$
  */
+
 
 package org.efaps.esjp.admin.common;
 
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
@@ -31,10 +33,11 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("0af0d01f-2fad-43ae-9239-9214feddbcba")
+@EFapsUUID("12fbca5f-94c4-4fa7-92dc-f82a5a8c330a")
 @EFapsRevision("$Rev$")
-public class ReloadCache
-    extends  ReloadCache_Base
+public class SystemConf
+    extends SystemConf_Base
 {
 
 }
+
