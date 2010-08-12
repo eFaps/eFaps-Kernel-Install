@@ -39,7 +39,8 @@
             <menu>Message_MessageTree_Users_Menu</menu>
             <table>Message_MessageUserTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Message_Message2User\MessageLink</property>
+                <property name="Types">Message_Message2User</property>
+                <property name="LinkFroms">MessageLink</property>
             </evaluate>
         </target>
         <!-- properties -->

@@ -39,7 +39,8 @@
             <menu>Admin_UI_CommandTree_Links_Menu</menu>
             <table>Admin_UI_LinkList4Links</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Admin_UI_Link\From</property>
+                <property name="Types">Admin_UI_Link</property>
+                <property name="LinkFroms">From</property>
             </evaluate>
         </target>
         <!-- properties -->

@@ -38,7 +38,8 @@
         <target>
             <table>Common_History_AttributesTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Common_History_Attributes\HistoryID</property>
+                <property name="Types">Common_History_Attributes</property>
+                <property name="LinkFroms">HistoryID</property>
             </evaluate>
         </target>
         <!-- type tree for -->
