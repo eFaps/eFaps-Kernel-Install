@@ -17,7 +17,7 @@
  limitations under the License.
 
  Author:          The eFaps Team
- 
+
  Revision:        $Rev$
  Last Changed:    $Date$
  Last Changed By: $Author$
@@ -40,7 +40,8 @@
             <menu>Admin_Access_AccessSetTree_Users_Menu</menu>
             <table>Admin_Access_AccessSet2UserAbstractTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Admin_Access_AccessSet2UserAbstract\AccessSetLink</property>
+                <property name="Types">Admin_Access_AccessSet2UserAbstract</property>
+                <property name="LinkFroms">AccessSetLink</property>
             </evaluate>
         </target>
         <!-- properties -->

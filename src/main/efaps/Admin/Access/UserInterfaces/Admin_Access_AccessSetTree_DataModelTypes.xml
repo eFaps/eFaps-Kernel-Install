@@ -39,7 +39,8 @@
             <menu>Admin_Access_AccessSetTree_DataModelTypes_Menu</menu>
             <table>Admin_Access_AccessSet2DataModelTypeTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Admin_Access_AccessSet2DataModelType\AccessSetLink</property>
+                <property name="Types">Admin_Access_AccessSet2DataModelType</property>
+                <property name="LinkFroms">AccessSetLink</property>
             </evaluate>
         </target>
         <!-- properties -->
