@@ -42,7 +42,8 @@
             <menu>Admin_User_AbstractTree_Access_Menu</menu>
             <table>Admin_UI_AbstractListTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Admin_UI_Access\UserLink</property>
+                <property name="Types">Admin_UI_Access</property>
+                <property name="LinkFroms">UserLink</property>
             </evaluate>
         </target>
         <!-- properties -->

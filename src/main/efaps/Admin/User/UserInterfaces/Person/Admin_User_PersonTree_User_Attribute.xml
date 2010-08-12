@@ -42,7 +42,8 @@
             <menu>Admin_User_PersonTree_User_Attribute_Menu</menu>
             <table>Admin_User_AttributeTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Admin_User_Attribute\UserLink</property>
+                <property name="Types">Admin_User_Attribute</property>
+                <property name="LinkFroms">UserLink</property>
             </evaluate>
         </target>
         <!-- properties -->

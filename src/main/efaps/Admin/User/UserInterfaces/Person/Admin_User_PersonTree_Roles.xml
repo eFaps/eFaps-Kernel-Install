@@ -42,7 +42,8 @@
             <menu>Admin_User_PersonTree_Roles_Menu</menu>
             <table>Admin_User2User_AbstractTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Admin_User_Person2Role\UserFromLink</property>
+                <property name="Types">Admin_User_Person2Role</property>
+                <property name="LinkFroms">UserFromLink</property>
             </evaluate>
         </target>
         <!-- properties -->
