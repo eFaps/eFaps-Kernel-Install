@@ -23,7 +23,7 @@
 
 -->
 
-<ui-form xmlns="http://www.efaps.org/xsd" 
+<ui-form xmlns="http://www.efaps.org/xsd"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>7d7fe7a3-094b-4152-8e10-2855d0ecd963</uuid>
@@ -63,7 +63,8 @@
         <field name="localetable" character="Target">
             <table>Admin_Common_DBPropertiesLocalTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Admin_Common_DBPropertiesLocal\PropertyID</property>
+                <property name="Types">Admin_Common_DBPropertiesLocal</property>
+                <property name="LinkFroms">PropertyID</property>
             </evaluate>
         </field>
     </definition>

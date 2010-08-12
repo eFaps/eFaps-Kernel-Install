@@ -39,7 +39,8 @@
             <menu>Admin_Common_AbstractTree_Properties_Menu</menu>
             <table>Admin_Common_PropertyTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Admin_Common_Property\Abstract</property>
+                <property name="Types">Admin_Common_Property</property>
+                <property name="LinkFroms">Abstract</property>
             </evaluate>
         </target>
         <!-- properties -->
