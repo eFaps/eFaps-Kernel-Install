@@ -39,7 +39,8 @@
             <menu>Admin_DataModel_DimensionTree_UoMs_Menu</menu>
             <table>Admin_DataModel_UoMTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Admin_DataModel_UoM\Dimension</property>
+                <property name="Types">Admin_DataModel_UoM</property>
+                <property name="LinkFroms">Dimension</property>
             </evaluate>
         </target>
         <!-- properties -->

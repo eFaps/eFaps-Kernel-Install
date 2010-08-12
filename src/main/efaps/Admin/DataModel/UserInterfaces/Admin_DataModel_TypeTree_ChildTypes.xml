@@ -38,7 +38,8 @@
         <target>
             <table>Admin_DataModel_TypeTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Admin_DataModel_Type\ParentType</property>
+                <property name="Types">Admin_DataModel_Type</property>
+                <property name="LinkFroms">ParentType</property>
             </evaluate>
         </target>
         <!-- properties -->

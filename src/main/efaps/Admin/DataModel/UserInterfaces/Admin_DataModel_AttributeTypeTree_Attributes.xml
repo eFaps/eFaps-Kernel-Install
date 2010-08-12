@@ -38,9 +38,9 @@
         <target>
             <table>Admin_DataModel_AttributeTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Admin_DataModel_Attribute\AttributeType</property>
+                <property name="Types">Admin_DataModel_Attribute</property>
+                <property name="LinkFroms">AttributeType</property>
             </evaluate>
-
         </target>
         <!-- properties -->
         <property name="Target">content</property>
