@@ -37,7 +37,8 @@
             <menu>Admin_Help_MenuTree_Links_Menu</menu>
             <table>Admin_Help_Menu_LinksTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Admin_Help_Menu2Wiki\FromLink</property>
+                <property name="Types">Admin_Help_Menu2Wiki</property>
+                <property name="LinkFroms">FromLink</property>
             </evaluate>
         </target>
         <!-- properties -->

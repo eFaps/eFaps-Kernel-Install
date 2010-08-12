@@ -26,11 +26,9 @@
 <ui-command xmlns="http://www.efaps.org/xsd"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>40d75fbd-0331-4a52-b35d-e930eb21fa0d</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Common_AbstractTree_Events</name>
@@ -39,7 +37,8 @@
             <menu>Admin_Common_AbstractTree_Events_Menu</menu>
             <table>Admin_Event_DefinitionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Admin_Event_Definition\Abstract</property>
+                <property name="Types">Admin_Event_Definition</property>
+                <property name="LinkFroms">Abstract</property>
             </evaluate>
         </target>
         <!-- properties -->
@@ -47,5 +46,4 @@
         <property name="TargetMode">view</property>
         <property name="TargetShowCheckBoxes">true</property>
     </definition>
-
 </ui-command>
