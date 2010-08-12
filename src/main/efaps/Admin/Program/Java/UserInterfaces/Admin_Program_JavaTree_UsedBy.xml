@@ -38,7 +38,8 @@
         <target>
             <table>Admin_Event_DefinitionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Admin_Event_Definition\JavaProg</property>
+                <property name="Types">Admin_Event_Definition</property>
+                <property name="LinkFroms">JavaProg</property>
             </evaluate>
         </target>
         <!-- properties -->

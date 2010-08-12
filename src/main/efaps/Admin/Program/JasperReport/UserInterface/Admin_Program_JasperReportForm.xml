@@ -23,8 +23,9 @@
 
 -->
 
-<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<ui-form xmlns="http://www.efaps.org/xsd"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>47586ca2-4260-4410-9a47-dd3e078891a8</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
@@ -87,7 +88,8 @@
         <field name="compiledtable" character="Target">
             <table>Admin_Program_JavaClassTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Expand">Admin_Program_JasperReportCompiled\ProgramLink</property>
+                <property name="Types">Admin_Program_JasperReportCompiled</property>
+                <property name="LinkFroms">ProgramLink</property>
             </evaluate>
         </field>
     </definition>
