@@ -42,7 +42,7 @@
         <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Admin_Common_SystemConfigurationLink</property>
-        <property name="TargetConnectAttribute">Admin_Common_SystemConfigurationLink/AbstractLink</property>
+        <property name="TargetConnectAttribute">Admin_Common_SystemConfigurationLink/Link</property>
         <property name="TargetMode">create</property>
     </definition>
 </ui-command>
