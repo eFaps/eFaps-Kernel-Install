@@ -30,6 +30,7 @@ import java.util.Map;
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.AttributeSet;
 import org.efaps.admin.datamodel.Classification;
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.attributetype.AbstractFileType;
 import org.efaps.admin.datamodel.attributetype.RateType;
 import org.efaps.admin.datamodel.ui.RateUI;
@@ -99,7 +100,16 @@ public class Create implements EventExecution
         final Instance parent = _parameter.getInstance();
         final List<FieldSet> fieldsets = new ArrayList<FieldSet>();
 
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        Status status = null;
+        if (props.containsKey("StatusGroup")) {
+            status = Status.find((String) props.get("StatusGroup"), (String) props.get("Status"));
+        }
         final Insert insert = new Insert(command.getTargetCreateType());
+        if (status != null) {
+            insert.add(command.getTargetCreateType().getStatusAttribute(), status.getId());
+        }
+
         for (final Field field : command.getTargetForm().getFields()) {
             final String attrName = field.getExpression() == null
                                         ? field.getAttribute()
