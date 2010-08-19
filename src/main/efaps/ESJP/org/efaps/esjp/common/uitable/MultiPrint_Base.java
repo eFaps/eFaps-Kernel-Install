@@ -254,8 +254,8 @@ public abstract class MultiPrint_Base
                     dateFrom = DateTimeUtil.translateFromUI(from).plusSeconds(1);
                     dateTo = DateTimeUtil.translateFromUI(to).plusDays(1).minusSeconds(1);
                 }
-                _queryBldr.addWhereAttrLessValue(attr1, dateFrom);
-                _queryBldr.addWhereAttrGreaterValue(attr2, dateTo);
+                _queryBldr.addWhereAttrGreaterValue(attr1, dateFrom);
+                _queryBldr.addWhereAttrLessValue(attr2, dateTo);
             }
         }
         return ret;
