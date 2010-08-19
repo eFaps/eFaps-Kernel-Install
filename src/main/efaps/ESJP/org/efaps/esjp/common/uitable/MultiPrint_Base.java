@@ -248,14 +248,14 @@ public abstract class MultiPrint_Base
                 DateTime dateTo = null;
                 if ((from == null) || (to == null)) {
                     final DateTime[] dates = getFromTo(_field);
-                    dateFrom = dates[0];
-                    dateTo = dates[1];
+                    dateTo = dates[0];
+                    dateFrom = dateTo.plusMinutes(2);
                 } else {
-                    dateFrom = DateTimeUtil.translateFromUI(from).plusSeconds(1);
-                    dateTo = DateTimeUtil.translateFromUI(to).plusDays(1).minusSeconds(1);
+                    dateFrom = DateTimeUtil.translateFromUI(from).minusMinutes(1);
+                    dateTo = DateTimeUtil.translateFromUI(from).plusMinutes(1);
                 }
-                _queryBldr.addWhereAttrGreaterValue(attr1, dateFrom);
-                _queryBldr.addWhereAttrLessValue(attr2, dateTo);
+                _queryBldr.addWhereAttrLessValue(attr1, dateFrom);
+                _queryBldr.addWhereAttrGreaterValue(attr2, dateTo);
             }
         }
         return ret;
@@ -321,22 +321,22 @@ public abstract class MultiPrint_Base
         DateTime dateTo = new DateTime();
         if ("today".equalsIgnoreCase(range)) {
             final DateMidnight tmp = DateTimeUtil.translateFromUI(new DateTime()).toDateMidnight();
-            dateFrom = tmp.toDateTime().minusDays(sub).minusSeconds(1);
+            dateFrom = tmp.toDateTime().minusDays(sub).minusMinutes(1);
             dateTo = dateFrom.plusDays(1).plusSeconds(1);
         } else if ("week".equalsIgnoreCase(range)) {
             DateMidnight tmp = DateTimeUtil.translateFromUI(new DateTime()).toDateMidnight();
             tmp = tmp.minusDays(tmp.getDayOfWeek() - 1);
-            dateFrom = tmp.toDateTime().minusWeeks(sub).minusSeconds(1);
+            dateFrom = tmp.toDateTime().minusWeeks(sub).minusMinutes(1);
             dateTo = tmp.toDateTime().plusWeeks(1);
         } else if ("month".equalsIgnoreCase(range)) {
             DateMidnight tmp = DateTimeUtil.translateFromUI(new DateTime()).toDateMidnight();
             tmp = tmp.minusDays(tmp.getDayOfMonth() - 1);
-            dateFrom = tmp.toDateTime().minusMonths(sub).minusSeconds(1);
+            dateFrom = tmp.toDateTime().minusMonths(sub).minusMinutes(1);
             dateTo = tmp.toDateTime().plusMonths(1);
         } else if ("year".equalsIgnoreCase(range)) {
             DateMidnight tmp = DateTimeUtil.translateFromUI(new DateTime()).toDateMidnight();
             tmp = tmp.minusDays(tmp.getDayOfYear() - 1);
-            dateFrom = tmp.toDateTime().minusYears(sub).minusSeconds(1);
+            dateFrom = tmp.toDateTime().minusYears(sub).minusMinutes(1);
             dateTo = tmp.toDateTime().plusYears(1);
         }
         return new DateTime[]{dateFrom, dateTo};
