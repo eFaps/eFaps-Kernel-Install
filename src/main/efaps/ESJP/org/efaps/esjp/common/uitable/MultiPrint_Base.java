@@ -21,6 +21,7 @@
 package org.efaps.esjp.common.uitable;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -52,20 +53,42 @@ import org.slf4j.LoggerFactory;
  *
  * <table>
  * <tr>
- *  <th>Property</th><th>Value</th><th>Mandatory</th><th>Default</th><th>Description</th>
- *  </tr><tr>
- *  <td>Types</td><td>Array with Names of Types, seperated by ";"</td><td>true</td>
- *  <td>-</td><td>Array with Names of Types used for the QueryBuilder.</td>
- *  </tr><tr>
- *  <td>LinkFroms</td><td>Array with Attributes of the related Type, seperated by ";"</td><td>false</td>
- *  <td>-</td><td>Array with Names of Attributes of the related Types
- *  used for the QueryBuilder as part of the Where Criteria.</td>
- *  </tr><tr>
- *  <td>Selects</td><td>Array of Selects,  seperated by ";"</td><td>false</td>
- *  <td>-</td><td>Selects use to expand the returned INnstances to other objects instances.</td>
- *  </tr><tr>
- *  <td>ExpandChildTypes</td><td>true/false</td><td>false</td><td>true</td><td>Must the ChildTypes be expanded.</td>
- *  </tr>
+ * <th>Property</th>
+ * <th>Value</th>
+ * <th>Mandatory</th>
+ * <th>Default</th>
+ * <th>Description</th>
+ * </tr>
+ * <tr>
+ * <td>Types</td>
+ * <td>Array with Names of Types, seperated by ";"</td>
+ * <td>true</td>
+ * <td>-</td>
+ * <td>Array with Names of Types used for the QueryBuilder.</td>
+ * </tr>
+ * <tr>
+ * <td>LinkFroms</td>
+ * <td>Array with Attributes of the related Type, seperated by ";"</td>
+ * <td>false</td>
+ * <td>-</td>
+ * <td>Array with Names of Attributes of the related Types used for the
+ * QueryBuilder as part of the Where Criteria.</td>
+ * </tr>
+ * <tr>
+ * <td>Selects</td>
+ * <td>Array of Selects, seperated by ";"</td>
+ * <td>false</td>
+ * <td>-</td>
+ * <td>Selects use to expand the returned INnstances to other objects instances.
+ * </td>
+ * </tr>
+ * <tr>
+ * <td>ExpandChildTypes</td>
+ * <td>true/false</td>
+ * <td>false</td>
+ * <td>true</td>
+ * <td>Must the ChildTypes be expanded.</td>
+ * </tr>
  * </table>
  * <br>
  * Example:<br>
@@ -73,8 +96,10 @@ import org.slf4j.LoggerFactory;
  * &lt;property name=&quot;Types&quot;&gt;Admin_User_Person2Company;Admin_User_Person2Role&lt;/property&gt;<br>
  * &lt;property name=&quot;LinkFroms&quot;&gt;UserLink;UserLink&lt;/property&gt;
  * </code>
+ *
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: MultiPrint_Base.java 5369 2010-08-19 18:10:22Z miguel.a.aranya
+ *          $
  */
 @EFapsUUID("49c223e8-e500-4c91-a949-576b63c4fb31")
 @EFapsRevision("$Rev$")
@@ -113,9 +138,11 @@ public abstract class MultiPrint_Base
         }
 
         final String expand = (String) properties.get("Expand");
+        final List<QueryBuilder> arrayQuery = new ArrayList<QueryBuilder>();
+        final List<Boolean> arrayExec = new ArrayList<Boolean>();
         QueryBuilder queryBldr = null;
         Type type = null;
-        boolean exec = false;
+
         if (typesStr != null) {
             final String[] typesArray = typesStr.split(";");
             for (int x = 0; x < typesArray.length; x++) {
@@ -125,46 +152,57 @@ public abstract class MultiPrint_Base
                     final String[] linkFroms = linkFromsStr.split(";");
                     queryBldr.addWhereAttrEqValue(linkFroms[x], instance.getId());
                 }
-                exec = analyzeTable(_parameter, filter, queryBldr, type);
+                arrayExec.add(analyzeTable(_parameter, filter, queryBldr, type));
+                arrayQuery.add(queryBldr);
             }
         } else if (expand != null) {
-            //TODO remove obolete expand
+            // TODO remove obolete expand
             MultiPrint_Base.LOG.error("Illegal expand!!!! in : " + _parameter.get(ParameterValues.UIOBJECT).toString());
             final String[] typeattr = expand.split("\\\\");
             type = Type.get(typeattr[0]);
             queryBldr = new QueryBuilder(type);
             queryBldr.addWhereAttrEqValue(typeattr[1], instance.getId());
-            exec = analyzeTable(_parameter, filter, queryBldr, type);
+            arrayExec.add(analyzeTable(_parameter, filter, queryBldr, type));
+            arrayQuery.add(queryBldr);
         }
 
         final List<Instance> instances = new ArrayList<Instance>();
 
-        if (exec) {
-            if (selectStr != null) {
-                final String[] selects = selectStr.split(":");
-                for (final String select : selects) {
-                    final MultiPrintQuery multi = queryBldr.getPrint();
-                    multi.addSelect(selects);
+        final Iterator<Boolean> exec = arrayExec.iterator();
+        int count = 0;
+        while (exec.hasNext()) {
+            if (exec.next()) {
+                final QueryBuilder newQuery = arrayQuery.get(count);
+                if (selectStr != null) {
+                    final String[] selects = selectStr.split(":");
+                    final MultiPrintQuery multi = newQuery.getPrint();
+                    if (count < selects.length) {
+                        multi.addSelect(selects[count]);
+                    }
                     multi.executeWithoutAccessCheck();
-                    instances.addAll(multi.getInstances4Select(select));
+                    instances.addAll((count < selects.length ? multi.getInstances4Select(selects[count])
+                                                             : multi.getInstanceList()));
+                } else {
+                    final InstanceQuery query = newQuery.getQuery();
+                    query.setIncludeChildTypes(includeChildTypes);
+                    instances.addAll(query.execute());
                 }
-            } else {
-                final InstanceQuery query = queryBldr.getQuery();
-                query.setIncludeChildTypes(includeChildTypes);
-                instances.addAll(query.execute());
             }
+            count++;
         }
+
         ret.put(ReturnValues.VALUES, instances);
         return ret;
     }
 
     /**
      * Method to get the List of instances.
-     * @param _parameter    parameter from the eFaps API
-     * @param _filter       map of filters
-     * @param _queryBldr    QueryBuilder used to get the instances
-     * @param _type         type the query is based on
-     * @return  List of instance
+     *
+     * @param _parameter parameter from the eFaps API
+     * @param _filter map of filters
+     * @param _queryBldr QueryBuilder used to get the instances
+     * @param _type type the query is based on
+     * @return List of instance
      * @throws EFapsException on error
      */
     protected boolean analyzeTable(final Parameter _parameter,
@@ -206,11 +244,12 @@ public abstract class MultiPrint_Base
 
     /**
      * Method to add a Filter for a inside Range of two attributes.
-     * @param _entry        entry to be evaluated
-     * @param _queryBldr    QueryBuilder used to get the instances
-     * @param _type         type for the query
-     * @param _attrNames    names of the attributes
-     * @param _field        field the filter belongs to
+     *
+     * @param _entry entry to be evaluated
+     * @param _queryBldr QueryBuilder used to get the instances
+     * @param _type type for the query
+     * @param _attrNames names of the attributes
+     * @param _field field the filter belongs to
      * @return true if the query must be executed, else false
      * @throws EFapsException on error
      */
@@ -263,11 +302,12 @@ public abstract class MultiPrint_Base
 
     /**
      * Method to add a Filter for one attribute.
-     * @param _entry    entry to be evaluated
-     *@param _queryBldr    QueryBuilder used to get the instances
-     * @param _type     type for the query
+     *
+     * @param _entry entry to be evaluated
+     *@param _queryBldr QueryBuilder used to get the instances
+     * @param _type type for the query
      * @param _attrName name of the attribute
-     * @param _field    field the filter belongs to
+     * @param _field field the filter belongs to
      * @return true if the query must be executed, else false
      * @throws EFapsException on error
      */
@@ -339,6 +379,6 @@ public abstract class MultiPrint_Base
             dateFrom = tmp.toDateTime().minusYears(sub).minusMinutes(1);
             dateTo = tmp.toDateTime().plusYears(1);
         }
-        return new DateTime[]{dateFrom, dateTo};
+        return new DateTime[] { dateFrom, dateTo };
     }
 }
