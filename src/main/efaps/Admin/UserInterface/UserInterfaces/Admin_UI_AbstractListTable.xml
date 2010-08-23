@@ -36,7 +36,6 @@
         <name>Admin_UI_AbstractListTable</name>
         <!-- fields -->
         <field name="type">
-            <property name="SelectAlternateOID">linkto[UILink].oid</property>
             <property name="Select">linkto[UILink].attribute[Type]</property>
             <property name="Label">Admin_UI_Abstract/Type.Label</property>
             <property name="ShowTypeIcon">true</property>
@@ -45,6 +44,7 @@
             <property name="ModeSearch">READONLY</property>
         </field>
         <field name="name">
+            <property name="SelectAlternateOID">linkto[UILink].oid</property>
             <property name="Select">linkto[UILink].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Admin_UI_Abstract/Name.Label</property>
