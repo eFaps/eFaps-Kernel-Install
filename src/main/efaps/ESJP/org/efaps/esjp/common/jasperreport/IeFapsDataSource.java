@@ -21,6 +21,8 @@
 
 package org.efaps.esjp.common.jasperreport;
 
+import java.util.Map;
+
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperReport;
 
@@ -43,14 +45,17 @@ public interface IeFapsDataSource
 {
     /**
      * Executed on initialization of the DataSource.
+     *
      * @param _jasperReport JasperReport this DataSource belongs to
      * @param _parameter    Parameter as passed from the eFaps API
      * @param _parentSource parent DataSource in case that this DataSource
      *                      belongs to a subreport
+     * @param _jrParameters map that contains the report parameters
      * @throws EFapsException on error
      */
     void init(final JasperReport _jasperReport,
               final Parameter _parameter,
-              final JRDataSource _parentSource)
+              final JRDataSource _parentSource,
+              final Map<String, Object> _jrParameters)
         throws EFapsException;
 }

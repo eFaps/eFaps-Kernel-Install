@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Map;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
@@ -75,15 +76,23 @@ abstract class SubReportContainer_Base
     private final JRDataSource dataSource;
 
     /**
+     * Map that contains the report parameter.
+     */
+    private final Map<String, Object> jrParameters;
+
+    /**
      * Constructor.
      * @param _parameter   Parameter
      * @param _dataSource  JRDataSource used for this subreport
+     * @param _jrParameters map that contains the report parameters
      */
     public SubReportContainer_Base(final Parameter _parameter,
-                                   final JRDataSource _dataSource)
+                                   final JRDataSource _dataSource,
+                                   final Map<String, Object> _jrParameters)
     {
         this.parameter = _parameter;
         this.dataSource = _dataSource;
+        this.jrParameters = _jrParameters;
     }
 
     /**
@@ -113,12 +122,12 @@ abstract class SubReportContainer_Base
                 if (this.dataSource != null) {
                     final Class<?> clazz = Class.forName(this.dataSource.getClass().getName());
                     final Method method = clazz.getMethod("init",
-                                    new Class[] { JasperReport.class, Parameter.class, JRDataSource.class });
+                                    new Class[] { JasperReport.class, Parameter.class, JRDataSource.class, Map.class });
                     dataSourceNew = (IeFapsDataSource) clazz.newInstance();
-                    method.invoke(dataSourceNew, jasperReport, this.parameter, this.dataSource);
+                    method.invoke(dataSourceNew, jasperReport, this.parameter, this.dataSource, this.jrParameters);
                 } else {
                     dataSourceNew = new EFapsDataSource();
-                    dataSourceNew.init(jasperReport, this.parameter, this.dataSource);
+                    dataSourceNew.init(jasperReport, this.parameter, this.dataSource, this.jrParameters);
                 }
                 ret = dataSourceNew;
                 super.put((String) _key, ret);

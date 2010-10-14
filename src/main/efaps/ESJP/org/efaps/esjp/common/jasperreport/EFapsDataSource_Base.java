@@ -22,6 +22,7 @@ package org.efaps.esjp.common.jasperreport;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
@@ -121,15 +122,14 @@ public abstract class EFapsDataSource_Base
     private JasperReport jasperReport;
 
     /**
-     * Method to initialize this datasource.
-     * @param _jasperReport jasperreport this datasource belongs to
-     * @param _parameter    Parameter as passed to an esjp by eFaps
-     * @param _parentSource parent source
-     * @throws EFapsException on error
+     * {@inheritDoc}
      */
+    @Override
     public void init(final JasperReport _jasperReport,
                      final Parameter _parameter,
-                     final JRDataSource _parentSource) throws EFapsException
+                     final JRDataSource _parentSource,
+                     final Map<String, Object> _jrParameters)
+        throws EFapsException
     {
         this.parameter = _parameter;
         this.jasperReport = _jasperReport;

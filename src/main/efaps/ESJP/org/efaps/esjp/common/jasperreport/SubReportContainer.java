@@ -20,6 +20,8 @@
 
 package org.efaps.esjp.common.jasperreport;
 
+import java.util.Map;
+
 import net.sf.jasperreports.engine.JRDataSource;
 
 import org.efaps.admin.event.Parameter;
@@ -36,7 +38,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  */
 @EFapsUUID("18031397-efce-4525-8f07-b39a7e1a86c9")
 @EFapsRevision("$Rev$")
-public class SubReportContainer extends SubReportContainer_Base
+public class SubReportContainer
+    extends SubReportContainer_Base
 {
     /**
     * Needed for serialization.
@@ -47,11 +50,12 @@ public class SubReportContainer extends SubReportContainer_Base
      * Constructor.
      * @param _parameter        Parameters for an esjp
      * @param _dataSource       datasourclass if not the default must be used
+     * @param _jrParameters map that contains the report parameters
      */
     public SubReportContainer(final Parameter _parameter,
-                              final JRDataSource _dataSource)
+                              final JRDataSource _dataSource,
+                              final Map<String, Object> _jrParameters)
     {
-        super(_parameter, _dataSource);
+        super(_parameter, _dataSource,_jrParameters);
     }
-
 }

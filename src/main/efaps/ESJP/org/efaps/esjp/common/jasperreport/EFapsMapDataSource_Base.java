@@ -66,9 +66,12 @@ public abstract class EFapsMapDataSource_Base
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(final JasperReport _jasperReport,
                      final Parameter _parameter,
-                     final JRDataSource _parentSource) throws EFapsException
+                     final JRDataSource _parentSource,
+                     final Map<String, Object> _jrParameters)
+        throws EFapsException
     {
 
     }

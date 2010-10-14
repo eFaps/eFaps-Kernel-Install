@@ -49,8 +49,8 @@ import net.sf.jasperreports.engine.util.JRLoader;
 
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -129,14 +129,14 @@ public abstract class StandartReport_Base
             if (dataSourceClass != null) {
                 final Class<?> clazz = Class.forName(dataSourceClass);
                 final Method method = clazz.getMethod("init",
-                                new Class[] { JasperReport.class, Parameter.class, JRDataSource.class});
+                                new Class[] { JasperReport.class, Parameter.class, JRDataSource.class, Map.class });
                 dataSource = (IeFapsDataSource) clazz.newInstance();
-                method.invoke(dataSource, jasperReport, _parameter, null);
+                method.invoke(dataSource, jasperReport, _parameter, null, this.jrParameters);
             } else {
                 dataSource = new EFapsDataSource();
-                dataSource.init(jasperReport, _parameter, null);
+                dataSource.init(jasperReport, _parameter, null, this.jrParameters);
             }
-            this.jrParameters.put("EFAPS_SUBREPORT", new SubReportContainer(_parameter, dataSource));
+            this.jrParameters.put("EFAPS_SUBREPORT", new SubReportContainer(_parameter, dataSource, this.jrParameters));
 
             final JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, this.jrParameters, dataSource);
 
