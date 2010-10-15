@@ -23,14 +23,17 @@ package org.efaps.esjp.common.uisearch;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.util.EFapsException;
 
 /**
@@ -58,13 +61,29 @@ public class Connect implements EventExecution
             final String type = (String) properties.get("ConnectType");
             final String childAttr = (String) properties.get("ConnectChildAttribute");
             final String parentAttr = (String) properties.get("ConnectParentAttribute");
+            final boolean allowAttr = "true".equals(properties.get("AllowMultiple"));
 
             for (final String childOid : childOids) {
                 final Instance child = Instance.get(childOid);
-                final Insert insert = new Insert(type);
-                insert.add(parentAttr, "" + parent.getId());
-                insert.add(childAttr, "" + child.getId());
-                insert.execute();
+                boolean check = false;
+                if (allowAttr) {
+                    final QueryBuilder queryBldr = new QueryBuilder(Type.get(type));
+                    queryBldr.addWhereAttrEqValue(parentAttr, parent.getId());
+                    queryBldr.addWhereAttrEqValue(childAttr, child.getId());
+                    final MultiPrintQuery multi = queryBldr.getPrint();
+                    multi.execute();
+                    while (multi.next()) {
+                        check = true;
+                        break;
+                    }
+                }
+
+                if (!check) {
+                    final Insert insert = new Insert(type);
+                    insert.add(parentAttr, parent.getId());
+                    insert.add(childAttr, child.getId());
+                    insert.execute();
+                }
             }
         }
         return new Return();
