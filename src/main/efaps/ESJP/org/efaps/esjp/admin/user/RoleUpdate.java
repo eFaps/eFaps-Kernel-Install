@@ -54,7 +54,7 @@ public class RoleUpdate
 
     /**
      * @param _uuid UUID of the role to be updated
-     * @throws CacheReloadException
+     * @throws CacheReloadException on error
      */
     public RoleUpdate(final String _uuid)
         throws CacheReloadException
@@ -86,7 +86,10 @@ public class RoleUpdate
         }
     }
 
-
+    /**
+     * @param _uuid the UserIntferace Object to be removed from this role
+     * @throws EFapsException on error
+     */
     public void removeUI(final String _uuid)
         throws EFapsException
     {
