@@ -60,7 +60,6 @@ public class RoleUpdate
         throws CacheReloadException
     {
         this.role = Role.get(UUID.fromString(_uuid));
-        System.out.println(this.role);
     }
 
 
@@ -75,14 +74,23 @@ public class RoleUpdate
         queryBldr.addWhereAttrEqValue(CIAdminUserInterface.Direct.UUID, _uuid);
         final InstanceQuery query = queryBldr.getQuery();
         query.execute();
-        query.next();
-        final Instance uiInst = query.getCurrentValue();
-        if (uiInst.isValid()) {
-            //Admin_UI_Access
-            final Insert insert = new Insert(Type.get(UUID.fromString("7e59cebf-21ff-4ee1-8140-44139c90a658")));
-            insert.add("UserLink", this.role.getId());
-            insert.add("UILink", uiInst.getId());
-            insert.execute();
+        if (query.next()) {
+            final Instance uiInst = query.getCurrentValue();
+            if (uiInst.isValid()) {
+                //Admin_UI_Access
+                final QueryBuilder accQueryBldr = new QueryBuilder(Type.get(
+                                UUID.fromString("7e59cebf-21ff-4ee1-8140-44139c90a658")));
+                accQueryBldr.addWhereAttrEqValue("UserLink", this.role.getId());
+                accQueryBldr.addWhereAttrEqValue("UILink", uiInst.getId());
+                final InstanceQuery accQuery = accQueryBldr.getQuery();
+                if (accQuery.execute().isEmpty()) {
+                    //Admin_UI_Access
+                    final Insert insert = new Insert(Type.get(UUID.fromString("7e59cebf-21ff-4ee1-8140-44139c90a658")));
+                    insert.add("UserLink", this.role.getId());
+                    insert.add("UILink", uiInst.getId());
+                    insert.execute();
+                }
+            }
         }
     }
 
