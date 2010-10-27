@@ -28,8 +28,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.AttributeSet;
@@ -42,13 +42,13 @@ import org.efaps.admin.event.EventDefinition;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.EventType;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractCommand;
-import org.efaps.admin.ui.Form;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
+import org.efaps.admin.ui.Form;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.admin.ui.field.FieldClassification;
 import org.efaps.admin.ui.field.FieldSet;
@@ -93,9 +93,7 @@ public class Edit
         // check if we have a fileupload field
         if (context.getFileParameters().size() > 0) {
             for (final Field field : command.getTargetForm().getFields()) {
-                final String attrName = field.getExpression() == null
-                                ? field.getAttribute()
-                                : field.getExpression();
+                final String attrName = field.getAttribute();
                 if (attrName == null && field.isEditableDisplay(TargetMode.EDIT)) {
                     final Context.FileParameter fileItem = context.getFileParameters().get(field.getName());
                     if (fileItem != null) {
@@ -143,9 +141,7 @@ public class Edit
             } else if (field instanceof FieldClassification) {
                 ret = ((FieldClassification) field).getClassificationName();
             } else {
-                final String attrName = field.getExpression() == null
-                                ? field.getAttribute()
-                                : field.getExpression();
+                final String attrName = field.getAttribute();
                 if (attrName != null && field.isEditableDisplay(TargetMode.EDIT)) {
                     final Attribute attr = _instance.getType().getAttribute(attrName);
                     // check if not a fileupload
@@ -163,9 +159,7 @@ public class Edit
             for (final Field field : fields) {
                 if (context.getParameters().containsKey(field.getName())) {
                     final String newValue = context.getParameter(field.getName());
-                    final String attrName = field.getExpression() == null
-                                    ? field.getAttribute()
-                                    : field.getExpression();
+                    final String attrName = field.getAttribute();
                     final Object object =  print.getAttribute(attrName);
                     final String oldValue = object != null ? object.toString() : null;
                     if (!newValue.equals(oldValue)) {
@@ -225,9 +219,7 @@ public class Edit
         nf.setMaximumIntegerDigits(2);
 
         for (final FieldSet fieldset : _fieldsets) {
-            final String setName = fieldset.getExpression() == null
-                            ? fieldset.getAttribute()
-                            : fieldset.getExpression();
+            final String setName = fieldset.getAttribute();
             final AttributeSet set = AttributeSet.find(_instance.getType().getName(), setName);
 
             // first already existing values must be updated, if they were
@@ -350,9 +342,7 @@ public class Edit
             final List<Field> fields = new ArrayList<Field>();
             final Form form = Form.getTypeForm(subClassType);
             for (final Field field : form.getFields()) {
-                final String attrName = field.getExpression() == null
-                                ? field.getAttribute()
-                                : field.getExpression();
+                final String attrName = field.getAttribute();
                 if (attrName != null && field.isEditableDisplay(TargetMode.EDIT)) {
                     final Attribute attr = subClassType.getAttribute(attrName);
                     // check if not a fileupload
@@ -366,9 +356,7 @@ public class Edit
             subquery.execute();
             if (subquery.next()) {
                 for (final Field field : fields) {
-                    final String attrName = field.getExpression() == null
-                                    ? field.getAttribute()
-                                    : field.getExpression();
+                    final String attrName = field.getAttribute();
                     values.put(field.getName(), subquery.get(attrName));
                 }
                 values.put("OID", subquery.get("OID"));
@@ -397,9 +385,7 @@ public class Edit
                         if (field instanceof FieldSet) {
                             fieldsets.add((FieldSet) field);
                         } else {
-                            final String attrName = field.getExpression() == null
-                                            ? field.getAttribute()
-                                            : field.getExpression();
+                            final String attrName = field.getAttribute();
                             if (attrName != null && field.isEditableDisplay(TargetMode.EDIT)) {
                                 final Attribute attr = classification.getAttribute(attrName);
                                 if (attr != null && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType()
@@ -422,9 +408,7 @@ public class Edit
                         if (field instanceof FieldSet) {
                             fieldsets.add((FieldSet) field);
                         } else {
-                            final String attrName = field.getExpression() == null
-                                            ? field.getAttribute()
-                                            : field.getExpression();
+                            final String attrName = field.getAttribute();
                             if (attrName != null && field.isEditableDisplay(TargetMode.EDIT)) {
                                 final Attribute attr = classification.getAttribute(attrName);
                                 if (attr != null && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType()

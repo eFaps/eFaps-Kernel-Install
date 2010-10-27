@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.Type;
@@ -34,8 +34,8 @@ import org.efaps.admin.datamodel.attributetype.StringType;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -105,8 +105,7 @@ public class Search implements EventExecution
                         queryBldr.addWhereAttrEqValue(field.getAttribute(), value);
                     }
                 } else {
-                    queryBldr.addWhereAttrMatchValue(field.getExpression() == null
-                                                        ? field.getAttribute() : field.getExpression(), value)
+                    queryBldr.addWhereAttrMatchValue(field.getAttribute(), value)
                                                         .setIgnoreCase(ignoreFields.contains(field.getName()));
                 }
             }

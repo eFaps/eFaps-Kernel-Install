@@ -36,13 +36,13 @@ import org.efaps.admin.datamodel.attributetype.RateType;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractCommand;
-import org.efaps.admin.ui.Form;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
+import org.efaps.admin.ui.Form;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.admin.ui.field.FieldSet;
 import org.efaps.db.Checkin;
@@ -111,9 +111,7 @@ public class Create implements EventExecution
         }
 
         for (final Field field : command.getTargetForm().getFields()) {
-            final String attrName = field.getExpression() == null
-                                        ? field.getAttribute()
-                                        : field.getExpression();
+            final String attrName = field.getAttribute();
             if (attrName != null
                           && (field.isEditableDisplay(TargetMode.CREATE) || field.isHiddenDisplay(TargetMode.CREATE))) {
                 if (field instanceof FieldSet) {
@@ -194,9 +192,7 @@ public class Create implements EventExecution
             for (final FieldSet fieldset : _fieldsets) {
                 final String[] yCoords = (String[]) others.get(fieldset.getName() + "_eFapsNew");
                 if (yCoords != null) {
-                    final String setName = fieldset.getExpression() == null
-                                                ? fieldset.getAttribute()
-                                                : fieldset.getExpression();
+                    final String setName = fieldset.getAttribute();
                     final AttributeSet set = AttributeSet.find(_instance.getType().getName(), setName);
 
                     for (final String yCoord : yCoords) {
@@ -260,9 +256,7 @@ public class Create implements EventExecution
         final AbstractCommand command = (AbstractCommand) _parameter.get(ParameterValues.UIOBJECT);
 
         for (final Field field : command.getTargetForm().getFields()) {
-            final String attrName = field.getExpression() == null
-                                        ? field.getAttribute()
-                                        : field.getExpression();
+            final String attrName = field.getAttribute();
             if (attrName == null && field.isEditableDisplay(TargetMode.CREATE)) {
                 final Context.FileParameter fileItem = context.getFileParameters().get(field.getName());
                 if (fileItem != null) {
@@ -305,9 +299,7 @@ public class Create implements EventExecution
                 final Insert classInsert = new Insert(classification);
                 classInsert.add(classification.getLinkAttributeName(), ((Long) _instance.getId()).toString());
                 for (final Field field : form.getFields()) {
-                    final String attrName = field.getExpression() == null
-                                                ? field.getAttribute()
-                                                : field.getExpression();
+                    final String attrName = field.getAttribute();
                     if (attrName != null
                           && (field.isEditableDisplay(TargetMode.CREATE) || field.isHiddenDisplay(TargetMode.CREATE))) {
                         if (field instanceof FieldSet) {

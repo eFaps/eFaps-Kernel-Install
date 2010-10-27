@@ -24,14 +24,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -180,8 +180,8 @@ public abstract class MultiPrint_Base
                         multi.addSelect(selects[count]);
                     }
                     multi.executeWithoutAccessCheck();
-                    instances.addAll((count < selects.length ? multi.getInstances4Select(selects[count])
-                                                             : multi.getInstanceList()));
+                    instances.addAll(count < selects.length ? multi.getInstances4Select(selects[count])
+                                                             : multi.getInstanceList());
                 } else {
                     final InstanceQuery query = newQuery.getQuery();
                     query.setIncludeChildTypes(includeChildTypes);
@@ -219,7 +219,7 @@ public abstract class MultiPrint_Base
                 final String fieldName = (String) entry.getKey();
                 final Field field = command.getTargetTable().getField(fieldName);
                 if (!field.isFilterPickList()) {
-                    String attrName = field.getExpression() == null ? field.getAttribute() : field.getExpression();
+                    String attrName = field.getAttribute();
                     String[] attrNames = null;
                     if (field.getFilterAttributes() != null) {
                         if (field.getFilterAttributes().contains(",")) {
