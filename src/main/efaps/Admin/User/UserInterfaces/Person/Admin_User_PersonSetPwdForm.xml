@@ -27,21 +27,21 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>3d8bb94e-08d4-4f99-9fbf-3cc01f833021</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>3d8bb94e-08d4-4f99-9fbf-3cc01f833021</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_User_PersonSetPwdForm</name>
-    <!-- fields -->
-    <field name="setpassword">
-      <property name="Columns">20</property>
-      <property name="ModeCreate">EDITABLE</property>
-      <property name="ModeEdit">EDITABLE</property>
-      <property name="Expression">Password</property>
-      <property name="Required">true</property>
-    </field>
-  </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_User_PersonSetPwdForm</name>
+        <!-- fields -->
+        <field name="setpassword">
+            <property name="Columns">20</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">Password</property>
+            <property name="Required">true</property>
+        </field>
+    </definition>
 
 </ui-form>

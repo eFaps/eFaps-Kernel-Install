@@ -35,13 +35,13 @@
       <property name="Columns">20</property>
       <property name="ModeCreate">EDITABLE</property>
       <property name="ModeEdit">EDITABLE</property>
-      <property name="Expression">Name</property>
+      <property name="Attribute">Name</property>
       <property name="Required">true</property>
       <property name="ModeSearch">EDITABLE</property>
     </field>
     <field name="uuid">
       <property name="ModeCreate">EDITABLE</property>
-      <property name="Expression">UUID</property>
+      <property name="Attribute">UUID</property>
       <property name="Required">true</property>
       <property name="ModeSearch">EDITABLE</property>
     </field>
@@ -49,7 +49,7 @@
       <property name="Columns">20</property>
       <property name="ModeCreate">EDITABLE</property>
       <property name="ModeEdit">EDITABLE</property>
-      <property name="Expression">Revision</property>
+      <property name="Attribute">Revision</property>
       <property name="Required">true</property>
       <property name="ModeSearch">EDITABLE</property>
     </field>
@@ -57,28 +57,28 @@
       <property name="GroupCount">2</property>
     </field>
     <field name="creator">
-      <property name="AlternateOID">Creator.OID</property>
-      <property name="Expression">Creator</property>
+       <property name="SelectAlternateOID">linkto[Creator].oid</property>
+      <property name="Attribute">Creator</property>
       <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
       <property name="ModeSearch">EDITABLE</property>
       <property name="ShowTypeIcon">true</property>
     </field>
     <field name="created">
-      <property name="Expression">Created</property>
+      <property name="Attribute">Created</property>
       <property name="ModeSearch">EDITABLE</property>
     </field>
     <field name="modifyGroup" character="Group">
       <property name="GroupCount">2</property>
     </field>
     <field name="modifier">
-      <property name="AlternateOID">Modifier.OID</property>
-      <property name="Expression">Modifier</property>
+       <property name="SelectAlternateOID">linkto[Modifier].oid</property>
+      <property name="Attribute">Modifier</property>
       <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
       <property name="ModeSearch">EDITABLE</property>
       <property name="ShowTypeIcon">true</property>
     </field>
     <field name="modified">
-      <property name="Expression">Modified</property>
+      <property name="Attribute">Modified</property>
       <property name="ModeSearch">EDITABLE</property>
     </field>
   </definition>

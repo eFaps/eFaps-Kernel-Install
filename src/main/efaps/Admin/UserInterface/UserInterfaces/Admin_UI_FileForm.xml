@@ -25,76 +25,76 @@
 
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <uuid>dd0016d3-8871-4612-8cd9-964135ef9ff6</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_UI_FileForm</name>
-    <!-- fields -->
-    <field name="type">
-      <property name="Expression">Type</property>
-      <property name="ShowTypeIcon">true</property>
-    </field>
-    <field name="name">
-      <property name="Columns">40</property>
-      <property name="ModeCreate">EDITABLE</property>
-      <property name="ModeEdit">EDITABLE</property>
-      <property name="Expression">Name</property>
-      <property name="Required">true</property>
-      <property name="ModeSearch">EDITABLE</property>
-    </field>
-    <field name="uuid">
-      <property name="Columns">40</property>
-      <property name="ModeCreate">EDITABLE</property>
-      <property name="ModeEdit">EDITABLE</property>
-      <property name="Expression">UUID</property>
-      <property name="Required">false</property>
-      <property name="ModeSearch">EDITABLE</property>
-    </field>
-    <field name="revision">
-      <property name="Columns">20</property>
-      <property name="ModeCreate">EDITABLE</property>
-      <property name="ModeEdit">EDITABLE</property>
-      <property name="Expression">Revision</property>
-      <property name="Required">true</property>
-      <property name="ModeSearch">EDITABLE</property>
-    </field>
-    <field name="fileName">
-      <property name="Expression">FileName</property>
-      
-    </field>
-    <field name="fileLength">
-      <property name="Expression">FileLength</property>
-      
-    </field>
-    <field name="createGroup" character="Group">
-      <property name="GroupCount">2</property>
-    </field>
-    <field name="creator">
-      <property name="AlternateOID">Creator.OID</property>
-      <property name="Expression">Creator</property>
-      <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-      <property name="ModeSearch">EDITABLE</property>
-      <property name="ShowTypeIcon">true</property>
-    </field>
-    <field name="created">
-      <property name="Expression">Created</property>
-      <property name="ModeSearch">EDITABLE</property>
-    </field>
-    <field name="modifyGroup" character="Group">
-      <property name="GroupCount">2</property>
-    </field>
-    <field name="modifier">
-      <property name="AlternateOID">Modifier.OID</property>
-      <property name="Expression">Modifier</property>
-      <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-      <property name="ModeSearch">EDITABLE</property>
-      <property name="ShowTypeIcon">true</property>
-    </field>
-    <field name="modified">
-      <property name="Expression">Modified</property>
-      <property name="ModeSearch">EDITABLE</property>
-    </field>
-  </definition>
+    <uuid>dd0016d3-8871-4612-8cd9-964135ef9ff6</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_UI_FileForm</name>
+        <!-- fields -->
+        <field name="type">
+            <property name="Attribute">Type</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="name">
+            <property name="Columns">40</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">Name</property>
+            <property name="Required">true</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+        <field name="uuid">
+            <property name="Columns">40</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">UUID</property>
+            <property name="Required">false</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+        <field name="revision">
+            <property name="Columns">20</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">Revision</property>
+            <property name="Required">true</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+        <field name="fileName">
+            <property name="Attribute">FileName</property>
+
+        </field>
+        <field name="fileLength">
+            <property name="Attribute">FileLength</property>
+
+        </field>
+        <field name="createGroup" character="Group">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="creator">
+            <property name="SelectAlternateOID">linkto[Modifier].oid</property>
+            <property name="Attribute">Creator</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="created">
+            <property name="Attribute">Created</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+        <field name="modifyGroup" character="Group">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="modifier">
+            <property name="SelectAlternateOID">linkto[Modifier].oid</property>
+            <property name="Attribute">Modifier</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="modified">
+            <property name="Attribute">Modified</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+    </definition>
 </ui-form>

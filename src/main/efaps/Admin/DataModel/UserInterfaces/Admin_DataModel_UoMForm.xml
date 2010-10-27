@@ -26,33 +26,33 @@
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
   <uuid>201e182c-08f6-476a-b14a-82ecb20fefee</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_DataModel_UoMForm</name>
-    <!-- fields -->
-    <field name="name">
-      <property name="Columns">40</property>
-      <property name="ModeCreate">EDITABLE</property>
-      <property name="ModeEdit">EDITABLE</property>
-      <property name="Expression">Name</property>
-      <property name="Required">true</property>
-      <property name="ModeSearch">EDITABLE</property>
-    </field>
-    <field name="numerator">
-      <property name="Columns">40</property>
-      <property name="ModeCreate">EDITABLE</property>
-      <property name="ModeEdit">EDITABLE</property>
-      <property name="Expression">Numerator</property>
-      <property name="Required">true</property>
-    </field>
-    <field name="denominator">
-      <property name="Columns">40</property>
-      <property name="ModeCreate">EDITABLE</property>
-      <property name="ModeEdit">EDITABLE</property>
-      <property name="Expression">Denominator</property>
-      <property name="Required">true</property>
-    </field>
-  </definition>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_DataModel_UoMForm</name>
+        <!-- fields -->
+        <field name="name">
+            <property name="Columns">40</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">Name</property>
+            <property name="Required">true</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+        <field name="numerator">
+            <property name="Columns">40</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">Numerator</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="denominator">
+            <property name="Columns">40</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">Denominator</property>
+            <property name="Required">true</property>
+        </field>
+    </definition>
 </ui-form>

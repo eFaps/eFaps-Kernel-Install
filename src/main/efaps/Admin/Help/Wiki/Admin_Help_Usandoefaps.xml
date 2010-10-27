@@ -41,5 +41,5 @@
             <child>Admin_Help_Configuration</child>
             <child>Admin_Help_Modules</child>
         </childs>
-    --></definition>
+    </definition>
 </help-menu>

@@ -27,40 +27,37 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>4d59a9ad-6899-4793-bba8-6a1f0c4c8ebe</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>4d59a9ad-6899-4793-bba8-6a1f0c4c8ebe</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_User_SettingChgForm</name>
-    <!-- fields -->
-    <field name="TimeZone4Edit">
-      <property name="Columns">40</property>
-      <property name="ModeCreate">EDITABLE</property>
-      <property name="Expression">TimeZone</property>
-      <trigger program="org.efaps.esjp.admin.user.TimeZoneUI"
-               method="get4Setting" 
-               name="Admin_User_SettingChgForm/TimeZone4Edit" 
-               event="UI_FIELD_VALUE"/>
-    </field>
-    <field name="Chronology4Edit">
-      <property name="Columns">40</property>
-      <property name="ModeCreate">EDITABLE</property>
-      <property name="Expression">Chronology</property>
-      <trigger program="org.efaps.esjp.admin.user.ChronologyUI"
-               method="get4Setting" 
-               name="Admin_User_SettingChgForm/Chronology4Edit" 
-               event="UI_FIELD_VALUE"/>
-    </field>
-    <field name="Locale">
-      <property name="Columns">40</property>
-      <property name="ModeCreate">EDITABLE</property>
-      <property name="Expression">Locale</property>
-      <trigger program="org.efaps.esjp.admin.user.ChgSetting"
-               method="getLocale4Setting" 
-               name="Admin_User_SettingChgForm/Locale" 
-               event="UI_FIELD_VALUE"/>
-    </field>
-  </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_User_SettingChgForm</name>
+        <!-- fields -->
+        <field name="TimeZone4Edit">
+            <property name="Columns">40</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Attribute">TimeZone</property>
+            <trigger program="org.efaps.esjp.admin.user.TimeZoneUI"
+                method="get4Setting" name="Admin_User_SettingChgForm/TimeZone4Edit"
+                event="UI_FIELD_VALUE" />
+        </field>
+        <field name="Chronology4Edit">
+            <property name="Columns">40</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Attribute">Chronology</property>
+            <trigger program="org.efaps.esjp.admin.user.ChronologyUI"
+                method="get4Setting" name="Admin_User_SettingChgForm/Chronology4Edit"
+                event="UI_FIELD_VALUE" />
+        </field>
+        <field name="Locale">
+            <property name="Columns">40</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Attribute">Locale</property>
+            <trigger program="org.efaps.esjp.admin.user.ChgSetting"
+                method="getLocale4Setting" name="Admin_User_SettingChgForm/Locale"
+                event="UI_FIELD_VALUE" />
+        </field>
+    </definition>
 </ui-form>

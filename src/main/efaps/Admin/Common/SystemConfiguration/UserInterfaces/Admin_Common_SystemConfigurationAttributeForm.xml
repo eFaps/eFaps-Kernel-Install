@@ -39,7 +39,7 @@
             <property name="Columns">40</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <property name="Expression">Key</property>
+            <property name="Attribute">Key</property>
             <property name="Required">true</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
@@ -48,7 +48,7 @@
             <property name="Rows">5</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <property name="Expression">Value</property>
+            <property name="Attribute">Value</property>
             <property name="Required">true</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
@@ -57,7 +57,7 @@
             <property name="Rows">5</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <property name="Expression">Description</property>
+            <property name="Attribute">Description</property>
             <property name="Required">false</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
