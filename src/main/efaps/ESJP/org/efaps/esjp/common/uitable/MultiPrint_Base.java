@@ -21,7 +21,7 @@
 package org.efaps.esjp.common.uitable;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -79,7 +79,7 @@ import org.slf4j.LoggerFactory;
  * <td>Array of Selects, seperated by ";"</td>
  * <td>false</td>
  * <td>-</td>
- * <td>Selects use to expand the returned INnstances to other objects instances.
+ * <td>Selects use to expand the returned Innstances to other objects instances.
  * </td>
  * </tr>
  * <tr>
@@ -130,67 +130,47 @@ public abstract class MultiPrint_Base
         final boolean includeChildTypes = !"false".equalsIgnoreCase((String) properties.get("ExpandChildTypes"));
 
         if (MultiPrint_Base.LOG.isDebugEnabled()) {
-            final StringBuilder log = new StringBuilder().append("Types: ").append(typesStr).append("\n")
-                .append("LinkFroms: ").append(linkFromsStr).append("\n")
-                .append("Selects: ").append(selectStr).append("\n")
-                .append("ExpandChildTypes: ").append(includeChildTypes);
-            MultiPrint_Base.LOG.debug(log.toString());
+            MultiPrint_Base.LOG.debug("Types: {}\n LinkFroms: {}\n Selects: {}\n ExpandChildTypes: {}",
+                                            new Object[]{typesStr, linkFromsStr, selectStr, includeChildTypes});
         }
+        final Map<QueryBuilder, Boolean> queryBldrs2exec = new LinkedHashMap<QueryBuilder, Boolean>();
 
-        final String expand = (String) properties.get("Expand");
-        final List<QueryBuilder> arrayQuery = new ArrayList<QueryBuilder>();
-        final List<Boolean> arrayExec = new ArrayList<Boolean>();
-        QueryBuilder queryBldr = null;
-        Type type = null;
-
+        final List<Instance> instances = new ArrayList<Instance>();
         if (typesStr != null) {
             final String[] typesArray = typesStr.split(";");
             for (int x = 0; x < typesArray.length; x++) {
-                type = Type.get(typesArray[x]);
-                queryBldr = new QueryBuilder(type);
+                final Type type = Type.get(typesArray[x]);
+                final QueryBuilder queryBldr = new QueryBuilder(type);
                 if (linkFromsStr != null) {
                     final String[] linkFroms = linkFromsStr.split(";");
                     queryBldr.addWhereAttrEqValue(linkFroms[x], instance.getId());
                 }
-                arrayExec.add(analyzeTable(_parameter, filter, queryBldr, type));
-                arrayQuery.add(queryBldr);
+                queryBldrs2exec.put(queryBldr, analyzeTable(_parameter, filter, queryBldr, type));
             }
-        } else if (expand != null) {
-            // TODO remove obolete expand
-            MultiPrint_Base.LOG.error("Illegal expand!!!! in : " + _parameter.get(ParameterValues.UIOBJECT).toString());
-            final String[] typeattr = expand.split("\\\\");
-            type = Type.get(typeattr[0]);
-            queryBldr = new QueryBuilder(type);
-            queryBldr.addWhereAttrEqValue(typeattr[1], instance.getId());
-            arrayExec.add(analyzeTable(_parameter, filter, queryBldr, type));
-            arrayQuery.add(queryBldr);
-        }
-
-        final List<Instance> instances = new ArrayList<Instance>();
-
-        final Iterator<Boolean> exec = arrayExec.iterator();
-        int count = 0;
-        while (exec.hasNext()) {
-            if (exec.next()) {
-                final QueryBuilder newQuery = arrayQuery.get(count);
-                if (selectStr != null) {
-                    final String[] selects = selectStr.split(":");
-                    final MultiPrintQuery multi = newQuery.getPrint();
-                    if (count < selects.length) {
-                        multi.addSelect(selects[count]);
+            int count = 0;
+            for (final Entry<QueryBuilder, Boolean> entry : queryBldrs2exec.entrySet()) {
+                if (entry.getValue()) {
+                    if (selectStr != null) {
+                        final String[] selects = selectStr.split(":");
+                        final MultiPrintQuery multi = entry.getKey().getPrint();
+                        if (count < selects.length) {
+                            multi.addSelect(selects[count]);
+                        }
+                        multi.executeWithoutAccessCheck();
+                        instances.addAll(count < selects.length ? multi.getInstances4Select(selects[count])
+                                                                 : multi.getInstanceList());
+                    } else {
+                        final InstanceQuery query = entry.getKey().getQuery();
+                        query.setIncludeChildTypes(includeChildTypes);
+                        instances.addAll(query.execute());
                     }
-                    multi.executeWithoutAccessCheck();
-                    instances.addAll(count < selects.length ? multi.getInstances4Select(selects[count])
-                                                             : multi.getInstanceList());
-                } else {
-                    final InstanceQuery query = newQuery.getQuery();
-                    query.setIncludeChildTypes(includeChildTypes);
-                    instances.addAll(query.execute());
                 }
+                count++;
             }
-            count++;
+        } else {
+            final AbstractCommand command = (AbstractCommand) _parameter.get(ParameterValues.UIOBJECT);
+            MultiPrint_Base.LOG.warn("No 'Types' property given for executed Command: '{}'", command.getName());
         }
-
         ret.put(ReturnValues.VALUES, instances);
         return ret;
     }
