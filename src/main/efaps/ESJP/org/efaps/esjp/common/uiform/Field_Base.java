@@ -30,6 +30,7 @@ import java.util.UUID;
 
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.datamodel.ui.UIInterface;
 import org.efaps.admin.event.Parameter;
@@ -38,6 +39,8 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.util.EFapsException;
 
 /**
@@ -165,6 +168,56 @@ public abstract class Field_Base
 
         final Return ret = new Return();
         ret.put(ReturnValues.VALUES, html.toString());
+        return ret;
+    }
+
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return Return containing Html Snipplet
+     * @throws EFapsException on error
+     */
+    public Return dropDownFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final StringBuilder html = new StringBuilder();
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final String typeStr = (String) props.get("Type");
+        final Type type = Type.get(typeStr);
+        if (type != null) {
+            final QueryBuilder queryBldr = new QueryBuilder(type);
+            final String where = (String) props.get("WhereAttrEqValue");
+            if (where != null) {
+                final String[] parts = where.split("\\|");
+                queryBldr.addWhereAttrEqValue(parts[0], parts[1]);
+            }
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final String select = (String) props.get("Select");
+            if (select != null) {
+                multi.addSelect(select);
+            }
+            final String phrase = (String) props.get("Phrase");
+            if (phrase != null) {
+                multi.addPhrase("Phrase", phrase);
+            }
+            multi.execute();
+
+            final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+            html.append("<select name=\"").append(fieldValue.getField().getName()).append("\" size=\"1\">");
+            while (multi.next()) {
+                html.append("<option value=\"").append(multi.getCurrentInstance().getId()).append("\"/>");
+                if (select != null) {
+                    html.append(multi.getSelect(select));
+                }
+                if (phrase != null) {
+                    html.append(multi.getPhrase("Phrase"));
+                }
+                html.append("</option>");
+            }
+            html.append("</select>");
+        }
+        final Return ret = new Return();
+        ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
     }
 }
