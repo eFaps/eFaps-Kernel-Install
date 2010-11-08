@@ -20,88 +20,20 @@
 
 package org.efaps.esjp.admin.access;
 
-import org.efaps.admin.event.EventExecution;
-import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
-import org.efaps.admin.event.Parameter.ParameterValues;
-import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
-import org.efaps.util.EFapsException;
 
 /**
- * Class is used as an esjp to give access on a field. It contains methods that
- * allows to hide fields when necessary.
+ * This class must be replaced for customization, therefore it is left empty.
+ * Functional description can be found in the related "<code>_Base</code>"
+ * class.
  *
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("216703cb-15e7-423e-9d71-46497b63e374")
+@EFapsUUID("8bd4d9f4-4d8f-4a1a-b9f1-a155f6dedbe1")
 @EFapsRevision("$Rev$")
-public class AccessOnField implements EventExecution {
-
-  /**
-   * Not used here.
-   * @param _parameter Parameter as passed from eFaps to an esjp
-   * @throws EFapsException never
-   * @return null
-   */
-  public Return execute(final Parameter _parameter) throws EFapsException {
-    return null;
-  }
-
-  /**
-   * Method is used to deny access in EDITMODE.
-   *
-   * @param _parameter Parameter as passed from eFaps to an esjp
-   * @return Return with True if VIEW, else false
-   */
-  public Return hideOnEdit(final Parameter _parameter) {
-    final TargetMode mode
-                      = (TargetMode) _parameter.get(ParameterValues.ACCESSMODE);
-
-    final Return ret = new Return();
-
-    if (!mode.equals(TargetMode.EDIT)) {
-      ret.put(ReturnValues.TRUE, true);
-    }
-    return ret;
-  }
-
-  /**
-   * Method is used to deny access in SearchMode.
-   *
-   * @param _parameter Parameter as passed from eFaps to an esjp
-   * @return Return with True if VIEW, else false
-   */
-  public Return hideOnSearch(final Parameter _parameter) {
-    final TargetMode mode
-                      = (TargetMode) _parameter.get(ParameterValues.ACCESSMODE);
-
-    final Return ret = new Return();
-
-    if (!mode.equals(TargetMode.SEARCH)) {
-      ret.put(ReturnValues.TRUE, true);
-    }
-    return ret;
-  }
-
-  /**
-   * Method is used to give access only on VIEWMODE.
-   *
-   * @param _parameter Parameter as passed from eFaps to an esjp
-   * @return Return with True if VIEW, else false
-   */
-  public Return viewOnly(final Parameter _parameter) {
-    final TargetMode mode
-                      = (TargetMode) _parameter.get(ParameterValues.ACCESSMODE);
-
-    final Return ret = new Return();
-
-    if (mode.equals(TargetMode.VIEW)) {
-      ret.put(ReturnValues.TRUE, true);
-    }
-    return ret;
-  }
+public class AccessOnField
+    extends  AccessOnField_Base
+{
 }
