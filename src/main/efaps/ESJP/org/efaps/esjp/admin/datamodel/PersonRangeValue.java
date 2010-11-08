@@ -33,10 +33,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("6e9283bb-06a7-40a5-8420-becc4cff72f5")
+@EFapsUUID("045090f9-c2ce-459c-98a8-33090a02efc3")
 @EFapsRevision("$Rev$")
-public class RangesValue
-    extends RangesValue_Base
+public class PersonRangeValue
+    extends PersonRangeValue_Base
 {
 
 }
