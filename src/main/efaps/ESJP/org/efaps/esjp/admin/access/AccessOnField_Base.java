@@ -41,7 +41,7 @@ import org.efaps.util.EFapsException;
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("")
+@EFapsUUID("ed8d307f-faed-4e4b-9251-1280658d2945")
 @EFapsRevision("$Rev$")
 public abstract class AccessOnField_Base
     implements EventExecution
