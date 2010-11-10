@@ -119,13 +119,14 @@ public abstract class RangesValue_Base
             final Map<String, String> map = new TreeMap<String, String>();
 
             while (multi.next()) {
+                final String strVal;
                 if (list != null) {
-                    list.makeString(multi.getCurrentInstance(), multi,
+                    strVal = list.makeString(multi.getCurrentInstance(), multi,
                                     (TargetMode) _parameter.get(ParameterValues.ACCESSMODE));
                 } else {
-                    map.put(multi.getAttribute(value).toString(),
-                                    ((Long) multi.getCurrentInstance().getId()).toString());
+                    strVal = multi.getAttribute(value).toString();
                 }
+                map.put(strVal, ((Long) multi.getCurrentInstance().getId()).toString());
             }
             setSelectedValue(_parameter);
             values.put(fieldValue.getAttribute(), map);
