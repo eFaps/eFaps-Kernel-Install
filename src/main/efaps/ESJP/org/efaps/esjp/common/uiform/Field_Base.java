@@ -39,6 +39,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.util.EFapsException;
@@ -219,5 +220,24 @@ public abstract class Field_Base
         final Return ret = new Return();
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
+    }
+
+
+    /**
+     * Method can be executed as FieldValue to store the "selectRow" Values in
+     * the Context for further use. (e.g a User selects some Objects, a form is
+     * opened fur further information and than the information of the selected
+     * Object is needed).
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return empty Return
+     * @throws EFapsException on error
+     */
+    public Return getStoreOIDsFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        Context.getThreadContext().setSessionAttribute(fieldValue.getField().getName(),
+                        _parameter.getParameterValues("selectedRow"));
+        return new Return();
     }
 }
