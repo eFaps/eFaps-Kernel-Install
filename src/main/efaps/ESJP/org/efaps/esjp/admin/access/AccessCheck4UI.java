@@ -25,8 +25,8 @@ import java.util.Map;
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -78,7 +78,8 @@ public class AccessCheck4UI
                 final Long statusID = print.<Long> getAttribute(statusAttr);
                 final String[] stati = statiStr.split(",");
                 for (final String status : stati) {
-                    if (statusID.equals(Status.find(statusAttr.getLink().getUUID(), status.trim()).getId())) {
+                    final Status stat = Status.find(statusAttr.getLink().getUUID(), status.trim());
+                    if (stat != null && statusID.equals(stat.getId())) {
                         ret.put(ReturnValues.TRUE, true);
                         break;
                     }
