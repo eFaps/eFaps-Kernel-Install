@@ -33,7 +33,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  */
 @EFapsUUID("a5871800-310e-410b-b4f4-447b2e68deff")
 @EFapsRevision("$Rev$")
-public class HtmlMarkupConverter extends HtmlMarkupConverter_Base
+public class HtmlMarkupConverter
+    extends HtmlMarkupConverter_Base
 {
 
 }

@@ -34,7 +34,11 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 @EFapsRevision("$Rev$")
 public abstract class HtmlMarkupConverter_Base
 {
-    public static String getConvertedString(final String _value)
+    /**
+     * @param _value value to be converted
+     * @return String
+     */
+    public String getConvertedString(final String _value)
     {
         return _value.replaceAll("<br />", "<br>").replaceAll("<br/>", "<br>");
     }

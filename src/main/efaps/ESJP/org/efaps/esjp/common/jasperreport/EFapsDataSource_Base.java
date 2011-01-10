@@ -234,7 +234,7 @@ public abstract class EFapsDataSource_Base
                     ret = this.print.getSelect(select);
                     final Attribute attr = this.print.getAttribute4Select(select);
                     if (attr != null && attr.getAttributeType().getClassRepr().equals(FormatedStringType.class)) {
-                        ret = HtmlMarkupConverter_Base.getConvertedString((String) ret);
+                        ret = new HtmlMarkupConverter().getConvertedString((String) ret);
                     }
                 } catch (final EFapsException e) {
                     throw new JRException("Error while getting value for a field", e);
