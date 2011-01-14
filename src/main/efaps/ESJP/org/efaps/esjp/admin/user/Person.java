@@ -23,8 +23,8 @@ package org.efaps.esjp.admin.user;
 import java.util.Map;
 
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
@@ -150,6 +150,7 @@ public class Person
             if (key != null) {
                 final Update update = new Update("Admin_User_JAASKey", getJAASUserID(instance.getId()));
                 update.add("Key", key[0]);
+                update.execute();
             }
         }
         return null;
