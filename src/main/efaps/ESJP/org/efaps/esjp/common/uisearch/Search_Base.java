@@ -69,10 +69,56 @@ public abstract class Search_Base
      * @return List of instances
      */
     @Override
-    public Return execute(final Parameter _parameter) throws EFapsException
+    public Return execute(final Parameter _parameter)
+        throws EFapsException
     {
         final Return ret = new Return();
 
+        final QueryBuilder bldr = getQueryBuilder(_parameter);
+
+        ret.put(ReturnValues.VALUES, executeQuery(_parameter, bldr));
+        return ret;
+    }
+
+    /**
+     * Method for obtains a List of the query.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _queryBldr QueryBuilder
+     * @return instances List of instances.
+     * @throws EFapsException on error.
+     */
+    protected List<Instance> executeQuery(final Parameter _parameter,
+                                          final QueryBuilder _queryBldr)
+        throws EFapsException
+    {
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final boolean expandChildTypes = "true".equals(properties.get("ExpandChildTypes"));
+
+        final InstanceQuery query = _queryBldr.getQuery();
+        query.setIncludeChildTypes(expandChildTypes);
+        query.execute();
+
+        final List<Instance> instances = new ArrayList<Instance>();
+        while (query.next()) {
+            if (query.getCurrentValue().isValid()) {
+                instances.add(query.getCurrentValue());
+            }
+        }
+
+        return instances;
+    }
+
+    /**
+     * Method for obtains a QueryBuilder.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return queryBldr QueryBuilder with values for search.
+     * @throws EFapsException on error.
+     */
+    protected QueryBuilder getQueryBuilder(final Parameter _parameter)
+        throws EFapsException
+    {
         final Context context = Context.getThreadContext();
         final AbstractCommand command = (AbstractCommand) _parameter.get(ParameterValues.UIOBJECT);
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
@@ -87,7 +133,6 @@ public abstract class Search_Base
                 ignoreFields.add(ignoreField);
             }
         }
-        final boolean expandChildTypes = "true".equals(properties.get("ExpandChildTypes"));
 
         if (Search_Base.LOG.isDebugEnabled()) {
             Search_Base.LOG.debug("types=" + types);
@@ -112,18 +157,8 @@ public abstract class Search_Base
                 }
             }
         }
-        final InstanceQuery query = queryBldr.getQuery();
-        query.setIncludeChildTypes(expandChildTypes);
-        query.execute();
 
-        final List<Instance> instances = new ArrayList<Instance>();
-        while (query.next()) {
-            if (query.getCurrentValue().isValid()) {
-                instances.add(query.getCurrentValue());
-            }
-        }
-        ret.put(ReturnValues.VALUES, instances);
-        return ret;
+        return queryBldr;
     }
 
     /**
