@@ -100,12 +100,14 @@ public abstract class EFapsDataSource_Base
 
     /**
      * Expand string.
+     * @deprecated use typeNames with linkforms instead
      */
     @Deprecated
     private String expand;
 
     /**
      * Name of the type.
+     * @deprecated use typeNames instead
      */
     @Deprecated
     private String typeName;
@@ -269,7 +271,8 @@ public abstract class EFapsDataSource_Base
      * @return value for the given field
      * @throws JRException on error
      */
-    public Object getFieldValue(final JRField _field) throws JRException
+    public Object getFieldValue(final JRField _field)
+        throws JRException
     {
         Object ret = null;
         if (_field.getName().equals(EFapsDataSource_Base.OIDFIELDNAME)) {
@@ -283,10 +286,38 @@ public abstract class EFapsDataSource_Base
                     if (attr != null && attr.getAttributeType().getClassRepr().equals(FormatedStringType.class)) {
                         ret = new HtmlMarkupConverter().getConvertedString((String) ret);
                     }
+                    if (_field.getPropertiesMap().containsProperty("Converter")) {
+                        ret = getConvertedValue(ret, _field.getPropertiesMap().getProperty("Converter"));
+                    }
                 } catch (final EFapsException e) {
                     throw new JRException("Error while getting value for a field", e);
                 }
             }
+        }
+        return ret;
+    }
+
+    /**
+     * @param _value                Value to be converted
+     * @param _converterClassName   classname of the converter
+     * @return converted value
+     * @throws EFapsException on error
+     */
+    protected Object getConvertedValue(final Object _value,
+                                       final String _converterClassName)
+        throws EFapsException
+    {
+        Object ret = _value;
+        try {
+            final Class<?> clazz = Class.forName(_converterClassName);
+            final IConverter converter = (IConverter) clazz.newInstance();
+            ret = converter.getConvertedValue(_value);
+        } catch (final ClassNotFoundException e) {
+            throw new EFapsException("error with Converter", e);
+        } catch (final InstantiationException e) {
+            throw new EFapsException("error with Converter", e);
+        } catch (final IllegalAccessException e) {
+            throw new EFapsException("error with Converter", e);
         }
         return ret;
     }
@@ -527,6 +558,7 @@ public abstract class EFapsDataSource_Base
      * Getter method for the instance variable {@link #expand}.
      *
      * @return value of instance variable {@link #expand}
+     * @deprecated use typeNames with linkforms instead
      */
     @Deprecated
     public String getExpand()
@@ -538,6 +570,7 @@ public abstract class EFapsDataSource_Base
      * Setter method for instance variable {@link #expand}.
      *
      * @param _expand value for instance variable {@link #expand}
+     * @deprecated use typeNames with linkforms instead
      */
     @Deprecated
     public void setExpand(final String _expand)
@@ -549,6 +582,7 @@ public abstract class EFapsDataSource_Base
      * Getter method for the instance variable {@link #typeName}.
      *
      * @return value of instance variable {@link #typeName}
+     * @deprecated use typeNames instead
      */
     @Deprecated
     public String getTypeName()
@@ -560,6 +594,7 @@ public abstract class EFapsDataSource_Base
      * Setter method for instance variable {@link #typeName}.
      *
      * @param _typeName value for instance variable {@link #typeName}
+     * @deprecated use typeNames instead
      */
     @Deprecated
     public void setTypeName(final String _typeName)
