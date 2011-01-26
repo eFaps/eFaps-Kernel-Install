@@ -43,6 +43,8 @@ import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.util.EFapsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for a DataSource as it is needed for a JasperReport.
@@ -59,6 +61,11 @@ public abstract class EFapsDataSource_Base
      * Field name.
      */
     public static final String OIDFIELDNAME = "eFaps_Field_4_Parent_2_Child_Relation";
+
+    /**
+     * Logger for this class.
+     */
+    protected static final Logger LOG = LoggerFactory.getLogger(EFapsDataSource.class);
 
     /**
      * PrintQuery for this datasource.
@@ -94,11 +101,13 @@ public abstract class EFapsDataSource_Base
     /**
      * Expand string.
      */
+    @Deprecated
     private String expand;
 
     /**
      * Name of the type.
      */
+    @Deprecated
     private String typeName;
 
     /**
@@ -122,6 +131,17 @@ public abstract class EFapsDataSource_Base
     private JasperReport jasperReport;
 
     /**
+     * String with list of types separated by ";".
+     */
+    private String typeNames;
+
+
+    /**
+     * String with list of linkFroms separated by ";".
+     */
+    private String linkFroms;
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -136,6 +156,9 @@ public abstract class EFapsDataSource_Base
         for (final JRParameter para : this.jasperReport.getMainDataset().getParameters()) {
             if ("EFAPS_DEFINITION".equals(para.getName())) {
                 if (para.hasProperties()) {
+                    this.typeNames = para.getPropertiesMap().getProperty("Types");
+                    this.linkFroms = para.getPropertiesMap().getProperty("LinkFroms");
+
                     this.typeName  = para.getPropertiesMap().getProperty("Type");
                     this.expand  = para.getPropertiesMap().getProperty("Expand");
                     this.hasSubReport = "true".equalsIgnoreCase(para.getPropertiesMap().getProperty("hasSubReport"));
@@ -168,13 +191,37 @@ public abstract class EFapsDataSource_Base
         throws EFapsException
     {
         final List<Instance> instances = new ArrayList<Instance>();
-        if (this.typeName != null) {
+        //expand
+        if (getTypeNames() != null) {
+            final String[] types = getTypeNames().split(";");
+            final String[] linkFromsTmp;
+            if (getLinkFroms() != null) {
+                linkFromsTmp = getLinkFroms().split(";");
+            } else {
+                linkFromsTmp = new String[types.length];
+            }
+            for (int i = 0; i < types.length; i++) {
+                final Type type = Type.get(types[0]);
+                final QueryBuilder queryBuilder = new QueryBuilder(type);
+                if (getLinkFroms() != null) {
+                    queryBuilder.addWhereAttrEqValue(linkFromsTmp[i], this.instance.getId());
+                }
+                final InstanceQuery query = queryBuilder.getQuery();
+                query.setIncludeChildTypes(this.expandChild);
+                query.execute();
+                instances.addAll(query.getValues());
+            }
+        } else if (this.typeName != null) {
+            EFapsDataSource_Base.LOG.error("JasperReport '{0}' implements deprecated API: {1}",
+                            this.jasperReport.getName(), this.typeName);
             final QueryBuilder queryBuilder = new QueryBuilder(Type.get(this.typeName));
             final InstanceQuery query = queryBuilder.getQuery();
             query.setIncludeChildTypes(this.expandChild);
             query.execute();
             instances.addAll(query.getValues());
         } else  if (this.expand != null) {
+            EFapsDataSource_Base.LOG.error("JasperReport '{0}' implements deprecated API: {1}",
+                            this.jasperReport.getName(), this.expand);
             final String[] types = this.expand.split("\\\\");
             if (types.length != 2) {
                 throw new EFapsException(EFapsDataSource_Base.class, "expand", this.expand);
@@ -431,10 +478,57 @@ public abstract class EFapsDataSource_Base
     }
 
     /**
+     * Getter method for the instance variable {@link #typeNames}.
+     *
+     * @return value of instance variable {@link #typeNames}
+     */
+    public String getTypeNames()
+    {
+        return this.typeNames;
+    }
+
+
+    /**
+     * Setter method for instance variable {@link #typeNames}.
+     *
+     * @param _typeNames value for instance variable {@link #typeNames}
+     */
+
+    public void setTypeNames(final String _typeNames)
+    {
+        this.typeNames = _typeNames;
+    }
+
+
+    /**
+     * Getter method for the instance variable {@link #linkFroms}.
+     *
+     * @return value of instance variable {@link #linkFroms}
+     */
+    public String getLinkFroms()
+    {
+        return this.linkFroms;
+    }
+
+
+    /**
+     * Setter method for instance variable {@link #linkFroms}.
+     *
+     * @param _linkFroms value for instance variable {@link #linkFroms}
+     */
+
+    public void setLinkFroms(final String _linkFroms)
+    {
+        this.linkFroms = _linkFroms;
+    }
+
+
+    /**
      * Getter method for the instance variable {@link #expand}.
      *
      * @return value of instance variable {@link #expand}
      */
+    @Deprecated
     public String getExpand()
     {
         return this.expand;
@@ -445,7 +539,7 @@ public abstract class EFapsDataSource_Base
      *
      * @param _expand value for instance variable {@link #expand}
      */
-
+    @Deprecated
     public void setExpand(final String _expand)
     {
         this.expand = _expand;
@@ -456,6 +550,7 @@ public abstract class EFapsDataSource_Base
      *
      * @return value of instance variable {@link #typeName}
      */
+    @Deprecated
     public String getTypeName()
     {
         return this.typeName;
@@ -466,7 +561,7 @@ public abstract class EFapsDataSource_Base
      *
      * @param _typeName value for instance variable {@link #typeName}
      */
-
+    @Deprecated
     public void setTypeName(final String _typeName)
     {
         this.typeName = _typeName;
