@@ -287,7 +287,7 @@ public abstract class Field_Base
                 }
                 for (final Entry<String, UoM> entry2 : name2UoM.entrySet()) {
                     html.append("<option value=\"").append(entry2.getValue().getId()).append("\"");
-                    if (entry2.getValue().getId() == uoMID) {
+                    if (((Long) entry2.getValue().getId()).equals(uoMID)) {
                         html.append(" selected=\"selected\"");
                     }
                     html.append(">").append(entry2.getKey()).append("</option>");
