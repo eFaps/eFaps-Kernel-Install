@@ -26,10 +26,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
+import org.efaps.admin.datamodel.Dimension;
+import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.datamodel.ui.UIInterface;
@@ -39,6 +42,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.db.Context;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
@@ -239,5 +243,65 @@ public abstract class Field_Base
         Context.getThreadContext().setSessionAttribute(fieldValue.getField().getName(),
                         _parameter.getParameterValues("selectedRow"));
         return new Return();
+    }
+
+    /**
+     *
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return empty Return
+     * @throws EFapsException on error
+     */
+    public Return getDimensionUoMFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final TargetMode mode  = (TargetMode) _parameter.get(ParameterValues.ACCESSMODE);
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final StringBuilder html = new StringBuilder();
+        final String dimStr = (String) props.get("DimensionUUIDs");
+        final Long uoMID = (Long) fieldValue.getValue();
+        if ((TargetMode.EDIT.equals(mode) || TargetMode.CREATE.equals(mode))
+                        && fieldValue.getField().isEditableDisplay(mode)) {
+            final Map<String, Dimension> group2dim = new TreeMap<String, Dimension>();
+            if (dimStr != null && !dimStr.isEmpty()) {
+                final String[] dims = dimStr.split(";");
+                for (final String dimUUID  : dims) {
+                    final Dimension dim = Dimension.get(UUID.fromString(dimUUID));
+                    if (dim != null) {
+                        group2dim.put(dim.getName(), dim);
+                    }
+                }
+            } else {
+                for (final Dimension dim : Dimension.getTypeCache().getCache4Id().values()) {
+                    group2dim.put(dim.getName(), dim);
+                }
+            }
+            html.append("<select name=\"").append(fieldValue.getField().getName()).append("\" ")
+                .append(UIInterface.EFAPSTMPTAG).append(" >");
+            for (final Entry<String, Dimension> entry1 : group2dim.entrySet()) {
+                html.append("<optgroup label=\"").append(entry1.getKey()).append("\">");
+                final Map<String, UoM> name2UoM = new TreeMap<String, UoM>();
+                for (final UoM uom : entry1.getValue().getUoMs()) {
+                    name2UoM.put(uom.getName(), uom);
+                }
+                for (final Entry<String, UoM> entry2 : name2UoM.entrySet()) {
+                    html.append("<option value=\"").append(entry2.getValue().getId()).append("\"");
+                    if (entry2.getValue().getId() == uoMID) {
+                        html.append(" selected=\"selected\"");
+                    }
+                    html.append(">").append(entry2.getKey()).append("</option>");
+                }
+                html.append("</optgroup>");
+            }
+            html.append("</select>");
+        } else {
+            if (uoMID != null) {
+                html.append(Dimension.getUoM(uoMID).getName());
+            }
+        }
+        final Return ret = new Return();
+        ret.put(ReturnValues.SNIPLETT, html.toString());
+        return ret;
     }
 }
