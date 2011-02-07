@@ -45,8 +45,7 @@ import org.jfree.chart.entity.StandardEntityCollection;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: AbstractChart_Base.java 6121 2011-02-05 03:42:38Z
- *          jan@moxter.net $
+ * @version $Id$
  */
 @EFapsUUID("87db5f83-fe92-4b41-a6fd-a23655e37bd8")
 @EFapsRevision("$Rev$")
@@ -55,6 +54,11 @@ public abstract class AbstractChart_Base
 {
 
     /**
+     * Create the Chart.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return containing the chart and a snipplet
+     * @throws EFapsException on error
      */
     @Override
     public Return execute(final Parameter _parameter)
@@ -71,17 +75,19 @@ public abstract class AbstractChart_Base
             final String map = ChartUtilities.getImageMap(field.getName() + "eFapsChartMap", renderInf);
             ret.put(ReturnValues.SNIPLETT, map);
         } catch (final IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new EFapsException(AbstractChart.class, "IOException", e);
         }
         return ret;
     }
 
     /**
-     * @param _parameter
-     * @return
+     * Get the Height for the chart. Default value is 500.
+     * Can be set by adding a property "Height" to the event definition.
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the Height for the chart
+     * @throws EFapsException on error
      */
-    private int getHeigth(final Parameter _parameter)
+    protected int getHeigth(final Parameter _parameter)
         throws EFapsException
     {
         Integer ret = 500;
@@ -92,35 +98,13 @@ public abstract class AbstractChart_Base
         return ret;
     }
 
-    protected ChartRenderingInfo getChartRenderingInfo()
-    {
-        return new ChartRenderingInfo(new StandardEntityCollection());
-    }
-
-    protected String getFileName(final Parameter _parameter)
-    {
-        return Long.toString(new Date().getTime());
-    }
-
-    protected String getEnding(final Parameter _parameter)
-    {
-        return "png";
-    }
-
-    protected abstract JFreeChart createChart(final Parameter _parameter)
-        throws EFapsException;
-
-    protected String getTitel(final Parameter _parameter)
-        throws EFapsException
-    {
-        String ret = getProperty(_parameter, "Title");
-        if (ret.isEmpty()) {
-            final FieldChart field = (FieldChart) _parameter.get(ParameterValues.UIOBJECT);
-            ret = field.getLabel();
-        }
-        return DBProperties.getProperty(ret);
-    }
-
+    /**
+     * Get the Width for the chart. Default value is 500.
+     * Can be set by adding a property "Width" to the event definition.
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the Width for the chart
+     *  @throws EFapsException on error
+     */
     protected Integer getWidth(final Parameter _parameter)
         throws EFapsException
     {
@@ -132,6 +116,68 @@ public abstract class AbstractChart_Base
         return ret;
     }
 
+    /**
+     * @return the Rendering info
+     */
+    protected ChartRenderingInfo getChartRenderingInfo()
+    {
+        return new ChartRenderingInfo(new StandardEntityCollection());
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the filename of the temporary file
+     */
+    protected String getFileName(final Parameter _parameter)
+    {
+        return Long.toString(new Date().getTime());
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return "png"
+     */
+    protected String getEnding(final Parameter _parameter)
+    {
+        return "png";
+    }
+
+    /**
+     * @param  _parameter Parameter as passed by the eFaps API
+     * @return JFreeCHart
+     * @throws EFapsException on error
+     */
+    protected abstract JFreeChart createChart(final Parameter _parameter)
+        throws EFapsException;
+
+
+    /**
+     * Get the Title for the chart. Default value is the Label from
+     * the related Field.
+     * Can be set by adding a property "Title" to the event definition.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the Width for the chart
+     * @throws EFapsException on error
+     */
+    protected String getTitel(final Parameter _parameter)
+        throws EFapsException
+    {
+        String ret = getProperty(_parameter, "Title");
+        if (ret.isEmpty()) {
+            final FieldChart field = (FieldChart) _parameter.get(ParameterValues.UIOBJECT);
+            ret = field.getLabel();
+        }
+        return DBProperties.getProperty(ret);
+    }
+
+    /**
+     * Get a property from the event definition.
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _key      Key for the Property
+     * @return String value. Empty String if not found.
+     * @throws EFapsException on error
+     */
     protected String getProperty(final Parameter _parameter,
                                  final String _key)
         throws EFapsException

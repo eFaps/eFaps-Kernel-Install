@@ -53,6 +53,9 @@ public abstract class LineChart_Base
     extends AbstractChart
 {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected JFreeChart createChart(final Parameter _parameter)
         throws EFapsException
@@ -61,10 +64,15 @@ public abstract class LineChart_Base
         final CustomXYToolTipGenerator ttg = new CustomXYToolTipGenerator();
         fillData(_parameter, dataset, ttg);
         final JFreeChart chart = createChart(_parameter, dataset, ttg);
-         configureChart(_parameter, chart, ttg);
+        configureChart(_parameter, chart, ttg);
         return chart;
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the DataSet for this XYChart
+     * @throws EFapsException on error
+     */
     protected XYDataset getDataSet(final Parameter _parameter)
         throws EFapsException
     {
@@ -72,8 +80,11 @@ public abstract class LineChart_Base
     }
 
     /**
-     * @param _dataset
-     * @return
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _dataset      dataset
+     * @param _toolTipGen   tooltip generator
+     * @return JFreeChart
+     * @throws EFapsException on error
      */
     protected JFreeChart createChart(final Parameter _parameter,
                                      final XYDataset _dataset,
@@ -91,10 +102,18 @@ public abstract class LineChart_Base
                         true, // include legend
                         true, // tooltips
                         false // urls
-                        );
+        );
         return chart;
     }
 
+    /**
+     * Get the Label for XAxis of the chart. .
+     * Can be set by adding a property "XAxisLabel" to the event definition.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Label for XAxis
+     * @throws EFapsException on error
+     */
     protected String getXAxisLabel(final Parameter _parameter)
         throws EFapsException
     {
@@ -102,6 +121,14 @@ public abstract class LineChart_Base
         return DBProperties.getProperty(ret);
     }
 
+    /**
+     * Get the Label for YAxis of the chart. .
+     * Can be set by adding a property "YAxisLabel" to the event definition.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Label for YAxis
+     * @throws EFapsException on error
+     */
     protected String getYAxisLabel(final Parameter _parameter)
         throws EFapsException
     {
@@ -109,9 +136,18 @@ public abstract class LineChart_Base
         return DBProperties.getProperty(ret);
     }
 
+    /**
+     * Configure the given chart.
+     *
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _chart        chart to be configured
+     * @param _toolTipGen   tooltip generator
+     * @throws EFapsException on error
+     */
     protected void configureChart(final Parameter _parameter,
                                   final JFreeChart _chart,
                                   final XYToolTipGenerator _toolTipGen)
+        throws EFapsException
     {
         _chart.setBackgroundPaint(Color.white);
 
@@ -132,13 +168,14 @@ public abstract class LineChart_Base
     }
 
     /**
-     * @param _ttg
-     * @param _dataset
-     * @return
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _dataset      dataset
+     * @param _toolTipGen   tooltip generator
+     * @throws EFapsException on error
      */
     protected void fillData(final Parameter _parameter,
                             final XYDataset _dataset,
-                            final CustomXYToolTipGenerator _ttg)
+                            final CustomXYToolTipGenerator _toolTipGen)
         throws EFapsException
     {
         final XYSeriesCollection datset = (XYSeriesCollection) _dataset;
@@ -162,7 +199,7 @@ public abstract class LineChart_Base
         toolTips.add("1D - 5.22");
 
         datset.addSeries(series1);
-        _ttg.addToolTipSeries(toolTips);
+        _toolTipGen.addToolTipSeries(toolTips);
 
         final XYSeries series2 = new XYSeries("Second");
         series2.add(1.0, 5.0);
