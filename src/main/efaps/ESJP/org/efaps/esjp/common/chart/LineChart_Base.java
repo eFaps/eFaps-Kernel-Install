@@ -24,9 +24,11 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.util.EFapsException;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
@@ -53,11 +55,20 @@ public abstract class LineChart_Base
 
     @Override
     protected JFreeChart createChart(final Parameter _parameter)
+        throws EFapsException
     {
-        final XYSeriesCollection dataset = new XYSeriesCollection();
+        final XYDataset dataset = getDataSet(_parameter);
         final CustomXYToolTipGenerator ttg = new CustomXYToolTipGenerator();
         fillData(_parameter, dataset, ttg);
-        return createChart(_parameter, dataset, ttg);
+        final JFreeChart chart = createChart(_parameter, dataset, ttg);
+         configureChart(_parameter, chart, ttg);
+        return chart;
+    }
+
+    protected XYDataset getDataSet(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new XYSeriesCollection();
     }
 
     /**
@@ -67,24 +78,45 @@ public abstract class LineChart_Base
     protected JFreeChart createChart(final Parameter _parameter,
                                      final XYDataset _dataset,
                                      final XYToolTipGenerator _toolTipGen)
+        throws EFapsException
     {
 
         // create the chart...
         final JFreeChart chart = ChartFactory.createXYLineChart(
-                        "Line Chart Demo 6", // chart title
-                        "X", // x axis label
-                        "Y", // y axis label
+                        getTitel(_parameter), // chart title
+                        getXAxisLabel(_parameter), // x axis label
+                        getYAxisLabel(_parameter), // y axis label
                         _dataset, // data
                         PlotOrientation.VERTICAL,
                         true, // include legend
                         true, // tooltips
                         false // urls
                         );
+        return chart;
+    }
 
-        chart.setBackgroundPaint(Color.white);
+    protected String getXAxisLabel(final Parameter _parameter)
+        throws EFapsException
+    {
+        final String ret = getProperty(_parameter, "XAxisLabel");
+        return DBProperties.getProperty(ret);
+    }
+
+    protected String getYAxisLabel(final Parameter _parameter)
+        throws EFapsException
+    {
+        final String ret = getProperty(_parameter, "YAxisLabel");
+        return DBProperties.getProperty(ret);
+    }
+
+    protected void configureChart(final Parameter _parameter,
+                                  final JFreeChart _chart,
+                                  final XYToolTipGenerator _toolTipGen)
+    {
+        _chart.setBackgroundPaint(Color.white);
 
         // get a reference to the plot for further customisation...
-        final XYPlot plot = chart.getXYPlot();
+        final XYPlot plot = _chart.getXYPlot();
         plot.setBackgroundPaint(Color.lightGray);
         plot.setDomainGridlinePaint(Color.white);
         plot.setRangeGridlinePaint(Color.white);
@@ -97,8 +129,6 @@ public abstract class LineChart_Base
         // change the auto tick unit selection to integer units only...
         final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
         rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-
-        return chart;
     }
 
     /**
@@ -107,9 +137,11 @@ public abstract class LineChart_Base
      * @return
      */
     protected void fillData(final Parameter _parameter,
-                            final XYSeriesCollection _dataset,
+                            final XYDataset _dataset,
                             final CustomXYToolTipGenerator _ttg)
+        throws EFapsException
     {
+        final XYSeriesCollection datset = (XYSeriesCollection) _dataset;
         final XYSeries series1 = new XYSeries("First");
         final List<String> toolTips = new ArrayList<String>();
         series1.add(1.0, 1.0);
@@ -129,7 +161,7 @@ public abstract class LineChart_Base
         series1.add(8.0, 8.0);
         toolTips.add("1D - 5.22");
 
-        _dataset.addSeries(series1);
+        datset.addSeries(series1);
         _ttg.addToolTipSeries(toolTips);
 
         final XYSeries series2 = new XYSeries("Second");
@@ -141,7 +173,7 @@ public abstract class LineChart_Base
         series2.add(6.0, 4.0);
         series2.add(7.0, 2.0);
         series2.add(8.0, 1.0);
-        _dataset.addSeries(series2);
+        datset.addSeries(series2);
         final XYSeries series3 = new XYSeries("Third");
         series3.add(3.0, 4.0);
         series3.add(4.0, 3.0);
@@ -151,7 +183,6 @@ public abstract class LineChart_Base
         series3.add(8.0, 3.0);
         series3.add(9.0, 4.0);
         series3.add(10.0, 3.0);
-        _dataset.addSeries(series3);
-
+        datset.addSeries(series3);
     }
 }
