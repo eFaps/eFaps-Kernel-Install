@@ -36,12 +36,16 @@ import java.util.UUID;
 import org.efaps.admin.access.AccessType;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.user.Group;
 import org.efaps.admin.user.Role;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.db.transaction.ConnectionResource;
 import org.efaps.util.EFapsException;
 
@@ -213,6 +217,24 @@ public abstract class AccessCheck4Object_Base
                 }
             }
         }
+        return ret;
+    }
+
+    public Return access4ObjectMultiprint(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final List<Instance> instances = new ArrayList<Instance>();
+        final QueryBuilder queryBldr = new QueryBuilder(Type.get(UUID
+                                                        .fromString("98d9b606-b1aa-4ae1-9f30-2cba0d99453b")));
+        queryBldr.addWhereAttrEqValue("TypeId", _parameter.getInstance().getType().getId());
+        queryBldr.addWhereAttrEqValue("ObjectId", _parameter.getInstance().getId());
+        final InstanceQuery multi = queryBldr.getQuery();
+        multi.execute();
+        while (multi.next()) {
+            instances.add(multi.getCurrentValue());
+        }
+        ret.put(ReturnValues.VALUES, instances);
         return ret;
     }
 }

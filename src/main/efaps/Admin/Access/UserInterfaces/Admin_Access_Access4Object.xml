@@ -38,11 +38,8 @@
         <!-- target definitions -->
         <target>
             <menu>Admin_Access_Access4Object_Menu</menu>
-            <table>Admin_Access_AccessSet2UserAbstractTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Access_AccessSet2UserAbstract</property>
-                <property name="LinkFroms">AccessSetLink</property>
-            </evaluate>
+            <table>Admin_Access_Access4ObjectTable</table>
+            <evaluate program="org.efaps.esjp.admin.access.AccessCheck4Object" method="access4ObjectMultiprint"/>
         </target>
         <!-- properties -->
         <property name="Target">content</property>
