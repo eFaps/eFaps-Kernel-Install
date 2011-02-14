@@ -39,7 +39,12 @@
         <target>
             <menu>Admin_Access_Access4Object_Menu</menu>
             <table>Admin_Access_Access4ObjectTable</table>
-            <evaluate program="org.efaps.esjp.admin.access.AccessCheck4Object" method="access4ObjectMultiprint"/>
+            <evaluate program="org.efaps.esjp.admin.access.AccessCheck4Object"
+                method="access4ObjectMultiprint"/>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4Object"
+                method="checkAccess4Grant"
+                name="Admin_Access_Access4Object.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
         </target>
         <!-- properties -->
         <property name="Target">content</property>

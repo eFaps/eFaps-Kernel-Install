@@ -36,6 +36,7 @@ import java.util.UUID;
 import org.efaps.admin.access.AccessType;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -220,6 +221,11 @@ public abstract class AccessCheck4Object_Base
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return containing
+     * @throws EFapsException on error
+     */
     public Return access4ObjectMultiprint(final Parameter _parameter)
         throws EFapsException
     {
@@ -237,4 +243,18 @@ public abstract class AccessCheck4Object_Base
         ret.put(ReturnValues.VALUES, instances);
         return ret;
     }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return containing
+     * @throws EFapsException on error
+     */
+    public Return checkAccess4Grant(final Parameter _parameter)
+        throws EFapsException
+    {
+        _parameter.put(ParameterValues.ACCESSTYPE,
+                        AccessType.getAccessType(UUID.fromString("89362f2b-7a93-4133-8262-0b2925e285cb")));
+        return new SimpleAccessCheckOnType().execute(_parameter);
+    }
+
 }
