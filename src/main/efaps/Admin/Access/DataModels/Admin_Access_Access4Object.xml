@@ -60,8 +60,9 @@
             <sqlcolumn>OBJID</sqlcolumn>
         </attribute>
         <attribute>
-            <name>PersonId</name>
-            <type>Long</type>
+            <name>PersonLink</name>
+            <type>Link</type>
+            <typelink>Admin_User_Abstract</typelink>
             <sqltable>Admin_Access_Access4ObjectSQLTable</sqltable>
             <sqlcolumn>PERSID</sqlcolumn>
         </attribute>
