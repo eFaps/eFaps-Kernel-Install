@@ -205,12 +205,22 @@ public abstract class Field_Base
             if (phrase != null) {
                 multi.addPhrase("Phrase", phrase);
             }
+            final String valueSel = (String) props.get("ValueSelect");
+            if (valueSel != null) {
+                multi.addSelect(valueSel);
+            }
             multi.execute();
 
             final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
             html.append("<select name=\"").append(fieldValue.getField().getName()).append("\" size=\"1\">");
             while (multi.next()) {
-                html.append("<option value=\"").append(multi.getCurrentInstance().getId()).append("\"/>");
+                html.append("<option value=\"");
+                if (valueSel == null) {
+                    html.append(multi.getCurrentInstance().getId());
+                } else {
+                    html.append(multi.getSelect(valueSel));
+                }
+                html.append("\"/>");
                 if (select != null) {
                     html.append(multi.getSelect(select));
                 }
