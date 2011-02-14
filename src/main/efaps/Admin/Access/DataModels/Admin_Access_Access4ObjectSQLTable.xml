@@ -47,7 +47,7 @@
             <column name="MODIFIER" type="INTEGER"  not-null="true" />
             <column name="MODIFIED" type="DATETIME" not-null="true" />
             <!-- constraints -->
-            <unique name="T_ACCESS4OBJ_UK" columns="TYPEID,OBJID,PERSID,ACCGRPID" />
+            <unique name="T_ACCESS4OBJ_UK" columns="TYPEID,OBJID,PERSID,ACCSETID" />
             <!-- foreign keys -->
             <foreign name="T_ACCESS4OBJ_FK_CRTR"        key="CREATOR"   reference="T_USERPERSON(ID)" />
             <foreign name="T_ACCESS4OBJ_FK_MDFR"        key="MODIFIER"  reference="T_USERPERSON(ID)" />
@@ -71,7 +71,7 @@
             <column name="MODIFIER" type="INTEGER"  not-null="true" />
             <column name="MODIFIED" type="DATETIME" not-null="true" />
             <!-- constraints -->
-            <unique name="T_ACCESS4OBJ_UK" columns="TYPEID,OBJID,PERSID,ACCGRPID" />
+            <unique name="T_ACCESS4OBJ_UK" columns="TYPEID,OBJID,PERSID,ACCSETID" />
         </database>
     </definition>
 </datamodel-sqltable>
