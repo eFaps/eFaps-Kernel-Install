@@ -44,10 +44,12 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.user.Group;
 import org.efaps.admin.user.Role;
 import org.efaps.db.Context;
+import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.transaction.ConnectionResource;
+import org.efaps.esjp.common.uiform.Create;
 import org.efaps.util.EFapsException;
 
 
@@ -242,6 +244,45 @@ public abstract class AccessCheck4Object_Base
         }
         ret.put(ReturnValues.VALUES, instances);
         return ret;
+    }
+
+    /**
+     * @param _parameter as passed from eFaps API.
+     * @return Create
+     * @throws EFapsException on error.
+     */
+    public Return access4ObjectCreate(final Parameter _parameter)
+        throws EFapsException
+    {
+        return getCreate().execute(_parameter);
+    }
+
+    /**
+     * @return new Access4ObjectCreate()
+     */
+    protected Create getCreate()
+    {
+        return new Access4ObjectCreate();
+    }
+
+    /**
+     * @author jorge
+     *
+     */
+    public class Access4ObjectCreate
+        extends
+        Create
+    {
+        @Override
+        protected void add2basicInsert(final Parameter _parameter,
+                                       final Insert _insert)
+            throws EFapsException
+        {
+            final Instance instObject = _parameter.getInstance();
+
+            _insert.add("TypeId", instObject.getType().getId());
+            _insert.add("ObjectId", instObject.getId());
+        }
     }
 
     /**

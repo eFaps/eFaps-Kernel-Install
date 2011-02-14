@@ -36,14 +36,14 @@
         <name>Admin_Access_Access4Object_Menu_Action_AddExisting</name>
         <!-- target definitions -->
         <target>
-            <search>Admin_Access_Access4Object_Menu_Action_AddExisting_Search</search>
-            <execute program="org.efaps.esjp.common.uisearch.Connect">
-                <property name="ConnectChildAttribute">AccessTypeLink</property>
-                <property name="ConnectParentAttribute">AccessSetLink</property>
-                <property name="ConnectType">Admin_Access_AccessSet2Type</property>
-            </execute>
+            <form>Admin_Access_Access4ObjectForm</form>
+            <execute program="org.efaps.esjp.admin.access.AccessCheck4Object" method="access4ObjectCreate"/>
         </target>
         <!-- properties -->
-        <property name="Target">popup</property>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Admin_Access_Access4Object</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">515</property>
     </definition>
 </ui-command>
