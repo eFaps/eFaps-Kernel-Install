@@ -67,8 +67,9 @@
             <sqlcolumn>PERSID</sqlcolumn>
         </attribute>
         <attribute>
-            <name>AccessSetId</name>
-            <type>Long</type>
+            <name>AccessSetLink</name>
+            <type>Link</type>
+            <typelink>Admin_Access_AccessSet</typelink>
             <sqltable>Admin_Access_Access4ObjectSQLTable</sqltable>
             <sqlcolumn>ACCSETID</sqlcolumn>
         </attribute>
