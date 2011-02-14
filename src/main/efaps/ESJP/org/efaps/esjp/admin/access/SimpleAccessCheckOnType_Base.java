@@ -33,11 +33,7 @@ import org.efaps.admin.access.AccessSet;
 import org.efaps.admin.access.AccessType;
 import org.efaps.admin.access.AccessTypeEnums;
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
-import org.efaps.admin.event.Parameter.ParameterValues;
-import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.user.Group;
@@ -46,8 +42,6 @@ import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.transaction.ConnectionResource;
 import org.efaps.util.EFapsException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This Class is used to check if a user can Access this Type.<br>
@@ -61,24 +55,14 @@ import org.slf4j.LoggerFactory;
 @EFapsUUID("628a19f6-463f-415d-865b-ba72e303a507")
 @EFapsRevision("$Rev$")
 public abstract class SimpleAccessCheckOnType_Base
-    implements EventExecution
+    extends AccessCheckAbstract
 {
-
     /**
-     * Logging instance used in this class.
+     * {@inheritDoc}
      */
-    private static final Logger LOG = LoggerFactory.getLogger(SimpleAccessCheckOnType_Base.class);
-
-    /**
-     * Check for the instance object if the current context user has the access
-     * defined in the list of access types.
-     *
-     * @param _instance instance to check for access for
-     * @param _accessType accesstyep to check the access for
-     * @return true if access is granted, else false
-     * @throws EFapsException on error
-     */
-    protected boolean checkAccess(final Instance _instance,
+    @Override
+    protected boolean checkAccess(final Parameter _parameter,
+                                  final Instance _instance,
                                   final AccessType _accessType)
         throws EFapsException
     {
@@ -113,87 +97,15 @@ public abstract class SimpleAccessCheckOnType_Base
         if (type.isCheckStatus() && !_accessType.equals(AccessTypeEnums.CREATE.getAccessType())) {
             cmd.append(" and ").append(type.getMainTable().getSqlTable()).append(".ID=").append(_instance.getId());
         }
-        return executeStatement(context, cmd);
-    }
-
-    /**
-     * Method that queries against the database.
-     *
-     * @param _context Context
-     * @param _cmd cmd
-     * @return true if access granted else false
-     * @throws EFapsException on error
-     */
-    protected boolean executeStatement(final Context _context,
-                                       final StringBuilder _cmd)
-        throws EFapsException
-    {
-        boolean hasAccess = false;
-
-        ConnectionResource con = null;
-        try {
-            con = _context.getConnectionResource();
-
-            Statement stmt = null;
-            try {
-
-                stmt = con.getConnection().createStatement();
-
-                final ResultSet rs = stmt.executeQuery(_cmd.toString());
-                if (rs.next()) {
-                    hasAccess = (rs.getLong(1) > 0) ? true : false;
-                }
-                rs.close();
-
-            } finally {
-                if (stmt != null) {
-                    stmt.close();
-                }
-            }
-
-            con.commit();
-
-        } catch (final SQLException e) {
-            SimpleAccessCheckOnType_Base.LOG.error("sql statement '" + _cmd.toString() + "' not executable!", e);
-        } finally {
-            if ((con != null) && con.isOpened()) {
-                con.abort();
-            }
-        }
-        return hasAccess;
+        return executeStatement(_parameter, context, cmd);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Return execute(final Parameter _parameter)
-        throws EFapsException
-    {
-        final AccessType accessType = (AccessType) _parameter.get(ParameterValues.ACCESSTYPE);
-        final Instance instance = _parameter.getInstance();
-
-        final Return ret = new Return();
-        if (instance != null) {
-            if (Context.getThreadContext().getPerson() == null || checkAccess(instance, accessType)) {
-                ret.put(ReturnValues.TRUE, true);
-            }
-        } else {
-            final List<?> instances = (List<?>) _parameter.get(ParameterValues.OTHERS);
-            ret.put(ReturnValues.VALUES, checkAccess(instances, accessType));
-        }
-        return ret;
-    }
-
-    /**
-     * Method to check the access for a list of instances.
-     *
-     * @param _instances instances to be checked
-     * @param _accessType type of access
-     * @return map of access to boolean
-     * @throws EFapsException on error
-     */
-    protected Map<Instance, Boolean> checkAccess(final List<?> _instances,
+    protected Map<Instance, Boolean> checkAccess(final Parameter _parameter,
+                                                 final List<?> _instances,
                                                  final AccessType _accessType)
         throws EFapsException
     {
@@ -251,7 +163,7 @@ public abstract class SimpleAccessCheckOnType_Base
                 con.commit();
 
             } catch (final SQLException e) {
-                SimpleAccessCheckOnType_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
+                AccessCheckAbstract_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
             } finally {
                 if ((con != null) && con.isOpened()) {
                     con.abort();
@@ -262,11 +174,55 @@ public abstract class SimpleAccessCheckOnType_Base
             }
 
         } else {
-            final boolean access = checkAccess((Instance) _instances.get(0), _accessType);
+            final boolean access = checkAccess(_parameter, (Instance) _instances.get(0), _accessType);
             for (final Object inst : _instances) {
                 accessMap.put((Instance) inst, access);
             }
         }
         return accessMap;
+    }
+
+
+    /**
+     * Method that queries against the database.
+     *
+     * @param _context Context
+     * @param _cmd cmd
+     * @return true if access granted else false
+     * @throws EFapsException on error
+     */
+    protected boolean executeStatement(final Parameter _parameter,
+                                       final Context _context,
+                                       final StringBuilder _cmd)
+        throws EFapsException
+    {
+        boolean hasAccess = false;
+
+        ConnectionResource con = null;
+        try {
+            con = _context.getConnectionResource();
+
+            Statement stmt = null;
+            try {
+                stmt = con.getConnection().createStatement();
+                final ResultSet rs = stmt.executeQuery(_cmd.toString());
+                if (rs.next()) {
+                    hasAccess = (rs.getLong(1) > 0) ? true : false;
+                }
+                rs.close();
+            } finally {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            }
+            con.commit();
+        } catch (final SQLException e) {
+            AccessCheckAbstract_Base.LOG.error("sql statement '" + _cmd.toString() + "' not executable!", e);
+        } finally {
+            if ((con != null) && con.isOpened()) {
+                con.abort();
+            }
+        }
+        return hasAccess;
     }
 }
