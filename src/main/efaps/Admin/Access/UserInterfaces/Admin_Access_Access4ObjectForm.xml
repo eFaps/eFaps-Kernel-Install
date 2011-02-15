@@ -31,34 +31,26 @@
         <name>Admin_Access_Access4ObjectForm</name>
         <!-- fields -->
         <field name="person">
-            <property name="Columns">20</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
             <property name="Attribute">PersonLink</property>
             <property name="Label">Admin_Access_Access4Object.person.Label</property>
-            <trigger program="org.efaps.esjp.common.uiform.Field"
-                method="dropDownFieldValue"
-                name="HumanResource_EmployeeForm.department.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE">
-                <property name="Type">Admin_User_Person</property>
-                <property name="Select">attribute[Name]</property>
-            </trigger>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4Object"
+                method="autoComplete4Person"
+                name="Admin_Access_Access4ObjectForm.Admin_Access_Access4ObjectForm.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE"/>
         </field>
-        <field name="access">
-            <property name="Columns">20</property>
+        <field name="accessSet">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
             <property name="Attribute">AccessSetLink</property>
-            <property name="Label">Admin_Access_Access4Object.access.Label</property>
-            <trigger program="org.efaps.esjp.common.uiform.Field"
-                method="dropDownFieldValue"
-                name="HumanResource_EmployeeForm.department.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE">
-                <property name="Type">Admin_Access_AccessSet</property>
-                <property name="Select">attribute[Name]</property>
-            </trigger>
+            <property name="Label">Admin_Access_Access4Object.accessSet.Label</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4Object"
+                method="getAccessSetDropDownFieldValue"
+                name="Admin_Access_Access4ObjectForm.accessSet.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE"/>
         </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>

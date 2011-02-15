@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2012 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -27,23 +27,20 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>f1d1b7ab-81c1-4318-8fb1-75dcebd45de5</uuid>
+    <uuid>1286152c-9fd2-4b42-98e9-7d1499859c2f</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev: 3826 $</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Access_Access4Object_Menu_Action_AddExisting</name>
+        <name>Admin_Access_Access4Object_Menu_Action_Delete</name>
         <!-- target definitions -->
         <target>
-            <form>Admin_Access_Access4ObjectForm</form>
-            <execute program="org.efaps.esjp.admin.access.AccessCheck4Object" method="access4ObjectCreate"/>
+            <execute program="org.efaps.esjp.common.uitable.CommonDelete">
+            </execute>
         </target>
         <!-- properties -->
-        <property name="Target">modal</property>
-        <property name="TargetCreateType">Admin_Access_Access4Object</property>
-        <property name="TargetMode">create</property>
-        <property name="WindowHeight">460</property>
-        <property name="WindowWidth">515</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
     </definition>
 </ui-command>

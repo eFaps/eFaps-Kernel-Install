@@ -39,23 +39,17 @@
             <property name="SelectAlternateOID">linkto[PersonLink].oid</property>
             <property name="Select">linkto[PersonLink].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Admin_User_Abstract/Name.Label</property>
+            <property name="Label">Admin_Access_Access4ObjectTable.name.Label</property>
             <property name="ShowTypeIcon">true</property>
             <property name="ModeSearch">READONLY</property>
         </field>
-        <field name="status">
-            <property name="Select">linkto[PersonLink].attribute[Status]</property>
-            <property name="Label">Admin_User_Abstract/Status.Label</property>
+        <field name="accessSet">
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="SelectAlternateOID">linkto[AccessSetLink].oid</property>
+            <property name="Select">linkto[AccessSetLink].attribute[Name]</property>
+            <property name="Label">Admin_Access_Access4ObjectTable.accessSet.Label</property>
             <property name="FilterType">PickList</property>
             <property name="ModeSearch">READONLY</property>
-        </field>
-        <field name="buttonOpenInNewWindow">
-            <icon>eFapsActionNewWindow</icon>
-            <property name="SelectAlternateOID">linkto[PersonLink].oid</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Target">popup</property>
-            <property name="SortAble">false</property>
-            <property name="Width">15px</property>
         </field>
     </definition>
 </ui-table>

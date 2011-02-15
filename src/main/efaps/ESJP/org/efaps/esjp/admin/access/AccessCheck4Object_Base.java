@@ -30,11 +30,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
 
+import org.efaps.admin.EFapsSystemConfiguration;
+import org.efaps.admin.access.AccessSet;
 import org.efaps.admin.access.AccessType;
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Type;
+import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -43,10 +49,13 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.user.Group;
 import org.efaps.admin.user.Role;
+import org.efaps.ci.CIAdminUser;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
+import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.transaction.ConnectionResource;
 import org.efaps.esjp.common.uiform.Create;
@@ -224,6 +233,14 @@ public abstract class AccessCheck4Object_Base
     }
 
     /**
+     * @return new Access4ObjectCreate()
+     */
+    protected Create getCreate()
+    {
+        return new Access4ObjectCreate();
+    }
+
+    /**
      * @param _parameter Parameter as passed by the eFaps API
      * @return Return containing
      * @throws EFapsException on error
@@ -257,32 +274,127 @@ public abstract class AccessCheck4Object_Base
         return getCreate().execute(_parameter);
     }
 
+
     /**
-     * @return new Access4ObjectCreate()
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return Return containing Html Snipplet
+     * @throws EFapsException on error
      */
-    protected Create getCreate()
+    public Return getAccessSetDropDownFieldValue(final Parameter _parameter)
+        throws EFapsException
     {
-        return new Access4ObjectCreate();
+        final StringBuilder html = new StringBuilder();
+        final SystemConfiguration config = EFapsSystemConfiguration.KERNEL.get();
+        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final Instance instance = _parameter.getCallInstance();
+
+        final Properties props = config.getAttributeValueAsProperties("AccessCheck4Object");
+        String accessSets = null;
+        final Map<String, Long> values = new TreeMap<String, Long>();
+        if (props != null && instance != null && instance.isValid()) {
+            accessSets = props.getProperty(instance.getType().getName() + ".AccessSets");
+        }
+        if (accessSets != null) {
+            for (final String accessSet :  accessSets.split(";")) {
+                final AccessSet set = AccessSet.getAccessSet(accessSet);
+                if (set != null) {
+                    values.put(set.getName(), set.getId());
+                }
+            }
+        } else {
+            //Admin_Access_AccessSet
+            final QueryBuilder queryBldr = new QueryBuilder(Type.get(
+                            UUID.fromString("40aa4ff1-4786-4169-9a34-b6fd9d8a75f1")));
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addAttribute("Name");
+            multi.execute();
+            while (multi.next()) {
+                values.put(multi.<String>getAttribute("Name"), multi.getCurrentInstance().getId());
+            }
+        }
+
+        html.append("<select name=\"").append(fieldValue.getField().getName()).append("\" size=\"1\">");
+        for (final Entry<String, Long> entry : values.entrySet()) {
+            html.append("<option value=\"").append(entry.getValue()).append("\" ");
+            if (entry.getValue().equals(fieldValue.getValue())) {
+                html.append("selected=\"selected\"");
+            }
+            html.append("/>").append(entry.getKey()).append("</option>");
+        }
+        html.append("</select>");
+        final Return ret = new Return();
+        ret.put(ReturnValues.SNIPLETT, html.toString());
+        return ret;
     }
 
     /**
-     * @author jorge
-     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return Return containing Html Snipplet
+     * @throws EFapsException on error
      */
-    public class Access4ObjectCreate
-        extends
-        Create
+    public Return autoComplete4Person(final Parameter _parameter)
+        throws EFapsException
     {
-        @Override
-        protected void add2basicInsert(final Parameter _parameter,
-                                       final Insert _insert)
-            throws EFapsException
-        {
-            final Instance instObject = _parameter.getInstance();
+        final String input = (String) _parameter.get(ParameterValues.OTHERS);
 
-            _insert.add("TypeId", instObject.getType().getId());
-            _insert.add("ObjectId", instObject.getId());
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
+        final SystemConfiguration config = EFapsSystemConfiguration.KERNEL.get();
+        final Properties props = config.getAttributeValueAsProperties("AccessCheck4Object");
+        final Instance instance = _parameter.getInstance();
+        String persInRoles = null;
+        String rolesAsList = null;
+        if (props != null && instance != null && instance.isValid()) {
+            persInRoles = props.getProperty(instance.getType().getName() + ".Person.InRole");
+            rolesAsList = props.getProperty(instance.getType().getName() + ".Role.AsList");
         }
+
+        final QueryBuilder queryBldr = new QueryBuilder(CIAdminUser.Person);
+
+        if (persInRoles != null) {
+            final List<Object>tmp = new ArrayList<Object>();
+            for (final String role : persInRoles.split(";")) {
+                final Role aType = Role.get(role);
+                if (aType != null) {
+                    tmp.add(aType.getId());
+                }
+            }
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CIAdminUser.Person2Role);
+            attrQueryBldr.addWhereAttrEqValue(CIAdminUser.Person2Role.UserToLink , tmp.toArray());
+            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIAdminUser.Person2Role.UserFromLink);
+            queryBldr.addWhereAttrInQuery(CIAdminUser.Abstract.ID, attrQuery);
+        }
+        queryBldr.addWhereAttrMatchValue(CIAdminUser.Abstract.Name, input + "*").setIgnoreCase(true);
+        queryBldr.addWhereAttrEqValue(CIAdminUser.Abstract.Status, true);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CIAdminUser.Abstract.Name);
+        multi.execute();
+        while (multi.next()) {
+            final String name = multi.<String>getAttribute(CIAdminUser.Abstract.Name);
+            final Map<String, String> map = new HashMap<String, String>();
+            map.put("eFapsAutoCompleteKEY", ((Long) multi.getCurrentInstance().getId()).toString());
+            map.put("eFapsAutoCompleteVALUE", name);
+            map.put("eFapsAutoCompleteCHOICE", name + " - " + multi.getCurrentInstance().getType().getLabel());
+            tmpMap.put(name, map);
+        }
+        if (rolesAsList != null) {
+            for (final String roleName : rolesAsList.split(";")) {
+                final Role role = Role.get(roleName);
+                if (role != null) {
+                    final Map<String, String> map = new HashMap<String, String>();
+                    map.put("eFapsAutoCompleteKEY", ((Long) role.getId()).toString());
+                    map.put("eFapsAutoCompleteVALUE", role.getName());
+                    //"Admin_User_Role"
+                    map.put("eFapsAutoCompleteCHOICE", role.getName() + " - "
+                                    + Type.get(UUID.fromString("e4d6ecbe-f198-4f84-aa69-5a9fd3165112")).getLabel());
+                    tmpMap.put(role.getName(), map);
+                }
+            }
+        }
+        list.addAll(tmpMap.values());
+        final Return retVal = new Return();
+        retVal.put(ReturnValues.VALUES, list);
+        return retVal;
     }
 
     /**
@@ -298,4 +410,21 @@ public abstract class AccessCheck4Object_Base
         return new SimpleAccessCheckOnType().execute(_parameter);
     }
 
+    /**
+     * Create class.
+     */
+    public class Access4ObjectCreate
+        extends Create
+    {
+        @Override
+        protected void add2basicInsert(final Parameter _parameter,
+                                       final Insert _insert)
+            throws EFapsException
+        {
+            final Instance instObject = _parameter.getInstance();
+
+            _insert.add("TypeId", instObject.getType().getId());
+            _insert.add("ObjectId", instObject.getId());
+        }
+    }
 }

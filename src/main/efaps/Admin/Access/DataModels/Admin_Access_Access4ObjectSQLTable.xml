@@ -51,7 +51,7 @@
             <!-- foreign keys -->
             <foreign name="T_ACCESS4OBJ_FK_CRTR"        key="CREATOR"   reference="T_USERPERSON(ID)" />
             <foreign name="T_ACCESS4OBJ_FK_MDFR"        key="MODIFIER"  reference="T_USERPERSON(ID)" />
-            <foreign name="T_ACCESS4OBJ_FK_PERSID"      key="PERSID"    reference="T_USERPERSON(ID)" />
+            <foreign name="T_ACCESS4OBJ_FK_PERSID"      key="PERSID"    reference="T_USERABSTRACT(ID)" />
             <foreign name="T_ACCESS4OBJ_FK_ACCSETID"    key="ACCSETID"  reference="T_ACCESSSET(ID)" />
         </database>
     </definition>

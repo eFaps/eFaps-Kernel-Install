@@ -35,8 +35,8 @@
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Access_Access4Object_Menu_Action</name>
         <childs>
-            <child>Admin_Access_Access4Object_Menu_Action_AddExisting</child>
-            <child>Admin_Access_Access4Object_Menu_Action_Disconnect</child>
+            <child>Admin_Access_Access4Object_Menu_Action_Create</child>
+            <child>Admin_Access_Access4Object_Menu_Action_Delete</child>
         </childs>
     </definition>
 </ui-menu>
