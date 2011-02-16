@@ -97,5 +97,10 @@
             <sqltable>Admin_Access_Access4ObjectSQLTable</sqltable>
             <sqlcolumn>MODIFIED</sqlcolumn>
         </attribute>
+
+        <trigger program="org.efaps.esjp.admin.access.AccessCheck4Object"
+            method="deleteOverrideTrigger"
+            name="Admin_Access_Access4Object.DELETE_OVERRIDE"
+            event="DELETE_OVERRIDE"/>
     </definition>
 </datamodel-type>
