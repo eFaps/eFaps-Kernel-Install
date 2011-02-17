@@ -44,6 +44,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.db.Context;
+import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.util.EFapsException;
@@ -191,6 +192,14 @@ public abstract class Field_Base
         final Type type = Type.get(typeStr);
         if (type != null) {
             final QueryBuilder queryBldr = new QueryBuilder(type);
+            final String linkfrom = (String) props.get("LinkFrom");
+            if (linkfrom != null) {
+                final Instance instance = _parameter.getInstance() == null
+                                                ? _parameter.getCallInstance() : _parameter.getInstance();
+                if (instance != null && instance.isValid()) {
+                    queryBldr.addWhereAttrEqValue(linkfrom, instance.getId());
+                }
+            }
             final String where = (String) props.get("WhereAttrEqValue");
             if (where != null) {
                 final String[] parts = where.split("\\|");
