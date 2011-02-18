@@ -145,6 +145,7 @@ public abstract class MultiPrint_Base
                     final String[] linkFroms = linkFromsStr.split(";");
                     queryBldr.addWhereAttrEqValue(linkFroms[x], instance.getId());
                 }
+                add2QueryBldr(_parameter, queryBldr);
                 queryBldrs2exec.put(queryBldr, analyzeTable(_parameter, filter, queryBldr, type));
             }
             int count = 0;
@@ -173,6 +174,18 @@ public abstract class MultiPrint_Base
         }
         ret.put(ReturnValues.VALUES, instances);
         return ret;
+    }
+
+    /**
+     * @param _parameter    Parameter as passes by the eFaps API
+     * @param _queryBldr    QueryBuilder to add to
+     * @throws EFapsException on error
+     */
+    protected void add2QueryBldr(final Parameter _parameter,
+                                 final QueryBuilder _queryBldr)
+        throws EFapsException
+    {
+
     }
 
     /**
