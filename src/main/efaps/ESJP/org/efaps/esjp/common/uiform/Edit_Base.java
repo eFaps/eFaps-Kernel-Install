@@ -75,7 +75,7 @@ import org.efaps.util.EFapsException;
  */
 @EFapsUUID("3a99a177-8b5c-4dd4-b876-dcba28ea3138")
 @EFapsRevision("$Rev$")
-public class Edit_Base
+public abstract class Edit_Base
     implements EventExecution
 {
 
