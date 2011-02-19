@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2011 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -23,18 +23,24 @@
 
 -->
 
-<dbproperties xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <uuid>74d94462-c5c7-40f7-a6a6-f74f0856db52</uuid>
-  <bundle name="efaps_Access" sequence="1"/>
-  <resource>
-    <type>Properties</type>
-    <language></language>
-    <file>Access.properties</file>
-  </resource>
-  <resource>
-    <type>Properties</type>
-    <language>de</language>
-    <file>Access_de.properties</file>
-  </resource>
+<dbproperties xmlns="http://www.efaps.org/xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>74d94462-c5c7-40f7-a6a6-f74f0856db52</uuid>
+    <bundle name="efaps_Access" sequence="1" />
+    <resource>
+        <type>Properties</type>
+        <language></language>
+        <file>Access.properties</file>
+    </resource>
+    <resource>
+        <type>Properties</type>
+        <language>de</language>
+        <file>Access_de.properties</file>
+    </resource>
+    <resource>
+        <type>Properties</type>
+        <language>es</language>
+        <file>Access_es.properties</file>
+    </resource>
 </dbproperties>
