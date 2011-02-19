@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2011 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,9 +75,23 @@ public abstract class Search_Base
         final Return ret = new Return();
 
         final QueryBuilder bldr = getQueryBuilder(_parameter);
-
+        add2QueryBuilder(_parameter, bldr);
         ret.put(ReturnValues.VALUES, executeQuery(_parameter, bldr));
         return ret;
+    }
+
+    /**
+     * Method for obtains a List of the query.
+     *
+     * @param _parameter Parameter as passed by the eFaps API.
+     * @param _queryBldr QueryBuilder toadd to
+     * @throws EFapsException on error.
+     */
+    protected void add2QueryBuilder(final Parameter _parameter,
+                                  final QueryBuilder _bldr)
+        throws EFapsException
+    {
+        // to be used by implenting classes
     }
 
     /**
@@ -157,7 +171,6 @@ public abstract class Search_Base
                 }
             }
         }
-
         return queryBldr;
     }
 
