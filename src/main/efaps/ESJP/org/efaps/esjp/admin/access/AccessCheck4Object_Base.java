@@ -269,7 +269,8 @@ public abstract class AccessCheck4Object_Base
                         break;
                     }
                 }
-            } else if (roleStr != null) {
+            }
+            if (roleStr != null && !ret) {
                 for (final String pers : roleStr.split(";")) {
                     final Role role = Role.get(pers);
                     if (role != null && Context.getThreadContext().getPerson().isAssigned(role)) {
@@ -277,7 +278,8 @@ public abstract class AccessCheck4Object_Base
                         break;
                     }
                 }
-            } else if (groupStr != null) {
+            }
+            if (groupStr != null && !ret) {
                 for (final String pers : groupStr.split(";")) {
                     final Group group = Group.get(pers);
                     if (group != null && Context.getThreadContext().getPerson().isAssigned(group)) {
