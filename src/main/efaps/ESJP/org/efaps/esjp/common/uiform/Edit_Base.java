@@ -390,7 +390,8 @@ public abstract class Edit_Base
                             fieldsets.add((FieldSet) field);
                         } else {
                             final String attrName = field.getAttribute();
-                            if (attrName != null && field.isEditableDisplay(TargetMode.EDIT)) {
+                            if (attrName != null && (field.isEditableDisplay(TargetMode.EDIT)
+                                            || field.isEditableDisplay(TargetMode.CREATE))) {
                                 final Attribute attr = classification.getAttribute(attrName);
                                 if (attr != null && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType()
                                                 .getClassRepr())) {
@@ -413,7 +414,8 @@ public abstract class Edit_Base
                             fieldsets.add((FieldSet) field);
                         } else {
                             final String attrName = field.getAttribute();
-                            if (attrName != null && field.isEditableDisplay(TargetMode.EDIT)) {
+                            if (attrName != null && (field.isEditableDisplay(TargetMode.EDIT)
+                                            || field.isEditableDisplay(TargetMode.CREATE))) {
                                 final Attribute attr = classification.getAttribute(attrName);
                                 if (attr != null && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType()
                                                 .getClassRepr())) {
