@@ -32,7 +32,7 @@
     <file-revision>$Rev: 4193 $</file-revision>
 
     <definition>
-        <version-expression>(version==3) || (version==latest)</version-expression>
+        <version-expression>(version==latest)</version-expression>
         <name>Admin_Access_Access4Object</name>
         <!-- attributes -->
         <attribute>
@@ -103,4 +103,72 @@
             name="Admin_Access_Access4Object.DELETE_OVERRIDE"
             event="DELETE_OVERRIDE"/>
     </definition>
+
+    <definition>
+        <version-expression>(version==3)</version-expression>
+        <name>Admin_Access_Access4Object</name>
+        <!-- attributes -->
+        <attribute>
+            <name>OID</name>
+            <type>OID</type>
+            <sqltable>Admin_Access_Access4ObjectSQLTable</sqltable>
+            <sqlcolumn>ID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ID</name>
+            <type>Long</type>
+            <sqltable>Admin_Access_Access4ObjectSQLTable</sqltable>
+            <sqlcolumn>ID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>TypeId</name>
+            <type>Long</type>
+            <sqltable>Admin_Access_Access4ObjectSQLTable</sqltable>
+            <sqlcolumn>TYPEID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ObjectId</name>
+            <type>Long</type>
+            <sqltable>Admin_Access_Access4ObjectSQLTable</sqltable>
+            <sqlcolumn>OBJID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>PersonLink</name>
+            <type>Link</type>
+            <typelink>Admin_User_Abstract</typelink>
+            <sqltable>Admin_Access_Access4ObjectSQLTable</sqltable>
+            <sqlcolumn>PERSID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>AccessSetLink</name>
+            <type>Link</type>
+            <typelink>Admin_Access_AccessSet</typelink>
+            <sqltable>Admin_Access_Access4ObjectSQLTable</sqltable>
+            <sqlcolumn>ACCSETID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Creator</name>
+            <type>CreatorLink</type>
+            <sqltable>Admin_Access_Access4ObjectSQLTable</sqltable>
+            <sqlcolumn>CREATOR</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Created</name>
+            <type>Created</type>
+            <sqltable>Admin_Access_Access4ObjectSQLTable</sqltable>
+            <sqlcolumn>CREATED</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Modifier</name>
+            <type>ModifierLink</type>
+            <sqltable>Admin_Access_Access4ObjectSQLTable</sqltable>
+            <sqlcolumn>MODIFIER</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Modified</name>
+            <type>Modified</type>
+            <sqltable>Admin_Access_Access4ObjectSQLTable</sqltable>
+            <sqlcolumn>MODIFIED</sqlcolumn>
+        </attribute>
+   </definition>
 </datamodel-type>
