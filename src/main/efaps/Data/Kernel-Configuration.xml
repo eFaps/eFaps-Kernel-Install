@@ -117,7 +117,7 @@
     </attribute>
     <attribute>
         <key>ClassPaths</key>
-        <value></value>
+        <value>to be set for implementation</value>
         <description>The path to the libaries the webapp is build on. Needed for compilation of java and Jasperreports. e.g. "/tmp/Jetty_0_0_0_0_8060_efaps.war__efaps__.bo28gn/webapp/WEB-INF/lib/"</description>
     </attribute>
   </definition>
