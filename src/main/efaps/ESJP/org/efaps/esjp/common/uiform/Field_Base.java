@@ -22,6 +22,7 @@ package org.efaps.esjp.common.uiform;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -186,7 +187,7 @@ public abstract class Field_Base
     public Return dropDownFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        final StringBuilder html = new StringBuilder();
+        final String html;
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final String typeStr = (String) props.get("Type");
         final Type type = Type.get(typeStr);
@@ -205,6 +206,7 @@ public abstract class Field_Base
                 final String[] parts = where.split("\\|");
                 queryBldr.addWhereAttrEqValue(parts[0], parts[1]);
             }
+            add2QueryBuilder4DropDown(_parameter, queryBldr);
             final MultiPrintQuery multi = queryBldr.getPrint();
             final String select = (String) props.get("Select");
             if (select != null) {
@@ -218,34 +220,105 @@ public abstract class Field_Base
             if (valueSel != null) {
                 multi.addSelect(valueSel);
             }
+            final String orderSel = (String) props.get("OrderSelect");
+            if (orderSel != null) {
+                multi.addSelect(orderSel);
+            }
             multi.execute();
 
-            final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-            html.append("<select name=\"").append(fieldValue.getField().getName()).append("\" size=\"1\">");
+            final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
             while (multi.next()) {
-                html.append("<option value=\"");
+                Object value;
                 if (valueSel == null) {
-                    html.append(multi.getCurrentInstance().getId());
+                    value = multi.getCurrentInstance().getId();
                 } else {
-                    html.append(multi.getSelect(valueSel));
+                    value = multi.getSelect(valueSel);
                 }
-                html.append("\"/>");
+                Object option = null;
                 if (select != null) {
-                    html.append(multi.getSelect(select));
+                    option = multi.getSelect(select);
+                } else if (phrase != null) {
+                    option = multi.getPhrase("Phrase");
                 }
-                if (phrase != null) {
-                    html.append(multi.getPhrase("Phrase"));
+                final DropDownPosition val = getDropDownPosition(_parameter, value, option);
+                values.add(val);
+                if (orderSel != null) {
+                    val.setOrderValue((Comparable<?>) multi.getSelect(orderSel));
                 }
-                html.append("</option>");
             }
-            html.append("</select>");
+            if (orderSel != null) {
+                Collections.sort(values, new Comparator<DropDownPosition>() {
+                    @SuppressWarnings("unchecked")
+                    @Override
+                    public int compare(final DropDownPosition _o1,
+                                       final DropDownPosition _o2)
+                    {
+                        return _o1.getOrderValue().compareTo(_o2.getOrderValue());
+                    }
+                });
+            }
+            html = getDropDownField(_parameter, values).toString();
+        } else {
+            html = "";
         }
         final Return ret = new Return();
-        ret.put(ReturnValues.SNIPLETT, html.toString());
+        ret.put(ReturnValues.SNIPLETT, html);
         return ret;
     }
 
+    /**
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @param _queryBldr    QueryBuilder the criteria will be added to
+     * @throws EFapsException on error
+     */
+    protected void add2QueryBuilder4DropDown(final Parameter _parameter,
+                                             final QueryBuilder _queryBldr)
+        throws EFapsException
+    {
+        // to be implemented by subclasses
+    }
 
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _values   list of DropDownValue
+     * @return StrignBuilder
+     * @throws EFapsException on error
+     */
+    public StringBuilder getDropDownField(final Parameter _parameter,
+                                          final List<DropDownPosition> _values)
+        throws EFapsException
+    {
+        final StringBuilder html = new StringBuilder();
+        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        html.append("<select name=\"").append(fieldValue != null ? fieldValue.getField().getName() : "eFapsDropDown")
+            .append("\" size=\"1\">");
+        for (final DropDownPosition value : _values) {
+            html.append("<option value=\"").append(value.getValue()).append("\"");
+            if (value.isSelected()) {
+                html.append(" selected=\"selected\"");
+            }
+            html.append(" />").append(value.getOption())
+                .append("</option>");
+        }
+        html.append("</select>");
+        return html;
+    }
+
+    /**
+     * Get a new DropDownValue instance.
+     * @param _parameter    Parameter as passed by the eFasp API
+     * @param _value        value
+     * @param _option       option
+     * @return new DropDownValue
+     * @throws EFapsException on error
+     */
+    protected DropDownPosition getDropDownPosition(final Parameter _parameter,
+                                                   final Object _value,
+                                                   final Object _option)
+        throws EFapsException
+    {
+        return new DropDownPosition(_value, _option);
+    }
     /**
      * Method can be executed as FieldValue to store the "selectRow" Values in
      * the Context for further use. (e.g a User selects some Objects, a form is
@@ -322,5 +395,110 @@ public abstract class Field_Base
         final Return ret = new Return();
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
+    }
+
+
+    /**
+     * A position in a dropdown.
+     */
+    public class DropDownPosition
+    {
+        /**
+         * Value of the dropdown position.
+         */
+        private Object value;
+
+        /**
+         * Option of the dropdown position.
+         */
+        private Object option;
+
+        /**
+         * Value to be used to order the dropdown.
+         */
+        private Comparable<?> orderValue = null;
+
+        /**
+         * @param _value value
+         * @param _option option
+         */
+        public DropDownPosition(final Object _value,
+                             final Object _option)
+        {
+            this.value = _value;
+            this.option = _option;
+        }
+
+        /**
+         * Is this position selected.
+         * @return false
+         */
+        public boolean isSelected()
+        {
+            return false;
+        }
+
+        /**
+         * Setter method for instance variable {@link #option}.
+         *
+         * @param _option value for instance variable {@link #option}
+         */
+        public void setOption(final Object _option)
+        {
+            this.option = _option;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #option}.
+         *
+         * @return value of instance variable {@link #option}
+         */
+        public Object getOption()
+        {
+            return this.option;
+        }
+
+        /**
+         * Setter method for instance variable {@link #value}.
+         *
+         * @param _value value for instance variable {@link #value}
+         */
+
+        public void setValue(final Object _value)
+        {
+            this.value = _value;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #value}.
+         *
+         * @return value of instance variable {@link #value}
+         */
+        public Object getValue()
+        {
+            return this.value;
+        }
+
+        /**
+         * Setter method for instance variable {@link #orderValue}.
+         *
+         * @param _orderValue value for instance variable {@link #orderValue}
+         */
+
+        public void setOrderValue(final Comparable<?> _orderValue)
+        {
+            this.orderValue = _orderValue;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #orderValue}.
+         *
+         * @return value of instance variable {@link #orderValue}
+         */
+        @SuppressWarnings("rawtypes")
+        public Comparable getOrderValue()
+        {
+            return this.orderValue;
+        }
     }
 }
