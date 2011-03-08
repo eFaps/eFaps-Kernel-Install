@@ -49,6 +49,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 /**
  * Class contains basic methods used to render standard Fields that are not
@@ -61,6 +62,62 @@ import org.efaps.util.EFapsException;
 @EFapsRevision("$Rev$")
 public abstract class Field_Base
 {
+
+    /**
+     * Method to get a Datevalue for a field on create to set a more "intelligent"
+     * value like "monday of current week" etc.
+     * Properties:
+     * <table>
+     *  <tr><th>Property</th><th>Value</th><th>Description</th></tr>
+     *  <tr><td>withDayOfWeek</td><td>1,2,3,4,5,6,7</td>
+     *      <td>the Integer represents on of the weekdays starting with Monday, Tuesday...</td></tr>
+     *  <tr><td>withDayOfMonth</td><td>Integer</td><td>day of month</td></tr>
+     *  <tr><td>minusDays</td><td>Integer</td><td>days to subtract</td></tr>
+     *  <tr><td>plusDays</td><td>Integer</td><td>days to add</td></tr>
+     *  <tr><td>minusWeeks</td><td>Integer</td><td>weeks to subtract</td></tr>
+     *  <tr><td>plusWeeks</td><td>Integer</td><td>weeks to add</td></tr>
+     * </table>
+     *
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return ReturnValue containing the date
+     */
+    public Return getDefault4DateFieldValue(final Parameter _parameter)
+    {
+        final Return ret = new Return();
+        final TargetMode mode  = (TargetMode) _parameter.get(ParameterValues.ACCESSMODE);
+        if (TargetMode.CREATE.equals(mode)) {
+            final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+            DateTime date = new DateTime();
+            if (props.containsKey("withDayOfWeek")) {
+                final int dayOfWeek = Integer.parseInt((String) props.get("withDayOfWeek"));
+                date = date.withDayOfWeek(dayOfWeek);
+            }
+            if (props.containsKey("withDayOfMonth")) {
+                final int dayOfMonth = Integer.parseInt((String) props.get("withDayOfMonth"));
+                date = date.withDayOfMonth(dayOfMonth);
+            }
+            if (props.containsKey("minusDays")) {
+                final int days = Integer.parseInt((String) props.get("minusDays"));
+                date = date.minusDays(days);
+            }
+            if (props.containsKey("plusDays")) {
+                final int days = Integer.parseInt((String) props.get("plusDays"));
+                date = date.plusDays(days);
+            }
+            if (props.containsKey("minusWeeks")) {
+                final int weeks = Integer.parseInt((String) props.get("minusWeeks"));
+                date = date.minusWeeks(weeks);
+            }
+            if (props.containsKey("plusWeeks")) {
+                final int weeks = Integer.parseInt((String) props.get("plusWeeks"));
+                date = date.plusWeeks(weeks);
+            }
+            ret.put(ReturnValues.VALUES, date);
+        }
+        return ret;
+    }
+
     /**
      * Render a single checkbox.<br>
      * Properties:
