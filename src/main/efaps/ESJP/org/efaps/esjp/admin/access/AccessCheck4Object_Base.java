@@ -104,11 +104,11 @@ public abstract class AccessCheck4Object_Base
 
             final Context context = Context.getThreadContext();
             cmd.append(" and PERSID in (").append(context.getPersonId());
-            for (final Role role : context.getPerson().getRoles()) {
-                cmd.append(",").append(role.getId());
+            for (final Long role : context.getPerson().getRoles()) {
+                cmd.append(",").append(role);
             }
-            for (final Group group : context.getPerson().getGroups()) {
-                cmd.append(",").append(group.getId());
+            for (final Long group : context.getPerson().getGroups()) {
+                cmd.append(",").append(group);
             }
             cmd.append(")");
 
@@ -208,11 +208,11 @@ public abstract class AccessCheck4Object_Base
             }
             final Context context = Context.getThreadContext();
             cmd.append(") and PERSID in (").append(context.getPersonId());
-            for (final Role role : context.getPerson().getRoles()) {
-                cmd.append(",").append(role.getId());
+            for (final Long role : context.getPerson().getRoles()) {
+                cmd.append(",").append(role);
             }
-            for (final Group group : context.getPerson().getGroups()) {
-                cmd.append(",").append(group.getId());
+            for (final Long group : context.getPerson().getGroups()) {
+                cmd.append(",").append(group);
             }
             cmd.append(")");
             final Set<Instance> instan = new HashSet<Instance>();

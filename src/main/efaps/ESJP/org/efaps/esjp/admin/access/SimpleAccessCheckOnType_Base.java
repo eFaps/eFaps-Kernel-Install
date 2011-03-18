@@ -36,8 +36,6 @@ import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.admin.user.Group;
-import org.efaps.admin.user.Role;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.transaction.ConnectionResource;
@@ -87,11 +85,11 @@ public abstract class SimpleAccessCheckOnType_Base
             }
         }
         cmd.append(") ").append("and T_ACCESSSET2USER.USERABSTRACT in (").append(context.getPersonId());
-        for (final Role role : context.getPerson().getRoles()) {
-            cmd.append(",").append(role.getId());
+        for (final Long role : context.getPerson().getRoles()) {
+            cmd.append(",").append(role);
         }
-        for (final Group group : context.getPerson().getGroups()) {
-            cmd.append(",").append(group.getId());
+        for (final Long group : context.getPerson().getGroups()) {
+            cmd.append(",").append(group);
         }
         cmd.append(")");
         if (type.isCheckStatus() && !_accessType.equals(AccessTypeEnums.CREATE.getAccessType())) {
@@ -129,11 +127,11 @@ public abstract class SimpleAccessCheckOnType_Base
                 }
             }
             cmd.append(") ").append("and T_ACCESSSET2USER.USERABSTRACT in (").append(context.getPersonId());
-            for (final Role role : context.getPerson().getRoles()) {
-                cmd.append(",").append(role.getId());
+            for (final Long role : context.getPerson().getRoles()) {
+                cmd.append(",").append(role);
             }
-            for (final Group group : context.getPerson().getGroups()) {
-                cmd.append(",").append(group.getId());
+            for (final Long group : context.getPerson().getGroups()) {
+                cmd.append(",").append(group);
             }
             cmd.append(")");
             final Set<Long> idList = new HashSet<Long>();
@@ -185,7 +183,7 @@ public abstract class SimpleAccessCheckOnType_Base
 
     /**
      * Method that queries against the database.
-     *
+     * @param _parameter Parameter as passed by the eFasp API
      * @param _context Context
      * @param _cmd cmd
      * @return true if access granted else false
