@@ -23,10 +23,12 @@ package org.efaps.esjp.common.uiform;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
@@ -235,6 +237,81 @@ public abstract class Field_Base
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return Return containing Html Snipplet
+     * @throws EFapsException on error
+     */
+    public Return getTypeDropDownFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final StringBuilder html = new StringBuilder();
+
+        final Map<? , ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final String typesStr = (String) props.get("Types");
+        final String selected = (String) props.get("SelectedType");
+        final boolean includeAbstract = "true".equalsIgnoreCase((String) props.get("IncludeAbstract"));
+        final String excludeTypesStr = (String) props.get("ExcludeTypes");
+
+        if (typesStr != null && !typesStr.isEmpty()) {
+            final Set<Type>excludes = new HashSet<Type>();
+            if (excludeTypesStr != null && ! excludeTypesStr.isEmpty()) {
+                final String[] excludesStr = excludeTypesStr.split(";");
+                for (final String typeStr  : excludesStr) {
+                    final Type type = Type.get(typeStr);
+                    if (type != null) {
+                        excludes.add(type);
+                    }
+                }
+            }
+            final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
+            final String[] types = typesStr.split(";");
+            final Type selType = Type.get(selected);
+            for (final String typeStr  : types) {
+                final Set<Type> typeList = getTypeList(_parameter, Type.get(typeStr));
+                for (final Type type : typeList) {
+                    if (!excludes.contains(type) && (!type.isAbstract() || includeAbstract)) {
+                        final DropDownPosition pos = new DropDownPosition(type.getId(), type.getLabel(), type.getLabel());
+                        positions.add(pos);
+                        if (type.equals(selType)) {
+                            pos.setSelected(true);
+                        }
+                    }
+                }
+            }
+            Collections.sort(positions, new Comparator<DropDownPosition>(){
+
+                @SuppressWarnings("unchecked")
+                @Override
+                public int compare(final DropDownPosition _o1,
+                                   final DropDownPosition _o2)
+                {
+                    return _o1.getOrderValue().compareTo(_o2.getOrderValue());
+                }});
+            html.append(getDropDownField(_parameter, positions));
+        }
+        ret.put(ReturnValues.SNIPLETT, html.toString());
+        return ret;
+    }
+
+    /**
+     * Recursive method to get a Type with his children and children children
+     * as a simple set.
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @param _type         Type type
+     * @return set of types
+     */
+    protected Set<Type> getTypeList(final Parameter _parameter,
+                                    final Type _type)
+    {
+        final Set<Type> ret = new HashSet<Type>();
+        ret.add(_type);
+        for (final Type child : _type.getChildTypes()) {
+            ret.addAll(getTypeList(_parameter, child));
+        }
+        return ret;
+    }
 
     /**
      * @param _parameter Parameter as passed from the eFaps API
@@ -473,17 +550,35 @@ public abstract class Field_Base
         /**
          * Value to be used to order the dropdown.
          */
-        private Comparable<?> orderValue = null;
+        private Comparable<?> orderValue;
+
+        /**
+         * Is this position selected.
+         */
+        private boolean selected = false;
 
         /**
          * @param _value value
          * @param _option option
          */
         public DropDownPosition(final Object _value,
-                             final Object _option)
+                                final Object _option)
+        {
+            this(_value, _option, null);
+        }
+
+        /**
+         * @param _value value
+         * @param _option option
+         * @param _orderValue value to be ordered by
+         */
+        public DropDownPosition(final Object _value,
+                                final Object _option,
+                                final Comparable<?> _orderValue)
         {
             this.value = _value;
             this.option = _option;
+            this.orderValue = _orderValue;
         }
 
         /**
@@ -492,7 +587,17 @@ public abstract class Field_Base
          */
         public boolean isSelected()
         {
-            return false;
+            return this.selected;
+        }
+
+        /**
+         * Setter method for instance variable {@link #selected}.
+         *
+         * @param _selected value for instance variable {@link #selected}
+         */
+        public void setSelected(final boolean _selected)
+        {
+            this.selected = _selected;
         }
 
         /**
