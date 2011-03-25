@@ -29,7 +29,9 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
+import org.efaps.admin.ui.field.Field;
 import org.efaps.admin.user.Role;
 import org.efaps.db.Context;
 import org.efaps.util.EFapsException;
@@ -82,6 +84,37 @@ public abstract class AccessOnField_Base
                     ret.put(ReturnValues.TRUE, true);
                     break;
                 }
+            }
+        }
+        return ret;
+    }
+
+
+    /**
+     * Method is used to control access based on a Property of esjp.
+     * Used for e.g. hiding a field in a form depending on a property of
+     * the calling command.
+     *
+     * @param _parameter Parameter as passed from eFaps to an esjp
+     * @return Return with True if VIEW, else false
+     * @throws EFapsException on error
+     */
+    public Return propertyCheck(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Map<?, ?> porps = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
+        if ("true".equalsIgnoreCase((String) porps.get("CheckCallingCommand"))) {
+            final AbstractCommand cmd = (AbstractCommand) _parameter.get(ParameterValues.CALL_CMD);
+            if (cmd != null) {
+                if ("true".equalsIgnoreCase(cmd.getProperty(field.getName() + "_UIAccessCheck"))) {
+                    ret.put(ReturnValues.TRUE, true);
+                }
+            }
+        } else {
+            if ("true".equalsIgnoreCase((String) porps.get("UIAccessCheck"))) {
+                ret.put(ReturnValues.TRUE, true);
             }
         }
         return ret;
