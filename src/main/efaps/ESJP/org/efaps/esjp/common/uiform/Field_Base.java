@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2011 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,6 +64,12 @@ import org.joda.time.DateTime;
 @EFapsRevision("$Rev$")
 public abstract class Field_Base
 {
+    /** Type of list to be rendered. */
+    public enum ListType
+    {
+        /** CheckBox, DropDown, Simple List, Radio Buttons. */
+        CHECKBOX, DROPDOWN, LIST, RADIO;
+    }
 
     /**
      * Method to get a Datevalue for a field on create to set a more "intelligent"
@@ -152,6 +158,29 @@ public abstract class Field_Base
         final Return ret = new Return();
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
+    }
+
+    /**
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @return Return containing Html Snipplet
+     * @throws EFapsException on error
+     */
+    public Return getRadioList(final Parameter _parameter)
+        throws EFapsException
+    {
+        return listFieldValue(_parameter, Field_Base.ListType.RADIO);
+    }
+
+
+    /**
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @return Return containing Html Snipplet
+     * @throws EFapsException on error
+     */
+    public Return getCheckBoxList(final Parameter _parameter)
+        throws EFapsException
+    {
+        return listFieldValue(_parameter, Field_Base.ListType.CHECKBOX);
     }
 
     /**
@@ -256,7 +285,7 @@ public abstract class Field_Base
 
         if (typesStr != null && !typesStr.isEmpty()) {
             final Set<Type>excludes = new HashSet<Type>();
-            if (excludeTypesStr != null && ! excludeTypesStr.isEmpty()) {
+            if (excludeTypesStr != null && !excludeTypesStr.isEmpty()) {
                 final String[] excludesStr = excludeTypesStr.split(";");
                 for (final String typeStr  : excludesStr) {
                     final Type type = Type.get(typeStr);
@@ -272,7 +301,8 @@ public abstract class Field_Base
                 final Set<Type> typeList = getTypeList(_parameter, Type.get(typeStr));
                 for (final Type type : typeList) {
                     if (!excludes.contains(type) && (!type.isAbstract() || includeAbstract)) {
-                        final DropDownPosition pos = new DropDownPosition(type.getId(), type.getLabel(), type.getLabel());
+                        final DropDownPosition pos = new DropDownPosition(type.getId(), type.getLabel(),
+                                        type.getLabel());
                         positions.add(pos);
                         if (type.equals(selType)) {
                             pos.setSelected(true);
@@ -280,7 +310,7 @@ public abstract class Field_Base
                     }
                 }
             }
-            Collections.sort(positions, new Comparator<DropDownPosition>(){
+            Collections.sort(positions, new Comparator<DropDownPosition>() {
 
                 @SuppressWarnings("unchecked")
                 @Override
@@ -288,7 +318,8 @@ public abstract class Field_Base
                                    final DropDownPosition _o2)
                 {
                     return _o1.getOrderValue().compareTo(_o2.getOrderValue());
-                }});
+                }
+            });
             html.append(getDropDownField(_parameter, positions));
         }
         ret.put(ReturnValues.SNIPLETT, html.toString());
@@ -314,11 +345,25 @@ public abstract class Field_Base
     }
 
     /**
-     * @param _parameter Parameter as passed from the eFaps API
+     * @param _parameter    Parameter as passed from the eFaps API
      * @return Return containing Html Snipplet
      * @throws EFapsException on error
      */
     public Return dropDownFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        return listFieldValue(_parameter, Field_Base.ListType.DROPDOWN);
+    }
+
+    /**
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @param _listType     Type of Lit to be rendered
+     * @return Return containing Html Snipplet
+     *
+     * @throws EFapsException on error
+     */
+    public Return listFieldValue(final Parameter _parameter,
+                                 final ListType _listType)
         throws EFapsException
     {
         final String html;
@@ -340,7 +385,7 @@ public abstract class Field_Base
                 final String[] parts = where.split("\\|");
                 queryBldr.addWhereAttrEqValue(parts[0], parts[1]);
             }
-            add2QueryBuilder4DropDown(_parameter, queryBldr);
+            add2QueryBuilder4List(_parameter, queryBldr);
             final MultiPrintQuery multi = queryBldr.getPrint();
             final String select = (String) props.get("Select");
             if (select != null) {
@@ -391,7 +436,20 @@ public abstract class Field_Base
                     }
                 });
             }
-            html = getDropDownField(_parameter, values).toString();
+            switch (_listType) {
+                case DROPDOWN:
+                    html = getDropDownField(_parameter, values).toString();
+                    break;
+                case CHECKBOX:
+                    html = getInputField(_parameter, values, _listType).toString();
+                    break;
+                case RADIO:
+                    html = getInputField(_parameter, values, _listType).toString();
+                    break;
+                default:
+                    html = "";
+                    break;
+            }
         } else {
             html = "";
         }
@@ -405,8 +463,8 @@ public abstract class Field_Base
      * @param _queryBldr    QueryBuilder the criteria will be added to
      * @throws EFapsException on error
      */
-    protected void add2QueryBuilder4DropDown(final Parameter _parameter,
-                                             final QueryBuilder _queryBldr)
+    protected void add2QueryBuilder4List(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
         throws EFapsException
     {
         // to be implemented by subclasses
@@ -435,6 +493,33 @@ public abstract class Field_Base
                 .append("</option>");
         }
         html.append("</select>");
+        return html;
+    }
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _values   list of DropDownValue
+     * @param _listType type of list
+     * @return StrignBuilder
+     * @throws EFapsException on error
+     */
+    public StringBuilder getInputField(final Parameter _parameter,
+                                       final List<DropDownPosition> _values,
+                                       final ListType _listType)
+        throws EFapsException
+    {
+        final StringBuilder html = new StringBuilder();
+        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final String name = fieldValue != null ? fieldValue.getField().getName() : "eFapsCheckBoxes";
+        for (final DropDownPosition value : _values) {
+            html.append("<input type=\"").append(_listType.equals(Field_Base.ListType.CHECKBOX) ? "checkbox" : "radio")
+                .append("\" value=\"").append(value.getValue()).append("\" name=\"")
+                .append(name).append("\"");
+            if (value.isSelected()) {
+                html.append(" checked=\"checked\"");
+            }
+            html.append(" />").append(value.getOption()).append("<br/>");
+        }
         return html;
     }
 
