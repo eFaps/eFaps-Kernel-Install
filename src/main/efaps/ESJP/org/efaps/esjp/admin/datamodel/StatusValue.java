@@ -34,7 +34,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  */
 @EFapsUUID("f83e4c40-db9d-41d0-bf34-eec674f04b6f")
 @EFapsRevision("$Rev$")
-public class StatusValue extends StatusValue_Base
+public class StatusValue
+    extends StatusValue_Base
     implements EventExecution
 {
 }

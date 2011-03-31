@@ -38,6 +38,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.db.Instance;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.Update;
 import org.efaps.esjp.common.uiform.Edit;
 import org.efaps.util.EFapsException;
@@ -105,6 +106,7 @@ public abstract class StatusValue_Base
         final String statusName = (String) props.get("Status");
         final boolean updateInstance = "true".equalsIgnoreCase((String) props.get("UpdateInstance"));
         final boolean evalOID = "true".equalsIgnoreCase((String) props.get("EvalOID"));
+        final String noUpdateStatiStr = (String) props.get("NoUpdateStatus");
 
         final Set<Instance> instances = new HashSet<Instance>();
         if (evalOID) {
@@ -121,18 +123,35 @@ public abstract class StatusValue_Base
 
         for (final Instance inst : instances) {
             final Status status = Status.find(inst.getType().getStatusAttribute().getLink().getName(), statusName);
-
             if (status != null) {
-                final Update update = new Update(inst);
-                update.add(inst.getType().getStatusAttribute(), ((Long) status.getId()).toString());
-                update.execute();
-            }
-            if (updateInstance) {
-                _parameter.put(ParameterValues.INSTANCE, inst);
-                updateInstance(_parameter);
+                boolean doUpdate = true;
+                if (noUpdateStatiStr != null && !noUpdateStatiStr.isEmpty()) {
+                    final PrintQuery print = new PrintQuery(inst);
+                    print.addAttribute(inst.getType().getStatusAttribute());
+                    print.execute();
+                    final Long currStatusId = print.<Long>getAttribute(inst.getType().getStatusAttribute());
+                    final String[] noUpdateStati = noUpdateStatiStr.split(";");
+                    for (final String noUpdateStatus : noUpdateStati) {
+                        final Status noUp = Status.find(inst.getType().getStatusAttribute().getLink().getName(),
+                                        noUpdateStatus);
+                        if (noUp != null && currStatusId == noUp.getId()) {
+                            doUpdate = false;
+                            break;
+                        }
+                    }
+                }
+                if (doUpdate) {
+                    final Update update = new Update(inst);
+                    update.add(inst.getType().getStatusAttribute(), ((Long) status.getId()).toString());
+                    update.execute();
+
+                    if (updateInstance) {
+                        _parameter.put(ParameterValues.INSTANCE, inst);
+                        updateInstance(_parameter);
+                    }
+                }
             }
         }
-
         final Return ret = new Return();
         return ret;
     }
