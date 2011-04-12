@@ -483,7 +483,7 @@ public abstract class Field_Base
         final StringBuilder html = new StringBuilder();
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         html.append("<select name=\"").append(fieldValue != null ? fieldValue.getField().getName() : "eFapsDropDown")
-            .append("\" size=\"1\">");
+            .append("\" size=\"1\"").append(UIInterface.EFAPSTMPTAG).append(">");
         for (final DropDownPosition value : _values) {
             html.append("<option value=\"").append(value.getValue()).append("\"");
             if (value.isSelected()) {
