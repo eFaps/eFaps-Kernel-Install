@@ -226,7 +226,9 @@ public abstract class Field_Base
      * Properties:
      * <table>
      *  <tr><th>Property</th><th>Value</th><th>Obligatory</th></tr>
-     *  <tr><td>Seperator</td><td>Seperator used to seprerate the values, if mor than one</td><td>false</td></tr>
+     *  <tr><td>Seperator</td><td>Seperator used to seprerate the values, if more than one</td><td>false</td></tr>
+     *  <tr><td>ClassSequence</td><td>ClassSequence used to show all the parent classifications,
+     *  if more than one</td><td>true</td></tr>
      * </table>
       * @param _parameter    Parameter as passed from the eFaps API
      * @return formated object
@@ -238,26 +240,63 @@ public abstract class Field_Base
         final StringBuilder html = new StringBuilder();
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final String seperator = props.containsKey("Seperator") ? (String) props.get("Seperator") : ", ";
+        final boolean clazzSeq = props.containsKey("ClassSequence")
+                                            ? Boolean.parseBoolean((String) props.get("ClassSequence")) : false;
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         if (fieldValue != null) {
             final Object value = fieldValue.getValue();
             if (value instanceof List) {
-                final List<String> labels = new ArrayList<String>();
+                final List<Classification> clazzes = new ArrayList<Classification>();
                 for (final Object val : (List<?>) value) {
-                    labels.add(((Classification) val).getLabel());
+                    clazzes.add((Classification) val);
                 }
-                Collections.sort(labels);
+                //Collections.sort(labels);
                 boolean first = true;
-                for (final String label : labels) {
+                for (Classification clazz : clazzes) {
                     if (first) {
                         first = false;
                     } else {
                         html.append(seperator);
                     }
-                    html.append(label);
+                    if (clazzSeq) {
+                        final Map<Integer, String> map = new TreeMap<Integer, String>();
+                        int cont = 99;
+                        while (clazz != null) {
+                            if (cont == 99) {
+                                map.put(cont, clazz.getLabel());
+                            } else {
+                                map.put(cont, clazz.getLabel() + " - ");
+                            }
+                            clazz = (Classification) clazz.getParentClassification();
+                            cont--;
+                        }
+                        for (final String label : map.values()) {
+                            html.append(label);
+                        }
+                    } else {
+                        html.append(clazz.getLabel());
+                    }
                 }
             } else if (value instanceof Classification) {
-                html.append(((Classification) value).getLabel());
+                Classification clazz = (Classification) value;
+                if (clazzSeq) {
+                    final Map<Integer, String> map = new TreeMap<Integer, String>();
+                    int cont = 99;
+                    while (clazz != null) {
+                        if (cont == 99) {
+                            map.put(cont, clazz.getLabel());
+                        } else {
+                            map.put(cont, clazz.getLabel() + " - ");
+                        }
+                        clazz = (Classification) clazz.getParentClassification();
+                        cont--;
+                    }
+                    for (final String label : map.values()) {
+                        html.append(label);
+                    }
+                } else {
+                    html.append(clazz.getLabel());
+                }
             }
         }
 
