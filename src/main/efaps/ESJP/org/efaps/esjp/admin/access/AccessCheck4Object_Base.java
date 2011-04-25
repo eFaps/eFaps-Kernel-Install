@@ -247,6 +247,13 @@ public abstract class AccessCheck4Object_Base
         return ret;
     }
 
+    /**
+     * Check if the simple access must be applied.
+     * @param _parameter    Parameter as passed by the eFasp API
+     * @param _instance     instance to be checked for simple access
+     * @return  true if simple access else false
+     * @throws EFapsException on error
+     */
     protected boolean check4SimpleAccessCheck(final Parameter _parameter,
                                               final Instance _instance)
         throws EFapsException
@@ -293,7 +300,13 @@ public abstract class AccessCheck4Object_Base
     }
 
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the access class for simple access check.
+     * @throws EFapsException on error
+     */
     protected AccessCheckAbstract getSimpleAccess4Type(final Parameter _parameter)
+        throws EFapsException
     {
         return new SimpleAccessCheckOnType();
     }
@@ -476,6 +489,11 @@ public abstract class AccessCheck4Object_Base
     }
 
 
+    /**
+     * @param _parameter    Paramater as passed by the eFasp API
+     * @return  new Return
+     * @throws EFapsException on error
+     */
     public Return deleteOverrideTrigger(final Parameter _parameter)
         throws EFapsException
     {
@@ -518,17 +536,19 @@ public abstract class AccessCheck4Object_Base
 
 
     /**
-     * @param _parameter
-     * @param _class
-     * @param _typeId
-     * @param _objectId
-     * @throws EFapsException
+     * @param _parameter    Parameter as passed b y the eFasp API
+     * @param _pers         Person
+     * @param _class        class
+     * @param _typeId       id of the type
+     * @param _objectId     id of the object
+     * @throws EFapsException on error
      */
     protected void insertOnDelete(final Parameter _parameter,
                                      final String _pers,
                                      final Class<?> _class,
                                      final Long _typeId,
-                                     final Long _objectId) throws EFapsException
+                                     final Long _objectId)
+        throws EFapsException
     {
         boolean del = false;
         if (_pers != null && !_pers.isEmpty()) {
@@ -575,6 +595,14 @@ public abstract class AccessCheck4Object_Base
         }
     }
 
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _instance     instance of the object
+     * @param _persId       id of the person
+     * @param _accSetId     id of the accessSet
+     * @return Instance
+     * @throws EFapsException on error
+     */
     public Instance insertAccess4Object(final Parameter _parameter,
                                         final Instance _instance,
                                         final Long _persId,
@@ -595,6 +623,11 @@ public abstract class AccessCheck4Object_Base
         return ret;
     }
 
+    /**
+     * @param _parameter Paramter as passed by the eFaps API
+     * @return  Properties
+     * @throws EFapsException on error
+     */
     protected Properties getProperties(final Parameter _parameter)
         throws EFapsException
     {
