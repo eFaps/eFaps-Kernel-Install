@@ -84,11 +84,11 @@ public abstract class Search_Base
      * Method for obtains a List of the query.
      *
      * @param _parameter Parameter as passed by the eFaps API.
-     * @param _queryBldr QueryBuilder toadd to
+     * @param _queryBldr QueryBuilder to add to
      * @throws EFapsException on error.
      */
     protected void add2QueryBuilder(final Parameter _parameter,
-                                  final QueryBuilder _bldr)
+                                    final QueryBuilder _queryBldr)
         throws EFapsException
     {
         // to be used by implenting classes
@@ -119,7 +119,6 @@ public abstract class Search_Base
                 instances.add(query.getCurrentValue());
             }
         }
-
         return instances;
     }
 
@@ -160,7 +159,7 @@ public abstract class Search_Base
                 if (type.getAttribute(field.getAttribute()) != null) {
                     final Attribute attribute = type.getAttribute(field.getAttribute());
                     if (attribute.getAttributeType().getDbAttrType() instanceof StringType) {
-                        queryBldr.addWhereAttrMatchValue(field.getAttribute(), value)
+                        queryBldr.addWhereAttrMatchValue(field.getAttribute(), value + "*")
                                         .setIgnoreCase(ignoreFields.contains(field.getName()));
                     } else {
                         queryBldr.addWhereAttrEqValue(field.getAttribute(), value);
