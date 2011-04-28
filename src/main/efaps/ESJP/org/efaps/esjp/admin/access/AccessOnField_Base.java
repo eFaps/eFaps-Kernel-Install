@@ -32,6 +32,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field;
+import org.efaps.admin.user.Company;
 import org.efaps.admin.user.Role;
 import org.efaps.db.Context;
 import org.efaps.util.EFapsException;
@@ -89,6 +90,31 @@ public abstract class AccessOnField_Base
         return ret;
     }
 
+    /**
+     * Method is used to control access based the current Company.
+     *
+     * @param _parameter Parameter as passed from eFaps to an esjp
+     * @return Return with True if VIEW, else false
+     * @throws EFapsException on error
+     */
+    public Return companyCheck(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final String companyStr = (String) properties.get("Companies");
+        final String[] companies = companyStr.split(";");
+        for (final String company : companies) {
+            final Company aCompany = Company.get(company);
+            if (aCompany != null) {
+                if (Context.getThreadContext().getCompany().equals(aCompany)) {
+                    ret.put(ReturnValues.TRUE, true);
+                    break;
+                }
+            }
+        }
+        return ret;
+    }
 
     /**
      * Method is used to control access based on a Property of esjp.
