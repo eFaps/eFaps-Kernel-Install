@@ -141,14 +141,15 @@ public abstract class StatusValue_Base
                     }
                 }
                 if (doUpdate) {
-                    final Update update = new Update(inst);
-                    update.add(inst.getType().getStatusAttribute(), ((Long) status.getId()).toString());
-                    update.execute();
-
+                    // the instance must be updated first, because after changing the status the
+                    //user might not have the right to update any more
                     if (updateInstance) {
                         _parameter.put(ParameterValues.INSTANCE, inst);
                         updateInstance(_parameter);
                     }
+                    final Update update = new Update(inst);
+                    update.add(inst.getType().getStatusAttribute(), ((Long) status.getId()).toString());
+                    update.execute();
                 }
             }
         }
