@@ -59,12 +59,14 @@ import org.efaps.db.Context;
 import org.efaps.db.Delete;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
-import org.efaps.db.SearchQuery;
 import org.efaps.db.Update;
 import org.efaps.util.EFapsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -78,6 +80,15 @@ import org.efaps.util.EFapsException;
 public abstract class Edit_Base
     implements EventExecution
 {
+    /**
+     * Logging instance used in this class.
+     */
+    protected static final Logger LOG = LoggerFactory.getLogger(Edit.class);
+
+    /**
+     * String used as a temp key.
+     */
+    protected static final String FAKEROW = "NoMoreRowsExisting";
 
     /**
      * @param _parameter Parameter as provided by eFaps for a esjp
@@ -464,8 +475,8 @@ public abstract class Edit_Base
     {
         if (_fieldTables.size() > 0) {
             final List<RowUpdate> rows = analyseFieldTables(_parameter, _fieldTables);
-            updateAddRows(_parameter, rows);
             deleteRows(_parameter, rows);
+            updateAddRows(_parameter, rows);
         }
     }
 
@@ -480,27 +491,30 @@ public abstract class Edit_Base
         throws EFapsException
     {
         final Map<?, ?> oids = (Map<?, ?>) _parameter.get(ParameterValues.OIDMAP4UI);
-        final Map<String, Set<String>> exist = new HashMap<String, Set<String>>();
+        final Map<Type, Set<String>> exist = new HashMap<Type, Set<String>>();
+        final Map<Type, String> type2LinkAttr = new HashMap<Type, String>();
         for (final RowUpdate row : _rows) {
             if (oids.containsKey(row.getRowId())) {
                 Set<String> set;
-                if (exist.containsKey(row.getExpand())) {
-                    set = exist.get(row.getExpand());
+                if (exist.containsKey(row.getType())) {
+                    set = exist.get(row.getType());
                 } else {
                     set = new HashSet<String>();
-                    exist.put(row.getExpand(), set);
+                    exist.put(row.getType(), set);
+                    type2LinkAttr.put(row.getType(), row.getLinkAttrName());
                 }
                 set.add((String) oids.get(row.getRowId()));
             }
         }
 
-        for (final Entry<String, Set<String>> entry : exist.entrySet()) {
-            final SearchQuery query = new SearchQuery();
-            query.setExpand(_parameter.getInstance(),  entry.getKey());
-            query.addSelect("OID");
+        for (final Entry<Type, Set<String>> entry : exist.entrySet()) {
+            final QueryBuilder queryBldr = new QueryBuilder(entry.getKey());
+            queryBldr.addWhereAttrEqValue(type2LinkAttr.get(entry.getKey()),
+                            _parameter.getInstance().getId());
+            final InstanceQuery query = queryBldr.getQuery();
             query.execute();
             while (query.next()) {
-                final String oid = (String) query.get("OID");
+                final String oid = query.getCurrentValue().getOid();
                 if (!entry.getValue().contains(oid)) {
                     final Delete del = new Delete(oid);
                     del.execute();
@@ -522,20 +536,39 @@ public abstract class Edit_Base
         //TODO compare with database before update??
         final Map<?, ?> oids = (Map<?, ?>) _parameter.get(ParameterValues.OIDMAP4UI);
         for (final RowUpdate row : _rows) {
-            final String oid = (String) oids.get(row.getRowId());
-            final Update update;
-            if (oid != null) {
-                update = new Update(oid);
-            } else {
-                update = new Insert(row.getType());
-                update.add(row.getLinkAttrName(), _parameter.getInstance().getId());
+            if (!Edit_Base.FAKEROW.equals(row.getRowId())) {
+                final String oid = (String) oids.get(row.getRowId());
+                final Update update;
+                if (oid != null) {
+                    update = new Update(oid);
+                } else {
+                    update = new Insert(row.getType());
+                    update.add(row.getLinkAttrName(), _parameter.getInstance().getId());
+                }
+                for (final String[] value : row.getValues()) {
+                    update.add(value[0], value[1]);
+                }
+                add2Update4FieldTable(_parameter, update, row);
+                update.execute();
             }
-            for (final String[] value : row.getValues()) {
-                update.add(value[0], value[1]);
-            }
-            update.execute();
         }
     }
+
+    /**
+     * Add additionals to the Update.
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _update       Updaet that will be executed
+     * @param _row          row info
+     * @throws EFapsException on error
+     */
+    protected void add2Update4FieldTable(final Parameter _parameter,
+                                         final Update _update,
+                                         final RowUpdate _row)
+        throws EFapsException
+    {
+        // to be implemented by subclasses.
+    }
+
 
     /**
      * Analyze the table values row by row.
@@ -547,9 +580,14 @@ public abstract class Edit_Base
                                               final List<FieldTable> _fieldTables)
     {
         final List<RowUpdate> rows = new ArrayList<RowUpdate>();
-        // get all rows
-        for (final String rowId : _parameter.getParameterValues("eFapsTableRowID")) {
-            rows.add(new RowUpdate(rowId));
+        boolean deleteAll = false;
+        if (_parameter.getParameterValues("eFapsTableRowID") == null) {
+            deleteAll  = true;
+        } else {
+            // get all rows
+            for (final String rowId : _parameter.getParameterValues("eFapsTableRowID")) {
+                rows.add(new RowUpdate(rowId));
+            }
         }
         final Iterator<RowUpdate> rowiter = rows.iterator();
         for (final FieldTable fieldTable : _fieldTables) {
@@ -558,45 +596,59 @@ public abstract class Edit_Base
                 final List<EventDefinition> events = fieldTable.getEvents(EventType.UI_TABLE_EVALUATE);
                 if (events.size() > 0) {
                     final EventDefinition event = events.get(0);
-                    final String expand = event.getProperty("Expand");
-                    final String[] typeatt = expand.split("\\\\");
-                    final String typeStr = typeatt[0];
-                    final Type type = Type.get(typeStr);
-                    final String conattr = typeatt[1];
-
-                    int i = 0;
-                    boolean more = true;
-                    boolean first = true;
-                    while (more && rowiter.hasNext()) {
-                        RowUpdate row = null;
-                        if (!first) {
-                            row = rowiter.next();
-                            row.setIndex(i);
-                            row.setType(type);
-                            row.setExpand(expand);
-                            row.setLinkAttrName(conattr);
-                        }
-                        for (final Field field : fieldTable.getTargetTable().getFields()) {
-                            final String attrName = field.getAttribute();
-                            if (attrName != null && field.isEditableDisplay(TargetMode.EDIT)) {
-                                final String[] values = _parameter.getParameterValues(field.getName());
-                                if (values.length > i) {
-                                    if (first) {
-                                        row = rowiter.next();
-                                        row.setIndex(i);
-                                        row.setType(type);
-                                        row.setExpand(expand);
-                                        row.setLinkAttrName(conattr);
-                                        first = false;
+                    final Type type;
+                    final String conattr;
+                    if (event.getProperty("Expand") != null) {
+                        //TODO remove!
+                        Edit_Base.LOG.error("Use of deprecated api calling for Field: '%s' in Collection '%s' ",
+                                        new Object[]{fieldTable.getName(), fieldTable.getCollection().getName()});
+                        final String expand = event.getProperty("Expand");
+                        final String[] typeatt = expand.split("\\\\");
+                        final String typeStr = typeatt[0];
+                        type = Type.get(typeStr);
+                        conattr = typeatt[1];
+                    } else {
+                        type = Type.get(event.getProperty("Types"));
+                        conattr = event.getProperty("LinkFroms");
+                    }
+                    if (deleteAll) {
+                        final RowUpdate fake = new RowUpdate(Edit_Base.FAKEROW);
+                        fake.setType(type);
+                        fake.setLinkAttrName(conattr);
+                        rows.add(fake);
+                    } else {
+                        int i = 0;
+                        boolean more = true;
+                        boolean first = true;
+                        while (more && rowiter.hasNext()) {
+                            RowUpdate row = null;
+                            if (!first) {
+                                row = rowiter.next();
+                                row.setIndex(i);
+                                row.setType(type);
+                                row.setLinkAttrName(conattr);
+                            }
+                            for (final Field field : fieldTable.getTargetTable().getFields()) {
+                                final String attrName = field.getAttribute();
+                                if (attrName != null && field.isEditableDisplay(TargetMode.EDIT)) {
+                                    final String[] values = _parameter.getParameterValues(field.getName());
+                                    if (values != null && values.length > i) {
+                                        if (first) {
+                                            row = rowiter.next();
+                                            row.setIndex(i);
+                                            row.setType(type);
+                                            row.setLinkAttrName(conattr);
+                                            first = false;
+                                        }
+                                        row.addValue(attrName, values[i]);
+                                    } else {
+                                        more = false;
+                                        break;
                                     }
-                                    row.addValue(attrName, values[i]);
-                                } else {
-                                    more = false;
-                                    break;
                                 }
                             }
+                            i++;
                         }
-                        i++;
                     }
                 }
             }
@@ -604,6 +656,9 @@ public abstract class Edit_Base
         return rows;
     }
 
+    /**
+     * Class for update of a row.
+     */
     public class RowUpdate
     {
         /**
@@ -625,11 +680,6 @@ public abstract class Edit_Base
          * Values in this row.
          */
         private final Set<String[]> values = new HashSet<String[]>();
-
-        /**
-         * Expand.
-         */
-        private String expand;
 
         /**
          * Name of the link attribute.
@@ -712,26 +762,6 @@ public abstract class Edit_Base
         public void setIndex(final int _index)
         {
             this.index = _index;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #expand}.
-         *
-         * @return value of instance variable {@link #expand}
-         */
-        public String getExpand()
-        {
-            return this.expand;
-        }
-
-        /**
-         * Setter method for instance variable {@link #expand}.
-         *
-         * @param _expand value for instance variable {@link #expand}
-         */
-        public void setExpand(final String _expand)
-        {
-            this.expand = _expand;
         }
 
         /**
