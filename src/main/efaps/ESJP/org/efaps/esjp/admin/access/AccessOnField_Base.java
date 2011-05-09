@@ -22,6 +22,7 @@ package org.efaps.esjp.admin.access;
 
 import java.util.Map;
 
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -146,6 +147,28 @@ public abstract class AccessOnField_Base
         return ret;
     }
 
+
+    /**
+     * Method is used to control access based on a SystemConfiguration.
+     *
+     * @param _parameter Parameter as passed from eFaps to an esjp
+     * @return Return with True if VIEW, else false
+     * @throws EFapsException on error
+     */
+    public Return configCheck(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final SystemConfiguration config = SystemConfiguration.get((String) props.get("SystemConfig"));
+        if (config != null) {
+            final Boolean access = config.getAttributeValueAsBoolean((String) props.get("Attribute"));
+            if (access) {
+                ret.put(ReturnValues.TRUE, true);
+            }
+        }
+        return ret;
+    }
 
     /**
      * Method is used to deny access in EDITMODE.
