@@ -66,7 +66,6 @@ public abstract class StatusValue_Base
         final Return ret = new Return();
 
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        final Type type = fieldValue.getInstance().getType().getStatusAttribute().getLink();
 
         final Map<String, String> map = new TreeMap<String, String>();
 
@@ -75,6 +74,7 @@ public abstract class StatusValue_Base
             final Status status = Status.get((Long) fieldValue.getValue());
             map.put(status.getLabel(), ((Long) status.getId()).toString());
         } else {
+            final Type type = fieldValue.getInstance().getType().getStatusAttribute().getLink();
             final StatusGroup group = Status.get(type.getName());
             for (final Status status : group.values()) {
                 map.put(status.getLabel(), ((Long) status.getId()).toString());
