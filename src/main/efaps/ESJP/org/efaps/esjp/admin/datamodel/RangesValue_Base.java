@@ -100,6 +100,7 @@ public abstract class RangesValue_Base
             final String value = (String) properties.get("Value");
 
             final QueryBuilder queryBldr = new QueryBuilder(Type.get(type));
+            add2QueryBldr(_parameter, queryBldr);
             final MultiPrintQuery multi = queryBldr.getPrint();
 
             ValueList list = null;
@@ -133,6 +134,18 @@ public abstract class RangesValue_Base
             ret.put(ReturnValues.VALUES, map);
         }
         return ret;
+    }
+
+    /**
+     * @param _parameter    Parameter as passes by the eFaps API
+     * @param _queryBldr    QueryBuilder to add to
+     * @throws EFapsException on error
+     */
+    protected void add2QueryBldr(final Parameter _parameter,
+                                 final QueryBuilder _queryBldr)
+        throws EFapsException
+    {
+
     }
 
     /**
