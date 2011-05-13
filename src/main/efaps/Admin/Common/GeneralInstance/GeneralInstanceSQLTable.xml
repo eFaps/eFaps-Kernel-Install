@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+ Copyright 2003 - 2010 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev: 3936 $
+ Last Changed:    $Date: 2010-03-31 19:21:12 -0500 (Wed, 31 Mar 2010) $
+ Last Changed By: $Author: jan.moxter $
+
+--><datamodel-sqltable xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>456b95d9-96f1-40c9-8e2a-5a685e0a0782</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev: 3936 $</file-revision>
+
+    <!-- SQL Table to hold the Bundle-Defenition for the Properties -->
+
+    <definition>
+        <version-expression>(version==1) || (version==2) || (version==latest)</version-expression>
+        <name>GeneralInstanceSQLTable</name>
+        <database>
+            <table-name>T_CMGENINST</table-name>
+            <!-- columns -->
+            <column name="INSTTYPEID" type="INTEGER" not-null="true" />
+            <column name="INSTID" type="INTEGER" not-null="true" />
+        </database>
+    </definition>
+</datamodel-sqltable>
