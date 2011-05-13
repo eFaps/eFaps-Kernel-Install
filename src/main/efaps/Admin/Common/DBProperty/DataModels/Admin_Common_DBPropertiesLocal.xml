@@ -34,6 +34,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Common_DBPropertiesLocal</name>
+        <purpose GeneralInstance="false"/>
         <!-- attributes -->
         <attribute>
             <name>OID</name>

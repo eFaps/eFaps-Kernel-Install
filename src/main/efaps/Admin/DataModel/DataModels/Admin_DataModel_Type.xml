@@ -39,6 +39,7 @@
     <version-expression>(version==latest)</version-expression>
     <name>Admin_DataModel_Type</name>
     <parent>Admin_DataModel_Abstract</parent>
+    <purpose GeneralInstance="false"/>
     <!-- attributes -->
     <attribute>
       <name>SQLCacheExpr</name>
@@ -64,6 +65,7 @@
     <version-expression>(version==3)</version-expression>
     <name>Admin_DataModel_Type</name>
     <parent>Admin_DataModel_Abstract</parent>
+    <purpose GeneralInstance="false"/>
     <!-- attributes -->
     <attribute>
       <name>SQLCacheExpr</name>
