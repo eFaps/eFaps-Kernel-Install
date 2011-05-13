@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2011 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -27,14 +27,13 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>5fecab1b-f4a8-447d-ad64-cf5965fe5d3b</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>5fecab1b-f4a8-447d-ad64-cf5965fe5d3b</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==3) || (version==latest)</version-expression>
-    <name>Admin_Common_SystemConfiguration</name>
-    <parent>Admin_Abstract</parent>
-  </definition>
-
+    <definition>
+        <version-expression>(version==3) || (version==latest)</version-expression>
+        <name>Admin_Common_SystemConfiguration</name>
+        <parent>Admin_Abstract</parent>
+    </definition>
 </datamodel-type>
