@@ -61,5 +61,23 @@
             <property name="Required">false</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
+        <field name="companyLink4View">
+            <property name="Select">linkto[CompanyLink].attribute[Name]</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="Label">Admin_Common_SystemConfigurationAttribute/CompanyLink.Label</property>
+        </field>
+        <field name="companyLink">
+            <property name="Attribute">CompanyLink</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.admin.common.SystemConf"
+                method="dropDownFieldValue"
+                name="Admin_Common_SystemConfigurationAttributeForm.companyLink.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type">Admin_User_Company</property>
+                <property name="Select">attribute[Name]</property>
+            </trigger>
+        </field>
     </definition>
 </ui-form>

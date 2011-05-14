@@ -21,14 +21,20 @@
 
 package org.efaps.esjp.admin.common;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIAdminCommon;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.esjp.common.uiform.Field;
 import org.efaps.util.EFapsException;
 
 
@@ -65,5 +71,31 @@ public abstract class SystemConf_Base
                 insert.execute();
             }
         }
+    }
+
+    public Return dropDownFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Field field = new Field() {
+
+            @Override
+            public StringBuilder getDropDownField(final Parameter _parameter,
+                                                  final List<DropDownPosition> _values)
+                throws EFapsException
+            {
+                final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+                for (final DropDownPosition dropPos : _values) {
+                    if (fieldValue.getValue().equals(dropPos.getValue())) {
+                        dropPos.setSelected(true);
+                        break;
+                    }
+                }
+                _values.set(0, new DropDownPosition("0", "--"));
+                return super.getDropDownField(_parameter, _values);
+            }
+
+        };
+
+        return field.dropDownFieldValue(_parameter);
     }
 }
