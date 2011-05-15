@@ -85,7 +85,8 @@ public abstract class SystemConf_Base
             {
                 final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
                 for (final DropDownPosition dropPos : _values) {
-                    if (fieldValue.getValue().equals(dropPos.getValue())) {
+                    if (fieldValue != null && fieldValue.getValue() != null
+                                    && fieldValue.getValue().equals(dropPos.getValue())) {
                         dropPos.setSelected(true);
                         break;
                     }
