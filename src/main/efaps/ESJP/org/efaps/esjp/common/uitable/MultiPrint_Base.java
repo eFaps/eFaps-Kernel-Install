@@ -343,8 +343,10 @@ public abstract class MultiPrint_Base
     /**
      * @param _field Field the date is wanted for
      * @return datetime array
+     * @throws EFapsException on error
      */
     protected DateTime[] getFromTo(final Field _field)
+        throws EFapsException
     {
         final String filter = _field.getFilterDefault();
         final String[] parts = filter.split(":");
