@@ -596,6 +596,24 @@ public abstract class Field_Base
     }
 
     /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return Snipplet
+     * @throws EFapsException on error
+     */
+    public Return getJSLinkField(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final StringBuilder html = new StringBuilder();
+        html.append("<script type=\"text/javascript\" src=\"")
+            .append(props.get("link"))
+            .append("\"></script>");
+        ret.put(ReturnValues.SNIPLETT, html.toString());
+        return ret;
+    }
+
+    /**
      *
      *
      * @param _parameter Parameter as passed from the eFaps API
