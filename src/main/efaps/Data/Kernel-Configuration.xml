@@ -59,6 +59,20 @@
       </description>
     </attribute>
     <attribute>
+      <key>PasswordStore</key>
+      <value>Algorithm=SHA-1
+Iterations=1000
+Saltsize=8</value>
+      <description>
+            Properties for the PasswordStore Digester Configuration.
+      </description>
+    </attribute>
+    <attribute>
+        <key>PasswordRepeatedThreshold</key>
+        <value>5</value>
+        <description>(Integer) The Threshold of how many passwords will be stored to compare it with a new given password.</description>
+    </attribute>
+    <attribute>
       <key>DataBaseTimeZone</key>
       <value>America/Lima</value>
       <description>
