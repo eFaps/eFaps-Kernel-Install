@@ -27,8 +27,8 @@ import javax.security.auth.login.LoginException;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -36,7 +36,6 @@ import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.user.Role;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
-import org.efaps.db.Update;
 import org.efaps.db.Update.Status;
 import org.efaps.jaas.SetPasswordHandler;
 import org.efaps.jaas.efaps.UserLoginModule.UpdateException;
@@ -79,8 +78,8 @@ public class Password
     {
 
         final Context context = Context.getThreadContext();
-        final String passwordold = context.getParameter(PWDOLD);
-        final String passwordnew = context.getParameter(PWDNEW);
+        final String passwordold = context.getParameter(Password.PWDOLD);
+        final String passwordnew = context.getParameter(Password.PWDNEW);
         final Return ret = new Return();
 
         final SetPasswordHandler handler = new SetPasswordHandler("eFaps");
@@ -110,8 +109,8 @@ public class Password
     {
         final Return ret = new Return();
         final Context context = Context.getThreadContext();
-        final String passwordnew = context.getParameter(PWDNEW);
-        final String passwordnew2 = context.getParameter(PWDNEWREPEAT);
+        final String passwordnew = context.getParameter(Password.PWDNEW);
+        final String passwordnew2 = context.getParameter(Password.PWDNEWREPEAT);
 
         if (passwordnew.equals(passwordnew2)) {
             ret.put(ReturnValues.TRUE, "true");
@@ -186,13 +185,10 @@ public class Password
         final Role setpwdRole = Role.get(UUID.fromString("2c101471-43e3-4c97-9045-f48f5b12b6ed"));
 
         if (Context.getThreadContext().getPerson().isAssigned(setpwdRole)) {
-
             final String pwd = Context.getThreadContext().getParameter("setpassword");
-
-            final Update update = new Update(instance);
-            final Status status = update.add("Password", pwd);
-            if ((status.isOk())) {
-                update.execute();
+            final org.efaps.admin.user.Person pers = org.efaps.admin.user.Person.get(instance.getId());
+            final Status status = pers.setPassword(pwd);
+            if (status.isOk()) {
                 ret.put(ReturnValues.TRUE, "true");
             } else {
                 ret.put(ReturnValues.VALUES, status.getReturnValue());
