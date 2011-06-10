@@ -46,7 +46,7 @@
       <column name="CHRONOLOGY" type="STRING_SHORT" length="128" />
       <column name="LANG"       type="INTEGER"/>
       <column name="LOCALE"     type="STRING_SHORT" length="128" />
-      <column name="PASSWORD"   type="STRING_SHORT" length="128"/>
+      <column name="PASSWORD"   type="STRING_SHORT" length="2048"/>
       <column name="LASTLOGIN"  type="DATETIME"/>
       <column name="LOGINTRY"   type="DATETIME"/>
       <column name="LOGINTRIES" type="INTEGER"/>
