@@ -607,7 +607,7 @@ public abstract class Field_Base
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final StringBuilder html = new StringBuilder();
         html.append("<script type=\"text/javascript\" src=\"")
-            .append(props.get("link"))
+            .append(Context.getThreadContext().getPath()).append(props.get("link"))
             .append("\"></script>");
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
