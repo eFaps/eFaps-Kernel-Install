@@ -35,7 +35,6 @@
             <!-- columns -->
             <column name="INSTTYPEID"   type="INTEGER" not-null="true" />
             <column name="INSTID"       type="INTEGER" not-null="true" />
-            <foreign name="T_CMGENINST_FK_INSTTYPEID" key="INSTTYPEID" reference="T_CMABSTRACT(ID)"/>
         </database>
     </definition>
 </datamodel-sqltable>
