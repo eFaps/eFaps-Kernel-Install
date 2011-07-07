@@ -41,8 +41,8 @@ import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.util.EFapsException;
-
-import common.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO comment!
@@ -56,10 +56,9 @@ abstract class SubReportContainer_Base
     extends HashMap<String, JRDataSource>
 {
     /**
-     * Logger used fort his class.
+     * Logging instance used to give logging information of this class.
      */
-    protected static final Logger LOG = Logger.getLogger(SubReportContainer_Base.class);
-
+    protected static final Logger LOG = LoggerFactory.getLogger(SubReportContainer_Base.class);
     /**
      * Needed for serialization.
      */
