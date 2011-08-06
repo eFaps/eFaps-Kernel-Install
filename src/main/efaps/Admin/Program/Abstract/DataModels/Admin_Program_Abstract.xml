@@ -35,6 +35,7 @@
     <version-expression>(version==4) || (version==latest)</version-expression>
     <name>Admin_Program_Abstract</name>
     <parent>Admin_Abstract</parent>
+    <purpose GeneralInstance="true" abstract="true"/>
     <!-- attributes -->
     <attribute>
       <name>FileName</name>
@@ -55,6 +56,7 @@
     <version-expression>(version==3)</version-expression>
     <name>Admin_Program_Abstract</name>
     <parent>Admin_Abstract</parent>
+    <purpose GeneralInstance="true" abstract="true"/>
     <!-- attributes -->
     <attribute>
       <name>FileName</name>
@@ -68,6 +70,6 @@
       <sqltable>Admin_Program_AbstractSQLTable</sqltable>
       <sqlcolumn>FILELENGTH</sqlcolumn>
     </attribute>
-    
+
   </definition>
 </datamodel-type>

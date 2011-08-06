@@ -21,18 +21,18 @@
 
 --><datamodel-sqltable xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>456b95d9-96f1-40c9-8e2a-5a685e0a0782</uuid>
+    <uuid>7b430916-0d61-4f5d-81eb-44d37846096c</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev: 3936 $</file-revision>
 
     <definition>
         <version-expression>(version==1) || (version==2) || (version==latest)</version-expression>
-        <name>GeneralInstanceSQLTable</name>
+        <name>GeneralStoreJDBCSQLTable</name>
         <database>
-            <table-name>T_CMGENINST</table-name>
+            <table-name>T_CMGENSTOREJDBC</table-name>
+            <parent-table>T_CMGENINST</parent-table>
             <!-- columns -->
-            <column name="INSTTYPEID"   type="INTEGER" not-null="true" />
-            <column name="INSTID"       type="INTEGER" not-null="true" />
+            <column name="FILECONTENT" type="BLOB"/>
         </database>
     </definition>
 </datamodel-sqltable>

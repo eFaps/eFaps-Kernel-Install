@@ -54,7 +54,6 @@ public class FileCheckout
         File temp = null;
         try {
             final Checkout checkout = new Checkout(_parameter.getInstance());
-            checkout.preprocess();
             temp = new FileUtil().getFile(checkout.getFileName());
             final OutputStream out = new FileOutputStream(temp);
             checkout.execute(out);

@@ -35,6 +35,7 @@
     <version-expression>(version==4) || (version==latest)</version-expression>
     <name>Admin_UI_File</name>
     <parent>Admin_UI_Direct</parent>
+    <purpose GeneralInstance="true"/>
     <!-- attributes -->
     <attribute>
       <name>FileName</name>
@@ -50,11 +51,12 @@
     </attribute>
     <store name="Admin_UI_JDBCStore" attributeFileLength="FileLength" attributeFileName="FileName"/>
   </definition>
-  
+
   <definition>
     <version-expression>(version==3)</version-expression>
     <name>Admin_UI_File</name>
     <parent>Admin_UI_Direct</parent>
+    <purpose GeneralInstance="true"/>
     <!-- attributes -->
     <attribute>
       <name>FileName</name>

@@ -87,7 +87,6 @@ public abstract class JasperFileResolver_Base
             query.execute();
             if (query.next()) {
                 final Checkout checkout = new Checkout(query.getCurrentValue());
-                checkout.preprocess();
                 file = new FileUtil().getFile(checkout.getFileName(), "jasper");
                 final FileOutputStream out = new FileOutputStream(file);
                 checkout.execute(out);
