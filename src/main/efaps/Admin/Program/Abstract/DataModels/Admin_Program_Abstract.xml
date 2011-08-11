@@ -27,49 +27,22 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>da0d5338-118a-435a-ad5f-fc04d5c7c6d8</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>da0d5338-118a-435a-ad5f-fc04d5c7c6d8</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==4) || (version==latest)</version-expression>
-    <name>Admin_Program_Abstract</name>
-    <parent>Admin_Abstract</parent>
-    <purpose GeneralInstance="true" abstract="true"/>
-    <!-- attributes -->
-    <attribute>
-      <name>FileName</name>
-      <type>String</type>
-      <sqltable>Admin_Program_AbstractSQLTable</sqltable>
-      <sqlcolumn>FILENAME</sqlcolumn>
-    </attribute>
-    <attribute>
-      <name>FileLength</name>
-      <type>Long</type>
-      <sqltable>Admin_Program_AbstractSQLTable</sqltable>
-      <sqlcolumn>FILELENGTH</sqlcolumn>
-    </attribute>
-    <store name="Admin_Program_JDBCStore" attributeFileLength="FileLength" attributeFileName="FileName"/>
-  </definition>
+    <definition>
+        <version-expression>(version==4) || (version==latest)</version-expression>
+        <name>Admin_Program_Abstract</name>
+        <parent>Admin_Abstract</parent>
+        <purpose GeneralInstance="true" abstract="true" />
+        <store name="Admin_Program_JDBCStore" />
+    </definition>
 
-  <definition>
-    <version-expression>(version==3)</version-expression>
-    <name>Admin_Program_Abstract</name>
-    <parent>Admin_Abstract</parent>
-    <purpose GeneralInstance="true" abstract="true"/>
-    <!-- attributes -->
-    <attribute>
-      <name>FileName</name>
-      <type>String</type>
-      <sqltable>Admin_Program_AbstractSQLTable</sqltable>
-      <sqlcolumn>FILENAME</sqlcolumn>
-    </attribute>
-    <attribute>
-      <name>FileLength</name>
-      <type>Long</type>
-      <sqltable>Admin_Program_AbstractSQLTable</sqltable>
-      <sqlcolumn>FILELENGTH</sqlcolumn>
-    </attribute>
-
-  </definition>
+    <definition>
+        <version-expression>(version==3)</version-expression>
+        <name>Admin_Program_Abstract</name>
+        <parent>Admin_Abstract</parent>
+        <purpose GeneralInstance="true" abstract="true" />
+    </definition>
 </datamodel-type>
