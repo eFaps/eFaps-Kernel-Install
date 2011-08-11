@@ -27,48 +27,22 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>84d9fe23-57ef-4013-9aff-c4a9aba46130</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>84d9fe23-57ef-4013-9aff-c4a9aba46130</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==4) || (version==latest)</version-expression>
-    <name>Admin_UI_File</name>
-    <parent>Admin_UI_Direct</parent>
-    <purpose GeneralInstance="true"/>
-    <!-- attributes -->
-    <attribute>
-      <name>FileName</name>
-      <type>String</type>
-      <sqltable>Admin_UI_FileSQLTable</sqltable>
-      <sqlcolumn>FILENAME</sqlcolumn>
-    </attribute>
-    <attribute>
-      <name>FileLength</name>
-      <type>Long</type>
-      <sqltable>Admin_UI_FileSQLTable</sqltable>
-      <sqlcolumn>FILELENGTH</sqlcolumn>
-    </attribute>
-    <store name="Admin_UI_JDBCStore" attributeFileLength="FileLength" attributeFileName="FileName"/>
-  </definition>
+    <definition>
+        <version-expression>(version==4) || (version==latest)</version-expression>
+        <name>Admin_UI_File</name>
+        <parent>Admin_UI_Direct</parent>
+        <purpose GeneralInstance="true" />
+        <store name="Admin_UI_JDBCStore" />
+    </definition>
 
-  <definition>
-    <version-expression>(version==3)</version-expression>
-    <name>Admin_UI_File</name>
-    <parent>Admin_UI_Direct</parent>
-    <purpose GeneralInstance="true"/>
-    <!-- attributes -->
-    <attribute>
-      <name>FileName</name>
-      <type>String</type>
-      <sqltable>Admin_UI_FileSQLTable</sqltable>
-      <sqlcolumn>FILENAME</sqlcolumn>
-    </attribute>
-    <attribute>
-      <name>FileLength</name>
-      <type>Long</type>
-      <sqltable>Admin_UI_FileSQLTable</sqltable>
-      <sqlcolumn>FILELENGTH</sqlcolumn>
-    </attribute>
-  </definition>
+    <definition>
+        <version-expression>(version==3)</version-expression>
+        <name>Admin_UI_File</name>
+        <parent>Admin_UI_Direct</parent>
+        <purpose GeneralInstance="true" />
+    </definition>
 </datamodel-type>
