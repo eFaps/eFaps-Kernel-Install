@@ -42,14 +42,13 @@
             <column name="TYPEID"   type="INTEGER" />
             <column name="NAME"     type="STRING_SHORT" length="128"    not-null="true" />
             <column name="PROGRAM"  type="INTEGER"                      not-null="true" />
-            <column name="CPLPRG"   type="BLOB" />
             <column name="CREATOR"  type="INTEGER"                      not-null="true" />
             <column name="CREATED"  type="DATETIME"                     not-null="true" />
             <column name="MODIFIER" type="INTEGER"                      not-null="true" />
             <column name="MODIFIED" type="DATETIME"                     not-null="true" />
             <!-- constraints -->
             <unique name="T_PRGCL_UK_NAME" columns="NAME" />
-            <foreign name="T_PRGCL_FK_PRG"  key="PROGRAM"   reference="T_PRGABSTRACT(ID)" />
+            <foreign name="T_PRGCL_FK_PRG"  key="PROGRAM"   reference="T_CMABSTRACT(ID)" />
             <foreign name="T_PRGCL_FK_CRTR" key="CREATOR"   reference="T_USERPERSON(ID)" />
             <foreign name="T_PRGCL_FK_MDFR" key="MODIFIER"  reference="T_USERPERSON(ID)" />
         </database>
