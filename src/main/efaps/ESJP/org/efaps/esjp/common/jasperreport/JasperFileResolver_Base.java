@@ -23,12 +23,15 @@ package org.efaps.esjp.common.jasperreport;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import net.sf.jasperreports.engine.util.FileResolver;
 
-import org.efaps.admin.datamodel.Type;
+import org.apache.commons.io.IOUtils;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIAdminProgram;
 import org.efaps.db.Checkout;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
@@ -77,19 +80,21 @@ public abstract class JasperFileResolver_Base
             String name = null;
             if (_jasperFileName.startsWith("JasperImage.")) {
                 name = _jasperFileName.replace("JasperImage.", "");
-                queryBldr = new QueryBuilder(Type.get("Admin_Program_JasperImage"));
+                queryBldr = new QueryBuilder(CIAdminProgram.JasperImage);
             } else {
                 name = _jasperFileName.replace("JasperReport.", "");
-                queryBldr = new QueryBuilder(Type.get("Admin_Program_JasperReportCompiled"));
+                queryBldr = new QueryBuilder(CIAdminProgram.JasperReportCompiled);
             }
             queryBldr.addWhereAttrEqValue("Name", name);
             final InstanceQuery query = queryBldr.getQuery();
             query.execute();
             if (query.next()) {
                 final Checkout checkout = new Checkout(query.getCurrentValue());
+                final InputStream input = checkout.execute();
                 file = new FileUtil().getFile(checkout.getFileName(), "jasper");
-                final FileOutputStream out = new FileOutputStream(file);
-                checkout.execute(out);
+                final OutputStream out = new FileOutputStream(file);
+                IOUtils.copy(input, out);
+                input.close();
                 out.close();
             }
         } catch (final EFapsException e) {

@@ -23,8 +23,10 @@ package org.efaps.esjp.common.file;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -54,9 +56,12 @@ public class FileCheckout
         File temp = null;
         try {
             final Checkout checkout = new Checkout(_parameter.getInstance());
+            final InputStream input = checkout.execute();
             temp = new FileUtil().getFile(checkout.getFileName());
             final OutputStream out = new FileOutputStream(temp);
-            checkout.execute(out);
+            IOUtils.copy(input, out);
+            input.close();
+            out.close();
         } catch (final IOException e) {
             throw new EFapsException(FileCheckout.class, "IOException", e);
         }
