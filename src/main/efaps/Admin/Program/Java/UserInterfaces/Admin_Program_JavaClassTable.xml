@@ -40,7 +40,7 @@
             <property name="Label">Admin_Program_JavaClass/Name.Label</property>
         </field>
         <field name="filelength">
-            <property name="Attribute">FileLength</property>
+            <property name="Select">file.length</property>
             <property name="Label">Admin_Program_JavaClass/FileLength.Label</property>
         </field>
         <field name="creator">
