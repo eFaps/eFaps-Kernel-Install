@@ -61,12 +61,12 @@
             <property name="ModeSearch">EDITABLE</property>
         </field>
         <field name="fileName">
-            <property name="Attribute">FileName</property>
-
+            <property name="Select">file.label</property>
+            <property name="Label">Admin_UI_File/FileName.Label</property>
         </field>
         <field name="fileLength">
-            <property name="Attribute">FileLength</property>
-
+            <property name="Select">file.length</property>
+            <property name="Label">Admin_UI_File/FileLength.Label</property>
         </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>
