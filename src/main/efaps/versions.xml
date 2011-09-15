@@ -158,6 +158,19 @@
                 DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_QuartzTriggerUser.xml"))
                           .updateInDB();
             }
+
+            // import JAASKEY for Role HistoryReader  (if not already exists...)
+            EFAPS_LOGGER.info("    Check if User for HistoryReader must be imported");
+            SearchQuery query6 = new SearchQuery();
+            query6.setQueryTypes("Admin_User_Person");
+            query6.addWhereExprEqValue("Name", "History_Reader");
+            query6.addSelect("OID");
+            query6.execute();
+            if (!query6.next()) {
+                DataImport.readFile(new URL(EFAPS_ROOTURL, "Common/User/IMPORT_History_Reader_JAASKey.xml"))
+                          .updateInDB();
+            }
+
         </script>
     </version>
 </install>

@@ -53,5 +53,18 @@
             <queryattribute name="Name">eFaps</queryattribute>
         </linkattribute>
     </object>
+    <object type="Admin_User_Person2Role">
+        <linkattribute name="UserFromLink" type="Admin_User_Person">
+            <queryattribute name="Name">Administrator</queryattribute>
+        </linkattribute>
+
+        <linkattribute name="UserToLink" type="Admin_User_Role">
+            <queryattribute name="Name">History_Reader</queryattribute>
+        </linkattribute>
+
+        <linkattribute name="UserJAASSystem" type="Admin_User_JAASSystem">
+            <queryattribute name="Name">eFaps</queryattribute>
+        </linkattribute>
+    </object>
 
 </import>

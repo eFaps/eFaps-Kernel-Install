@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2011 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          jmox
+ Author:          The eFaps Team
  Revision:        $Rev$
  Last Changed:    $Date$
  Last Changed By: $Author$
@@ -35,24 +35,19 @@
         <version-expression>(version==latest)</version-expression>
         <name>Common_History_AbstractTable</name>
         <!-- fields -->
-        <field name="eventtype">
-            <property name="Attribute">EventType</property>
+        <field name="type">
+            <property name="Attribute">Type</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Common_History_Abstract/EventType.Label</property>
-            <property name="ShowTypeIcon">true</property>
-        </field>
-        <field name="fortype">
-            <property name="Select">linkto[ForType].attribute[Name]</property>
-            <property name="Label">Common_History_Abstract/ForType.Label</property>
+            <property name="Label">Common_HistoryAbstract/Type.Label</property>
             <property name="ShowTypeIcon">true</property>
         </field>
         <field name="creator">
             <property name="Attribute">Creator</property>
-            <property name="Label">Common_History_Abstract/Creator.Label</property>
+            <property name="Label">Common_HistoryAbstract/Creator.Label</property>
         </field>
         <field name="created">
             <property name="Attribute">Created</property>
-            <property name="Label">Common_History_Abstract/Created.Label</property>
+            <property name="Label">Common_HistoryAbstract/Created.Label</property>
         </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
