@@ -167,7 +167,7 @@
             query6.addSelect("OID");
             query6.execute();
             if (!query6.next()) {
-                DataImport.readFile(new URL(EFAPS_ROOTURL, "Common/User/IMPORT_History_Reader_JAASKey.xml"))
+                DataImport.readFile(new URL(EFAPS_ROOTURL, "Common/History/User/IMPORT_History_Reader_JAASKey.xml"))
                           .updateInDB();
             }
 
