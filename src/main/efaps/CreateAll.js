@@ -658,6 +658,9 @@ function _eFapsInitRunLevel()  {
           "T_RUNLEVELDEF",
           "RUNLEVELID,PRIORITY,CLASS,METHOD",
           "" + id + ",8, 'org.efaps.db.store.Store', 'initialize'");
-
+  _insert(stmt, null, null,
+          "T_RUNLEVELDEF",
+          "RUNLEVELID,PRIORITY,CLASS,METHOD",
+          "" + id + ",9, 'org.efaps.admin.common.Jms', 'initialize'");
   conRsrc.commit();
 }
