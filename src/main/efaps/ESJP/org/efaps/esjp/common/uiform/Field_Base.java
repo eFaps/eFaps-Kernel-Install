@@ -677,7 +677,7 @@ public abstract class Field_Base
     /**
      * A position in a dropdown.
      */
-    public class DropDownPosition
+    public static class DropDownPosition
     {
         /**
          * Value of the dropdown position.

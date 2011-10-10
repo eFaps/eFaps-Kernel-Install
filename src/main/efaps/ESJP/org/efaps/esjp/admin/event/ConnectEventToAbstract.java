@@ -20,17 +20,20 @@
 
 package org.efaps.esjp.admin.event;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
-import java.util.Map.Entry;
 
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -41,6 +44,8 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SearchQuery;
+import org.efaps.esjp.common.uiform.Field;
+import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.util.EFapsException;
 
 /**
@@ -154,20 +159,9 @@ public class ConnectEventToAbstract
         if (mode.equals(TargetMode.EDIT)) {
             final Instance callInstance = _parameter.getCallInstance();
             final PrintQuery print = new PrintQuery(callInstance);
-            //Admin_Common_QuartzTriggerAbstract
-            final boolean check = callInstance.getType().getParentType()
-                                        .getUUID().toString().equals("b1267287-1532-4a33-9197-144f06f4944c");
-            if (!check) {
-                print.addAttribute("JavaProg");
-            } else {
-                print.addAttribute("ESJPLink");
-            }
+            print.addAttribute(fieldvalue.getAttribute().getName());
             if (print.execute()) {
-                if (!check) {
-                    selectedId = print.<Long>getAttribute("JavaProg");
-                } else {
-                    selectedId = print.<Long>getAttribute("ESJPLink");
-                }
+                selectedId = print.<Long>getAttribute(fieldvalue.getAttribute().getName());
             }
         }
 
@@ -176,25 +170,29 @@ public class ConnectEventToAbstract
         final MultiPrintQuery print = queryBldr.getPrint();
         print.addAttribute("Name","ID");
         print.execute();
-        final Map<String, Long> name2id = new TreeMap<String, Long>();
+        new TreeMap<String, Long>();
+        final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
         while (print.next()) {
-            name2id.put( print.<String>getAttribute("Name"), print.<Long>getAttribute("ID"));
-        }
-
-        // build drop down list
-        final String fieldName = fieldvalue.getField().getName();
-        final StringBuilder ret = new StringBuilder();
-        ret.append("<select name=\"").append(fieldName).append("\" size=\"1\">");
-        for (final Entry<String, Long> entry : name2id.entrySet()) {
-            final long id = entry.getValue();
-            final String name =  entry.getKey();
-            ret.append("<option value=\"").append(id).append("\"");
-            if (id == selectedId) {
-                ret.append(" selected=\"selected\"");
+            final Long id = print.<Long>getAttribute("ID");
+            final String name = print.<String>getAttribute("Name");
+            final DropDownPosition pos = new DropDownPosition(id, name, name);
+            positions.add(pos);
+            if (selectedId == id) {
+                pos.setSelected(true);
             }
-            ret.append(">").append(name).append("</option>");
         }
-        ret.append("</select>");
+        Collections.sort(positions, new Comparator<DropDownPosition>() {
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public int compare(final DropDownPosition _o1,
+                               final DropDownPosition _o2)
+            {
+                return _o1.getOrderValue().compareTo(_o2.getOrderValue());
+            }
+        });
+        final StringBuilder ret = new StringBuilder();
+        ret.append(new Field().getDropDownField(_parameter, positions));
 
         // and return the string
         final Return retVal = new Return();
