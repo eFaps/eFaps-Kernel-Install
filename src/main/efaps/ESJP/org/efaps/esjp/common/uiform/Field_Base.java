@@ -673,6 +673,50 @@ public abstract class Field_Base
         return ret;
     }
 
+    /**
+    *
+    *
+    * @param _parameter Parameter as passed from the eFaps API
+    * @return empty Return
+    * @throws EFapsException on error
+    */
+    public Return getField4Mode(final Parameter _parameter)
+        throws EFapsException
+    {
+        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final String reuqestKey = fieldValue.getField().getName() + ".getField4Mode";
+        final Return ret = new Return();
+        if (Context.getThreadContext().containsRequestAttribute(reuqestKey)) {
+            ret.put(ReturnValues.VALUES, fieldValue.getValue());
+        } else {
+            Context.getThreadContext().setRequestAttribute(reuqestKey, true);
+
+            final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+            final String target = (String) props.get("TargetMode");
+            final String displayStr = (String) props.get("Display");
+
+            final TargetMode mode = TargetMode.valueOf(target);
+            final org.efaps.admin.ui.field.Field.Display display = org.efaps.admin.ui.field.Field.Display.valueOf(displayStr);
+
+            final String html;
+            switch (display) {
+                case EDITABLE:
+                    html = fieldValue.getEditHtml(mode);
+                    break;
+                case READONLY:
+                    html = fieldValue.getReadOnlyHtml(mode);
+                    break;
+                case HIDDEN:
+                    html = fieldValue.getHiddenHtml(mode);
+                    break;
+                default:
+                    html = "";
+                    break;
+            }
+            ret.put(ReturnValues.SNIPLETT, html);
+        }
+        return ret;
+    }
 
     /**
      * A position in a dropdown.
