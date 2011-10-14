@@ -661,6 +661,6 @@ function _eFapsInitRunLevel()  {
   _insert(stmt, null, null,
           "T_RUNLEVELDEF",
           "RUNLEVELID,PRIORITY,CLASS,METHOD",
-          "" + id + ",9, 'org.efaps.admin.common.Jms', 'initialize'");
+          "" + id + ",9, 'org.efaps.jms.JmsHandler', 'initialize'");
   conRsrc.commit();
 }
