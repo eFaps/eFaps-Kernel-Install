@@ -37,7 +37,7 @@
             <column name="NAME"     not-null="true" type="STRING_SHORT" length="256"/>
             <column name="CFJNDI"   not-null="true" type="STRING_SHORT" length="256"/>
             <column name="DESTJNID" not-null="true" type="STRING_SHORT" length="256"/>
-            <column name="ESJPID"   not-null="true" type="INTEGER"/>
+            <column name="ESJPID"   type="INTEGER"/>
             <column name="CREATOR"  not-null="true" type="INTEGER"/>
             <column name="CREATED"  not-null="true" type="DATETIME"/>
             <column name="MODIFIER" not-null="true" type="INTEGER"/>
