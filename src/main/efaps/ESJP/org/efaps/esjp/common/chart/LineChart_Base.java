@@ -34,7 +34,6 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.labels.CustomXYToolTipGenerator;
 import org.jfree.chart.labels.XYToolTipGenerator;
-import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.data.xy.XYDataset;
@@ -98,9 +97,9 @@ public abstract class LineChart_Base
                         getXAxisLabel(_parameter), // x axis label
                         getYAxisLabel(_parameter), // y axis label
                         _dataset, // data
-                        PlotOrientation.VERTICAL,
-                        true, // include legend
-                        true, // tooltips
+                        getOrientation(_parameter),
+                        isIncludeLegend(_parameter), // include legend
+                        isIncludeTooltip(_parameter), // inlcude tooltips
                         false // urls
         );
         return chart;

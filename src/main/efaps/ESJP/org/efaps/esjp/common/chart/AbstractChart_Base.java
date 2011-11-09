@@ -40,6 +40,7 @@ import org.jfree.chart.ChartRenderingInfo;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.entity.StandardEntityCollection;
+import org.jfree.chart.plot.PlotOrientation;
 
 /**
  * TODO comment!
@@ -81,8 +82,9 @@ public abstract class AbstractChart_Base
     }
 
     /**
-     * Get the Height for the chart. Default value is 500.
-     * Can be set by adding a property "Height" to the event definition.
+     * Get the Height for the chart. Default value is 500. Can be set by adding a property "Height" to the event
+     * definition.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @return the Height for the chart
      * @throws EFapsException on error
@@ -99,11 +101,12 @@ public abstract class AbstractChart_Base
     }
 
     /**
-     * Get the Width for the chart. Default value is 500.
-     * Can be set by adding a property "Width" to the event definition.
+     * Get the Width for the chart. Default value is 500. Can be set by adding a property "Width" to the event
+     * definition.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @return the Width for the chart
-     *  @throws EFapsException on error
+     * @throws EFapsException on error
      */
     protected Integer getWidth(final Parameter _parameter)
         throws EFapsException
@@ -143,18 +146,16 @@ public abstract class AbstractChart_Base
     }
 
     /**
-     * @param  _parameter Parameter as passed by the eFaps API
+     * @param _parameter Parameter as passed by the eFaps API
      * @return JFreeCHart
      * @throws EFapsException on error
      */
     protected abstract JFreeChart createChart(final Parameter _parameter)
         throws EFapsException;
 
-
     /**
-     * Get the Title for the chart. Default value is the Label from
-     * the related Field.
-     * Can be set by adding a property "Title" to the event definition.
+     * Get the Title for the chart. Default value is the Label from the related Field. Can be set by adding a property
+     * "Title" to the event definition.
      *
      * @param _parameter Parameter as passed by the eFaps API
      * @return the Width for the chart
@@ -172,9 +173,61 @@ public abstract class AbstractChart_Base
     }
 
     /**
-     * Get a property from the event definition.
+     * Include the Tooltip. Default true. Can be set by adding a property "Tooltip" to the event definition.
+     *
      * @param _parameter Parameter as passed by the eFaps API
-     * @param _key      Key for the Property
+     * @return inlcude tooltip
+     * @throws EFapsException on error
+     */
+    protected boolean isIncludeTooltip(final Parameter _parameter)
+        throws EFapsException
+    {
+        boolean ret = true;
+        final String tooltipStr = getProperty(_parameter, "Tooltip");
+        if (tooltipStr != null && !tooltipStr.isEmpty()) {
+            ret = "TRUE".equalsIgnoreCase(tooltipStr);
+        }
+        return ret;
+    }
+
+    /**
+     * Include the Legend. Default true. Can be set by adding a property "Legend" to the event definition.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return include Legend
+     * @throws EFapsException on error
+     */
+    protected boolean isIncludeLegend(final Parameter _parameter)
+        throws EFapsException
+    {
+        boolean ret = true;
+        final String legendStr = getProperty(_parameter, "Legend");
+        if (legendStr != null && !legendStr.isEmpty()) {
+            ret = "TRUE".equalsIgnoreCase(legendStr);
+        }
+        return ret;
+    }
+
+    protected PlotOrientation getOrientation(final Parameter _parameter)
+        throws EFapsException
+    {
+        PlotOrientation ret = PlotOrientation.VERTICAL;
+        final String orientStr = getProperty(_parameter, "Orientation");
+        if (orientStr != null && !orientStr.isEmpty()) {
+            if ("VERTICAL".equalsIgnoreCase(orientStr)) {
+                ret = PlotOrientation.VERTICAL;
+            } else {
+                ret = PlotOrientation.HORIZONTAL;
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * Get a property from the event definition.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _key Key for the Property
      * @return String value. Empty String if not found.
      * @throws EFapsException on error
      */

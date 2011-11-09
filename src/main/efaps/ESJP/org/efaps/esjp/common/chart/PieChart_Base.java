@@ -70,7 +70,7 @@ public abstract class PieChart_Base
         _chart.setBackgroundPaint(Color.white);
 
         final PiePlot plot = (PiePlot) _chart.getPlot();
-        plot.setLabelFont(new Font("SansSerif", Font.PLAIN, 12));
+        plot.setLabelFont(new Font("Arial", Font.PLAIN, 12));
         plot.setNoDataMessage("No data available");
         plot.setCircular(false);
         plot.setLabelGap(0.02);
@@ -92,8 +92,8 @@ public abstract class PieChart_Base
         final JFreeChart chart = ChartFactory.createPieChart(
                         getTitel(_parameter), // chart title
                         dataset, // data
-                        true, // include legend
-                        true, // inlcude tooltips
+                        isIncludeLegend(_parameter), // include legend
+                        isIncludeTooltip(_parameter), // inlcude tooltips
                         false
                         );
         return chart;

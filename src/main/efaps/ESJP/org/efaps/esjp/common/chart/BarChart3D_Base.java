@@ -18,10 +18,8 @@
  * Last Changed By: $Author$
  */
 
-package org.efaps.esjp.common.chart;
 
-import java.awt.Color;
-import java.awt.Font;
+package org.efaps.esjp.common.chart;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -29,9 +27,9 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.EFapsException;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.labels.StandardPieToolTipGenerator;
-import org.jfree.chart.plot.PiePlot3D;
-import org.jfree.data.general.PieDataset;
+import org.jfree.chart.labels.StandardCategoryToolTipGenerator;
+import org.jfree.data.category.CategoryDataset;
+
 
 /**
  * TODO comment!
@@ -39,12 +37,11 @@ import org.jfree.data.general.PieDataset;
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("49f47e6b-6e3a-46f8-81fb-27494ed5f2d0")
+@EFapsUUID("3a5edb8e-2aba-41e6-a1c2-951963977e35")
 @EFapsRevision("$Rev$")
-public abstract class PieChart3D_Base
-    extends PieChart_Base
+public abstract class BarChart3D_Base
+    extends BarChart
 {
-
     /**
      * @param _parameter Parameter as passed by the eFaps API
      * @param _dataset dataset
@@ -54,39 +51,20 @@ public abstract class PieChart3D_Base
      */
     @Override
     protected JFreeChart createChart(final Parameter _parameter,
-                                     final PieDataset dataset,
-                                     final StandardPieToolTipGenerator _ttg)
+                                     final CategoryDataset dataset,
+                                     final StandardCategoryToolTipGenerator _ttg)
         throws EFapsException
     {
-
-        final JFreeChart chart = ChartFactory.createPieChart3D(
+        final JFreeChart chart = ChartFactory.createBarChart3D(
                         getTitel(_parameter), // chart title
+                        getDomainAxisLabel(_parameter), // domain axis label
+                        getRangeAxisLabel(_parameter), // range axis label
                         dataset, // data
+                        getOrientation(_parameter), // orientation
                         isIncludeLegend(_parameter), // include legend
-                        isIncludeTooltip(_parameter), // inlcude tooltips
-                        false
+                        isIncludeTooltip(_parameter), // tooltips?
+                        false // URLs?
                         );
         return chart;
     }
-
-    /**
-     * @param _parameter
-     * @param _chart
-     * @param _ttg
-     */
-    @Override
-    protected void configureChart(final Parameter _parameter,
-                                  final JFreeChart _chart,
-                                  final StandardPieToolTipGenerator _ttg)
-    {
-        _chart.setBackgroundPaint(Color.white);
-
-        final PiePlot3D plot = (PiePlot3D) _chart.getPlot();
-        plot.setForegroundAlpha(0.6f);
-        plot.setLabelFont(new Font("SansSerif", Font.PLAIN, 12));
-        plot.setNoDataMessage("No data available");
-        plot.setCircular(false);
-        plot.setLabelGap(0.02);
-    }
-
 }
