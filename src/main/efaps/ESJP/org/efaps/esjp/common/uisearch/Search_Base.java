@@ -165,8 +165,10 @@ public abstract class Search_Base
                         queryBldr.addWhereAttrEqValue(field.getAttribute(), value);
                     }
                 } else {
-                    queryBldr.addWhereAttrMatchValue(field.getAttribute(), value)
-                                                        .setIgnoreCase(ignoreFields.contains(field.getName()));
+                    if (field.getAttribute() != null) {
+                        queryBldr.addWhereAttrMatchValue(field.getAttribute(), value)
+                                                            .setIgnoreCase(ignoreFields.contains(field.getName()));
+                    }
                 }
             }
         }
