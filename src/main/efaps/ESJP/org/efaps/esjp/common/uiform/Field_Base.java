@@ -46,9 +46,13 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
+import org.efaps.admin.ui.field.Field.Display;
+import org.efaps.ci.CIAdminCommon;
+import org.efaps.ci.CIAttribute;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -715,6 +719,29 @@ public abstract class Field_Base
             }
             ret.put(ReturnValues.SNIPLETT, html);
         }
+        return ret;
+    }
+
+    public Return getHiddenInputField(final Parameter _parameter)
+        throws EFapsException
+    {
+        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+
+        final Return ret = new Return();
+        final StringBuilder html = new StringBuilder();
+        final Object value = fieldValue.getValue() != null ? fieldValue.getValue() : "";
+
+        html.append("<span ").append(UIInterface.EFAPSTMPTAG).append(" name=\"")
+            .append(fieldValue.getField().getName()).append("\">").append(value).append("</span>");
+        if (fieldValue.getTargetMode().equals(TargetMode.EDIT)) {
+            html.append("<input type=\"hidden\" name=\"").append(fieldValue.getField().getName()).append("\"")
+                .append(" value=\"").append(value).append("\"/>");
+        }
+
+        if (!fieldValue.getDisplay().equals(Display.NONE)) {
+            ret.put(ReturnValues.SNIPLETT, html.toString());
+        }
+
         return ret;
     }
 
