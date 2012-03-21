@@ -42,7 +42,7 @@
       <!-- columns -->
       <column name="PROPID"  type="INTEGER"      not-null="true" />
       <column name="LANGID"  type="INTEGER"      not-null="true" />
-      <column name="VALUE"   type="STRING_SHORT" not-null="true" length="254"/>
+      <column name="VALUE"   type="STRING_SHORT"                 length="254"/>
       <!-- foreign keys -->
       <foreign name="T_ADPROPLOC_FK_PROPID"	key="PROPID"  	reference="T_ADPROP(ID)"/>
       <foreign name="T_ADPROPLOC_FK_LANGID"	key="LANGID"  	reference="T_ADLANG(ID)"/>
@@ -57,7 +57,7 @@
       <!-- columns -->
       <column name="PROPID"  type="INTEGER"      not-null="true" />
       <column name="LANGID"  type="INTEGER"      not-null="true" />
-      <column name="VALUE"   type="STRING_SHORT" not-null="true" length="254"/>
+      <column name="VALUE"   type="STRING_SHORT"                 length="254"/>
     </database>
   </definition>
 
