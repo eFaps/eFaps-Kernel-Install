@@ -35,6 +35,7 @@
     <version-expression>(version==3) || (version==latest)</version-expression>
     <name>Admin_DataModel_AttributeSetAttribute</name>
     <parent>Admin_DataModel_Attribute</parent>
+    <purpose GeneralInstance="false"/>
     <!-- attributes -->
     <attribute>
       <name>ParentAttributeSet</name>
