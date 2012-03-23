@@ -27,14 +27,14 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>27eae97f-c6f4-4c4e-9947-c1c9bc4ea297</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>27eae97f-c6f4-4c4e-9947-c1c9bc4ea297</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==3) || (version==latest)</version-expression>
-    <name>Admin_UI_LinkTargetTable</name>
-    <parent>Admin_UI_Link</parent>
-  </definition>
-
+    <definition>
+        <version-expression>(version==3) || (version==latest)</version-expression>
+        <name>Admin_UI_LinkTargetTable</name>
+        <parent>Admin_UI_Link</parent>
+        <purpose GeneralInstance="false" />
+    </definition>
 </datamodel-type>

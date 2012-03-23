@@ -27,25 +27,25 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>6e88a7b5-d539-415f-b5bd-f73ab8d5535b</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>6e88a7b5-d539-415f-b5bd-f73ab8d5535b</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_UI_FieldFormatEvent</name>
-    <parent>Admin_Event_Definition</parent>
-    <trigger program="org.efaps.esjp.admin.event.EventDeleteTrigger" 
-             name="Admin_UI_FieldValueEvent.DELETE_PRE" 
-             event="DELETE_PRE"/>
-    <!-- event for type? -->
-    <event-for type="Admin_UI_Field"/>
-  </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_UI_FieldFormatEvent</name>
+        <parent>Admin_Event_Definition</parent>
+        <purpose GeneralInstance="false" />
+        <trigger program="org.efaps.esjp.admin.event.EventDeleteTrigger"
+            name="Admin_UI_FieldValueEvent.DELETE_PRE" event="DELETE_PRE" />
+        <!-- event for type? -->
+        <event-for type="Admin_UI_Field" />
+    </definition>
 
-  <definition>
-    <version-expression>(version==3)</version-expression>
-    <name>Admin_UI_FieldFormatEvent</name>
-    <parent>Admin_Event_Definition</parent>
-  </definition>
-
+    <definition>
+        <version-expression>(version==3)</version-expression>
+        <name>Admin_UI_FieldFormatEvent</name>
+        <parent>Admin_Event_Definition</parent>
+        <purpose GeneralInstance="false" />
+    </definition>
 </datamodel-type>

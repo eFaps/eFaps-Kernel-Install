@@ -27,23 +27,24 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>f4ad729b-f96a-4057-865f-ad910114e695</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>f4ad729b-f96a-4057-865f-ad910114e695</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_UI_FieldClassification</name>
-    <parent>Admin_UI_Field</parent>
-    <trigger program="org.efaps.esjp.admin.ui.FieldDeleteTrigger"
-             name="Admin_UI_FieldSet.DELETE_PRE" 
-             event="DELETE_PRE"/>
-  </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_UI_FieldClassification</name>
+        <parent>Admin_UI_Field</parent>
+        <purpose GeneralInstance="false" />
+        <trigger program="org.efaps.esjp.admin.ui.FieldDeleteTrigger"
+            name="Admin_UI_FieldSet.DELETE_PRE" event="DELETE_PRE" />
+    </definition>
 
-  <definition>
-    <version-expression>(version==3)</version-expression>
-    <name>Admin_UI_FieldClassification</name>
-    <parent>Admin_UI_Field</parent>
-  </definition>
+    <definition>
+        <version-expression>(version==3)</version-expression>
+        <name>Admin_UI_FieldClassification</name>
+        <parent>Admin_UI_Field</parent>
+        <purpose GeneralInstance="false" />
+    </definition>
 
 </datamodel-type>

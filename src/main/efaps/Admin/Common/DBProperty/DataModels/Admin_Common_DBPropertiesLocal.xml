@@ -79,6 +79,7 @@
     <definition>
         <version-expression>(version==3)</version-expression>
         <name>Admin_Common_DBPropertiesLocal</name>
+        <purpose GeneralInstance="false"/>
         <!-- attributes -->
         <attribute>
             <name>OID</name>

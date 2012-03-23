@@ -27,39 +27,40 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>1b3e1892-74bb-4df8-8e56-1de9c47cb3b8</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>1b3e1892-74bb-4df8-8e56-1de9c47cb3b8</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
- <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_UI_Field</name>
-    <parent>Admin_Abstract</parent>
-    <!-- attributes -->
-    <attribute>
-      <name>Collection</name>
-      <type>Link</type>
-      <typelink>Admin_UI_Collection</typelink>
-      <sqltable>Admin_UI_FieldSQLTable</sqltable>
-      <sqlcolumn>COLLECTION</sqlcolumn>
-    </attribute>
-    <trigger program="org.efaps.esjp.admin.ui.FieldDeleteTrigger"
-             name="Admin_UI_Field.DELETE_PRE" 
-             event="DELETE_PRE"/>
-  </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_UI_Field</name>
+        <parent>Admin_Abstract</parent>
+        <purpose GeneralInstance="false" />
+        <!-- attributes -->
+        <attribute>
+            <name>Collection</name>
+            <type>Link</type>
+            <typelink>Admin_UI_Collection</typelink>
+            <sqltable>Admin_UI_FieldSQLTable</sqltable>
+            <sqlcolumn>COLLECTION</sqlcolumn>
+        </attribute>
+        <trigger program="org.efaps.esjp.admin.ui.FieldDeleteTrigger"
+            name="Admin_UI_Field.DELETE_PRE" event="DELETE_PRE" />
+    </definition>
 
-  <definition>
-    <version-expression>(version==3)</version-expression>
-    <name>Admin_UI_Field</name>
-    <parent>Admin_Abstract</parent>
-    <!-- attributes -->
-    <attribute>
-      <name>Collection</name>
-      <type>Link</type>
-      <typelink>Admin_UI_Collection</typelink>
-      <sqltable>Admin_UI_FieldSQLTable</sqltable>
-      <sqlcolumn>COLLECTION</sqlcolumn>
-    </attribute>
-  </definition>
+    <definition>
+        <version-expression>(version==3)</version-expression>
+        <name>Admin_UI_Field</name>
+        <parent>Admin_Abstract</parent>
+        <purpose GeneralInstance="false" />
+        <!-- attributes -->
+        <attribute>
+            <name>Collection</name>
+            <type>Link</type>
+            <typelink>Admin_UI_Collection</typelink>
+            <sqltable>Admin_UI_FieldSQLTable</sqltable>
+            <sqlcolumn>COLLECTION</sqlcolumn>
+        </attribute>
+    </definition>
 
 </datamodel-type>

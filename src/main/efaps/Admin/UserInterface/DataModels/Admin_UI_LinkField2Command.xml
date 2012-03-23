@@ -35,6 +35,7 @@
         <version-expression>(version==3) || (version==latest)</version-expression>
         <name>Admin_UI_LinkField2Command</name>
         <parent>Admin_UI_Link</parent>
+        <purpose GeneralInstance="false"/>
         <!-- attributes -->
         <attribute>
             <name>FromLink</name>

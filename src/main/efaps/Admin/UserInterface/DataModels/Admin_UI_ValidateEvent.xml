@@ -27,25 +27,25 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>939e78ba-9254-4790-848a-ca6402f7ee58</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>939e78ba-9254-4790-848a-ca6402f7ee58</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_UI_ValidateEvent</name>
-    <parent>Admin_Event_Definition</parent>
-    <trigger program="org.efaps.esjp.admin.event.EventDeleteTrigger" 
-             name="Admin_UI_ValidateEvent.DELETE_PRE" 
-             event="DELETE_PRE"/>
-     <!-- event for type? -->
-    <event-for type="Admin_UI_Command"/>
-  </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_UI_ValidateEvent</name>
+        <parent>Admin_Event_Definition</parent>
+        <purpose GeneralInstance="false" />
+        <trigger program="org.efaps.esjp.admin.event.EventDeleteTrigger"
+            name="Admin_UI_ValidateEvent.DELETE_PRE" event="DELETE_PRE" />
+        <!-- event for type? -->
+        <event-for type="Admin_UI_Command" />
+    </definition>
 
-  <definition>
-    <version-expression>(version==3)</version-expression>
-    <name>Admin_UI_ValidateEvent</name>
-    <parent>Admin_Event_Definition</parent>
-  </definition>
-
+    <definition>
+        <version-expression>(version==3)</version-expression>
+        <name>Admin_UI_ValidateEvent</name>
+        <parent>Admin_Event_Definition</parent>
+        <purpose GeneralInstance="false" />
+    </definition>
 </datamodel-type>
