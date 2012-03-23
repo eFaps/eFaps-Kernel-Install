@@ -46,5 +46,17 @@
             <sqltable>GeneralInstanceSQLTable</sqltable>
             <sqlcolumn>INSTID</sqlcolumn>
         </attribute>
+        <attribute>
+            <name>ExchangeSystemID</name>
+            <type>Long</type>
+            <sqltable>GeneralInstanceSQLTable</sqltable>
+            <sqlcolumn>EXSYSID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ExchangeID</name>
+            <type>Long</type>
+            <sqltable>GeneralInstanceSQLTable</sqltable>
+            <sqlcolumn>EXID</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>

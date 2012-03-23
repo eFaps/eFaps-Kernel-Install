@@ -33,6 +33,8 @@
             <!-- columns -->
             <column name="INSTTYPEID"   type="INTEGER" not-null="true" />
             <column name="INSTID"       type="INTEGER" not-null="true" />
+            <column name="EXID"         type="INTEGER" not-null="true" />
+            <column name="EXSYSID"      type="INTEGER" not-null="true" />
             <unique name="T_CMGENINST_UK_INSTTYPEID_INSTID" columns="INSTTYPEID,INSTID"/>
         </database>
     </definition>
