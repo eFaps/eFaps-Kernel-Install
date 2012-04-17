@@ -294,6 +294,9 @@ function _eFapsCreateUserTablesStep2()  {
     text = "Insert Type for 'Admin_User_Company' (only to store ID for type)";
     var typeIdCompany       = _eFapsCreateInsertType(stmt, text, "6a5388e9-7f7f-4bc0-b7a0-3245302faad5", "Admin_User_Company", null, 8);
 
+    text = "Insert Type for 'Admin_User_Consortium' (only to store ID for type)";
+    var typeIdConsortium    = _eFapsCreateInsertType(stmt, text, "e517a0b6-8452-4eb6-b106-22bcad24add4", "Admin_User_Consortium", null, 8);
+
     text = "Insert Type for 'Admin_User_Person2Role' (only to store ID for type)";
     var typeIdPerson2Role   = _eFapsCreateInsertType(stmt, text, "37deb6ae-3e1c-4642-8823-715120386fc3", "Admin_User_Person2Role", null, 8);
 
@@ -302,6 +305,9 @@ function _eFapsCreateUserTablesStep2()  {
 
     text = "Insert Type for 'Admin_User_Person2Company' (only to store ID for type)";
     var typeIdPerson2Company  = _eFapsCreateInsertType(stmt, text, "a79898fb-966a-44ee-a338-d034e2aad83a", "Admin_User_Person2Company", null, 8);
+
+    text = "Insert Type for 'Admin_User_Consortium2Company' (only to store ID for type)";
+    var typeIdConsortium2Company  = _eFapsCreateInsertType(stmt, text, "36634d51-d14d-4deb-a3bc-0c39b8f0a79d", "Admin_User_Consortium2Company", null, 8);
 
     _exec(stmt, "Table 'T_USERABSTRACT'", "update type id for persons",
       "update T_USERABSTRACT set TYPEID=" + typeIdPerson + " where TYPEID=-10000"
@@ -377,6 +383,17 @@ function _eFapsCreateUserTablesStep2()  {
                 "where T_USERABSTRACT.TYPEID="+ typeIdCompany
           );
 
+    _exec(stmt, "View 'V_USERCONSORTIUM'", "view representing all consortiums",
+            "create view V_USERCONSORTIUM as "+
+              "select "+
+                  "T_USERABSTRACT.ID,"+
+                  "T_USERABSTRACT.NAME, "+
+                  "T_USERABSTRACT.UUID, " +
+                  "T_USERABSTRACT.STATUS "+
+                "from T_USERABSTRACT "+
+                "where T_USERABSTRACT.TYPEID="+ typeIdConsortium
+          );
+
     _exec(stmt, "View 'V_USERGROUPJASSKEY'", "view representing all groups related to the JAAS keys",
       "create view V_USERGROUPJASSKEY as "
         + "select "
@@ -421,6 +438,17 @@ function _eFapsCreateUserTablesStep2()  {
         +   "from T_USERABSTRACT2ABSTRACT "
         +   "where T_USERABSTRACT2ABSTRACT.TYPEID=" + typeIdPerson2Group
     );
+
+    _exec(stmt, "View 'V_CONSORTIUM2COMPANY'", "view representing connection between Consortium and company depending on JAAS systems",
+            "create view V_CONSORTIUM2COMPANY as "
+                + "select "
+                +       "T_USERABSTRACT2ABSTRACT.ID,"
+                +       "T_USERABSTRACT2ABSTRACT.USERABSTRACTFROM,"
+                +       "T_USERABSTRACT2ABSTRACT.USERABSTRACTTO,"
+                +       "T_USERABSTRACT2ABSTRACT.USERJAASSYSTEM as JAASSYSID "
+                +   "from T_USERABSTRACT2ABSTRACT "
+                +   "where T_USERABSTRACT2ABSTRACT.TYPEID=" + typeIdConsortium2Company
+            );
 
     conRsrc.commit();
 }
@@ -492,6 +520,7 @@ function _eFapsCreateDataModelTablesStep1()  {
   _eFapsCreateAttrType(stmt, null, '76651147-1108-492e-815f-44bb68856962', 'FormatedString', 'org.efaps.admin.datamodel.attributetype.FormatedStringType', 'org.efaps.admin.datamodel.ui.FormatedStringUI', null, null);
   _eFapsCreateAttrType(stmt, null, 'ecbf543d-9c56-4ed3-b81c-d5b4918404ae', 'Rate',           'org.efaps.admin.datamodel.attributetype.RateType',           'org.efaps.admin.datamodel.ui.RateUI',           null, null);
   _eFapsCreateAttrType(stmt, null, '5a11337b-ec0b-4707-88d0-2f48217573cb', 'StringWithUoM',  'org.efaps.admin.datamodel.attributetype.StringWithUoMType',  'org.efaps.admin.datamodel.ui.StringWithUoMUI',  null, null);
+  _eFapsCreateAttrType(stmt, null, '15e59dde-b79f-43d6-8b95-226c850af401', 'ConsortiumLink', 'org.efaps.admin.datamodel.attributetype.ConsortiumLinkType', 'org.efaps.admin.datamodel.ui.UserUI',           null, 1   );
 
 
   _eFapsCreateInsertAttr(stmt, ATTRTYPESQLTABLEID, ATTRTYPETYPEID, 'Classname',     'CLASSNAME',    'String', null);
@@ -653,14 +682,18 @@ function _eFapsInitRunLevel()  {
   _insert(stmt, null, null,
           "T_RUNLEVELDEF",
           "RUNLEVELID,PRIORITY,CLASS,METHOD",
-          "" + id + ",7, 'org.efaps.admin.datamodel.AbstractDataModelObject', 'initialize'");
+          "" + id + ",7, 'org.efaps.admin.user.Consortium', 'initialize'");
   _insert(stmt, null, null,
           "T_RUNLEVELDEF",
           "RUNLEVELID,PRIORITY,CLASS,METHOD",
-          "" + id + ",8, 'org.efaps.db.store.Store', 'initialize'");
+          "" + id + ",8, 'org.efaps.admin.datamodel.AbstractDataModelObject', 'initialize'");
   _insert(stmt, null, null,
           "T_RUNLEVELDEF",
           "RUNLEVELID,PRIORITY,CLASS,METHOD",
-          "" + id + ",9, 'org.efaps.jms.JmsHandler', 'initialize'");
+          "" + id + ",9, 'org.efaps.db.store.Store', 'initialize'");
+  _insert(stmt, null, null,
+          "T_RUNLEVELDEF",
+          "RUNLEVELID,PRIORITY,CLASS,METHOD",
+          "" + id + ",10, 'org.efaps.jms.JmsHandler', 'initialize'");
   conRsrc.commit();
 }
