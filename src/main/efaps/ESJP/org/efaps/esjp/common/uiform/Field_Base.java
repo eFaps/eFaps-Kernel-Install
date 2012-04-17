@@ -301,6 +301,8 @@ public abstract class Field_Base
                 } else {
                     html.append(clazz.getLabel());
                 }
+            } else if (value instanceof String) {
+                html.append(value);
             }
         }
 
