@@ -53,7 +53,7 @@
             <property name="ModeSearch">READONLY</property>
         </field>
         <field name="email">
-            <property name="Attribute">Email</property>
+            <property name="Select">linkfrom[Admin_User_Person:EmailSet#EmailSet].attribute[Email]</property>
             <property name="Label">Admin_User_Person/Email.Label</property>
         </field>
         <field name="status">
