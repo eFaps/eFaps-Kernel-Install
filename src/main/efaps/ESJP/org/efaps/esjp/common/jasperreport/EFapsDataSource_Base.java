@@ -36,6 +36,7 @@ import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.attributetype.FormatedStringType;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
@@ -143,6 +144,8 @@ public abstract class EFapsDataSource_Base
      */
     private String linkFroms;
 
+    private boolean usedOids;
+
     /**
      * {@inheritDoc}
      */
@@ -169,6 +172,7 @@ public abstract class EFapsDataSource_Base
                     this.useInstance = "true".equalsIgnoreCase(para.getPropertiesMap().getProperty("Instance"));
                     this.isSubDataSource = "true".equalsIgnoreCase(para.getPropertiesMap()
                                     .getProperty("useInstanceFromParent"));
+                    this.usedOids  = "true".equalsIgnoreCase(para.getPropertiesMap().getProperty("UseOIDs"));
                 }
                 break;
             }
@@ -237,6 +241,11 @@ public abstract class EFapsDataSource_Base
             instances.addAll(query.getValues());
         } else if (this.useInstance) {
             instances.add(this.parameter.getInstance());
+        } else if (this.usedOids) {
+            final String[] oids = (String[]) this.parameter.get(ParameterValues.OTHERS);
+            for (final String oid : oids) {
+                instances.add(Instance.get(oid));
+            }
         }
         if (instances.size() > 0) {
             this.print = new MultiPrintQuery(instances);
