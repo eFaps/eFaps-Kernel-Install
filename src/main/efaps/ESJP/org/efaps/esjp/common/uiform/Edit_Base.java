@@ -218,17 +218,31 @@ public abstract class Edit_Base
         }
     }
 
-    /**
-     * Method to update the related fieldsets if parameters are given for them.
-     *
-     * @param _parameter Parameter as passed from the efaps API.
-     * @param _instance Instance of the new object
-     * @param _fieldsets fieldsets to insert
-     * @throws EFapsException on error
-     */
-    public void updateFieldSets(final Parameter _parameter,
-                                final Instance _instance,
-                                final List<FieldSet> _fieldsets)
+    protected void add2Update(final Parameter _parameter,
+                              final Update _update,
+                              final Attribute _attr,
+                              final String _fieldName,
+                              final int _idx)
+        throws EFapsException
+    {
+        if (_attr.hasUoM()) {
+            _update.add(_attr, new Object[] { _parameter.getParameterValues(_fieldName)[_idx],
+                            _parameter.getParameterValues(_fieldName + "UoM")[_idx] });
+        } else if (_attr.getAttributeType().getDbAttrType() instanceof RateType) {
+            final String value = _parameter.getParameterValues(_fieldName)[_idx];
+            final boolean inverted = "true".equalsIgnoreCase(_parameter.getParameterValues(_fieldName
+                            + RateUI.INVERTEDSUFFIX)[_idx]);
+            _update.add(_attr, new Object[] { inverted ? 1 : value, inverted ? value : 1 });
+        } else {
+            _update.add(_attr, _parameter.getParameterValues(_fieldName)[_idx]);
+        }
+    }
+
+
+    // OLD VERSION! WILL BE REMOVED
+    private void updateFieldSetsOld(final Parameter _parameter,
+                                    final Instance _instance,
+                                    final List<FieldSet> _fieldsets)
         throws EFapsException
     {
         final NumberFormat nf = NumberFormat.getInstance();
@@ -315,6 +329,66 @@ public abstract class Edit_Base
                         final Delete delete = new Delete(set, removeOne);
                         delete.execute();
                     }
+                }
+            }
+        }
+    }
+    /**
+     * Method to update the related fieldsets if parameters are given for them.
+     *
+     * @param _parameter Parameter as passed from the efaps API.
+     * @param _instance Instance of the new object
+     * @param _fieldsets fieldsets to insert
+     * @throws EFapsException on error
+     */
+    public void updateFieldSets(final Parameter _parameter,
+                                final Instance _instance,
+                                final List<FieldSet> _fieldsets)
+        throws EFapsException
+    {
+        final Map<String, String> idmap = (Map<String, String>) _parameter.get(ParameterValues.OIDMAP4UI);
+        for (final FieldSet fieldset : _fieldsets) {
+            if (_parameter.getParameters().containsKey(fieldset.getName() + "eFapsRemove")) {
+                // to mantain backward compatibility
+                updateFieldSetsOld(_parameter, _instance, _fieldsets);
+                break;
+            } else {
+                final String setName = fieldset.getAttribute();
+                final AttributeSet set = AttributeSet.find(_instance.getType().getName(), setName);
+                Object[] ids = null;
+                if (_parameter.getParameters().containsKey(fieldset.getName() + "_ID")) {
+                    final String[] idArray = _parameter.getParameterValues(fieldset.getName() + "_ID");
+                    ids = new Object[idArray.length];
+                    for (int i = 0; i< idArray.length;i++) {
+                        final String oid = idmap.get(idArray[i]);
+                        // in case of new
+                        Update update;
+                        if (oid == null) {
+                            update = new Insert(set);
+                            update.add(set.getAttribute(setName), _instance.getId());
+                        } else {
+                            update = new Update(oid);
+                        }
+                        for (final String attrName : fieldset.getOrder()) {
+                            final Attribute child = set.getAttribute(attrName);
+                            final String fieldName = fieldset.getName() + "_" + attrName;
+                            if (_parameter.getParameters().containsKey(fieldName)) {
+                                add2Update(_parameter, update, child, fieldName,i);
+                            }
+                        }
+                        update.execute();
+                        ids[i] = update.getId();
+                    }
+                }
+                final QueryBuilder queryBldr = new QueryBuilder(set);
+                queryBldr.addWhereAttrEqValue(set.getAttribute(setName), _instance.getId());
+                if (ids != null) {
+                    queryBldr.addWhereAttrNotEqValue("ID", ids);
+                }
+                final InstanceQuery query = queryBldr.getQuery();
+                for (final Instance toDelInst: query.execute()) {
+                    final Delete del = new Delete(toDelInst);
+                    del.execute();
                 }
             }
         }
