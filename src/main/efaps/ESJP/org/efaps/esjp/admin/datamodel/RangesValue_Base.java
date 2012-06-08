@@ -22,12 +22,15 @@ package org.efaps.esjp.admin.datamodel;
 
 import java.io.StringReader;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.datamodel.ui.UIValue;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -81,19 +84,29 @@ public abstract class RangesValue_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final Object tmp = _parameter.get(ParameterValues.UIOBJECT);
+        Attribute attribute;
+        // just for backward compatibility
+        if (tmp instanceof FieldValue) {
+            final FieldValue fieldValue = (FieldValue) tmp;
+            attribute = fieldValue.getAttribute();
+        } else {
+            final UIValue fieldValue = (UIValue) tmp;
+            attribute = fieldValue.getAttribute();
+        }
 
-        Map<Attribute, Map<String, String>> values;
+
+        Map<Attribute, Map<Object, Object>> values;
         if (Context.getThreadContext().containsRequestAttribute(RangesValue_Base.REQUESTCACHEKEY)) {
-            values = (Map<Attribute, Map<String, String>>)
+            values = (Map<Attribute, Map<Object, Object>>)
                             Context.getThreadContext().getRequestAttribute(RangesValue_Base.REQUESTCACHEKEY);
         } else {
-            values = new HashMap<Attribute, Map<String, String>>();
+            values = new HashMap<Attribute, Map<Object, Object>>();
             Context.getThreadContext().setRequestAttribute(RangesValue_Base.REQUESTCACHEKEY, values);
         }
 
-        if (values.containsKey(fieldValue.getAttribute())) {
-            ret.put(ReturnValues.VALUES, values.get(fieldValue.getAttribute()));
+        if (values.containsKey(attribute)) {
+            ret.put(ReturnValues.VALUES, values.get(attribute));
         } else {
             final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
             final String type = (String) properties.get("Type");
@@ -117,8 +130,8 @@ public abstract class RangesValue_Base
             }
             multi.execute();
 
-            final Map<String, String> map = new TreeMap<String, String>();
-
+            final Map<String, String> tmpMap = new TreeMap<String, String>();
+            final Map<String, Long> order = new TreeMap<String, Long>();
             while (multi.next()) {
                 final String strVal;
                 if (list != null) {
@@ -127,11 +140,21 @@ public abstract class RangesValue_Base
                 } else {
                     strVal = multi.getAttribute(value).toString();
                 }
-                map.put(strVal, ((Long) multi.getCurrentInstance().getId()).toString());
+                tmpMap.put(strVal, ((Long) multi.getCurrentInstance().getId()).toString());
+                order.put(strVal,  multi.getCurrentInstance().getId());
             }
-            setSelectedValue(_parameter);
-            values.put(fieldValue.getAttribute(), map);
-            ret.put(ReturnValues.VALUES, map);
+            Map retmap;
+            if (_parameter.get(ParameterValues.UIOBJECT) instanceof FieldValue) {
+                retmap = tmpMap;
+                setSelectedValue(_parameter);
+            } else {
+                retmap = new LinkedHashMap<Long, String>();
+                for (final Entry<String, Long> entry : order.entrySet()) {
+                    retmap.put(entry.getValue(), entry.getKey());
+                }
+            }
+            values.put(attribute, retmap);
+            ret.put(ReturnValues.VALUES, retmap);
         }
         return ret;
     }
@@ -163,5 +186,6 @@ public abstract class RangesValue_Base
                         && properties.containsKey("Default")) {
             fieldValue.setValue(properties.get("Default"));
         }
+
     }
 }

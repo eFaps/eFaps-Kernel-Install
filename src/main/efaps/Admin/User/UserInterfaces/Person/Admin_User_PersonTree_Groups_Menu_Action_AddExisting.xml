@@ -45,7 +45,7 @@
       </execute>
     </target>
     <!-- properties -->
-    <property name="Target">popup</property>
+    <property name="Target">modal</property>
 
   </definition>
 
