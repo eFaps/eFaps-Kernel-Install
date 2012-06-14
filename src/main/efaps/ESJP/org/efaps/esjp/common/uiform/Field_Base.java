@@ -47,12 +47,9 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field.Display;
-import org.efaps.ci.CIAdminCommon;
-import org.efaps.ci.CIAttribute;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
-import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -534,7 +531,7 @@ public abstract class Field_Base
             if (value.isSelected()) {
                 html.append(" selected=\"selected\"");
             }
-            html.append(" />").append(value.getOption())
+            html.append(">").append(value.getOption())
                 .append("</option>");
         }
         html.append("</select>");
