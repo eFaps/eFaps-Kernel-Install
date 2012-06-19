@@ -28,8 +28,10 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.user.Person;
 import org.efaps.admin.user.Person.AttrName;
+import org.efaps.ci.CIAdmin;
 import org.efaps.db.Context;
-import org.efaps.db.SearchQuery;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.util.EFapsException;
 
 /**
@@ -38,52 +40,51 @@ import org.efaps.util.EFapsException;
  */
 @EFapsUUID("55bc2ba5-1797-469d-bb6c-1d3710f246dc")
 @EFapsRevision("$Rev$")
-public class ChgSetting implements EventExecution {
+public class ChgSetting
+    implements EventExecution
+{
 
-  public Return execute(final Parameter _parameter) throws EFapsException {
+    public Return execute(final Parameter _parameter)
+        throws EFapsException
+    {
 
-    final Context context = Context.getThreadContext();
+        final Context context = Context.getThreadContext();
 
-    final Person person = context.getPerson();
-    person.updateAttrValue(AttrName.TIMZONE,
-                           context.getParameter("TimeZone4Edit"));
-    person.updateAttrValue(AttrName.CHRONOLOGY,
-                           context.getParameter("Chronology4Edit"));
-    final String[] locale = context.getParameter("Locale").split(":");
-    person.updateAttrValue(AttrName.LOCALE, locale[1], locale[0]);
-    person.commitAttrValuesInDB();
-    return new Return();
-  }
-
-
-
-  public Return getLocale4Setting(final Parameter _parameter)
-    throws EFapsException {
-    final StringBuilder strBld = new StringBuilder();
-
-    final SearchQuery query = new SearchQuery();
-    query.setQueryTypes("Admin_Language");
-    query.addSelect("ID");
-    query.addSelect("Language");
-    query.execute();
-
-    strBld.append("<select size=\"1\" name=\"Locale\">");
-    final String actLang = Context.getThreadContext().getLocale().getLanguage();
-    while (query.next()) {
-      final String language = (String) query.get("Language");
-      strBld.append("<option");
-      if (actLang.equals(language)) {
-        strBld.append(" selected=\"selected\" ");
-      }
-      strBld.append(" value=\"").append(query.get("ID") + ":" + language)
-        .append("\">").append(language).append("</option>");
+        final Person person = context.getPerson();
+        person.updateAttrValue(AttrName.TIMZONE,
+                        context.getParameter("TimeZone4Edit"));
+        person.updateAttrValue(AttrName.CHRONOLOGY,
+                        context.getParameter("Chronology4Edit"));
+        final String[] locale = context.getParameter("Language").split(":");
+        person.updateAttrValue(AttrName.LANGUAGE, locale[1], locale[0]);
+        person.commitAttrValuesInDB();
+        return new Return();
     }
 
-    strBld.append("</select>");
+    public Return getLanguage4Setting(final Parameter _parameter)
+        throws EFapsException
+    {
+        final StringBuilder strBld = new StringBuilder();
 
-    final Return retVal = new Return();
-    retVal.put(ReturnValues.SNIPLETT, strBld);
+        final QueryBuilder queryBldr = new QueryBuilder(CIAdmin.Language);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CIAdmin.Language.Language);
+        multi.execute();
 
-  return retVal;
-  }
+        strBld.append("<select size=\"1\" name=\"Language\">");
+        final String actLang = Context.getThreadContext().getLanguage();
+        while (multi.next()) {
+            final String language = multi.<String>getAttribute(CIAdmin.Language.Language);
+            strBld.append("<option");
+            if (actLang.equals(language)) {
+                strBld.append(" selected=\"selected\" ");
+            }
+            strBld.append(" value=\"").append(multi.getCurrentInstance().getId() + ":" + language)
+                            .append("\">").append(language).append("</option>");
+        }
+        strBld.append("</select>");
+        final Return retVal = new Return();
+        retVal.put(ReturnValues.SNIPLETT, strBld);
+        return retVal;
+    }
 }

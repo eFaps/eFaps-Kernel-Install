@@ -27,16 +27,16 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>f84814f4-1bc5-481e-b37c-6ae782b25a00</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>f84814f4-1bc5-481e-b37c-6ae782b25a00</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Common_Main_Preferences</name>
-    <childs>
-      <child>Admin_User_PwdChg</child>
-      <child>Admin_User_SettingChg</child>
-    </childs>
-  </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Common_Main_Preferences</name>
+        <childs>
+            <child>Admin_User_PwdChg</child>
+            <child>Admin_User_SettingChg</child>
+        </childs>
+    </definition>
 </ui-menu>
