@@ -50,6 +50,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.user.Group;
 import org.efaps.admin.user.Person;
 import org.efaps.admin.user.Role;
+import org.efaps.ci.CIAdminAccess;
 import org.efaps.ci.CIAdminUser;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
@@ -69,7 +70,31 @@ import org.efaps.util.EFapsException;
  * This Class is used to check if a user can Access this Object.<br>
  * The method execute is called with the Instance and the Accesstype as
  * parameters. For the instance object it is checked if the current context user
- * has the access defined in the list of access types.
+ * has the access defined in the list of access types.<br/>
+ * To function the Attribute "AccessCheck4Object" + n (0-100) must be added to the
+ * kernel SystemConfiguration containing a PropertyMap.
+ * <table>
+ * <tr>
+ * <th>Property</th><th>Value</th><th>Description</th>
+ * </tr>
+ * <tr>
+ * <td>[TYPENAME].Roles.AsList</td><td>List of ";"-separated Roles </td>
+ * <td>The Roles that will be shown in the dropdown used to assign an access.</td>
+ * </tr>
+ * <tr>
+ * <td>[TYPENAME].Person.SimpleAccess4Type</td><td>List of ";"-separated Persons </td>
+ * <td>The Persons for whom the simple access will always be applied.</td>
+ * </tr>
+ * <tr>
+ * <td>[TYPENAME].Role.SimpleAccess4Type</td><td>List of ";"-separated Roles </td>
+ * <td>The Role for which the simple access will always be applied.</td>
+ * </tr>
+ * <tr>
+ * <td>[TYPENAME].Group.SimpleAccess4Type</td><td>List of ";"-separated Groups </td>
+ * <td>The Groups for which the simple access will always be applied.</td>
+ * </tr>
+ * </table>
+ *
  *
  * @author The eFaps Team
  * @version $Id:SimpleAccessCheckOnType.java 1563 2007-10-28 14:07:41Z tmo $
@@ -94,53 +119,63 @@ public abstract class AccessCheck4Object_Base
         if (check4SimpleAccessCheck(_parameter, _instance)) {
             ret = getSimpleAccess4Type(_parameter).checkAccess(_parameter, _instance, _accessType);
         } else {
-            final StringBuilder cmd = new StringBuilder();
-            cmd.append("select count(*) ")
-                .append(" from T_ACCESS4OBJ ")
-                .append(" inner join T_ACCESSSET2TYPE on T_ACCESSSET2TYPE.ACCESSSET = ACCSETID ")
-                .append(" where accesstype=").append(_accessType.getId())
-                .append(" and TYPEID = ").append(_instance.getType().getId())
-                .append(" and OBJID =").append(_instance.getId());
+            ret = getObjectAccess(_parameter, _instance, _accessType);
+        }
+        return ret;
+    }
 
-            final Context context = Context.getThreadContext();
-            cmd.append(" and PERSID in (").append(context.getPersonId());
-            for (final Long role : context.getPerson().getRoles()) {
-                cmd.append(",").append(role);
-            }
-            for (final Long group : context.getPerson().getGroups()) {
-                cmd.append(",").append(group);
-            }
-            cmd.append(")");
+    protected boolean getObjectAccess(final Parameter _parameter,
+                                      final Instance _instance,
+                                      final AccessType _accessType)
+        throws EFapsException
+    {
+        boolean ret = false;
+        final StringBuilder cmd = new StringBuilder();
+        cmd.append("select count(*) ")
+            .append(" from T_ACCESS4OBJ ")
+            .append(" inner join T_ACCESSSET2TYPE on T_ACCESSSET2TYPE.ACCESSSET = ACCSETID ")
+            .append(" where accesstype=").append(_accessType.getId())
+            .append(" and TYPEID = ").append(_instance.getType().getId())
+            .append(" and OBJID =").append(_instance.getId());
 
+        final Context context = Context.getThreadContext();
+        cmd.append(" and PERSID in (").append(context.getPersonId());
+        for (final Long role : context.getPerson().getRoles()) {
+            cmd.append(",").append(role);
+        }
+        for (final Long group : context.getPerson().getGroups()) {
+            cmd.append(",").append(group);
+        }
+        cmd.append(")");
 
-            ConnectionResource con = null;
+        ConnectionResource con = null;
+        try {
+            con = Context.getThreadContext().getConnectionResource();
+
+            Statement stmt = null;
             try {
-                con = Context.getThreadContext().getConnectionResource();
-
-                Statement stmt = null;
-                try {
-                    stmt = con.getConnection().createStatement();
-                    final ResultSet rs = stmt.executeQuery(cmd.toString());
-                    if (rs.next()) {
-                        ret = (rs.getLong(1) > 0) ? true : false;
-                    }
-                    rs.close();
-                } finally {
-                    if (stmt != null) {
-                        stmt.close();
-                    }
+                stmt = con.getConnection().createStatement();
+                final ResultSet rs = stmt.executeQuery(cmd.toString());
+                if (rs.next()) {
+                    ret = (rs.getLong(1) > 0) ? true : false;
                 }
-                con.commit();
-            } catch (final SQLException e) {
-                AccessCheckAbstract_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
+                rs.close();
             } finally {
-                if ((con != null) && con.isOpened()) {
-                    con.abort();
+                if (stmt != null) {
+                    stmt.close();
                 }
+            }
+            con.commit();
+        } catch (final SQLException e) {
+            AccessCheckAbstract_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
+        } finally {
+            if ((con != null) && con.isOpened()) {
+                con.abort();
             }
         }
         return ret;
     }
+
 
     /**
      * {@inheritDoc}
@@ -162,90 +197,101 @@ public abstract class AccessCheck4Object_Base
             } else {
                 objectAccess.add(inst);
             }
-
         }
+
         if (!simpleAccess.isEmpty()) {
             ret.putAll(getSimpleAccess4Type(_parameter).checkAccess(_parameter, simpleAccess, _accessType));
         }
         if (!objectAccess.isEmpty()) {
-            final StringBuilder cmd = new StringBuilder();
-            final Map<Long, List<Long>> typeid2objectids = new HashMap<Long, List<Long>>();
-            for (final Object instance : objectAccess) {
-                final Instance inst = (Instance) instance;
-                if (inst != null && inst.isValid()) {
-                    List<Long> ids;
-                    if (typeid2objectids.containsKey(inst.getType().getId())) {
-                        ids = typeid2objectids.get(inst.getType().getId());
-                    } else {
-                        ids = new ArrayList<Long>();
-                        typeid2objectids.put(inst.getType().getId(), ids);
-                    }
-                    ids.add(inst.getId());
-                }
-            }
-            cmd.append("select TYPEID, OBJID ")
-                .append(" from T_ACCESS4OBJ ")
-                .append(" inner join T_ACCESSSET2TYPE on T_ACCESSSET2TYPE.ACCESSSET = ACCSETID ")
-                .append(" where (accesstype=").append(_accessType.getId()).append(") and (");
-            boolean first = true;
-            for (final Entry<Long, List<Long>>entry : typeid2objectids.entrySet()) {
-                if (first) {
-                    first = false;
+            ret.putAll(getObjectAccess(_parameter, objectAccess, _accessType));
+        }
+        return ret;
+    }
+
+    protected Map<Instance, Boolean> getObjectAccess(final Parameter _parameter,
+                                                     final List<Instance> _instances,
+                                                     final AccessType _accessType)
+        throws EFapsException
+    {
+        final Map<Instance, Boolean> ret = new HashMap<Instance, Boolean>();
+        final StringBuilder cmd = new StringBuilder();
+        final Map<Long, List<Long>> typeid2objectids = new HashMap<Long, List<Long>>();
+        for (final Object instance : _instances) {
+            final Instance inst = (Instance) instance;
+            if (inst != null && inst.isValid()) {
+                List<Long> ids;
+                if (typeid2objectids.containsKey(inst.getType().getId())) {
+                    ids = typeid2objectids.get(inst.getType().getId());
                 } else {
-                    cmd.append(" OR ");
+                    ids = new ArrayList<Long>();
+                    typeid2objectids.put(inst.getType().getId(), ids);
                 }
-                cmd.append(" (TYPEID = ").append(entry.getKey()).append(" and OBJID in (");
-                boolean firstID = true;
-                for (final Long id : entry.getValue()) {
-                    if (firstID) {
-                        firstID = false;
-                    } else {
-                        cmd.append(",");
-                    }
-                    cmd.append(id);
+                ids.add(inst.getId());
+            }
+        }
+        cmd.append("select TYPEID, OBJID ")
+            .append(" from T_ACCESS4OBJ ")
+            .append(" inner join T_ACCESSSET2TYPE on T_ACCESSSET2TYPE.ACCESSSET = ACCSETID ")
+            .append(" where (accesstype=").append(_accessType.getId()).append(") and (");
+        boolean first = true;
+        for (final Entry<Long, List<Long>>entry : typeid2objectids.entrySet()) {
+            if (first) {
+                first = false;
+            } else {
+                cmd.append(" OR ");
+            }
+            cmd.append(" (TYPEID = ").append(entry.getKey()).append(" and OBJID in (");
+            boolean firstID = true;
+            for (final Long id : entry.getValue()) {
+                if (firstID) {
+                    firstID = false;
+                } else {
+                    cmd.append(",");
                 }
-                cmd.append(")) ");
+                cmd.append(id);
             }
-            final Context context = Context.getThreadContext();
-            cmd.append(") and PERSID in (").append(context.getPersonId());
-            for (final Long role : context.getPerson().getRoles()) {
-                cmd.append(",").append(role);
-            }
-            for (final Long group : context.getPerson().getGroups()) {
-                cmd.append(",").append(group);
-            }
-            cmd.append(")");
-            final Set<Instance> instan = new HashSet<Instance>();
-            ConnectionResource con = null;
+            cmd.append(")) ");
+        }
+        final Context context = Context.getThreadContext();
+        cmd.append(") and PERSID in (").append(context.getPersonId());
+        for (final Long role : context.getPerson().getRoles()) {
+            cmd.append(",").append(role);
+        }
+        for (final Long group : context.getPerson().getGroups()) {
+            cmd.append(",").append(group);
+        }
+        cmd.append(")");
+        final Set<Instance> instan = new HashSet<Instance>();
+        ConnectionResource con = null;
+        try {
+            con = context.getConnectionResource();
+            Statement stmt = null;
             try {
-                con = context.getConnectionResource();
-                Statement stmt = null;
-                try {
-                    stmt = con.getConnection().createStatement();
-                    final ResultSet rs = stmt.executeQuery(cmd.toString());
-                    while (rs.next()) {
-                        instan.add(Instance.get(Type.get(rs.getLong(1)), rs.getLong(2)));
-                    }
-                    rs.close();
-                } finally {
-                    if (stmt != null) {
-                        stmt.close();
-                    }
+                stmt = con.getConnection().createStatement();
+                final ResultSet rs = stmt.executeQuery(cmd.toString());
+                while (rs.next()) {
+                    instan.add(Instance.get(Type.get(rs.getLong(1)), rs.getLong(2)));
                 }
-                con.commit();
-            } catch (final SQLException e) {
-                AccessCheckAbstract_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
+                rs.close();
             } finally {
-                if ((con != null) && con.isOpened()) {
-                    con.abort();
+                if (stmt != null) {
+                    stmt.close();
                 }
-                for (final Object inst : _instances) {
-                    ret.put((Instance) inst, instan.contains(inst));
-                }
+            }
+            con.commit();
+        } catch (final SQLException e) {
+            AccessCheckAbstract_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
+        } finally {
+            if ((con != null) && con.isOpened()) {
+                con.abort();
+            }
+            for (final Object inst : _instances) {
+                ret.put((Instance) inst, instan.contains(inst));
             }
         }
         return ret;
     }
+
 
     /**
      * Check if the simple access must be applied.
@@ -330,10 +376,9 @@ public abstract class AccessCheck4Object_Base
     {
         final Return ret = new Return();
         final List<Instance> instances = new ArrayList<Instance>();
-        final QueryBuilder queryBldr = new QueryBuilder(Type.get(UUID
-                                                        .fromString("98d9b606-b1aa-4ae1-9f30-2cba0d99453b")));
-        queryBldr.addWhereAttrEqValue("TypeId", _parameter.getInstance().getType().getId());
-        queryBldr.addWhereAttrEqValue("ObjectId", _parameter.getInstance().getId());
+        final QueryBuilder queryBldr = new QueryBuilder(CIAdminAccess.Access4Object);
+        queryBldr.addWhereAttrEqValue(CIAdminAccess.Access4Object.TypeId, _parameter.getInstance().getType().getId());
+        queryBldr.addWhereAttrEqValue(CIAdminAccess.Access4Object.ObjectId, _parameter.getInstance().getId());
         final InstanceQuery multi = queryBldr.getQuery();
         multi.execute();
         while (multi.next()) {
@@ -381,11 +426,9 @@ public abstract class AccessCheck4Object_Base
                 }
             }
         } else {
-            //Admin_Access_AccessSet
-            final QueryBuilder queryBldr = new QueryBuilder(Type.get(
-                            UUID.fromString("40aa4ff1-4786-4169-9a34-b6fd9d8a75f1")));
+            final QueryBuilder queryBldr = new QueryBuilder(CIAdminAccess.AccessSet);
             final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.addAttribute("Name");
+            multi.addAttribute(CIAdminAccess.AccessSet.Name);
             multi.execute();
             while (multi.next()) {
                 values.put(multi.<String>getAttribute("Name"), multi.getCurrentInstance().getId());
@@ -441,19 +484,19 @@ public abstract class AccessCheck4Object_Base
             attrQueryBldr.addWhereAttrEqValue(CIAdminUser.Person2Role.UserToLink , tmp.toArray());
             final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIAdminUser.Person2Role.UserFromLink);
             queryBldr.addWhereAttrInQuery(CIAdminUser.Abstract.ID, attrQuery);
-        }
-        queryBldr.addWhereAttrMatchValue(CIAdminUser.Abstract.Name, input + "*").setIgnoreCase(true);
-        queryBldr.addWhereAttrEqValue(CIAdminUser.Abstract.Status, true);
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CIAdminUser.Abstract.Name);
-        multi.execute();
-        while (multi.next()) {
-            final String name = multi.<String>getAttribute(CIAdminUser.Abstract.Name);
-            final Map<String, String> map = new HashMap<String, String>();
-            map.put("eFapsAutoCompleteKEY", ((Long) multi.getCurrentInstance().getId()).toString());
-            map.put("eFapsAutoCompleteVALUE", name);
-            map.put("eFapsAutoCompleteCHOICE", name + " - " + multi.getCurrentInstance().getType().getLabel());
-            tmpMap.put(name, map);
+            queryBldr.addWhereAttrMatchValue(CIAdminUser.Abstract.Name, input + "*").setIgnoreCase(true);
+            queryBldr.addWhereAttrEqValue(CIAdminUser.Abstract.Status, true);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addAttribute(CIAdminUser.Abstract.Name);
+            multi.execute();
+            while (multi.next()) {
+                final String name = multi.<String>getAttribute(CIAdminUser.Abstract.Name);
+                final Map<String, String> map = new HashMap<String, String>();
+                map.put("eFapsAutoCompleteKEY", ((Long) multi.getCurrentInstance().getId()).toString());
+                map.put("eFapsAutoCompleteVALUE", name);
+                map.put("eFapsAutoCompleteCHOICE", name + " - " + multi.getCurrentInstance().getType().getLabel());
+                tmpMap.put(name, map);
+            }
         }
         if (rolesAsList != null) {
             for (final String roleName : rolesAsList.split(";")) {
@@ -462,9 +505,7 @@ public abstract class AccessCheck4Object_Base
                     final Map<String, String> map = new HashMap<String, String>();
                     map.put("eFapsAutoCompleteKEY", ((Long) role.getId()).toString());
                     map.put("eFapsAutoCompleteVALUE", role.getName());
-                    //"Admin_User_Role"
-                    map.put("eFapsAutoCompleteCHOICE", role.getName() + " - "
-                                    + Type.get(UUID.fromString("e4d6ecbe-f198-4f84-aa69-5a9fd3165112")).getLabel());
+                    map.put("eFapsAutoCompleteCHOICE", role.getName() + " - " + CIAdminUser.Role.getType().getLabel());
                     tmpMap.put(role.getName(), map);
                 }
             }
@@ -511,10 +552,9 @@ public abstract class AccessCheck4Object_Base
 
         if ((pers != null && !pers.isEmpty()) || (grps != null && !grps.isEmpty())
                         || (roles != null && !roles.isEmpty())) {
-            final QueryBuilder queryBldr = new QueryBuilder(Type.get(UUID
-                            .fromString("98d9b606-b1aa-4ae1-9f30-2cba0d99453b")));
-            queryBldr.addWhereAttrEqValue("TypeId", typeId);
-            queryBldr.addWhereAttrEqValue("ObjectId", objectId);
+            final QueryBuilder queryBldr = new QueryBuilder(CIAdminAccess.Access4Object);
+            queryBldr.addWhereAttrEqValue(CIAdminAccess.Access4Object.TypeId, typeId);
+            queryBldr.addWhereAttrEqValue(CIAdminAccess.Access4Object.ObjectId, objectId);
             final InstanceQuery query = queryBldr.getQuery();
             final List<Instance> list = query.execute();
 
@@ -536,7 +576,7 @@ public abstract class AccessCheck4Object_Base
 
 
     /**
-     * @param _parameter    Parameter as passed b y the eFasp API
+     * @param _parameter    Parameter as passed by the eFaps API
      * @param _pers         Person
      * @param _class        class
      * @param _typeId       id of the type
@@ -611,12 +651,11 @@ public abstract class AccessCheck4Object_Base
     {
         Instance ret = null;
         if (_instance != null && _instance.isValid() && _persId != null && _accSetId != null) {
-            final Insert insert = new Insert(Type.get(UUID
-                            .fromString("98d9b606-b1aa-4ae1-9f30-2cba0d99453b")));
-            insert.add("TypeId", _instance.getType().getId());
-            insert.add("ObjectId", _instance.getId());
-            insert.add("PersonLink", _persId);
-            insert.add("AccessSetLink", _accSetId);
+            final Insert insert = new Insert(CIAdminAccess.Access4Object);
+            insert.add(CIAdminAccess.Access4Object.TypeId, _instance.getType().getId());
+            insert.add(CIAdminAccess.Access4Object.ObjectId, _instance.getId());
+            insert.add(CIAdminAccess.Access4Object.PersonLink, _persId);
+            insert.add(CIAdminAccess.Access4Object.AccessSetLink, _accSetId);
             insert.execute();
             ret = insert.getInstance();
         }
@@ -656,9 +695,8 @@ public abstract class AccessCheck4Object_Base
             throws EFapsException
         {
             final Instance instObject = _parameter.getInstance();
-
-            _insert.add("TypeId", instObject.getType().getId());
-            _insert.add("ObjectId", instObject.getId());
+            _insert.add(CIAdminAccess.Access4Object.TypeId, instObject.getType().getId());
+            _insert.add(CIAdminAccess.Access4Object.ObjectId, instObject.getId());
         }
     }
 }
