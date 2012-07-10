@@ -744,6 +744,35 @@ public abstract class Field_Base
         return ret;
     }
 
+
+    /**
+     * Get a new UUID and fill the given field "TargetField" with it.<br/>
+     *
+     * &lt;trigger program=&quot;org.efaps.esjp.common.uiform.Field&quot;
+     * name=&quot;Products_ProductForm.createUUID.UI_FIELD_CMD&quot;
+     * event=&quot;UI_FIELD_CMD&quot; method=&quot;createUUID&quot;&gt;<br/>
+     * &lt;property name=&quot;TargetField&quot;&gt;uUID&lt;/property&gt;<br/>
+     * &lt;/trigger&gt;
+     *
+     * @param _parameter Parameters as passed by the efapas API
+     * @return return containig script with UUID
+     */
+    public Return createUUID(final Parameter _parameter)
+    {
+        final Return ret = new Return();
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final String targetField = (String) props.get("TargetField");
+
+        if (targetField != null && !targetField.isEmpty()) {
+            final StringBuilder html = new StringBuilder();
+            html.append("document.getElementsByName(\"").append(targetField).append("\")[0].value=\"")
+                .append(UUID.randomUUID())
+                .append("\";");
+            ret.put(ReturnValues.SNIPLETT, html.toString());
+        }
+        return ret;
+    }
+
     /**
      * A position in a dropdown.
      */
