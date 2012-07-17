@@ -49,6 +49,7 @@ import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.util.EFapsException;
@@ -413,6 +414,8 @@ public abstract class Field_Base
         final String typeStr = (String) props.get("Type");
         final Type type = Type.get(typeStr);
         if (type != null) {
+            boolean includeChildTypes = !"false".equalsIgnoreCase((String) props.get("ExpandChildTypes"));
+
             final QueryBuilder queryBldr = new QueryBuilder(type);
             final String linkfrom = (String) props.get("LinkFrom");
             if (linkfrom != null) {
@@ -427,8 +430,13 @@ public abstract class Field_Base
                 final String[] parts = where.split("\\|");
                 queryBldr.addWhereAttrEqValue(parts[0], parts[1]);
             }
+
             add2QueryBuilder4List(_parameter, queryBldr);
-            final MultiPrintQuery multi = queryBldr.getPrint();
+
+            InstanceQuery instQuery = queryBldr.getQuery();
+            instQuery.setIncludeChildTypes(includeChildTypes);
+
+            final MultiPrintQuery multi = new MultiPrintQuery(instQuery.execute());
             final String select = (String) props.get("Select");
             if (select != null) {
                 multi.addSelect(select);
