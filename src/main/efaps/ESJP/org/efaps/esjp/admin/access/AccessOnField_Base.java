@@ -163,7 +163,8 @@ public abstract class AccessOnField_Base
         final SystemConfiguration config = SystemConfiguration.get((String) props.get("SystemConfig"));
         if (config != null) {
             final Boolean access = config.getAttributeValueAsBoolean((String) props.get("Attribute"));
-            if (access) {
+            final boolean inverse = "true".equalsIgnoreCase((String) props.get("Inverse"));
+            if ((!inverse && access) || (inverse && !access)) {
                 ret.put(ReturnValues.TRUE, true);
             }
         }
