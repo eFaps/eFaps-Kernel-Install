@@ -36,55 +36,77 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.EFapsException;
 
+/**
+ *
+ * Class contains method for generate javascript to storage
+ * and retrieve Fields from forms.
+ *
+ * @author The eFaps Team
+ * @version $Id: LocalStorage_Base.java 7794 2012-08-10 22:35:24Z luis.estrada@efaps.org $
+ *
+ */
 @EFapsRevision("$Rev: 1$")
 @EFapsUUID("3fbb0b9c-b671-48c5-a399-424e665ed5c8")
 public abstract class LocalStorage_Base
 {
 
-    public Return localStorageFieldValue(Parameter _parameter)
+    /**
+     *
+     * @param _parameter from EFaps API.
+     * @return Return code paint buttons to storage and retrieve.
+     * @throws EFapsException on error.
+     */
+    public Return localStorageFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        Return ret = new Return();
+        final Return ret = new Return();
         final StringBuilder html = new StringBuilder();
-        FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         html.append("<script type=\"text/javascript\" ><!--/*--><![CDATA[/*><!--*/\n")
-        .append(store(_parameter)).append("\n")
-        .append(retrieve(_parameter)).append("\n")
-        .append("/*-->]]>*/</script>\n")
-        .append("<input type=\"button\" name=\"").append(fieldValue.getField().getName() + 1)
-        .append("\" ").append(UIInterface.EFAPSTMPTAG)
-        .append(" onclick= \"storage()\"")
-        .append(" value=\"").append(DBProperties
-                        .getProperty(fieldValue.getField().getLabel() + ".storage", "es")).append("\" ").append("/>")
-        .append("<input type=\"button\" name=\"").append(fieldValue.getField().getName() + 2)
-        .append("\" ").append(UIInterface.EFAPSTMPTAG)
-        .append(" onclick= \"retrieve()\" ")
-        .append(" value=\"").append(DBProperties
-                        .getProperty(fieldValue.getField().getLabel() + ".retrieve", "es")).append("\" ").append("/>");
+                        .append(store(_parameter)).append("\n")
+                        .append(retrieve(_parameter)).append("\n")
+                        .append("/*-->]]>*/</script>\n")
+                        .append("<input type=\"button\" name=\"").append(fieldValue.getField().getName() + 1)
+                        .append("\" ").append(UIInterface.EFAPSTMPTAG)
+                        .append(" onclick= \"storage()\"")
+                        .append(" value=\"").append(DBProperties
+                                        .getProperty(fieldValue.getField().getLabel()
+                                                        + ".storage", "es")).append("\" ").append("/>")
+                        .append("<input type=\"button\" name=\"").append(fieldValue.getField().getName() + 2)
+                        .append("\" ").append(UIInterface.EFAPSTMPTAG)
+                        .append(" onclick= \"retrieve()\" ")
+                        .append(" value=\"").append(DBProperties
+                                        .getProperty(fieldValue.getField().getLabel()
+                                                        + ".retrieve", "es")).append("\" ").append("/>");
 
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
     }
 
-    protected String store(Parameter _parameter)
+    /**
+     *
+     * @param _parameter from EFaps API
+     * @return javascript to storage fields
+     */
+    protected String store(final Parameter _parameter)
     {
-        Map<?, ?> properties = (Map<?, ?>)_parameter.get(ParameterValues.PROPERTIES);
-        List<String[]> storageFields = new ArrayList<String[]>();
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final List<String[]> storageFields = new ArrayList<String[]>();
 
-        FieldValue fieldLocalStorage = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final FieldValue fieldLocalStorage = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
 
-        String formUUID = fieldLocalStorage.getField().getCollection().getUUID().toString();
+        final String formUUID = fieldLocalStorage.getField().getCollection().getUUID().toString();
 
-        StringBuilder js = new StringBuilder();
+        final StringBuilder js = new StringBuilder();
 
         for (int i = 0; i < properties.size(); i++) {
-            if (properties.get("PositionField" + i) != null){
-                String strPositionFields = (String) properties.get("PositionField" + i);
+            if (properties.get("PositionField" + i) != null) {
+                final String strPositionFields = (String) properties.get("PositionField" + i);
                 storageFields.add(strPositionFields.split(";"));
             }
 
-            if(properties.get("FormField" + i) != null){
-                String strFormFields = (String) properties.get("FormField" + i);
+            if (properties.get("FormField" + i) != null) {
+                final String strFormFields = (String) properties.get("FormField" + i);
                 storageFields.add(strFormFields.split(";"));
             }
         }
@@ -107,7 +129,8 @@ public abstract class LocalStorage_Base
                 .append("valueText: ").append(positionField[i]).append("[i].options[j].text").append("});\n")
                 .append("}\n")
                 .append("json").append(positionField[i]).append(".push({pos: i, selected: ").append(positionField[i])
-                .append("[i].options[").append(positionField[i]).append("[i].selectedIndex].value, options: jsonOptions});\n")
+                .append("[i].options[").append(positionField[i])
+                .append("[i].selectedIndex].value, options: jsonOptions});\n")
                 .append("}else{")
                 .append("\njson").append(positionField[i]).append(".push({ pos: i, value:").append(positionField[i])
                 .append("[i].value });\n")
@@ -118,61 +141,67 @@ public abstract class LocalStorage_Base
 
         int count = 0;
         js.append("var form ").append(" = { ");
-        for(String[] storageField : storageFields){
+        for (String[] storageField : storageFields) {
             if (count != 0) {
                 js.append(", ").append(storageField[0]).append(" : ").append("json").append(storageField[0]);
-            }else {
+            } else {
                 js.append(storageField[0]).append(" : ").append("json").append(storageField[0]);
             }
             for (int i = 1; i < storageField.length; i++) {
                 js.append(", ").append(storageField[i]).append(" : ").append("json").append(storageField[i]);
-                }
-            count++;
             }
+            count++;
+        }
         js.append("};\n")
-        .append("sessionStorage.setItem('").append(formUUID)
-        .append("', JSON.stringify(form));\n")
-        .append("alert(\"").append(DBProperties
-                        .getProperty(fieldLocalStorage.getField().getLabel() + ".storage.alert", "es"))
+                        .append("sessionStorage.setItem('").append(formUUID)
+                        .append("', JSON.stringify(form));\n")
+                        .append("alert(\"").append(DBProperties
+                                        .getProperty(fieldLocalStorage.getField().getLabel() + ".storage.alert", "es"))
                         .append("\" );\n")
-        .append("}\n");
+                        .append("}\n");
 
         return js.toString();
     }
 
-    protected String retrieve(Parameter _parameter)
+    /**
+     *
+     * @param _parameter from EFaps API
+     * @return String of javascript to retrieve fields.
+     */
+    protected String retrieve(final Parameter _parameter)
     {
-        Map<?, ?> properties = (Map<?, ?>)_parameter.get(ParameterValues.PROPERTIES);
-        List<String[]> positionFields = new ArrayList<String[]>();
-        List<String[]> formFields = new ArrayList<String[]>();
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final List<String[]> positionFields = new ArrayList<String[]>();
+        final List<String[]> formFields = new ArrayList<String[]>();
 
-        FieldValue fieldLocalStorage = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final FieldValue fieldLocalStorage = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
 
-        String formUUID = fieldLocalStorage.getField().getCollection().getUUID().toString();
+        final String formUUID = fieldLocalStorage.getField().getCollection().getUUID().toString();
 
-        StringBuilder js = new StringBuilder();
+        final StringBuilder js = new StringBuilder();
 
         for (int i = 0; i < properties.size(); i++) {
             if (properties.get("PositionField" + i) != null) {
-                String strPositionFields = (String) properties.get("PositionField" + i);
+                final String strPositionFields = (String) properties.get("PositionField" + i);
                 positionFields.add(strPositionFields.split(";"));
             }
 
             if (properties.get("FormField" + i) != null) {
-                String strFormFields = (String) properties.get("FormField" + i);
+                final String strFormFields = (String) properties.get("FormField" + i);
                 formFields.add(strFormFields.split(";"));
             }
         }
 
         js.append("function retrieveRows(){\n")
-        .append("var retrievedObject = sessionStorage.getItem('").append(formUUID).append("');\n")
-        .append("var data = JSON.parse(retrievedObject);\n");
+                        .append("var retrievedObject = sessionStorage.getItem('").append(formUUID).append("');\n")
+                        .append("var data = JSON.parse(retrievedObject);\n");
 
         for (String[] positionField : positionFields) {
             for (int i = 0; i < positionField.length; i++) {
                 js.append("for(var i = 0; i < data.").append(positionField[i]).append(".length ; i++){\n")
                 .append("if(typeof data.").append(positionField[i]).append("[i].selected == 'undefined'){\n")
-                .append("eFapsSetFieldValue(i, '").append(positionField[i]).append("', data.").append(positionField[i]).append("[i].value);\n")
+                .append("eFapsSetFieldValue(i, '").append(positionField[i])
+                .append("', data.").append(positionField[i]).append("[i].value);\n")
                 .append("}else{\n")
                 .append("var options = [];\n")
                 .append("options.push('' + data.").append(positionField[i]).append("[i].selected").append(");\n")
@@ -188,22 +217,23 @@ public abstract class LocalStorage_Base
 
         js.append("}\n")
 
-        .append("function retrieve(){\n")
-        .append("var retrievedObject = sessionStorage.getItem('").append(formUUID).append("');\n")
-        .append("var data = JSON.parse(retrievedObject);\n");
+                        .append("function retrieve(){\n")
+                        .append("var retrievedObject = sessionStorage.getItem('").append(formUUID).append("');\n")
+                        .append("var data = JSON.parse(retrievedObject);\n");
         for (String[] positionField : positionFields) {
             js.append("var numberPositions = data.").append(positionField[0]).append(".length;\n");
             break;
         }
         js.append("Wicket.Event.add(window, \"domready\", function(event) {\n")
-        .append("addNewRows_positionTable(numberPositions, retrieveRows, null);\n");
+                        .append("addNewRows_positionTable(numberPositions, retrieveRows, null);\n");
         for (String[] formField : formFields) {
             for (int i = 0; i < formField.length; i++) {
-                js.append("eFapsSetFieldValue(0, '").append(formField[i]).append("', data.").append(formField[i]).append("[0].value);\n");
+                js.append("eFapsSetFieldValue(0, '").append(formField[i])
+                .append("', data.").append(formField[i]).append("[0].value);\n");
             }
         }
         js.append("})\n")
-        .append("}\n");
+                        .append("}\n");
         return js.toString();
     }
 }

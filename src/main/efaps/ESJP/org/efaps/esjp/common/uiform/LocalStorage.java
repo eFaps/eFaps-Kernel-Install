@@ -24,6 +24,16 @@ package org.efaps.esjp.common.uiform;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
+/**
+ *
+ * This class must be replaced for customization, therefore it is left empty.
+ * Functional description can be found in the related "<code>_base</code>"
+ * class.
+ *
+ * @author The eFaps Team
+ * @version $Id: LocalStorage.java 7794 2012-08-10 22:35:24Z luis.estrada@efaps.org $
+ *
+ */
 @EFapsRevision("$Rev: 1$")
 @EFapsUUID("975ddcca-30b6-40dc-a77f-cd97b7224aaa")
 public class LocalStorage extends LocalStorage_Base
