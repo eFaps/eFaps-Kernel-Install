@@ -99,6 +99,7 @@ public abstract class LocalStorage_Base
 
         final StringBuilder js = new StringBuilder();
 
+        //retrieve properties PositionsField or FormField
         for (int i = 0; i < properties.size(); i++) {
             if (properties.get("PositionField" + i) != null) {
                 final String strPositionFields = (String) properties.get("PositionField" + i);
@@ -111,42 +112,54 @@ public abstract class LocalStorage_Base
             }
         }
 
-        js.append("function storage(){\n");
-        for (String[] positionField : storageFields) {
-            for (int j = 0; j < positionField.length; j++) {
-                js.append("var ").append(positionField[j]).append(" = document.getElementsByName('")
-                .append(positionField[j]).append("');\n");
+        js.append("function storage(){\n")
+                        .append("//attributes  to storage")
+                        .append("\n");
+        //create variable var for every field
+        for (String[] storageField : storageFields) {
+            for (int j = 0; j < storageField.length; j++) {
+                js.append("var ").append(storageField[j]).append(" = document.getElementsByName('")
+                .append(storageField[j]).append("');\n");
             }
         }
-        for (String[] positionField : storageFields) {
-            for (int i = 0; i < positionField.length; i++) {
-                js.append("\nvar json").append(positionField[i]).append(" = [];\n");
-                js.append("for(var i = 0; i < ").append(positionField[i]).append(".length ; i++) {\n")
-                .append("if(").append(positionField[i]).append("[i].type == 'select-one'){\n")
-                .append("var jsonOptions = [];\n")
-                .append("for(var j = 0; j < ").append(positionField[i]).append("[i].length; j++){\n")
-                .append("jsonOptions.push({index: ").append(positionField[i]).append("[i].options[j].value, ")
-                .append("valueText: ").append(positionField[i]).append("[i].options[j].text").append("});\n")
-                .append("}\n")
-                .append("json").append(positionField[i]).append(".push({pos: i, selected: ").append(positionField[i])
-                .append("[i].options[").append(positionField[i])
-                .append("[i].selectedIndex].value, options: jsonOptions});\n")
-                .append("}else{")
-                .append("\njson").append(positionField[i]).append(".push({ pos: i, value:").append(positionField[i])
-                .append("[i].value });\n")
-                .append("}\n")
-                .append("}\n");
+
+        for (String[] storageField : storageFields) {
+            for (int i = 0; i < storageField.length; i++) {
+                js.append("//object json to attribute")
+                                .append("\nvar json").append(storageField[i]).append(" = [];\n")
+                                .append("for(var i = 0; i < ").append(storageField[i]).append(".length ; i++) {\n")
+                                .append("if(").append(storageField[i]).append("[i].type == 'select-one'){\n")
+                                .append("var jsonOptions = [];\n")
+                                .append("for(var j = 0; j < ").append(storageField[i]).append("[i].length; j++){\n")
+                                .append("jsonOptions.push({index: ")
+                                .append(storageField[i]).append("[i].options[j].value, ")
+                                .append("valueText: ").append(storageField[i])
+                                .append("[i].options[j].text").append("});\n")
+                                .append("}\n")
+                                .append("json").append(storageField[i]).append(".push({pos: i, selected: ")
+                                .append(storageField[i])
+                                .append("[i].options[").append(storageField[i])
+                                .append("[i].selectedIndex].value, options: jsonOptions});\n")
+                                .append("}else{")
+                                .append("\njson").append(storageField[i]).append(".push({ pos: i, value:")
+                                .append(storageField[i])
+                                .append("[i].value });\n")
+                                .append("}\n")
+                                .append("}\n");
             }
         }
 
         int count = 0;
         js.append("var form ").append(" = { ");
+
         for (String[] storageField : storageFields) {
             if (count != 0) {
+                //when storageFields has more than one element
                 js.append(", ").append(storageField[0]).append(" : ").append("json").append(storageField[0]);
             } else {
                 js.append(storageField[0]).append(" : ").append("json").append(storageField[0]);
             }
+
             for (int i = 1; i < storageField.length; i++) {
                 js.append(", ").append(storageField[i]).append(" : ").append("json").append(storageField[i]);
             }
@@ -180,6 +193,7 @@ public abstract class LocalStorage_Base
 
         final StringBuilder js = new StringBuilder();
 
+        //retrieve properties PositionsField or FormField
         for (int i = 0; i < properties.size(); i++) {
             if (properties.get("PositionField" + i) != null) {
                 final String strPositionFields = (String) properties.get("PositionField" + i);
@@ -198,20 +212,27 @@ public abstract class LocalStorage_Base
 
         for (String[] positionField : positionFields) {
             for (int i = 0; i < positionField.length; i++) {
-                js.append("for(var i = 0; i < data.").append(positionField[i]).append(".length ; i++){\n")
-                .append("if(typeof data.").append(positionField[i]).append("[i].selected == 'undefined'){\n")
-                .append("eFapsSetFieldValue(i, '").append(positionField[i])
-                .append("', data.").append(positionField[i]).append("[i].value);\n")
-                .append("}else{\n")
-                .append("var options = [];\n")
-                .append("options.push('' + data.").append(positionField[i]).append("[i].selected").append(");\n")
-                .append("for(var j = 0; j < data.").append(positionField[i]).append("[i].options.length; j++){\n")
-                .append("options.push('' + data.").append(positionField[i]).append("[i].options[j].index);\n")
-                .append("options.push('' + data.").append(positionField[i]).append("[i].options[j].valueText);\n")
-                .append("}\n")
-                .append("eFapsSetFieldValue(i, '").append(positionField[i]).append("', options);\n")
-                .append("}\n")
-                .append("}\n");
+                js.append("//verified if type of field is text or select")
+                                .append("\nfor(var i = 0; i < data.").append(positionField[i])
+                                .append(".length ; i++){\n")
+                                .append("if(typeof data.").append(positionField[i])
+                                .append("[i].selected == 'undefined'){\n")
+                                .append("eFapsSetFieldValue(i, '").append(positionField[i])
+                                .append("', data.").append(positionField[i]).append("[i].value);\n")
+                                .append("}else{\n")
+                                .append("var options = [];\n")
+                                .append("options.push('' + data.").append(positionField[i])
+                                .append("[i].selected").append(");\n")
+                                .append("for(var j = 0; j < data.").append(positionField[i])
+                                .append("[i].options.length; j++){\n")
+                                .append("options.push('' + data.").append(positionField[i])
+                                .append("[i].options[j].index);\n")
+                                .append("options.push('' + data.").append(positionField[i])
+                                .append("[i].options[j].valueText);\n")
+                                .append("}\n")
+                                .append("eFapsSetFieldValue(i, '").append(positionField[i]).append("', options);\n")
+                                .append("}\n")
+                                .append("}\n");
             }
         }
 
