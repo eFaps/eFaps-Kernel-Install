@@ -41,6 +41,8 @@ import org.efaps.jaas.AppAccessHandler;
 import org.efaps.jaas.SetPasswordHandler;
 import org.efaps.jaas.efaps.UserLoginModule.UpdateException;
 import org.efaps.util.EFapsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Esjp used to change th epassword for a user.
@@ -52,6 +54,10 @@ import org.efaps.util.EFapsException;
 @EFapsRevision("$Rev$")
 public class Password
 {
+    /**
+     * Logger for this class.
+     */
+    protected static final Logger LOG = LoggerFactory.getLogger(Password.class);
 
     /**
      * Key used for the field for the old password.
@@ -84,6 +90,7 @@ public class Password
         final Return ret = new Return();
 
         final SetPasswordHandler handler = new SetPasswordHandler(AppAccessHandler.getApplicationKey());
+        Password.LOG.debug("Applying SetPasswordHandler with ApplicationKey {}", AppAccessHandler.getApplicationKey());
         try {
             if (handler.setPassword(context.getPerson().getName(), passwordnew, passwordold)) {
                 ret.put(ReturnValues.TRUE, "true");
