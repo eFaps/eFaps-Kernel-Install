@@ -37,6 +37,7 @@ import org.efaps.admin.user.Role;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.Update.Status;
+import org.efaps.jaas.AppAccessHandler;
 import org.efaps.jaas.SetPasswordHandler;
 import org.efaps.jaas.efaps.UserLoginModule.UpdateException;
 import org.efaps.util.EFapsException;
@@ -82,7 +83,7 @@ public class Password
         final String passwordnew = context.getParameter(Password.PWDNEW);
         final Return ret = new Return();
 
-        final SetPasswordHandler handler = new SetPasswordHandler("eFaps");
+        final SetPasswordHandler handler = new SetPasswordHandler(AppAccessHandler.getApplicationKey());
         try {
             if (handler.setPassword(context.getPerson().getName(), passwordnew, passwordold)) {
                 ret.put(ReturnValues.TRUE, "true");
