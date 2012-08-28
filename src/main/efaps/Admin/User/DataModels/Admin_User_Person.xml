@@ -218,7 +218,8 @@
         <!-- triggers -->
         <trigger name="Admin_User_Person_ACCESSCHECK"
             event="ACCESSCHECK"
-            program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType" />
+            program="org.efaps.esjp.admin.user.Person"
+            method="accessCheck" />
         <trigger name="Admin_User_Person_INSERT_POST"
             event="INSERT_POST"
             program="org.efaps.esjp.admin.user.Person"

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2012 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,16 +21,26 @@
 package org.efaps.esjp.admin.user;
 
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
+import org.efaps.admin.access.AccessType;
+import org.efaps.admin.access.AccessTypeEnums;
+import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.user.Role;
+import org.efaps.ci.CIAdminUser;
+import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
-import org.efaps.db.SearchQuery;
+import org.efaps.db.InstanceQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.db.Update;
+import org.efaps.esjp.admin.access.SimpleAccessCheckOnType;
 import org.efaps.util.EFapsException;
 
 /**
@@ -44,6 +54,50 @@ import org.efaps.util.EFapsException;
 @EFapsRevision("$Rev$")
 public class Person
 {
+    /**
+     * The accesscheck for Admin_Person Types. It is a SimpleAccessCheckOnType with
+     * the exception of updating a password.
+     *
+     * @param _parameter Parameter as past from eFaps to an esjp
+     * @return empty Return
+     * @throws EFapsException on error
+     */
+    public Return accessCheck(final Parameter _parameter) throws EFapsException
+    {
+        final SimpleAccessCheckOnType check = new SimpleAccessCheckOnType(){
+
+            @Override
+            protected boolean checkAccess(final Parameter _parameter,
+                                          final Instance _instance,
+                                          final AccessType _accessType)
+                throws EFapsException
+            {
+                boolean ret = super.checkAccess(_parameter, _instance, _accessType);
+                // in case of modify, check if the user itself wants to change its own password
+                if (!ret && _accessType.equals(AccessTypeEnums.MODIFY.getAccessType())
+                                && _instance.getId() == Context.getThreadContext().getPersonId()) {
+                    // Common_Main_PwdChg
+                    final Role setpwdRole = Role.get(UUID.fromString("2c101471-43e3-4c97-9045-f48f5b12b6ed"));
+                    // if the user is allowed to change its password, check that only the password is updated
+                    if (Context.getThreadContext().getPerson().isAssigned(setpwdRole)) {
+                        final Object values = _parameter.get(ParameterValues.NEW_VALUES);
+                        if (values != null && values instanceof Set && ((Set<?>) values).size() == 1) {
+                           for (final Object attr : (Set<?>) values) {
+                               if (attr != null && attr instanceof Attribute
+                                             && ((Attribute) attr).getName().equals(CIAdminUser.Person.Password.name)) {
+                                   ret = true;
+                               }
+                           }
+                        }
+                    }
+                }
+                return ret;
+            }
+        };
+        return check.execute(_parameter);
+    }
+
+
     /**
      * Method called to connect a Person to a Role.
      *
@@ -93,7 +147,7 @@ public class Person
 
         final Map<?, ?> values = (Map<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
 
-        final String jaassystemid = getJAASSystemID();
+        final Object jaassystemid = getJAASSystemID();
         if (jaassystemid != null) {
             final Object[] key  = (Object[]) values.get(instance.getType().getAttribute("Name"));
             final Insert insert = new Insert("Admin_User_JAASKey");
@@ -111,20 +165,18 @@ public class Person
      * @return ID of the JAASSYSTEM, NULL if not found
      * @throws EFapsException on error
      */
-    private String getJAASSystemID()
+    private Object getJAASSystemID()
         throws EFapsException
     {
-        String objId = null;
-
-        final SearchQuery query = new SearchQuery();
-        query.setQueryTypes("Admin_User_JAASSystem");
-        query.addWhereExprEqValue("Name", "eFaps");
-        query.addSelect("ID");
+        Object objId = null;
+        //"Admin_User_JAASSystem"
+        final QueryBuilder queryBldr = new QueryBuilder(UUID.fromString("28e45c59-946d-4502-94b9-58a1bf23ab88"));
+        queryBldr.addWhereAttrEqValue("Name", "eFaps");
+        final InstanceQuery query = queryBldr.getQuery();
         query.execute();
         if (query.next()) {
-            objId = query.get("ID").toString();
+            objId = query.getCurrentValue().getId();
         }
-        query.close();
 
         return objId;
     }
@@ -144,11 +196,11 @@ public class Person
 
         final Map<?, ?> values = (Map<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
 
-        final String jaassystemid = getJAASSystemID();
+        final Object jaassystemid = getJAASSystemID();
         if (jaassystemid != null) {
             final Object[] key = (Object[]) values.get(instance.getType().getAttribute("Name"));
             if (key != null) {
-                final Update update = new Update("Admin_User_JAASKey", getJAASUserID(instance.getId()));
+                final Update update = new Update(CIAdminUser.JAASKey.getType(), getJAASUserID(instance.getId()));
                 update.add("Key", key[0]);
                 update.execute();
             }
@@ -158,23 +210,21 @@ public class Person
 
     /**
      * Get the ID of the JAASKey for eFaps.
-     * @param _instance instance the JAASUSerId is searched for
+     * @param _id id of the instance  the JAASUSerId is searched for
      * @return ID of the JAASKey, NULL if not found
      * @throws EFapsException on error
      */
-    private String getJAASUserID(final Long _instance)
+    private Long getJAASUserID(final Long _id)
         throws EFapsException
     {
-        String objId = null;
-        final SearchQuery query = new SearchQuery();
-        query.setQueryTypes("Admin_User_JAASKey");
-        query.addWhereExprEqValue("UserLink", _instance);
-        query.addSelect("ID");
+        Long objId = null;
+        final QueryBuilder queryBldr = new QueryBuilder(CIAdminUser.JAASKey);
+        queryBldr.addWhereAttrEqValue(CIAdminUser.JAASKey.UserLink, _id);
+        final InstanceQuery query = queryBldr.getQuery();
         query.execute();
         if (query.next()) {
-            objId = query.get("ID").toString();
+            objId = query.getCurrentValue().getId();
         }
-        query.close();
         return objId;
     }
 }
