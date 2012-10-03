@@ -48,8 +48,11 @@ import org.efaps.admin.ui.field.Field;
 import org.efaps.admin.ui.field.FieldSet;
 import org.efaps.db.Checkin;
 import org.efaps.db.Context;
+import org.efaps.db.Delete;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.util.EFapsException;
 
 
@@ -197,6 +200,53 @@ public abstract class Create_Base
     public void insertFieldSets(final Parameter _parameter,
                                 final Instance _instance,
                                 final List<FieldSet> _fieldsets)
+        throws EFapsException
+    {
+        for (final FieldSet fieldset : _fieldsets) {
+            if (_parameter.getParameters().containsKey(fieldset.getName() + "eFapsRemove")) {
+                // to mantain backward compatibility
+                insertFieldSetsOld(_parameter, _instance, _fieldsets);
+                break;
+            } else {
+                final String setName = fieldset.getAttribute();
+                final AttributeSet set = AttributeSet.find(_instance.getType().getName(), setName);
+                Object[] ids = null;
+                if (_parameter.getParameters().containsKey(fieldset.getName() + "_ID")) {
+                    final String[] idArray = _parameter.getParameterValues(fieldset.getName() + "_ID");
+                    ids = new Object[idArray.length];
+                    for (int i = 0; i< idArray.length;i++) {
+                        final Insert insert = new Insert(set);
+                        insert.add(set.getAttribute(setName), _instance.getId());
+                        for (final String attrName : fieldset.getOrder()) {
+                            final Attribute child = set.getAttribute(attrName);
+                            final String fieldName = fieldset.getName() + "_" + attrName;
+                            if (_parameter.getParameters().containsKey(fieldName)) {
+                                add2Insert(insert, child, fieldName);
+                            }
+                        }
+                        insert.execute();
+                        ids[i] = insert.getId();
+                    }
+                }
+                final QueryBuilder queryBldr = new QueryBuilder(set);
+                queryBldr.addWhereAttrEqValue(set.getAttribute(setName), _instance.getId());
+                if (ids != null) {
+                    queryBldr.addWhereAttrNotEqValue("ID", ids);
+                }
+                final InstanceQuery query = queryBldr.getQuery();
+                for (final Instance toDelInst: query.execute()) {
+                    final Delete del = new Delete(toDelInst);
+                    del.execute();
+                }
+            }
+        }
+    }
+
+
+    // OLD VERSION! WILL BE REMOVED (only bakportabbility
+    private void insertFieldSetsOld(final Parameter _parameter,
+                                    final Instance _instance,
+                                    final List<FieldSet> _fieldsets)
         throws EFapsException
     {
         final Map<?, ?> others = (HashMap<?, ?>) _parameter.get(ParameterValues.OTHERS);
