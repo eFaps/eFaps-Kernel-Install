@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2012 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -27,25 +27,24 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>0c7ac0ec-7ea1-444c-9e20-dcf27a321941</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>0c7ac0ec-7ea1-444c-9e20-dcf27a321941</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_User_AbstractTree_Access_Menu_Action_AddExistingCommand</name>
-    <icon>Admin_UI_Command+Add+Image</icon>
-    <!-- target definition -->
-    <target>
-      <search>Admin_User_AbstractTree_Access_Menu_Action_AddExistingCommand_Search</search>
-      <execute program="org.efaps.esjp.common.uisearch.Connect">
-        <property name="ConnectChildAttribute">UILink</property>
-        <property name="ConnectParentAttribute">UserLink</property>
-        <property name="ConnectType">Admin_UI_Access</property>
-      </execute>
-    </target>
-    <!-- properties -->
-    <property name="Target">popup</property>
-  </definition>
-
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_User_AbstractTree_Access_Menu_Action_AddExistingCommand</name>
+        <icon>Admin_UI_Command+Add+Image</icon>
+        <!-- target definition -->
+        <target>
+            <search>Admin_User_AbstractTree_Access_Menu_Action_AddExistingCommand_Search</search>
+            <execute program="org.efaps.esjp.common.uisearch.Connect">
+                <property name="ConnectChildAttribute">UILink</property>
+                <property name="ConnectParentAttribute">UserLink</property>
+                <property name="ConnectType">Admin_UI_Access</property>
+            </execute>
+        </target>
+        <!-- properties -->
+        <property name="Target">modal</property>
+    </definition>
 </ui-command>
