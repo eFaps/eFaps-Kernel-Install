@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2012 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -24,30 +24,31 @@
 -->
 
 <datamodel-type xmlns="http://www.efaps.org/xsd"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>e4d6ecbe-f198-4f84-aa69-5a9fd3165112</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
-
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_User_Role</name>
-    <parent>Admin_User_Abstract</parent>
-    <!-- triggers -->
-    <trigger name="Admin_User_Role_AccessCheck"
-             event="ACCESSCHECK"
-             program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"
-             method="execute"
-             index="1"/>
-  </definition>
-
-  <!-- define type (is already defined) -->
-  <definition>
-    <version-expression>(version==3)</version-expression>
-    <name>Admin_User_Role</name>
-    <parent>Admin_User_Abstract</parent>
-  </definition>
-
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>e4d6ecbe-f198-4f84-aa69-5a9fd3165112</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_User_Role</name>
+        <parent>Admin_User_Abstract</parent>
+        <trigger name="Admin_User_Role_AccessCheck"
+            event="ACCESSCHECK"
+            program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"
+            method="execute" index="1" />
+        <trigger name="Admin_User_Role_INSERT_POST"
+            event="INSERT_POST"
+            program="org.efaps.esjp.admin.user.Person"
+            method="insertJaaskeyTrg" />
+        <trigger name="Admin_User_Role_UPDATE_POST"
+            event="UPDATE_POST"
+            program="org.efaps.esjp.admin.user.Person"
+            method="updateJaaskeyTrg" />
+    </definition>
+    <definition>
+        <version-expression>(version==3)</version-expression>
+        <name>Admin_User_Role</name>
+        <parent>Admin_User_Abstract</parent>
+    </definition>
 </datamodel-type>
