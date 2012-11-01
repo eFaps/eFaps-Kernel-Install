@@ -249,8 +249,8 @@ public abstract class StandartReport_Base
             final JRTextExporter exporter = new JRTextExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
             exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, os);
-            exporter.setParameter(JRTextExporterParameter.CHARACTER_HEIGHT , new Integer(10));
-            exporter.setParameter(JRTextExporterParameter.CHARACTER_WIDTH , new Integer(6));
+            exporter.setParameter(JRTextExporterParameter.CHARACTER_HEIGHT , new Float(10));
+            exporter.setParameter(JRTextExporterParameter.CHARACTER_WIDTH , new Float(6));
             exporter.exportReport();
             os.close();
         }
