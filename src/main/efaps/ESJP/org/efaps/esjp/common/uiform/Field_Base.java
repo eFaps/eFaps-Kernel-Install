@@ -319,51 +319,53 @@ public abstract class Field_Base
     {
         final Return ret = new Return();
         final StringBuilder html = new StringBuilder();
+        final FieldValue fieldvalue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        if (Display.EDITABLE.equals(fieldvalue.getDisplay())) {
+            final Map<? , ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+            final String typesStr = (String) props.get("Types");
+            final String selected = (String) props.get("SelectedType");
+            final boolean includeAbstract = "true".equalsIgnoreCase((String) props.get("IncludeAbstract"));
+            final String excludeTypesStr = (String) props.get("ExcludeTypes");
 
-        final Map<? , ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String typesStr = (String) props.get("Types");
-        final String selected = (String) props.get("SelectedType");
-        final boolean includeAbstract = "true".equalsIgnoreCase((String) props.get("IncludeAbstract"));
-        final String excludeTypesStr = (String) props.get("ExcludeTypes");
-
-        if (typesStr != null && !typesStr.isEmpty()) {
-            final Set<Type>excludes = new HashSet<Type>();
-            if (excludeTypesStr != null && !excludeTypesStr.isEmpty()) {
-                final String[] excludesStr = excludeTypesStr.split(";");
-                for (final String typeStr  : excludesStr) {
-                    final Type type = Type.get(typeStr);
-                    if (type != null) {
-                        excludes.add(type);
-                    }
-                }
-            }
-            final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
-            final String[] types = typesStr.split(";");
-            final Type selType = Type.get(selected);
-            for (final String typeStr  : types) {
-                final Set<Type> typeList = getTypeList(_parameter, Type.get(typeStr));
-                for (final Type type : typeList) {
-                    if (!excludes.contains(type) && (!type.isAbstract() || includeAbstract)) {
-                        final DropDownPosition pos = new DropDownPosition(type.getId(), type.getLabel(),
-                                        type.getLabel());
-                        positions.add(pos);
-                        if (type.equals(selType)) {
-                            pos.setSelected(true);
+            if (typesStr != null && !typesStr.isEmpty()) {
+                final Set<Type>excludes = new HashSet<Type>();
+                if (excludeTypesStr != null && !excludeTypesStr.isEmpty()) {
+                    final String[] excludesStr = excludeTypesStr.split(";");
+                    for (final String typeStr  : excludesStr) {
+                        final Type type = Type.get(typeStr);
+                        if (type != null) {
+                            excludes.add(type);
                         }
                     }
                 }
-            }
-            Collections.sort(positions, new Comparator<DropDownPosition>() {
-
-                @SuppressWarnings("unchecked")
-                @Override
-                public int compare(final DropDownPosition _o1,
-                                   final DropDownPosition _o2)
-                {
-                    return _o1.getOrderValue().compareTo(_o2.getOrderValue());
+                final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
+                final String[] types = typesStr.split(";");
+                final Type selType = Type.get(selected);
+                for (final String typeStr  : types) {
+                    final Set<Type> typeList = getTypeList(_parameter, Type.get(typeStr));
+                    for (final Type type : typeList) {
+                        if (!excludes.contains(type) && (!type.isAbstract() || includeAbstract)) {
+                            final DropDownPosition pos = new DropDownPosition(type.getId(), type.getLabel(),
+                                            type.getLabel());
+                            positions.add(pos);
+                            if (type.equals(selType)) {
+                                pos.setSelected(true);
+                            }
+                        }
+                    }
                 }
-            });
-            html.append(getDropDownField(_parameter, positions));
+                Collections.sort(positions, new Comparator<DropDownPosition>() {
+
+                    @SuppressWarnings("unchecked")
+                    @Override
+                    public int compare(final DropDownPosition _o1,
+                                       final DropDownPosition _o2)
+                    {
+                        return _o1.getOrderValue().compareTo(_o2.getOrderValue());
+                    }
+                });
+                html.append(getDropDownField(_parameter, positions));
+            }
         }
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
@@ -414,7 +416,7 @@ public abstract class Field_Base
         final String typeStr = (String) props.get("Type");
         final Type type = Type.get(typeStr);
         if (type != null) {
-            boolean includeChildTypes = !"false".equalsIgnoreCase((String) props.get("ExpandChildTypes"));
+            final boolean includeChildTypes = !"false".equalsIgnoreCase((String) props.get("ExpandChildTypes"));
 
             final QueryBuilder queryBldr = new QueryBuilder(type);
             final String linkfrom = (String) props.get("LinkFrom");
@@ -433,7 +435,7 @@ public abstract class Field_Base
 
             add2QueryBuilder4List(_parameter, queryBldr);
 
-            InstanceQuery instQuery = queryBldr.getQuery();
+            final InstanceQuery instQuery = queryBldr.getQuery();
             instQuery.setIncludeChildTypes(includeChildTypes);
 
             final MultiPrintQuery multi = new MultiPrintQuery(instQuery.execute());
