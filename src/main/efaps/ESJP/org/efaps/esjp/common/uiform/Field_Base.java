@@ -170,7 +170,20 @@ public abstract class Field_Base
     public Return getRadioList(final Parameter _parameter)
         throws EFapsException
     {
-        return listFieldValue(_parameter, Field_Base.ListType.RADIO);
+        Return ret;
+        final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
+        if (uiObject instanceof FieldValue) {
+            if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((FieldValue) uiObject).getDisplay())) {
+                ret = listFieldValue(_parameter, Field_Base.ListType.RADIO);
+            }
+            else {
+                ret = new Return();
+                ret.put(ReturnValues.SNIPLETT, "");
+            }
+        } else {
+            ret = listFieldValue(_parameter, Field_Base.ListType.RADIO);
+        }
+        return ret;
     }
 
 
@@ -182,7 +195,20 @@ public abstract class Field_Base
     public Return getCheckBoxList(final Parameter _parameter)
         throws EFapsException
     {
-        return listFieldValue(_parameter, Field_Base.ListType.CHECKBOX);
+        Return ret;
+        final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
+        if (uiObject instanceof FieldValue) {
+            if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((FieldValue) uiObject).getDisplay())) {
+                ret = listFieldValue(_parameter, Field_Base.ListType.CHECKBOX);
+            }
+            else {
+                ret = new Return();
+                ret.put(ReturnValues.SNIPLETT, "");
+            }
+        } else {
+            ret = listFieldValue(_parameter, Field_Base.ListType.CHECKBOX);
+        }
+        return ret;
     }
 
     /**
@@ -397,7 +423,20 @@ public abstract class Field_Base
     public Return dropDownFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        return listFieldValue(_parameter, Field_Base.ListType.DROPDOWN);
+        Return ret;
+        final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
+        if (uiObject instanceof FieldValue) {
+            if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((FieldValue) uiObject).getDisplay())) {
+                ret = listFieldValue(_parameter, Field_Base.ListType.DROPDOWN);
+            }
+            else {
+                ret = new Return();
+                ret.put(ReturnValues.SNIPLETT, "");
+            }
+        } else {
+            ret = listFieldValue(_parameter, Field_Base.ListType.DROPDOWN);
+        }
+        return ret;
     }
 
     /**
