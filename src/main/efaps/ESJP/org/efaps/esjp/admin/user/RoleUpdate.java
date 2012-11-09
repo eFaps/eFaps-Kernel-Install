@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2012 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,8 @@ import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -47,6 +49,12 @@ import org.efaps.util.cache.CacheReloadException;
 @EFapsRevision("$Rev$")
 public class RoleUpdate
 {
+
+    /**
+     * Logging instance used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(RoleUpdate.class);
+
     /**
      * Role to be updated.
      */
@@ -59,9 +67,10 @@ public class RoleUpdate
     public RoleUpdate(final String _uuid)
         throws CacheReloadException
     {
+        RoleUpdate.LOG.debug("start RoleUpdate for UUID '{}'", _uuid);
         this.role = Role.get(UUID.fromString(_uuid));
+        RoleUpdate.LOG.debug("initialized RoleUpdate for Role '{}'", this.role.getName());
     }
-
 
     /**
      * @param _uuid the UserIntferace Object to be connected to this role
@@ -70,6 +79,7 @@ public class RoleUpdate
     public void addUI(final String _uuid)
         throws EFapsException
     {
+        RoleUpdate.LOG.debug("adding UserInterface '{}'", _uuid);
         final QueryBuilder queryBldr = new QueryBuilder(CIAdminUserInterface.Direct);
         queryBldr.addWhereAttrEqValue(CIAdminUserInterface.Direct.UUID, _uuid);
         final InstanceQuery query = queryBldr.getQuery();
@@ -101,6 +111,7 @@ public class RoleUpdate
     public void removeUI(final String _uuid)
         throws EFapsException
     {
+        RoleUpdate.LOG.debug("removing UserInterface '{}'", _uuid);
         final QueryBuilder queryBldr = new QueryBuilder(CIAdminUserInterface.Direct);
         queryBldr.addWhereAttrEqValue(CIAdminUserInterface.Direct.UUID, _uuid);
         final InstanceQuery query = queryBldr.getQuery();
