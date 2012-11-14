@@ -37,12 +37,10 @@
         <!-- target definitions -->
         <target>
             <menu>Admin_UI_AbstractTree_Access_Menu</menu>
-            <table>Admin_User_AbstractTable</table>
+            <table>Admin_UI_AbstractRoleTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Types">Admin_UI_Access</property>
                 <property name="LinkFroms">UILink</property>
-                <property name="Selects">linkto[UserLink].oid</property>
-
             </evaluate>
         </target>
 
