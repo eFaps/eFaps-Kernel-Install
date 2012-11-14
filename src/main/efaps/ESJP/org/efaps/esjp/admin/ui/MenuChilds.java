@@ -39,106 +39,209 @@ import org.efaps.util.EFapsException;
 /**
  * ESJP used to move the children of a command on e position up or down and to
  * evaluate the values for the sorting.
- *
+ * 
  * @author The eFaps Team
  * @version $Id$
  */
 @EFapsUUID("f03932cf-7227-46c9-bb92-546245b1f49b")
 @EFapsRevision("$Rev$")
-public class MenuChilds
-{
+public class MenuChilds {
 
-    /**
-     * Method is called from a command to move the child of a menu on position
-     * up.
-     *
-     * @param _parameter Parameter as provided to the esjp from eFaps
-     * @return empty Return to follow interface
-     * @throws EFapsException on error
-     * @see #move(Parameter, boolean)
-     */
-    public Return moveChildUp(final Parameter _parameter)
-        throws EFapsException
-    {
-        move(_parameter, true);
-        return new Return();
-    }
+	/**
+	 * Method is called from a command to move the child of a menu on position
+	 * up in the UI menus.
+	 * 
+	 * @param _parameter
+	 *            Parameter as provided to the esjp from eFaps
+	 * @return empty Return to follow interface
+	 * @throws EFapsException
+	 *             on error
+	 * @see #move(Parameter, boolean)
+	 */
+	public Return moveChildUpUI(final Parameter _parameter) throws EFapsException {
+		moveOfUI(_parameter, true);
+		return new Return();
+	}
+	
+	/**
+	 * Method is called from a command to move the child of a menu on position
+	 * up in the help menus.
+	 * 
+	 * @param _parameter
+	 *            Parameter as provided to the esjp from eFaps
+	 * @return empty Return to follow interface
+	 * @throws EFapsException
+	 *             on error
+	 * @see #move(Parameter, boolean)
+	 */
+	public Return moveChildUpHelp(final Parameter _parameter) throws EFapsException {
+		moveOfHelp(_parameter, true);
+		return new Return();
+	}
 
-    /**
-     * Method is called from a command to move the child of a menu on position
-     * down.
-     *
-     * @param _parameter Parameter as provided to the esjp from eFaps
-     * @return empty Return to follow interface
-     * @throws EFapsException on error
-     * @see #move(Parameter, boolean)
-     */
-    public Return moveChildDown(final Parameter _parameter)
-        throws EFapsException
-    {
-        move(_parameter, false);
-        return new Return();
-    }
+	/**
+	 * Method is called from a command to move the child of a menu on position
+	 * down in the UI menus.
+	 * 
+	 * @param _parameter
+	 *            Parameter as provided to the esjp from eFaps
+	 * @return empty Return to follow interface
+	 * @throws EFapsException
+	 *             on error
+	 * @see #move(Parameter, boolean)
+	 */
+	public Return moveChildDownUI(final Parameter _parameter)
+			throws EFapsException {
+		moveOfUI(_parameter, false);
+		return new Return();
+	}
+	
+	/**
+	 * Method is called from a command to move the child of a menu on position
+	 * down in the help menus.
+	 * 
+	 * @param _parameter
+	 *            Parameter as provided to the esjp from eFaps
+	 * @return empty Return to follow interface
+	 * @throws EFapsException
+	 *             on error
+	 * @see #move(Parameter, boolean)
+	 */
+	public Return moveChildDownHelp(final Parameter _parameter)
+			throws EFapsException {
+		moveOfHelp(_parameter, false);
+		return new Return();
+	}
 
-    /**
-     * Method that moves a child up or down.
-     *
-     * @param _parameter Parameter as provided to the esjp from eFaps
-     * @param _up move the child up
-     * @throws EFapsException on error
-     */
-    private void move(final Parameter _parameter,
-                      final boolean _up)
-        throws EFapsException
-    {
-        final Instance instance = _parameter.getInstance();
-        final String[] oidRows = (String[]) _parameter.get(ParameterValues.OTHERS);
-        if (oidRows != null && oidRows.length > 0) {
+	/**
+	 * Method that moves a child up or down for the section of UI menu.
+	 * 
+	 * @param _parameter
+	 *            Parameter as provided to the esjp from eFaps
+	 * @param _up
+	 *            move the child up
+	 * @throws EFapsException
+	 *             on error
+	 */
+	private void moveOfUI(final Parameter _parameter, final boolean _up)
+			throws EFapsException {
+		final Instance instance = _parameter.getInstance();
+		final String[] oidRows = (String[]) _parameter
+				.get(ParameterValues.OTHERS);
+		if (oidRows != null && oidRows.length > 0) {
 
-            final Instance selected = Instance.get(oidRows[0]);
-            final SearchQuery query2 = new SearchQuery();
-            query2.setQueryTypes("Admin_UI_Menu2Command");
-            query2.addWhereExprEqValue("FromMenu", instance.getId());
-            query2.addSelect("ID");
-            query2.addSelect("ToCommand");
-            query2.execute();
-            final List<Long> ids = new ArrayList<Long>();
-            final Map<Long, Long> id2cmd = new HashMap<Long, Long>();
-            while (query2.next()) {
-                final Long id = (Long) query2.get("ID");
-                final Long cmdId = (Long) query2.get("ToCommand");
-                ids.add(id);
-                id2cmd.put(id, cmdId);
-            }
-            Collections.sort(ids);
-            for (int i = 0; i < ids.size(); i++) {
-                final Long actId = ids.get(i);
-                final Long actCmd = id2cmd.get(actId);
+			final Instance selected = Instance.get(oidRows[0]);
+			final SearchQuery query2 = new SearchQuery();
+			query2.setQueryTypes("Admin_UI_Menu2Command");
+			query2.addWhereExprEqValue("FromMenu", instance.getId());
+			query2.addSelect("ID");
+			query2.addSelect("ToCommand");
+			query2.execute();
+			final List<Long> ids = new ArrayList<Long>();
+			final Map<Long, Long> id2cmd = new HashMap<Long, Long>();
+			while (query2.next()) {
+				final Long id = (Long) query2.get("ID");
+				final Long cmdId = (Long) query2.get("ToCommand");
+				ids.add(id);
+				id2cmd.put(id, cmdId);
+			}
+			Collections.sort(ids);
+			for (int i = 0; i < ids.size(); i++) {
+				final Long actId = ids.get(i);
+				final Long actCmd = id2cmd.get(actId);
 
-                if (actId.equals(selected.getId())) {
-                    Long exId = null;
-                    // if move upwards and the selected is not the first
-                    if (_up && i > 0) {
-                        exId = ids.get(i - 1);
-                    } else if (!_up && i < ids.size() - 1) {
-                        exId = ids.get(i + 1);
-                    }
-                    if (exId != null) {
-                        // update the exChange
-                        final Update update = new Update("Admin_UI_Menu2Command", exId.toString());
-                        update.add("ToCommand", actCmd);
-                        update.execute();
-                        update.close();
+				if (actId.equals(selected.getId())) {
+					Long exId = null;
+					// if move upwards and the selected is not the first
+					if (_up && i > 0) {
+						exId = ids.get(i - 1);
+					} else if (!_up && i < ids.size() - 1) {
+						exId = ids.get(i + 1);
+					}
+					if (exId != null) {
+						// update the exChange
+						final Update update = new Update(
+								"Admin_UI_Menu2Command", exId.toString());
+						update.add("ToCommand", actCmd);
+						update.execute();
+						update.close();
 
-                        // update the actual
-                        final Update updateAct = new Update("Admin_UI_Menu2Command", actId.toString());
-                        updateAct.add("ToCommand", id2cmd.get(exId));
-                        updateAct.execute();
-                        updateAct.close();
-                    }
-                    break;
-                }
-            }
-        }
-    }
+						// update the actual
+						final Update updateAct = new Update(
+								"Admin_UI_Menu2Command", actId.toString());
+						updateAct.add("ToCommand", id2cmd.get(exId));
+						updateAct.execute();
+						updateAct.close();
+					}
+					break;
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Method that moves a child up or down for the section of help menu.
+	 * 
+	 * @param _parameter
+	 *            Parameter as provided to the esjp from eFaps
+	 * @param _up
+	 *            move the child up
+	 * @throws EFapsException
+	 *             on error
+	 */
+	private void moveOfHelp(final Parameter _parameter, final boolean _up)
+			throws EFapsException {
+		final Instance instance = _parameter.getInstance();
+		final String[] oidRows = (String[]) _parameter
+				.get(ParameterValues.OTHERS);
+		if (oidRows != null && oidRows.length > 0) {
+
+			final Instance selected = Instance.get(oidRows[0]);
+			final SearchQuery query2 = new SearchQuery();
+			query2.setQueryTypes("Admin_Help_Menu2Menu");
+			query2.addWhereExprEqValue("FromLink", instance.getId());
+			query2.addSelect("ID");
+			query2.addSelect("ToLink");
+			query2.execute();
+			final List<Long> ids = new ArrayList<Long>();
+			final Map<Long, Long> id2cmd = new HashMap<Long, Long>();
+			while (query2.next()) {
+				final Long id = (Long) query2.get("ID");
+				final Long cmdId = (Long) query2.get("ToLink");
+				ids.add(id);
+				id2cmd.put(id, cmdId);
+			}
+			Collections.sort(ids);
+			for (int i = 0; i < ids.size(); i++) {
+				final Long actId = ids.get(i);
+				final Long actCmd = id2cmd.get(actId);
+
+				if (actId.equals(selected.getId())) {
+					Long exId = null;
+					// if move upwards and the selected is not the first
+					if (_up && i > 0) {
+						exId = ids.get(i - 1);
+					} else if (!_up && i < ids.size() - 1) {
+						exId = ids.get(i + 1);
+					}
+					if (exId != null) {
+						// update the exChange
+						final Update update = new Update(
+								"Admin_Help_Menu2Menu", exId.toString());
+						update.add("ToLink", actCmd);
+						update.execute();
+						update.close();
+
+						// update the actual
+						final Update updateAct = new Update(
+								"Admin_Help_Menu2Menu", actId.toString());
+						updateAct.add("ToLink", id2cmd.get(exId));
+						updateAct.execute();
+						updateAct.close();
+					}
+					break;
+				}
+			}
+		}
+	}
 }

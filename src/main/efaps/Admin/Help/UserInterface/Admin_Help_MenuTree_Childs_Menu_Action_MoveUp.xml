@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2012 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -34,10 +34,11 @@
         <name>Admin_Help_MenuTree_Childs_Menu_Action_MoveUp</name>
         <!-- target definitions -->
         <target>
-            <execute program="org.efaps.esjp.admin.ui.MenuChilds" method="moveChildUp" />
+            <execute program="org.efaps.esjp.admin.ui.MenuChilds" method="moveChildUpHelp" />
         </target>
         <!-- properties -->
         <property name="AskUser">true</property>
         <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">1</property>
     </definition>
 </ui-command>
