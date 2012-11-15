@@ -39,6 +39,7 @@ import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.datamodel.ui.UIInterface;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -161,6 +162,41 @@ public abstract class Field_Base
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
     }
+
+
+    public Return radioFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((FieldValue) uiObject).getDisplay())) {
+            final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
+            if (properties.containsKey("values")) {
+                final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+                final String valuesStr = String.valueOf(properties.get("values"));
+                final String[] values = valuesStr.split(";");
+                for (final String value : values) {
+                    final StringBuilder propKey = new StringBuilder()
+                                    .append(fieldValue.getField().getCollection().getName())
+                                    .append(".").append(fieldValue.getField().getName()).append(".")
+                                    .append(value).append(".Label");
+                    final DropDownPosition pos = new DropDownPosition(value, DBProperties.getProperty(propKey
+                                    .toString()));
+                    positions.add(pos);
+                    if (properties.containsKey("selected") && value.equals(properties.get("selected"))) {
+                        pos.setSelected(true);
+                    }
+                }
+            }
+            ret.put(ReturnValues.SNIPLETT, getInputField(_parameter, positions, Field_Base.ListType.RADIO));
+        }
+        else {
+            ret.put(ReturnValues.SNIPLETT, "");
+        }
+        return ret;
+    }
+
 
     /**
      * @param _parameter    Parameter as passed from the eFaps API
