@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2012 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -36,19 +36,20 @@
         <name>Admin_User_PersonTable</name>
         <!-- fields -->
         <field name="name">
-            <property name="Attribute">Name</property>
+            <property name="SelectAlternateOID">linkto[UserFromLink].oid</property>
+            <property name="Select">linkto[UserFromLink].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Admin_User_Person/Name.Label</property>
             <property name="ShowTypeIcon">true</property>
             <property name="ModeSearch">READONLY</property>
         </field>
         <field name="lastname">
-            <property name="Attribute">LastName</property>
+            <property name="Select">linkto[UserFromLink].attribute[LastName]</property>
             <property name="Label">Admin_User_Person/LastName.Label</property>
             <property name="ModeSearch">READONLY</property>
         </field>
         <field name="firstname">
-            <property name="Attribute">FirstName</property>
+            <property name="Select">linkto[UserFromLink].attribute[FirstName]</property>
             <property name="Label">Admin_User_Person/FirstName.Label</property>
             <property name="ModeSearch">READONLY</property>
         </field>
@@ -57,11 +58,12 @@
             <property name="Label">Admin_User_Person/Email.Label</property>
         </field>
         <field name="status">
-            <property name="Attribute">Status</property>
+            <property name="Select">linkto[UserFromLink].attribute[Status]</property>
             <property name="Label">Admin_User_Person/Status.Label</property>
         </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
+            <property name="SelectAlternateOID">linkto[UserFromLink].oid</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Target">popup</property>
             <property name="SortAble">false</property>
