@@ -259,8 +259,8 @@ function _eFapsCreateUserTablesStep1()  {
 
   _insert(stmt, "Insert Administrator Role",  null,
           "T_USERABSTRACT",
-          "TYPEID, NAME, CREATOR, CREATED, MODIFIER, MODIFIED",
-          "-11000, 'Administration', 1, " + CURRENT_TIMESTAMP + ", 1, " + CURRENT_TIMESTAMP
+          "TYPEID, NAME, UUID, CREATOR, CREATED, MODIFIER, MODIFIED",
+          "-11000, 'Administration', '1d89358d-165a-4689-8c78-fc625d37aacd', 1, " + CURRENT_TIMESTAMP + ", 1, " + CURRENT_TIMESTAMP
   );
 
   _insert(stmt, "Connect Administrator Person to Role Administration", null,
