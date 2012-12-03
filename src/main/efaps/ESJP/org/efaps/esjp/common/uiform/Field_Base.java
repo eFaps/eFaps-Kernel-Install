@@ -552,6 +552,10 @@ public abstract class Field_Base
                     val.setOrderValue((Comparable<?>) multi.getSelect(orderSel));
                 }
             }
+            if (props.containsKey("emptyValue")) {
+                values.add(0, new DropDownPosition("", DBProperties.getProperty((String) props.get("emptyValue"))));
+            }
+
             if (orderSel != null) {
                 Collections.sort(values, new Comparator<DropDownPosition>() {
                     @SuppressWarnings("unchecked")
@@ -986,7 +990,7 @@ public abstract class Field_Base
         @SuppressWarnings("rawtypes")
         public Comparable getOrderValue()
         {
-            return this.orderValue;
+            return this.orderValue == null ? this.option.toString() : this.orderValue;
         }
     }
 }
