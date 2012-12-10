@@ -36,6 +36,7 @@ import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.datamodel.ui.UIInterface;
@@ -530,6 +531,20 @@ public abstract class Field_Base
             if (orderSel != null) {
                 multi.addSelect(orderSel);
             }
+
+            if (props.containsKey("StatusGroup")) {
+                final String statiStr = String.valueOf(props.get("Stati"));
+                final String[] statiAr = statiStr.split(";");
+                final List<Object> statusList = new ArrayList<Object>();
+                for (final String stati : statiAr) {
+                    final Status status = Status.find((String) props.get("StatusGroup"), stati);
+                    if (status != null) {
+                        statusList.add(status.getId());
+                    }
+                }
+                queryBldr.addWhereAttrEqValue(type.getStatusAttribute().getName(), statusList.toArray());
+            }
+
             multi.execute();
 
             final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
