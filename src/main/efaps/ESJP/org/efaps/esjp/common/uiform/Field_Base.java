@@ -546,6 +546,11 @@ public abstract class Field_Base
             }
 
             multi.execute();
+            Object dbValue = null;
+            final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
+            if (uiObject instanceof FieldValue) {
+                dbValue = ((FieldValue) uiObject).getValue();
+            }
 
             final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
             while (multi.next()) {
@@ -565,6 +570,10 @@ public abstract class Field_Base
                 values.add(val);
                 if (orderSel != null) {
                     val.setOrderValue((Comparable<?>) multi.getSelect(orderSel));
+                }
+
+                if (dbValue != null && "true".equalsIgnoreCase((String) props.get("SetSelected"))) {
+                    val.setSelected(dbValue.equals(val.value));
                 }
             }
             if (props.containsKey("emptyValue")) {
