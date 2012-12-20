@@ -59,6 +59,11 @@ public class AccessCheck4UI
      * &nbsp;&nbsp;&nbsp;&nbsp;&lt;property name=&quot;Stati&quot;&gt;Open&lt;/property&gt;<br>
      * &lt;/trigger&gt;<br>
      * </code>
+     * Additionally an explicit StatusGroup Property can be set, to define the StatusGroup. If not set the
+     * StatusGroup will be evaluated from the given instance.<br/>
+     * <code>
+     * &lt;property name=&quot;StatusGroup&quot;&gt;Sales_QuotationStatus&lt;/property&gt;<br>
+     * </code>
      * @param _parameter Parameter as passed from eFaps to an esjp
      * @throws EFapsException never
      * @return Return with true if access is granted
@@ -78,7 +83,13 @@ public class AccessCheck4UI
                 final Long statusID = print.<Long> getAttribute(statusAttr);
                 final String[] stati = statiStr.split(",");
                 for (final String status : stati) {
-                    final Status stat = Status.find(statusAttr.getLink().getUUID(), status.trim());
+                    final String statusGrpStr = (String) props.get("StatusGroup");
+                    Status stat;
+                    if (statusGrpStr != null && !statusGrpStr.isEmpty()) {
+                        stat = Status.find(statusGrpStr, status.trim());
+                    } else {
+                        stat = Status.find(statusAttr.getLink().getUUID(), status.trim());
+                    }
                     if (stat != null && statusID.equals(stat.getId())) {
                         ret.put(ReturnValues.TRUE, true);
                         break;
