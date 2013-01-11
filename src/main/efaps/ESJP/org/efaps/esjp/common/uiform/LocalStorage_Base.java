@@ -233,6 +233,7 @@ public abstract class LocalStorage_Base
                                 .append("eFapsSetFieldValue(i, '").append(positionField[i]).append("', options);\n")
                                 .append("}\n")
                                 .append("}\n");
+                js.append(add2Script(_parameter, positionField[i]));
             }
         }
 
@@ -256,5 +257,11 @@ public abstract class LocalStorage_Base
         js.append("})\n")
                         .append("}\n");
         return js.toString();
+    }
+
+    protected String add2Script(final Parameter _parameter,
+                                final String _positionField)
+    {
+        return "";
     }
 }
