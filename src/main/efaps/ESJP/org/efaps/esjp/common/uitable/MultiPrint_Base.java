@@ -21,13 +21,16 @@
 package org.efaps.esjp.common.uitable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 
 import org.efaps.admin.datamodel.Attribute;
+import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -37,6 +40,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.admin.ui.field.Field;
+import org.efaps.admin.ui.field.Filter;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
@@ -211,14 +215,14 @@ public abstract class MultiPrint_Base
             for (final Entry<?, ?> entry : _filter.entrySet()) {
                 final String fieldName = (String) entry.getKey();
                 final Field field = command.getTargetTable().getField(fieldName);
-                if (!field.isFilterPickList()) {
+                if (field.getFilter().getType().equals(Filter.Type.FREETEXT)) {
                     String attrName = field.getAttribute();
                     String[] attrNames = null;
-                    if (field.getFilterAttributes() != null) {
-                        if (field.getFilterAttributes().contains(",")) {
-                            attrNames = field.getFilterAttributes().split(",");
+                    if (field.getFilter().getAttributes() != null) {
+                        if (field.getFilter().getAttributes().contains(",")) {
+                            attrNames = field.getFilter().getAttributes().split(",");
                         } else {
-                            attrName = field.getFilterAttributes();
+                            attrName = field.getFilter().getAttributes();
                         }
                     }
                     if (attrNames != null) {
@@ -229,10 +233,55 @@ public abstract class MultiPrint_Base
                     if (!exec) {
                         break;
                     }
+                } else if (field.getFilter().getType().equals(Filter.Type.CLASSIFICATION)) {
+                    exec = addClassFilter(entry, _queryBldr, _type, field);
                 }
             }
         }
         return exec;
+    }
+
+    /**
+     * Method to add a Filter for a inside Range of two attributes.
+     *
+     * @param _entry entry to be evaluated
+     * @param _queryBldr QueryBuilder used to get the instances
+     * @param _type type for the query
+     * @param _field field the filter belongs to
+     * @return true if the query must be executed, else false
+     * @throws EFapsException on error
+     */
+    protected boolean addClassFilter(final Entry<?, ?> _entry,
+                                     final QueryBuilder _queryBldr,
+                                     final Type _type,
+                                     final Field _field)
+        throws EFapsException
+    {
+        final Map<?, ?> inner = (Map<?, ?>) _entry.getValue();
+        boolean ret =false;
+        if (inner != null) {
+            if (inner.containsKey("list")) {
+                final Set<?> list = (Set<?>) inner.get("list");
+               final Set<Classification> filters = new HashSet<Classification>();
+                final Set<Classification> remove = new HashSet<Classification>();
+                for (final Object obj : list) {
+                    filters.add((Classification) Type.get((UUID) obj));
+                }
+
+                for (final Classification clazz : filters) {
+                    for (final Classification child : clazz.getChildClassifications()) {
+                        if (filters.contains(child)) {
+                            remove.add(clazz);
+                            break;
+                        }
+                    }
+                }
+                filters.removeAll(remove);
+                _queryBldr.addWhereClassification(filters.toArray(new Classification[filters.size()]));
+                ret = true;
+            }
+        }
+        return ret;
     }
 
     /**
@@ -270,7 +319,7 @@ public abstract class MultiPrint_Base
         final Map<?, ?> inner = (Map<?, ?>) _entry.getValue();
         final String from = (String) inner.get("from");
         final String to = (String) inner.get("to");
-        if ((from == null || to == null) && _field.getFilterDefault() == null) {
+        if ((from == null || to == null) && _field.getFilter().getDefaultValue() == null) {
             ret = false;
         } else {
             // Date or DateTime
@@ -317,7 +366,7 @@ public abstract class MultiPrint_Base
         final Map<?, ?> inner = (Map<?, ?>) _entry.getValue();
         final String from = (String) inner.get("from");
         final String to = (String) inner.get("to");
-        if ((from == null || to == null) && _field.getFilterDefault() == null) {
+        if ((from == null || to == null) && _field.getFilter().getDefaultValue() == null) {
             ret = false;
         } else {
             // Date or DateTime
@@ -348,7 +397,7 @@ public abstract class MultiPrint_Base
     protected DateTime[] getFromTo(final Field _field)
         throws EFapsException
     {
-        final String filter = _field.getFilterDefault();
+        final String filter = _field.getFilter().getDefaultValue();
         final String[] parts = filter.split(":");
         final String range = parts[0];
         final int sub = parts.length > 1 ? Integer.parseInt(parts[1]) : 0;
