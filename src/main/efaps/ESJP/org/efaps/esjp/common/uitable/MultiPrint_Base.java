@@ -277,8 +277,10 @@ public abstract class MultiPrint_Base
                     }
                 }
                 filters.removeAll(remove);
-                _queryBldr.addWhereClassification(filters.toArray(new Classification[filters.size()]));
-                ret = true;
+                if (!filters.isEmpty()) {
+                    _queryBldr.addWhereClassification(filters.toArray(new Classification[filters.size()]));
+                    ret = true;
+                }
             }
         }
         return ret;
