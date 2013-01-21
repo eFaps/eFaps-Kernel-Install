@@ -346,6 +346,7 @@ public abstract class Edit_Base
                                 final List<FieldSet> _fieldsets)
         throws EFapsException
     {
+        @SuppressWarnings("unchecked")
         final Map<String, String> idmap = (Map<String, String>) _parameter.get(ParameterValues.OIDMAP4UI);
         for (final FieldSet fieldset : _fieldsets) {
             if (_parameter.getParameters().containsKey(fieldset.getName() + "eFapsRemove")) {
