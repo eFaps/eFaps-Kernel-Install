@@ -27,10 +27,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.Classification;
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -39,6 +41,7 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractCommand;
+import org.efaps.admin.ui.AbstractUserInterfaceObject;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.admin.ui.field.Filter;
 import org.efaps.db.Instance;
@@ -63,47 +66,94 @@ import org.slf4j.LoggerFactory;
  * <th>Default</th>
  * <th>Description</th>
  * </tr>
+ *
  * <tr>
- * <td>Types</td>
- * <td>Array with Names of Types, seperated by ";"</td>
+ * <td>TypeNN</td>
+ * <td>String</td>
  * <td>true</td>
  * <td>-</td>
- * <td>Array with Names of Types used for the QueryBuilder.</td>
+ * <td>Name of a Type that will be used as the base for a QueryBuilder. If only one type or abstract type the numeral are not necessary.</td>
  * </tr>
  * <tr>
- * <td>LinkFroms</td>
- * <td>Array with Attributes of the related Type, seperated by ";"</td>
+ * <td>LinkFromNN</td>
+ * <td>String</td>
  * <td>false</td>
  * <td>-</td>
- * <td>Array with Names of Attributes of the related Types used for the
- * QueryBuilder as part of the Where Criteria.</td>
+ * <td>Name of an attribute used to link it with a given instance. Is applied on the TypeNN. (Abstract and same NN)</td>
  * </tr>
  * <tr>
- * <td>Selects</td>
- * <td>Array of Selects, seperated by ";"</td>
+ * <td>StatusGrpNN</td>
+ * <td>String</td>
  * <td>false</td>
  * <td>-</td>
- * <td>Selects use to expand the returned Innstances to other objects instances.
- * </td>
+ * <td>The name of a StatusGroup. Is applied together with StatusNN on the TypeNN. (Abstract and same NN)</td>
  * </tr>
  * <tr>
- * <td>ExpandChildTypes</td>
+ * <td>StatusNN</td>
+ * <td>String</td>
+ * <td>false</td>
+ * <td>-</td>
+ * <td>A list of Status, seperated with <code>;</code>. Is applied together with StatusGroupNN on the TypeNN. (Abstract and same NN)</td>
+ * </tr>
+ * <tr>
+ * <td>ExpandChildTypesNN</td>
  * <td>true/false</td>
  * <td>false</td>
  * <td>true</td>
- * <td>Must the ChildTypes be expanded.</td>
+ * <td>Must the ChildTypes be expanded.Is applied on the TypeNN. (Abstract and same NN)</td>
  * </tr>
  * </table>
  * <br>
- * Example:<br>
+ * <i>NN > 00</i></br>
+ * <b>Examples:</b><br>
+ * <ul>
+ * <li>
+ * Abstract Type only:<br>
  * <code>
- * &lt;property name=&quot;Types&quot;&gt;Admin_User_Person2Company;Admin_User_Person2Role&lt;/property&gt;<br>
- * &lt;property name=&quot;LinkFroms&quot;&gt;UserLink;UserLink&lt;/property&gt;
+ *  &lt;property name=&quot;Type&quot;&gt;ERP_DocumentAbstract&lt;/property&gt;<br>
  * </code>
- *
+ * </li>
+ * <li>
+ * Type only:<br>
+ * <code>
+ *  &lt;property name=&quot;Type&quot;&gt;Sales_Invoice&lt;/property&gt;<br>
+ * </code>
+ * </li>
+ * <li>
+ * Abstract Type with Link to a parent instance:<br>
+ * <code>
+ *  &lt;property name=&quot;Type&quot;&gt;Sales_PositionAbstract&lt;/property&gt;<br>
+ *  &lt;property name=&quot;LinkFrom&quot;&gt;DocumentAbstractLink&lt;/property&gt;
+ * </code>
+ * </li>
+ * <li>
+ * Type with Link to a parent instance:<br>
+ * <code>
+ *  &lt;property name=&quot;Type&quot;&gt;Sales_InvoicePosition&lt;/property&gt;<br>
+ *  &lt;property name=&quot;LinkFrom&quot;&gt;InvoiceLink&lt;/property&gt;
+ * </code>
+ * </li>
+ * <li>
+ * Type Status filter:<br>
+ * <code>
+ * &lt;property name=&quot;Type01&quot;&gt;Sales_Quotation&lt;/property&gt;<br>
+ * &lt;property name=&quot;StatusGrp01&quot;&gt;Sales_QuotationStatus&lt;/property&gt;<br>
+ * &lt;property name=&quot;Status01&quot;&gt;Open;Canceled&lt;/property&gt;
+ * </code>
+ * </li>
+ *  <li>
+ * Type Status filter on abstract type:<br>
+ * <code>
+ * &lt;property name=&quot;Type&quot;&gt;Sales_DocumentAbstract&lt;/property&gt;<br>
+ * &lt;property name=&quot;StatusGrp01&quot;&gt;Sales_QuotationStatus&lt;/property&gt;<br>
+ * &lt;property name=&quot;Status01&quot;&gt;Open;Canceled&lt;/property&gt;<br>
+ * &lt;property name=&quot;StatusGrp02&quot;&gt;Sales_InvoiceStatus&lt;/property&gt;<br>
+ * &lt;property name=&quot;Status02&quot;&gt;Open;Canceled&lt;/property&gt;
+ * </code>
+ * </li>
+ * </uL>
  * @author The eFaps Team
- * @version $Id: MultiPrint_Base.java 5369 2010-08-19 18:10:22Z miguel.a.aranya
- *          $
+ * @version $Id$
  */
 @EFapsUUID("49c223e8-e500-4c91-a949-576b63c4fb31")
 @EFapsRevision("$Rev$")
@@ -115,7 +165,7 @@ public abstract class MultiPrint_Base
     protected static final Logger LOG = LoggerFactory.getLogger(MultiPrint.class);
 
     /**
-     * @param _parameter Parameter
+     * @param _parameter Parameter as passed by the eFaps API
      * @return Return with List of instances
      * @throws EFapsException on error
      */
@@ -123,60 +173,157 @@ public abstract class MultiPrint_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final Instance instance = _parameter.getInstance();
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        ret.put(ReturnValues.VALUES, getInstances(_parameter));
+        return ret;
+    }
 
-        final Map<?, ?> filter = (Map<?, ?>) _parameter.get(ParameterValues.OTHERS);
-
-        final String typesStr = (String) properties.get("Types");
-        final String linkFromsStr = (String) properties.get("LinkFroms");
-        final String selectStr = (String) properties.get("Selects");
-        final boolean includeChildTypes = !"false".equalsIgnoreCase((String) properties.get("ExpandChildTypes"));
-
-        if (MultiPrint_Base.LOG.isDebugEnabled()) {
-            MultiPrint_Base.LOG.debug("Types: {}\n LinkFroms: {}\n Selects: {}\n ExpandChildTypes: {}",
-                                            new Object[]{typesStr, linkFromsStr, selectStr, includeChildTypes});
-        }
-        final Map<QueryBuilder, Boolean> queryBldrs2exec = new LinkedHashMap<QueryBuilder, Boolean>();
-
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return with List of instances
+     * @throws EFapsException on error
+     */
+    public List<Instance> getInstances(final Parameter _parameter)
+        throws EFapsException
+    {
         final List<Instance> instances = new ArrayList<Instance>();
-        if (typesStr != null) {
-            final String[] typesArray = typesStr.split(";");
-            for (int x = 0; x < typesArray.length; x++) {
-                final Type type = Type.get(typesArray[x]);
-                final QueryBuilder queryBldr = new QueryBuilder(type);
-                if (linkFromsStr != null) {
-                    final String[] linkFroms = linkFromsStr.split(";");
-                    queryBldr.addWhereAttrEqValue(linkFroms[x], instance.getId());
-                }
-                add2QueryBldr(_parameter, queryBldr);
-                queryBldrs2exec.put(queryBldr, analyzeTable(_parameter, filter, queryBldr, type));
-            }
-            int count = 0;
-            for (final Entry<QueryBuilder, Boolean> entry : queryBldrs2exec.entrySet()) {
-                if (entry.getValue()) {
-                    if (selectStr != null) {
-                        final String[] selects = selectStr.split(":");
-                        final MultiPrintQuery multi = entry.getKey().getPrint();
-                        if (count < selects.length) {
-                            multi.addSelect(selects[count]);
-                        }
-                        multi.executeWithoutAccessCheck();
-                        instances.addAll(count < selects.length ? multi.getInstances4Select(selects[count])
-                                                                 : multi.getInstanceList());
-                    } else {
-                        final InstanceQuery query = entry.getKey().getQuery();
-                        query.setIncludeChildTypes(includeChildTypes);
-                        instances.addAll(query.execute());
-                    }
-                }
-                count++;
-            }
+
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final boolean hasTable = _parameter.get(ParameterValues.OTHERS) instanceof Map;
+
+        if (properties.containsKey("Types")) {
+            instances.addAll(tobeRemoved(_parameter));
         } else {
-            final AbstractCommand command = (AbstractCommand) _parameter.get(ParameterValues.UIOBJECT);
-            MultiPrint_Base.LOG.warn("No 'Types' property given for executed Command: '{}'", command.getName());
+            final Map<Integer, String> expands = analyseProperty(_parameter, "ExpandChildTypes");
+            final int i = expands.containsKey(0) ? 0 : 1;
+            for (final QueryBuilder queryBldr : getQueryBuilders(_parameter)) {
+                add2QueryBldr(_parameter, queryBldr);
+                if (!hasTable|| analyzeTable(_parameter,
+                                            (Map<?, ?>) _parameter.get(ParameterValues.OTHERS), queryBldr)) {
+                    final InstanceQuery query = queryBldr.getQuery();
+                    query.setIncludeChildTypes(!"false".equalsIgnoreCase(expands.get(i)));
+                    instances.addAll(query.execute());
+                }
+            }
         }
-        ret.put(ReturnValues.VALUES, instances);
+        return instances;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return List with QueryBuilders
+     * @throws EFapsException on error
+     */
+    public List<QueryBuilder> getQueryBuilders(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<QueryBuilder> ret = new ArrayList<QueryBuilder>();
+
+        MultiPrint_Base.LOG.debug("analysing for QueryBuilders");
+        final Map<Integer, String> types = analyseProperty(_parameter, "Type");
+        final Map<Integer, String> linkFroms = analyseProperty(_parameter, "LinkFrom");
+        final Map<Integer, String> statusGrps = analyseProperty(_parameter, "StatusGrp");
+        final Map<Integer, String> status = analyseProperty(_parameter, "Status");
+
+        if (statusGrps.size() != status.size()) {
+            final AbstractUserInterfaceObject command = (AbstractUserInterfaceObject) _parameter
+                            .get(ParameterValues.UIOBJECT);
+            MultiPrint_Base.LOG.error("Map for StatusGrp and Status are of different size. Command: {}",
+                            command.getName());
+            throw new EFapsException(getClass(), "StatusSizes", statusGrps, status);
+        }
+
+        for (final Entry<Integer, String> typeEntry : types.entrySet()) {
+            final Type type = Type.get(typeEntry.getValue());
+            if (type == null) {
+                final AbstractUserInterfaceObject command = (AbstractUserInterfaceObject) _parameter
+                                .get(ParameterValues.UIOBJECT);
+                MultiPrint_Base.LOG.error("Type cannot be found for name: {}. Command: {}", typeEntry.getValue(),
+                                command.getName());
+                throw new EFapsException(getClass(), "type", typeEntry);
+            }
+            final QueryBuilder queryBldr = new QueryBuilder(type);
+            ret.add(queryBldr);
+
+            if (linkFroms.containsKey(typeEntry.getKey())) {
+                queryBldr.addWhereAttrEqValue(linkFroms.get(typeEntry.getKey()), getInstance4LinkFrom(_parameter));
+            }
+            final List<Long> statusIds = new ArrayList<Long>();
+            for (int i = 0; i < 100; i++) {
+                if (statusGrps.containsKey(i)) {
+                    final Status stat = Status.find(statusGrps.get(i), status.get(i));
+                    if (stat == null) {
+                        final AbstractUserInterfaceObject command = (AbstractUserInterfaceObject) _parameter
+                                        .get(ParameterValues.UIOBJECT);
+                        MultiPrint_Base.LOG.error("Status Definition invalid. Command: {}, Index: {}",
+                                        command.getName(), typeEntry.getKey());
+                        throw new EFapsException(getClass(), "Status", typeEntry);
+                    } else {
+                        statusIds.add(stat.getId());
+                    }
+                } else if (i > 0) {
+                    break;
+                }
+            }
+            if (!statusIds.isEmpty()) {
+                queryBldr.addWhereAttrEqValue(getStatusAttribute4Type(_parameter, type), statusIds.toArray());
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Instance use for the whre on Linkfroms
+     * @throws EFapsException on error
+     */
+    protected Instance getInstance4LinkFrom(final Parameter _parameter)
+        throws EFapsException
+    {
+        return _parameter.getInstance();
+    }
+
+    /**
+     * Get the Status attribute name of a type by searching in the parent types.
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return name of a StatusAttribute
+     * @throws EFapsException on error
+     */
+    protected String getStatusAttribute4Type(final Parameter _parameter,
+                                             final Type _type)
+        throws EFapsException
+    {
+        Type type = _type;
+        Attribute attr = type.getStatusAttribute();
+        while (attr == null) {
+            type = type.getParentType();
+            attr = type.getStatusAttribute();
+        }
+        return attr.getName();
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return map with properties
+     * @throws EFapsException on error
+     */
+    protected Map<Integer, String> analyseProperty(final Parameter _parameter,
+                                                   final String _name)
+        throws EFapsException
+    {
+        final Map<Integer, String> ret = new TreeMap<Integer, String>();
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        // test for basic
+        if (properties.containsKey(_name)) {
+            ret.put(0, String.valueOf(properties.get(_name)));
+        }
+        for (int i = 1; i < 100; i++) {
+            final String nameTmp = _name + String.format("%02d", i);
+            if (properties.containsKey(nameTmp)) {
+                ret.put(i, String.valueOf(properties.get(nameTmp)));
+            } else {
+                break;
+            }
+        }
         return ret;
     }
 
@@ -190,6 +337,24 @@ public abstract class MultiPrint_Base
         throws EFapsException
     {
 
+    }
+
+    /**
+     * Method to get the List of instances.
+     *
+     * @param _parameter parameter from the eFaps API
+     * @param _filter map of filters
+     * @param _queryBldr QueryBuilder used to get the instances
+     * @param _type type the query is based on
+     * @return List of instance
+     * @throws EFapsException on error
+     */
+    protected boolean analyzeTable(final Parameter _parameter,
+                                   final Map<?, ?> _filter,
+                                   final QueryBuilder _queryBldr)
+        throws EFapsException
+    {
+        return analyzeTable(_parameter, _filter, _queryBldr, Type.get(_queryBldr.getTypeUUID()));
     }
 
     /**
@@ -426,5 +591,71 @@ public abstract class MultiPrint_Base
             dateTo = tmp.toDateTime().plusYears(1);
         }
         return new DateTime[] { dateFrom, dateTo };
+    }
+
+    /**
+     * WILL BE REMOVED!!
+     *
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return Return with List of instances
+     * @throws EFapsException on error
+     */
+    private List<Instance> tobeRemoved(final Parameter _parameter)
+        throws EFapsException
+    {
+        final AbstractUserInterfaceObject command = (AbstractUserInterfaceObject) _parameter
+                        .get(ParameterValues.UIOBJECT);
+        MultiPrint_Base.LOG.warn("Command: '{}' uses deprecated API defintion for MultiPrint.", command.getName());
+
+        final List<Instance> instances = new ArrayList<Instance>();
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final Instance instance = _parameter.getInstance();
+
+        final Map<?, ?> filter = (Map<?, ?>) _parameter.get(ParameterValues.OTHERS);
+        final String typesStr = (String) properties.get("Types");
+        final String linkFromsStr = (String) properties.get("LinkFroms");
+        final String selectStr = (String) properties.get("Selects");
+
+        final boolean includeChildTypes = !"false".equalsIgnoreCase((String) properties.get("ExpandChildTypes"));
+
+        if (MultiPrint_Base.LOG.isDebugEnabled()) {
+            MultiPrint_Base.LOG.debug("Types: {}\n LinkFroms: {}\n Selects: {}\n ExpandChildTypes: {}",
+                            new Object[] { typesStr, linkFromsStr, selectStr, includeChildTypes });
+        }
+
+        final Map<QueryBuilder, Boolean> queryBldrs2exec = new LinkedHashMap<QueryBuilder, Boolean>();
+
+        final String[] typesArray = typesStr.split(";");
+        for (int x = 0; x < typesArray.length; x++) {
+            final Type type = Type.get(typesArray[x]);
+            final QueryBuilder queryBldr = new QueryBuilder(type);
+            if (linkFromsStr != null) {
+                final String[] linkFroms = linkFromsStr.split(";");
+                queryBldr.addWhereAttrEqValue(linkFroms[x], instance.getId());
+            }
+            add2QueryBldr(_parameter, queryBldr);
+            queryBldrs2exec.put(queryBldr, analyzeTable(_parameter, filter, queryBldr, type));
+        }
+        int count = 0;
+        for (final Entry<QueryBuilder, Boolean> entry : queryBldrs2exec.entrySet()) {
+            if (entry.getValue()) {
+                if (selectStr != null) {
+                    final String[] selects = selectStr.split(":");
+                    final MultiPrintQuery multi = entry.getKey().getPrint();
+                    if (count < selects.length) {
+                        multi.addSelect(selects[count]);
+                    }
+                    multi.executeWithoutAccessCheck();
+                    instances.addAll(count < selects.length ? multi.getInstances4Select(selects[count])
+                                    : multi.getInstanceList());
+                } else {
+                    final InstanceQuery query = entry.getKey().getQuery();
+                    query.setIncludeChildTypes(includeChildTypes);
+                    instances.addAll(query.execute());
+                }
+            }
+            count++;
+        }
+        return instances;
     }
 }
