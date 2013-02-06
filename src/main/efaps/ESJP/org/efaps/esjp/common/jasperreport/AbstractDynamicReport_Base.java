@@ -32,6 +32,7 @@ import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.jasper.builder.export.Exporters;
 import net.sf.dynamicreports.jasper.builder.export.JasperPdfExporterBuilder;
 import net.sf.dynamicreports.jasper.builder.export.JasperXhtmlExporterBuilder;
+import net.sf.dynamicreports.jasper.builder.export.JasperXlsExporterBuilder;
 import net.sf.dynamicreports.jasper.constant.SizeUnit;
 import net.sf.dynamicreports.report.builder.DynamicReports;
 import net.sf.dynamicreports.report.builder.component.SubreportBuilder;
@@ -94,6 +95,18 @@ public abstract class AbstractDynamicReport_Base
                         .setIgnorePageWidth(true).setIgnorePagination(true).setHighlightDetailEvenRows(true);
     }
 
+    /**
+     * Get the style for the columns in case of a excel document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @throws EFapsException on error
+     */
+    protected void configure4Excel(final Parameter _parameter)
+        throws EFapsException
+    {
+        getReport().setColumnTitleStyle(getColumnTitleStyle4Excel(_parameter))
+            .setColumnStyle(getColumnStyle4Excel(_parameter)).ignorePageWidth().ignorePagination();
+    }
 
     /**
      * Get the style for the columns in case of a pdf document.
@@ -121,6 +134,19 @@ public abstract class AbstractDynamicReport_Base
         throws EFapsException
     {
         return DynamicReports.stl.style().setPadding(DynamicReports.stl.padding(2));
+    }
+
+    /**
+     * Get the style for the columns in case of a excel document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return html document as String
+     * @throws EFapsException on error
+     */
+    protected StyleBuilder getColumnStyle4Excel(final Parameter _parameter)
+        throws EFapsException
+    {
+        return DynamicReports.stl.style();
     }
 
     /**
@@ -154,6 +180,22 @@ public abstract class AbstractDynamicReport_Base
                         .setBackgroundColor(Color.LIGHT_GRAY)
                         .bold().setVerticalAlignment(VerticalAlignment.MIDDLE)
                         .setPadding(DynamicReports.stl.padding(2));
+    }
+
+    /**
+     * Get the style for the title columns in case of a excel document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return html document as String
+     * @throws EFapsException on error
+     */
+    protected StyleBuilder getColumnTitleStyle4Excel(final Parameter _parameter)
+        throws EFapsException
+    {
+        return DynamicReports.stl.style().setHorizontalAlignment(HorizontalAlignment.CENTER)
+                        .setVerticalAlignment(VerticalAlignment.MIDDLE).setPadding(2)
+                        .setBackgroundColor(Color.LIGHT_GRAY)
+                        .bold();
     }
 
     /**
@@ -248,6 +290,33 @@ public abstract class AbstractDynamicReport_Base
         return file;
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _strip     strip the body tags, so that onlty the table remains
+     * @return html document as String
+     * @throws EFapsException on error
+     */
+    public File getExcel(final Parameter _parameter)
+        throws EFapsException
+    {
+        File file = null;
+        try {
+            file = new FileUtil().getFile(getFileName() == null ? "XLS" : getFileName(), "xls");
+            addColumnDefintion(_parameter, getReport());
+            final JasperXlsExporterBuilder exporter = Exporters.xlsExporter(file);
+            exporter.setIgnorePageMargins(true)
+                    .setDetectCellType(true)
+                    .setIgnoreCellBackground(true)
+                    .setWhitePageBackground(false)
+                    .setRemoveEmptySpaceBetweenColumns(true);
+            configure4Excel(_parameter);
+            getReport().setLocale(Context.getThreadContext().getLocale())
+                .setDataSource(createDataSource(_parameter)).toXls(exporter);
+        } catch (final DRException e) {
+            AbstractDynamicReport_Base.LOG.error("catched DRException", e);
+        }
+        return file;
+    }
 
     /**
      * @return filename
