@@ -35,14 +35,14 @@
   <!-- SQL Table to hold the Values for the ResourceBundle -->
 
   <definition>
-	<version-expression>(version==2) || (version==latest)</version-expression>
+    <version-expression>(version==2) || (version==latest)</version-expression>
     <name>Admin_Common_DBPropertiesLocalSQLTable</name>
     <database>
       <table-name>T_ADPROPLOC</table-name>
       <!-- columns -->
       <column name="PROPID"  type="INTEGER"      not-null="true" />
       <column name="LANGID"  type="INTEGER"      not-null="true" />
-      <column name="VALUE"   type="STRING_SHORT"                 length="254"/>
+      <column name="VALUE"   type="STRING_SHORT"                 length="2048"/>
       <!-- foreign keys -->
       <foreign name="T_ADPROPLOC_FK_PROPID"	key="PROPID"  	reference="T_ADPROP(ID)"/>
       <foreign name="T_ADPROPLOC_FK_LANGID"	key="LANGID"  	reference="T_ADLANG(ID)"/>
@@ -57,7 +57,7 @@
       <!-- columns -->
       <column name="PROPID"  type="INTEGER"      not-null="true" />
       <column name="LANGID"  type="INTEGER"      not-null="true" />
-      <column name="VALUE"   type="STRING_SHORT"                 length="254"/>
+      <column name="VALUE"   type="STRING_SHORT"                 length="2048"/>
     </database>
   </definition>
 
