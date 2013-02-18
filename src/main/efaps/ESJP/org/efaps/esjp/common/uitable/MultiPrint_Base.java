@@ -245,7 +245,7 @@ public abstract class MultiPrint_Base
             ret.add(queryBldr);
 
             if (linkFroms.containsKey(typeEntry.getKey())) {
-                queryBldr.addWhereAttrEqValue(linkFroms.get(typeEntry.getKey()), getInstance4LinkFrom(_parameter));
+                queryBldr.addWhereAttrEqValue(linkFroms.get(typeEntry.getKey()), getInstance4LinkFrom(_parameter).getId());
             }
             final List<Long> statusIds = new ArrayList<Long>();
             for (int i = 0; i < 100; i++) {
