@@ -183,10 +183,10 @@ public class Person
     }
 
     /**
-     * This method updates the JAASKey for a User into the eFaps-Database.<br>
+     * This method updates the JAASKey for a User/Role into the eFaps-Database.<br>
      * It is executed on a UPDATE_POST Trigger on the Type User_Person.
      *
-     * @param _parameter Parameter as past from eFaps to en esjp
+     * @param _parameter Parameter as past from eFaps
      * @return null
      * @throws EFapsException on error
      */
@@ -203,11 +203,13 @@ public class Person
             if (key != null && key.length > 0) {
                 final Type type = CIAdminUser.JAASKey.getType();
                 final Long id = getJAASUserID(instance.getId());
-                final Instance upInst = Instance.get(type, id);
-                if (upInst.isValid()) {
-                final Update update = new Update(upInst);
-                    update.add("Key", key[0]);
-                    update.execute();
+                if (id != null && type != null) {
+                    final Instance upInst = Instance.get(type, id);
+                    if (upInst.isValid()) {
+                        final Update update = new Update(upInst);
+                        update.add("Key", key[0]);
+                        update.execute();
+                    }
                 }
             }
         }
