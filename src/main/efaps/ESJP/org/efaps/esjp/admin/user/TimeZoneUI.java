@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2013 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,15 +25,15 @@ import java.util.TreeSet;
 
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIAdminUser;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
-import org.efaps.db.SearchQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTimeZone;
 
@@ -67,16 +67,13 @@ public class TimeZoneUI
         String actualTz = "UTC";
 
         if (instance != null && instance.getType().getUUID().equals(CIAdminUser.Person.uuid)) {
-            final SearchQuery query = new SearchQuery();
-            query.setObject(instance);
-            query.addSelect("TimeZone");
-            query.execute();
-            if (query.next()) {
-                actualTz = (String) query.get("TimeZone");
+            final PrintQuery print = new PrintQuery(instance);
+            print.getAttribute(CIAdminUser.Person.TimeZone);
+            if (print.execute()) {
+                actualTz = print.<String>getAttribute(CIAdminUser.Person.TimeZone);
             }
         }
         retVal.put(ReturnValues.SNIPLETT, getField(actualTz));
-
         return retVal;
     }
 

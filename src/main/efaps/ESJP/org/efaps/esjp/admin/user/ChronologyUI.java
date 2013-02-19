@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2013 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,15 @@ package org.efaps.esjp.admin.user;
 
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIAdminUser;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
-import org.efaps.db.SearchQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.util.ChronologyType;
 import org.efaps.util.EFapsException;
 
@@ -47,7 +47,7 @@ public class ChronologyUI
 {
 
     /**
-     * Method is called from within the form Admin_User_Person to retieve the
+     * Method is called from within the form Admin_User_Person to retrieve the
      * value for the chronology.
      *
      * @param _parameter Parameters as passed from eFaps
@@ -63,12 +63,10 @@ public class ChronologyUI
         String actualChrono = ChronologyType.ISO8601.getKey();
 
         if (instance != null && instance.getType().getUUID().equals(CIAdminUser.Person.uuid)) {
-            final SearchQuery query = new SearchQuery();
-            query.setObject(instance);
-            query.addSelect("Chronology");
-            query.execute();
-            if (query.next()) {
-                actualChrono = (String) query.get("Chronology");
+            final PrintQuery print = new PrintQuery(instance);
+            print.getAttribute(CIAdminUser.Person.Chronology);
+            if (print.execute()) {
+                actualChrono = print.<String>getAttribute(CIAdminUser.Person.Chronology);
             }
         }
         retVal.put(ReturnValues.SNIPLETT,
@@ -94,12 +92,10 @@ public class ChronologyUI
         // set a default
         String actualChrono = ChronologyType.ISO8601.getKey();
         if (instance != null && instance.getType().getUUID().equals(CIAdminUser.Person.uuid)) {
-            final SearchQuery query = new SearchQuery();
-            query.setObject(instance);
-            query.addSelect("Chronology");
-            query.execute();
-            if (query.next()) {
-                actualChrono = (String) query.get("Chronology");
+            final PrintQuery print = new PrintQuery(instance);
+            print.getAttribute(CIAdminUser.Person.Chronology);
+            if (print.execute()) {
+                actualChrono = print.<String>getAttribute(CIAdminUser.Person.Chronology);
             }
         }
         retVal.put(ReturnValues.SNIPLETT, getField(actualChrono));

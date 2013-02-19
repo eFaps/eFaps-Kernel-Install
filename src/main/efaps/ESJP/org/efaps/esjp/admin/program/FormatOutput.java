@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2013 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIAdminProgram;
 import org.efaps.db.Checkout;
 import org.efaps.db.Instance;
-import org.efaps.db.SearchQuery;
+import org.efaps.db.InstanceQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.util.EFapsException;
 
 /**
@@ -46,7 +47,8 @@ import org.efaps.util.EFapsException;
  */
 @EFapsUUID("27dcb0e6-bd78-4442-a9d6-05f491a2900f")
 @EFapsRevision("$Rev$")
-public class FormatOutput implements EventExecution
+public class FormatOutput
+    implements EventExecution
 {
 
     /**
@@ -239,12 +241,12 @@ public class FormatOutput implements EventExecution
         final Return ret = new Return();
         Instance instance = _parameter.getCallInstance();
         if (instance.getType().getUUID().equals(CIAdminProgram.Wiki.uuid)) {
-            final SearchQuery query = new SearchQuery();
-            query.setExpand(instance, "Admin_Program_WikiCompiled\\ProgramLink");
-            query.addSelect("OID");
+            final QueryBuilder queryBldr = new QueryBuilder(CIAdminProgram.WikiCompiled);
+            queryBldr.addWhereAttrEqValue(CIAdminProgram.WikiCompiled.ProgramLink, instance.getId());
+            final InstanceQuery query = queryBldr.getQuery();
             query.execute();
             if (query.next()) {
-                instance = Instance.get((String) query.get("OID"));
+                instance = query.getCurrentValue();
             }
         }
 

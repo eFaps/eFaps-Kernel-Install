@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2013 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,18 +24,19 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.Dimension;
+import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.datamodel.ui.UIValue;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -47,7 +48,6 @@ import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
-import org.efaps.db.SearchQuery;
 import org.efaps.util.EFapsException;
 
 /**
@@ -70,30 +70,19 @@ public abstract class DimensionUI_Base
      * @return Return
      * @throws EFapsException on error
      */
-    public Return execute(final Parameter _parameter) throws EFapsException
+    public Return execute(final Parameter _parameter)
+        throws EFapsException
     {
         final Return retVal = new Return();
         final Instance instance = (Instance) _parameter.get(ParameterValues.CALL_INSTANCE);
         Long actual = new Long(0);
         final TreeMap<String, Long> map = new TreeMap<String, Long>();
         if (instance != null) {
-            final SearchQuery query = new SearchQuery();
-            query.setObject(instance);
-            query.addSelect("BaseUoM");
-            query.execute();
-            if (query.next()) {
-                actual = (Long) query.get("BaseUoM");
+            final Dimension dim = Dimension.get(instance.getId());
+            actual = dim.getBaseUoM().getId();
+            for (final UoM uoM : dim.getUoMs()) {
+                map.put(uoM.getName(), uoM.getId());
             }
-            query.next();
-            final SearchQuery query2 = new SearchQuery();
-            query2.setExpand(instance, "Admin_DataModel_UoM\\Dimension");
-            query2.addSelect("ID");
-            query2.addSelect("Name");
-            query2.execute();
-            while (query2.next()) {
-                map.put((String) query2.get("Name"), (Long) query2.get("ID"));
-            }
-            query2.close();
         }
 
         final StringBuilder ret = new StringBuilder();
@@ -106,7 +95,7 @@ public abstract class DimensionUI_Base
                 ret.append(" selected=\"selected\" ");
             }
             ret.append(" value=\"").append(entry.getValue()).append("\">").append(entry.getKey())
-                .append("</option>");
+                            .append("</option>");
         }
 
         ret.append("</select>");
@@ -156,7 +145,6 @@ public abstract class DimensionUI_Base
             attribute = fieldValue.getAttribute();
         }
 
-
         Map<Attribute, Map<Object, Object>> values;
         if (Context.getThreadContext().containsRequestAttribute(RangesValue_Base.REQUESTCACHEKEY)) {
             values = (Map<Attribute, Map<Object, Object>>)
@@ -201,12 +189,13 @@ public abstract class DimensionUI_Base
                 } else {
                     strVal = multi.getAttribute(value).toString();
                 }
-                if ("true".equals((String) properties.get("DefaultBaseUoM"))) {
+                if ("true".equals(properties.get("DefaultBaseUoM"))) {
                     strVal = strVal + " - " + Dimension.get(multi.getCurrentInstance().getId()).getBaseUoM().getName();
                 }
                 tmpMap.put(strVal, ((Long) multi.getCurrentInstance().getId()).toString());
-                order.put(strVal,  multi.getCurrentInstance().getId());
+                order.put(strVal, multi.getCurrentInstance().getId());
             }
+            @SuppressWarnings("rawtypes")
             Map retmap;
             if (_parameter.get(ParameterValues.UIOBJECT) instanceof FieldValue) {
                 retmap = tmpMap;

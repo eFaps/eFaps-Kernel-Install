@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2013 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,12 +38,13 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
+import org.efaps.ci.CIAdminEvent;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
-import org.efaps.db.SearchQuery;
+import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.util.EFapsException;
@@ -72,7 +73,8 @@ public class ConnectEventToAbstract
      * @return HTML string with the drop down list
      * @throws EFapsException on error
      */
-    public Return getEventTypesUI(final Parameter _parameter) throws EFapsException
+    public Return getEventTypesUI(final Parameter _parameter)
+        throws EFapsException
     {
         final FieldValue fieldvalue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         final TargetMode mode = fieldvalue.getTargetMode();
@@ -85,13 +87,11 @@ public class ConnectEventToAbstract
         if (mode.equals(TargetMode.CREATE)) {
             parentInstance = callInstance;
         } else if (mode.equals(TargetMode.EDIT)) {
-            final SearchQuery query = new SearchQuery();
-            query.setObject(callInstance);
-            query.addSelect("Abstract.OID");
-            query.execute();
-            query.next();
-            parentInstance = Instance.get((String) query.get("Abstract.OID"));
-            query.close();
+            final PrintQuery print = new PrintQuery(callInstance);
+            final SelectBuilder sel = new SelectBuilder().linkto(CIAdminEvent.Definition.Abstract).instance();
+            print.addSelect(sel);
+            print.execute();
+            parentInstance = print.<Instance>getSelect(sel);
             selectedId = callInstance.getType().getId();
         }
 
@@ -150,7 +150,8 @@ public class ConnectEventToAbstract
      * @throws EFapsException on error
      * @see #UUID_PROGRAM
      */
-    public Return getProgramsUI(final Parameter _parameter) throws EFapsException
+    public Return getProgramsUI(final Parameter _parameter)
+        throws EFapsException
     {
         final FieldValue fieldvalue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         final TargetMode mode = fieldvalue.getTargetMode();
@@ -168,7 +169,7 @@ public class ConnectEventToAbstract
         // search for all programs
         final QueryBuilder queryBldr = new QueryBuilder(Type.get(ConnectEventToAbstract.UUID_PROGRAM));
         final MultiPrintQuery print = queryBldr.getPrint();
-        print.addAttribute("Name","ID");
+        print.addAttribute("Name", "ID");
         print.execute();
         new TreeMap<String, Long>();
         final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
@@ -181,7 +182,8 @@ public class ConnectEventToAbstract
                 pos.setSelected(true);
             }
         }
-        Collections.sort(positions, new Comparator<DropDownPosition>() {
+        Collections.sort(positions, new Comparator<DropDownPosition>()
+        {
 
             @SuppressWarnings("unchecked")
             @Override
@@ -208,7 +210,8 @@ public class ConnectEventToAbstract
      * @return empty Return
      * @throws EFapsException on error
      */
-    public Return createNewEventUI(final Parameter _parameter) throws EFapsException
+    public Return createNewEventUI(final Parameter _parameter)
+        throws EFapsException
     {
         final Instance callInstance = _parameter.getCallInstance();
         final String eventTypeId = _parameter.getParameterValue("type4NotView");
