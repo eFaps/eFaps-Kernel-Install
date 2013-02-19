@@ -90,87 +90,78 @@
         <description>Import Data</description>
         <script type="groovy">
             import java.io.File;
+            import java.util.UUID;
             import org.efaps.admin.user.JAASSystem;
             import org.efaps.admin.user.Role;
-            import org.efaps.importer.DataImport;
             import org.efaps.db.Context;
-            import org.efaps.db.SearchQuery;
+            import org.efaps.db.QueryBuilder;
+            import org.efaps.db.InstanceQuery;
+            import org.efaps.importer.DataImport;
 
-            // import languages (if not already exists...)
+
             EFAPS_LOGGER.info("    Check if Languages must be imported");
-            SearchQuery query1 = new SearchQuery();
-            query1.setQueryTypes("Admin_Language");
-            query1.addWhereExprEqValue("Language", "en");
-            query1.addSelect("OID");
-            query1.execute();
-            if (!query1.next()) {
-                DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_Language.xml"))
-                          .updateInDB();
+            //Admin_Language
+            QueryBuilder queryBldr = new QueryBuilder(UUID.fromString("56851b99-c5fe-41f5-9e95-d7d94137acc1"));
+            queryBldr.addWhereAttrEqValue("Language", "en");
+            InstanceQuery query = queryBldr.getQuery();
+            query.executeWithoutAccessCheck();
+            if (!query.next()) {
+                 DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_Language.xml")).updateInDB();
             }
 
-            // import person 2 role (if not already exists...)
             EFAPS_LOGGER.info("    Check if Person 2 Role must be imported");
-            SearchQuery query2 = new SearchQuery();
-            query2.setQueryTypes("Admin_User_Person2Role");
-            query2.addWhereExprEqValue("UserFromLink",   Context.getThreadContext().getPerson().getId());
-            query2.addWhereExprEqValue("UserToLink",     Role.get("Common_Main_PwdChg").getId());
-            query2.addWhereExprEqValue("UserJAASSystem", JAASSystem.getJAASSystem("eFaps").getId());
-            query2.addSelect("OID");
-            query2.execute();
-            if (!query2.next()) {
-                DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_PersonToRole.xml"))
-                          .updateInDB();
+            // import person 2 role (if not already exists...)
+            // Admin_User_Person2Role
+            queryBldr = new QueryBuilder(UUID.fromString("37deb6ae-3e1c-4642-8823-715120386fc3"));
+            queryBldr.addWhereAttrEqValue("UserFromLink",   Context.getThreadContext().getPerson().getId());
+            queryBldr.addWhereAttrEqValue("UserToLink",     Role.get("Common_Main_PwdChg").getId());
+            queryBldr.addWhereAttrEqValue("UserJAASSystem", JAASSystem.getJAASSystem("eFaps").getId());
+            query = queryBldr.getQuery();
+            query.executeWithoutAccessCheck();
+            if (!query.next()) {
+                DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_PersonToRole.xml")).updateInDB();
             }
 
-            // import run level for the web application (if not already exists...)
             EFAPS_LOGGER.info("    Check if Run Level webapp must be imported");
-            SearchQuery query3 = new SearchQuery();
-            query3.setQueryTypes("Admin_RunLevel_RunLevel");
-            query3.addWhereExprEqValue("UUID", "590ba27b-26eb-4bdf-ac30-1e1704c5f557");
-            query3.addSelect("OID");
-            query3.execute();
-            if (!query3.next()) {
-                DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_Webapp_RunLevel.xml"))
-                          .updateInDB();
+            // import run level for the web application (if not already exists...)
+            // Admin_RunLevel_RunLevel
+            queryBldr = new QueryBuilder(UUID.fromString("a35ffe76-d9ef-44de-975c-56384a3cf694"));
+            queryBldr.addWhereAttrEqValue("UUID", "590ba27b-26eb-4bdf-ac30-1e1704c5f557");
+            query = queryBldr.getQuery();
+            query.executeWithoutAccessCheck();
+            if (!query.next()) {
+                DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_Webapp_RunLevel.xml")).updateInDB();
             }
 
-
-            // import JAASKEY for Role ADMIN_REST  (if not already exists...)
             EFAPS_LOGGER.info("    Check if JAASKEY for Role ADMIN_REST must be imported");
-            SearchQuery query4 = new SearchQuery();
-            query4.setQueryTypes("Admin_User_JAASKey");
-            query4.addWhereExprEqValue("Key", "Admin_REST");
-            query4.addSelect("OID");
-            query4.execute();
-            if (!query4.next()) {
-                DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_Admin_REST_JAASKey.xml"))
-                          .updateInDB();
+            // Admin_User_JAASKey
+            queryBldr = new QueryBuilder(UUID.fromString("0e7650c6-8ec3-4c63-b377-f3eb5fb85f16"));
+            queryBldr.addWhereAttrEqValue("Key", "Admin_REST");
+            query = queryBldr.getQuery();
+            query.executeWithoutAccessCheck();
+            if (!query.next()) {
+                DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_Admin_REST_JAASKey.xml")).updateInDB();
             }
 
-            // import JAASKEY for Role ADMIN_REST  (if not already exists...)
-            EFAPS_LOGGER.info("    Check if User for Quartz must be imported");
-            SearchQuery query5 = new SearchQuery();
-            query5.setQueryTypes("Admin_User_Person");
-            query5.addWhereExprEqValue("Name", "QuartzTrigger");
-            query5.addSelect("OID");
-            query5.execute();
-            if (!query5.next()) {
-                DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_QuartzTriggerUser.xml"))
-                          .updateInDB();
+            EFAPS_LOGGER.info("    Check if for Person QuartzTrigger must be imported");
+            // Admin_User_Person
+            queryBldr = new QueryBuilder(UUID.fromString("fe9d94fd-2ed8-4c44-b1f0-00e150555888"));
+            queryBldr.addWhereAttrEqValue("Name", "QuartzTrigger");
+            query = queryBldr.getQuery();
+            query.executeWithoutAccessCheck();
+            if (!query.next()) {
+                DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_QuartzTriggerUser.xml")).updateInDB();
             }
 
-            // import JAASKEY for Role HistoryReader  (if not already exists...)
-            EFAPS_LOGGER.info("    Check if User for HistoryReader must be imported");
-            SearchQuery query6 = new SearchQuery();
-            query6.setQueryTypes("Admin_User_JAASKey");
-            query6.addWhereExprEqValue("Key", "History_Reader");
-            query6.addSelect("OID");
-            query6.execute();
-            if (!query6.next()) {
-                DataImport.readFile(new URL(EFAPS_ROOTURL, "Common/History/User/IMPORT_History_Reader_JAASKey.xml"))
-                          .updateInDB();
+            EFAPS_LOGGER.info("    Check if JAASKEY for Role HistoryReader must be imported");
+            // Admin_User_JAASKey
+            queryBldr = new QueryBuilder(UUID.fromString("0e7650c6-8ec3-4c63-b377-f3eb5fb85f16"));
+            queryBldr.addWhereAttrEqValue("Key", "History_Reader");
+            query = queryBldr.getQuery();
+            query.executeWithoutAccessCheck();
+            if (!query.next()) {
+                 DataImport.readFile(new URL(EFAPS_ROOTURL, "Common/History/User/IMPORT_History_Reader_JAASKey.xml")).updateInDB();
             }
-
         </script>
     </version>
 </install>
