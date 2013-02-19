@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2013 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          jmox
+ Author:          The efaps Team
  Revision:        $Rev$
  Last Changed:    $Date$
  Last Changed By: $Author$
@@ -28,7 +28,7 @@
               xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
   <uuid>308e0827-fa99-4740-8e8b-312e48382bee</uuid>
-  <bundle name="efaps_Admin_Common_DBProperty" sequence="1"/>
+  <bundle name="eFaps-Admin-Common-DBProperties" sequence="1"/>
   <resource>
     <type>Properties</type>
     <language></language>
