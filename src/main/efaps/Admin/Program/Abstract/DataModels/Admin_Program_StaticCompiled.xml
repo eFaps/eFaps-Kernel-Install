@@ -35,6 +35,7 @@
     <version-expression>(version==3) || (version==latest)</version-expression>
     <name>Admin_Program_StaticCompiled</name>
     <parent>Admin_Program_Compiled</parent>
+    <purpose abstract="true"/>
   </definition>
 
 </datamodel-type>

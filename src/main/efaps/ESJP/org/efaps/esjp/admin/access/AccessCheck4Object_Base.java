@@ -420,7 +420,7 @@ public abstract class AccessCheck4Object_Base
         }
         if (accessSets != null) {
             for (final String accessSet :  accessSets.split(";")) {
-                final AccessSet set = AccessSet.getAccessSet(accessSet);
+                final AccessSet set = AccessSet.get(accessSet);
                 if (set != null) {
                     values.put(set.getName(), set.getId());
                 }
@@ -611,7 +611,7 @@ public abstract class AccessCheck4Object_Base
                         persId = aPers.getId();
                     }
                 }
-                final AccessSet accSet = AccessSet.getAccessSet(perAr[i + 1]);
+                final AccessSet accSet = AccessSet.get(perAr[i + 1]);
                 if (persId != null && accSet != null) {
                     final QueryBuilder queryBldr = new QueryBuilder(Type.get(UUID
                                     .fromString("98d9b606-b1aa-4ae1-9f30-2cba0d99453b")));

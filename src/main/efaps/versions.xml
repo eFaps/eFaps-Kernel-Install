@@ -54,7 +54,7 @@
             <ignore step="DBPROPERTIES_UPDATE" />
         </lifecyle>
     </version>
-    <version number="5" reloadCache="false" login="false">
+    <version number="5" reloadCache="true" login="false">
         <description>Update Password of Administrator and Activate Administrator and Administration Role.</description>
         <lifecyle>
             <ignore step="DBPROPERTIES_UPDATE" />

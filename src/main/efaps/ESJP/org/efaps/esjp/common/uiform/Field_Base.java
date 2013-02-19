@@ -55,6 +55,8 @@ import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.InfinispanCache;
+import org.infinispan.Cache;
 import org.joda.time.DateTime;
 
 /**
@@ -757,7 +759,8 @@ public abstract class Field_Base
                     }
                 }
             } else {
-                for (final Dimension dim : Dimension.getTypeCache().getCache4Id().values()) {
+                final Cache<String, Dimension> cache = InfinispanCache.get().<String, Dimension>getCache("Dimension4Name");
+                for (final Dimension dim : cache.values()) {
                     group2dim.put(dim.getName(), dim);
                 }
             }

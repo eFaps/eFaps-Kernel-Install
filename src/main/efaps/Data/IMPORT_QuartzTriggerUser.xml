@@ -37,15 +37,6 @@
             <queryattribute name="Language">en</queryattribute>
         </linkattribute>
     </object>
-    <object type="Admin_User_JAASKey">
-        <attribute name="Key">QuartzTrigger</attribute>
-        <linkattribute name="UserLink" type="Admin_User_Person">
-            <queryattribute name="Name">QuartzTrigger</queryattribute>
-        </linkattribute>
-        <linkattribute name="JAASSystemLink" type="Admin_User_JAASSystem">
-            <queryattribute name="Name">eFaps</queryattribute>
-        </linkattribute>
-    </object>
 
     <object type="Admin_User_Person2Role">
         <linkattribute name="UserFromLink" type="Admin_User_Person">

@@ -34,7 +34,7 @@
     <definition>
         <version-expression>(version==4) || (version==latest)</version-expression>
         <name>Admin_Program_Compiled</name>
-        <purpose GeneralInstance="true" />
+        <purpose GeneralInstance="true" abstract="true"/>
         <!-- attributes -->
         <attribute>
             <name>Type</name>
