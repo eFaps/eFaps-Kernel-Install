@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2013 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,11 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIAdminCommon;
 import org.efaps.db.Delete;
 import org.efaps.db.Instance;
-import org.efaps.db.SearchQuery;
+import org.efaps.db.InstanceQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.util.EFapsException;
 
 /**
@@ -38,30 +40,31 @@ import org.efaps.util.EFapsException;
  */
 @EFapsUUID("fb9bddcb-0f39-4b55-88aa-891b91a2ee5b")
 @EFapsRevision("$Rev$")
-public class EventDeleteTrigger implements EventExecution {
+public class EventDeleteTrigger
+    implements EventExecution
+{
 
-  /**
-   * Method is executed from the DELETE_PRE trigger of all event types.
-   * It removes all subelements of the event. like Properties.
-   *
-   * @param _parameter Parameter as passed by eFaps to an esjp
-   * @return new Return
-   * @throws EFapsException on error
-   */
-  public Return execute(final Parameter _parameter)
-      throws EFapsException {
-    final Instance instance = _parameter.getInstance();
-
-    //remove properties
-    final SearchQuery query = new SearchQuery();
-    query.setExpand(instance, "Admin_Common_Property\\Abstract");
-    query.addSelect("OID");
-    query.execute();
-    while (query.next()) {
-      final Delete del = new Delete((String) query.get("OID"));
-      del.execute();
+    /**
+     * Method is executed from the DELETE_PRE trigger of all event types. It
+     * removes all subelements of the event. like Properties.
+     *
+     * @param _parameter Parameter as passed by eFaps to an esjp
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return execute(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance instance = _parameter.getInstance();
+        // remove properties
+        final QueryBuilder propQueryBldr = new QueryBuilder(CIAdminCommon.Property);
+        propQueryBldr.addWhereAttrEqValue(CIAdminCommon.Property.Abstract, instance.getId());
+        final InstanceQuery propQuery = propQueryBldr.getQuery();
+        propQuery.executeWithoutAccessCheck();
+        while (propQuery.next()) {
+            final Delete del = new Delete(propQuery.getCurrentValue());
+            del.execute();
+        }
+        return new Return();
     }
-    query.close();
-    return new Return();
-  }
 }
