@@ -27,6 +27,7 @@ import java.util.UUID;
 import org.efaps.admin.access.AccessType;
 import org.efaps.admin.access.AccessTypeEnums;
 import org.efaps.admin.datamodel.Attribute;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -199,10 +200,15 @@ public class Person
         final Object jaassystemid = getJAASSystemID();
         if (jaassystemid != null) {
             final Object[] key = (Object[]) values.get(instance.getType().getAttribute("Name"));
-            if (key != null) {
-                final Update update = new Update(CIAdminUser.JAASKey.getType(), getJAASUserID(instance.getId()));
-                update.add("Key", key[0]);
-                update.execute();
+            if (key != null && key.length > 0) {
+                final Type type = CIAdminUser.JAASKey.getType();
+                final Long id = getJAASUserID(instance.getId());
+                final Instance upInst = Instance.get(type, id);
+                if (upInst.isValid()) {
+                final Update update = new Update(upInst);
+                    update.add("Key", key[0]);
+                    update.execute();
+                }
             }
         }
         return null;
