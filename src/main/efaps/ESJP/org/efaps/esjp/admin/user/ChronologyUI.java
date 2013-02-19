@@ -64,7 +64,7 @@ public class ChronologyUI
 
         if (instance != null && instance.getType().getUUID().equals(CIAdminUser.Person.uuid)) {
             final PrintQuery print = new PrintQuery(instance);
-            print.getAttribute(CIAdminUser.Person.Chronology);
+            print.addAttribute(CIAdminUser.Person.Chronology);
             if (print.execute()) {
                 actualChrono = print.<String>getAttribute(CIAdminUser.Person.Chronology);
             }
@@ -93,7 +93,7 @@ public class ChronologyUI
         String actualChrono = ChronologyType.ISO8601.getKey();
         if (instance != null && instance.getType().getUUID().equals(CIAdminUser.Person.uuid)) {
             final PrintQuery print = new PrintQuery(instance);
-            print.getAttribute(CIAdminUser.Person.Chronology);
+            print.addAttribute(CIAdminUser.Person.Chronology);
             if (print.execute()) {
                 actualChrono = print.<String>getAttribute(CIAdminUser.Person.Chronology);
             }
