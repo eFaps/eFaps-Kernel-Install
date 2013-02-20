@@ -1,7 +1,7 @@
 <wiki:comment>
 @eFapsPackage  org.efaps.wiki
 @eFapsUUID     068471d6-7d72-4013-bbb5-d43417555a62
-@eFapsRevision $Rev: 3826 $
+@eFapsRevision $Rev$
 </wiki:comment>
 
 
