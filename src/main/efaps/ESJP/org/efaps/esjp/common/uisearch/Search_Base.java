@@ -46,6 +46,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.CacheReloadException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -179,8 +180,10 @@ public abstract class Search_Base
      * Render a dropdown with the types.
      * @param _parameter Parameter as passed from the eFaps API
      * @return Return containing HTML snipplet
+     *  @throws CacheReloadException on erro
      */
     public Return typeFieldValue(final Parameter _parameter)
+        throws CacheReloadException
     {
         final Return ret = new Return();
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);

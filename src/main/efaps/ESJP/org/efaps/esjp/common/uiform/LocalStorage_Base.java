@@ -18,7 +18,6 @@
  * Last Changed By: $Author: luis.estrada@efaps.org $
  */
 
-
 package org.efaps.esjp.common.uiform;
 
 import java.util.ArrayList;
@@ -35,14 +34,16 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.CacheReloadException;
 
 /**
  *
- * Class contains method for generate javascript to storage
- * and retrieve Fields from forms.
+ * Class contains method for generate javascript to storage and retrieve Fields
+ * from forms.
  *
  * @author The eFaps Team
- * @version $Id: LocalStorage_Base.java 7794 2012-08-10 22:35:24Z luis.estrada@efaps.org $
+ * @version $Id: LocalStorage_Base.java 7794 2012-08-10 22:35:24Z
+ *          luis.estrada@efaps.org $
  *
  */
 @EFapsRevision("$Rev: 1$")
@@ -87,8 +88,10 @@ public abstract class LocalStorage_Base
      *
      * @param _parameter from EFaps API
      * @return javascript to storage fields
+     * @throws CacheReloadException on error
      */
     protected String store(final Parameter _parameter)
+        throws CacheReloadException
     {
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final List<String[]> storageFields = new ArrayList<String[]>();
@@ -99,7 +102,7 @@ public abstract class LocalStorage_Base
 
         final StringBuilder js = new StringBuilder();
 
-        //retrieve properties PositionsField or FormField
+        // retrieve properties PositionsField or FormField
         for (int i = 0; i < properties.size(); i++) {
             if (properties.get("PositionField" + i) != null) {
                 final String strPositionFields = (String) properties.get("PositionField" + i);
@@ -115,15 +118,15 @@ public abstract class LocalStorage_Base
         js.append("function storage(){\n")
                         .append("//attributes  to storage")
                         .append("\n");
-        //create variable var for every field
-        for (String[] storageField : storageFields) {
+        // create variable var for every field
+        for (final String[] storageField : storageFields) {
             for (int j = 0; j < storageField.length; j++) {
                 js.append("var ").append(storageField[j]).append(" = document.getElementsByName('")
-                .append(storageField[j]).append("');\n");
+                                .append(storageField[j]).append("');\n");
             }
         }
 
-        for (String[] storageField : storageFields) {
+        for (final String[] storageField : storageFields) {
             for (int i = 0; i < storageField.length; i++) {
                 js.append("//object json to attribute")
                                 .append("\nvar json").append(storageField[i]).append(" = [];\n")
@@ -152,9 +155,9 @@ public abstract class LocalStorage_Base
         int count = 0;
         js.append("var form ").append(" = { ");
 
-        for (String[] storageField : storageFields) {
+        for (final String[] storageField : storageFields) {
             if (count != 0) {
-                //when storageFields has more than one element
+                // when storageFields has more than one element
                 js.append(", ").append(storageField[0]).append(" : ").append("json").append(storageField[0]);
             } else {
                 js.append(storageField[0]).append(" : ").append("json").append(storageField[0]);
@@ -180,8 +183,10 @@ public abstract class LocalStorage_Base
      *
      * @param _parameter from EFaps API
      * @return String of javascript to retrieve fields.
+     * @throws CacheReloadException on erro
      */
     protected String retrieve(final Parameter _parameter)
+        throws CacheReloadException
     {
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final List<String[]> positionFields = new ArrayList<String[]>();
@@ -193,7 +198,7 @@ public abstract class LocalStorage_Base
 
         final StringBuilder js = new StringBuilder();
 
-        //retrieve properties PositionsField or FormField
+        // retrieve properties PositionsField or FormField
         for (int i = 0; i < properties.size(); i++) {
             if (properties.get("PositionField" + i) != null) {
                 final String strPositionFields = (String) properties.get("PositionField" + i);
@@ -210,48 +215,47 @@ public abstract class LocalStorage_Base
                         .append("var retrievedObject = sessionStorage.getItem('").append(formUUID).append("');\n")
                         .append("var data = JSON.parse(retrievedObject);\n");
 
-        for (String[] positionField : positionFields) {
+        for (final String[] positionField : positionFields) {
             for (int i = 0; i < positionField.length; i++) {
                 js.append("//verified if type of field is text or select")
-                                .append("\nfor(var i = 0; i < data.").append(positionField[i])
-                                .append(".length ; i++){\n")
-                                .append("if(typeof data.").append(positionField[i])
-                                .append("[i].selected == 'undefined'){\n")
-                                .append("eFapsSetFieldValue(i, '").append(positionField[i])
-                                .append("', data.").append(positionField[i]).append("[i].value);\n")
-                                .append("}else{\n")
-                                .append("var options = [];\n")
-                                .append("options.push('' + data.").append(positionField[i])
-                                .append("[i].selected").append(");\n")
-                                .append("for(var j = 0; j < data.").append(positionField[i])
-                                .append("[i].options.length; j++){\n")
-                                .append("options.push('' + data.").append(positionField[i])
-                                .append("[i].options[j].index);\n")
-                                .append("options.push('' + data.").append(positionField[i])
-                                .append("[i].options[j].valueText);\n")
-                                .append("}\n")
-                                .append("eFapsSetFieldValue(i, '").append(positionField[i]).append("', options);\n")
-                                .append("}\n")
-                                .append("}\n");
+                    .append("\nfor(var i = 0; i < data.").append(positionField[i])
+                    .append(".length ; i++){\n")
+                    .append("if(typeof data.").append(positionField[i])
+                    .append("[i].selected == 'undefined'){\n")
+                    .append("eFapsSetFieldValue(i, '").append(positionField[i])
+                    .append("', data.").append(positionField[i]).append("[i].value);\n")
+                    .append("}else{\n")
+                    .append("var options = [];\n")
+                    .append("options.push('' + data.").append(positionField[i])
+                    .append("[i].selected").append(");\n")
+                    .append("for(var j = 0; j < data.").append(positionField[i])
+                    .append("[i].options.length; j++){\n")
+                    .append("options.push('' + data.").append(positionField[i])
+                    .append("[i].options[j].index);\n")
+                    .append("options.push('' + data.").append(positionField[i])
+                    .append("[i].options[j].valueText);\n")
+                    .append("}\n")
+                    .append("eFapsSetFieldValue(i, '").append(positionField[i]).append("', options);\n")
+                    .append("}\n")
+                    .append("}\n");
                 js.append(add2Script(_parameter, positionField[i]));
             }
         }
 
         js.append("}\n")
-
-                        .append("function retrieve(){\n")
-                        .append("var retrievedObject = sessionStorage.getItem('").append(formUUID).append("');\n")
-                        .append("var data = JSON.parse(retrievedObject);\n");
-        for (String[] positionField : positionFields) {
+                .append("function retrieve(){\n")
+                .append("var retrievedObject = sessionStorage.getItem('").append(formUUID).append("');\n")
+                .append("var data = JSON.parse(retrievedObject);\n");
+        for (final String[] positionField : positionFields) {
             js.append("var numberPositions = data.").append(positionField[0]).append(".length;\n");
             break;
         }
         js.append("Wicket.Event.add(window, \"domready\", function(event) {\n")
                         .append("addNewRows_positionTable(numberPositions, retrieveRows, null);\n");
-        for (String[] formField : formFields) {
+        for (final String[] formField : formFields) {
             for (int i = 0; i < formField.length; i++) {
                 js.append("eFapsSetFieldValue(0, '").append(formField[i])
-                .append("', data.").append(formField[i]).append("[0].value);\n");
+                                .append("', data.").append(formField[i]).append("[0].value);\n");
             }
         }
         js.append("})\n")
@@ -259,6 +263,11 @@ public abstract class LocalStorage_Base
         return js.toString();
     }
 
+    /**
+     * @param _parameter        Parameter as passed by the eFaps API
+     * @param _positionField    position
+     * @return additional script
+     */
     protected String add2Script(final Parameter _parameter,
                                 final String _positionField)
     {

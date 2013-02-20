@@ -18,7 +18,6 @@
  * Last Changed By: $Author$
  */
 
-
 package org.efaps.esjp.common.uiform;
 
 import java.io.IOException;
@@ -65,9 +64,9 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.Update;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.CacheReloadException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * TODO comment!
@@ -80,6 +79,7 @@ import org.slf4j.LoggerFactory;
 public abstract class Edit_Base
     implements EventExecution
 {
+
     /**
      * Logging instance used in this class.
      */
@@ -162,8 +162,8 @@ public abstract class Edit_Base
                 if (attrName != null && field.isEditableDisplay(TargetMode.EDIT)) {
                     final Attribute attr = _instance.getType().getAttribute(attrName);
                     // check if not a fileupload
-                    if (attr != null
-                                  && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType().getClassRepr())) {
+                    if (attr != null && !AbstractFileType.class.isAssignableFrom(
+                                    attr.getAttributeType().getClassRepr())) {
                         print.addAttribute(attrName);
                         fields.add(field);
                     }
@@ -177,7 +177,7 @@ public abstract class Edit_Base
                 if (context.getParameters().containsKey(field.getName())) {
                     final String newValue = context.getParameter(field.getName());
                     final String attrName = field.getAttribute();
-                    final Object object =  print.getAttribute(attrName);
+                    final Object object = print.getAttribute(attrName);
                     final String oldValue = object != null ? object.toString() : null;
                     if (!newValue.equals(oldValue)) {
                         final Attribute attr = _instance.getType().getAttribute(attrName);
@@ -194,8 +194,9 @@ public abstract class Edit_Base
 
     /**
      * Add to the given update.
-     * @param _update   Update
-     * @param _attr     Attribute
+     *
+     * @param _update Update
+     * @param _attr Attribute
      * @param _fieldName name of the Field
      * @throws EFapsException on error
      */
@@ -218,6 +219,14 @@ public abstract class Edit_Base
         }
     }
 
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _update       Update to add to
+     * @param _attr         current Attribute
+     * @param _fieldName    name of the field
+     * @param _idx          index
+     * @throws EFapsException obn error
+     */
     protected void add2Update(final Parameter _parameter,
                               final Update _update,
                               final Attribute _attr,
@@ -237,7 +246,6 @@ public abstract class Edit_Base
             _update.add(_attr, _parameter.getParameterValues(_fieldName)[_idx]);
         }
     }
-
 
     // OLD VERSION! WILL BE REMOVED
     private void updateFieldSetsOld(final Parameter _parameter,
@@ -333,6 +341,7 @@ public abstract class Edit_Base
             }
         }
     }
+
     /**
      * Method to update the related fieldsets if parameters are given for them.
      *
@@ -346,8 +355,8 @@ public abstract class Edit_Base
                                 final List<FieldSet> _fieldsets)
         throws EFapsException
     {
-        @SuppressWarnings("unchecked")
-        final Map<String, String> idmap = (Map<String, String>) _parameter.get(ParameterValues.OIDMAP4UI);
+        @SuppressWarnings("unchecked") final Map<String, String> idmap = (Map<String, String>) _parameter
+                        .get(ParameterValues.OIDMAP4UI);
         for (final FieldSet fieldset : _fieldsets) {
             if (_parameter.getParameters().containsKey(fieldset.getName() + "eFapsRemove")) {
                 // to mantain backward compatibility
@@ -360,7 +369,7 @@ public abstract class Edit_Base
                 if (_parameter.getParameters().containsKey(fieldset.getName() + "_ID")) {
                     final String[] idArray = _parameter.getParameterValues(fieldset.getName() + "_ID");
                     ids = new Object[idArray.length];
-                    for (int i = 0; i< idArray.length;i++) {
+                    for (int i = 0; i < idArray.length; i++) {
                         final String oid = idmap.get(idArray[i]);
                         // in case of new
                         Update update;
@@ -374,7 +383,7 @@ public abstract class Edit_Base
                             final Attribute child = set.getAttribute(attrName);
                             final String fieldName = fieldset.getName() + "_" + attrName;
                             if (_parameter.getParameters().containsKey(fieldName)) {
-                                add2Update(_parameter, update, child, fieldName,i);
+                                add2Update(_parameter, update, child, fieldName, i);
                             }
                         }
                         update.execute();
@@ -387,7 +396,7 @@ public abstract class Edit_Base
                     queryBldr.addWhereAttrNotEqValue("ID", ids);
                 }
                 final InstanceQuery query = queryBldr.getQuery();
-                for (final Instance toDelInst: query.execute()) {
+                for (final Instance toDelInst : query.execute()) {
                     final Delete del = new Delete(toDelInst);
                     del.execute();
                 }
@@ -437,8 +446,8 @@ public abstract class Edit_Base
                 if (attrName != null && field.isEditableDisplay(TargetMode.EDIT)) {
                     final Attribute attr = subClassType.getAttribute(attrName);
                     // check if not a fileupload
-                    if (attr != null
-                                  && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType().getClassRepr())) {
+                    if (attr != null && !AbstractFileType.class.isAssignableFrom(
+                                    attr.getAttributeType().getClassRepr())) {
                         subMulti.addAttribute(attrName);
                         fields.add(field);
                     }
@@ -538,9 +547,10 @@ public abstract class Edit_Base
 
     /**
      * Method to update the fieldtables.
-     * @param _parameter     Parameter as passed from the eFaps API
-     * @param _instance     instance
-     * @param _fieldTables  list of fieldtables
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _instance instance
+     * @param _fieldTables list of fieldtables
      * @throws EFapsException on error
      */
     public void updateFieldTable(final Parameter _parameter,
@@ -557,8 +567,9 @@ public abstract class Edit_Base
 
     /**
      * Delete removed rows.
-    *  @param _parameter    Parameter as passed from the eFaps API
-     * @param _rows         rows to be updated or added
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _rows rows to be updated or added
      * @throws EFapsException on error
      */
     public void deleteRows(final Parameter _parameter,
@@ -600,15 +611,16 @@ public abstract class Edit_Base
 
     /**
      * Update and add new Rows.
-     * @param _parameter    Parameter as passed from the eFaps API
-     * @param _rows         rows to be updated or added
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _rows rows to be updated or added
      * @throws EFapsException on error
      */
     public void updateAddRows(final Parameter _parameter,
                               final List<RowUpdate> _rows)
         throws EFapsException
     {
-        //TODO compare with database before update??
+        // TODO compare with database before update??
         final Map<?, ?> oids = (Map<?, ?>) _parameter.get(ParameterValues.OIDMAP4UI);
         for (final RowUpdate row : _rows) {
             if (!Edit_Base.FAKEROW.equals(row.getRowId())) {
@@ -631,9 +643,10 @@ public abstract class Edit_Base
 
     /**
      * Add additionals to the Update.
-     * @param _parameter    Parameter as passed by the eFaps API
-     * @param _update       Updaet that will be executed
-     * @param _row          row info
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _update Updaet that will be executed
+     * @param _row row info
      * @throws EFapsException on error
      */
     protected void add2Update4FieldTable(final Parameter _parameter,
@@ -644,20 +657,22 @@ public abstract class Edit_Base
         // to be implemented by subclasses.
     }
 
-
     /**
      * Analyze the table values row by row.
-     * @param _parameter    Parameter as passed fromthe eFaps API
-     * @param _fieldTables  list of fieldtables
+     *
+     * @param _parameter Parameter as passed fromthe eFaps API
+     * @param _fieldTables list of fieldtables
      * @return list of rows
+     * @throws CacheReloadException on error
      */
     public List<RowUpdate> analyseFieldTables(final Parameter _parameter,
                                               final List<FieldTable> _fieldTables)
+        throws CacheReloadException
     {
         final List<RowUpdate> rows = new ArrayList<RowUpdate>();
         boolean deleteAll = false;
         if (_parameter.getParameterValues("eFapsTableRowID") == null) {
-            deleteAll  = true;
+            deleteAll = true;
         } else {
             // get all rows
             for (final String rowId : _parameter.getParameterValues("eFapsTableRowID")) {
@@ -674,9 +689,9 @@ public abstract class Edit_Base
                     final Type type;
                     final String conattr;
                     if (event.getProperty("Expand") != null) {
-                        //TODO remove!
+                        // TODO remove!
                         Edit_Base.LOG.error("Use of deprecated api calling for Field: '%s' in Collection '%s' ",
-                                        new Object[]{fieldTable.getName(), fieldTable.getCollection().getName()});
+                                        new Object[] { fieldTable.getName(), fieldTable.getCollection().getName() });
                         final String expand = event.getProperty("Expand");
                         final String[] typeatt = expand.split("\\\\");
                         final String typeStr = typeatt[0];
@@ -736,6 +751,7 @@ public abstract class Edit_Base
      */
     public class RowUpdate
     {
+
         /**
          * Id of this row.
          */
@@ -811,7 +827,7 @@ public abstract class Edit_Base
 
         /**
          * @param _attrName name of the attribute
-         * @param _value    value
+         * @param _value value
          */
         public void addValue(final String _attrName,
                              final String _value)
@@ -852,7 +868,8 @@ public abstract class Edit_Base
         /**
          * Setter method for instance variable {@link #linkAttrName}.
          *
-         * @param _linkAttrName value for instance variable {@link #linkAttrName}
+         * @param _linkAttrName value for instance variable
+         *            {@link #linkAttrName}
          */
 
         public void setLinkAttrName(final String _linkAttrName)
@@ -861,4 +878,3 @@ public abstract class Edit_Base
         }
     }
 }
-
