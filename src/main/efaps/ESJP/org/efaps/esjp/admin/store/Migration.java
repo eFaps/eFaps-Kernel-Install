@@ -67,7 +67,7 @@ public class Migration
         final String baseDirPath = "/efaps/store/archives";
         final File baseDir = new File(baseDirPath);
         final IOFileFilter fileFilter = new RegexFileFilter("[0-9]*\\.[0-9]*");
-        @SuppressWarnings("unchecked")
+
         final Collection<File> files = FileUtils.listFiles(baseDir, fileFilter, TrueFileFilter.INSTANCE);
         for (final File file : files) {
             final Instance inst = Instance.get(file.getName());

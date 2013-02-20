@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -210,7 +210,7 @@ public class FormatOutput
         String line = null;
         try {
             while ((line = reader.readLine()) != null) {
-                final String tmp = StringEscapeUtils.escapeHtml(line);
+                final String tmp = StringEscapeUtils.escapeHtml4(line);
                 strb.append(tmp.replaceAll("\\s", "&nbsp;"));
                 strb.append("<br/>");
             }
