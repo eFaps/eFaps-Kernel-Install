@@ -15,15 +15,15 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 8224 $
- Last Changed:    $Date: 2012-11-16 10:18:38 -0500 (vie, 16 nov 2012) $
- Last Changed By: $Author: rosa.ordonez@efaps.org $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 --><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>2c11e460-565e-4f5c-991e-cff174753574</uuid>
     <file-application>eFaps-Kernel</file-application>
-    <file-revision>$Rev: 8224 $</file-revision>
+    <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
