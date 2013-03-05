@@ -57,7 +57,7 @@ public abstract class FileUtil_Base
                         final String _ending)
         throws EFapsException
     {
-        return getFile(_name.replace(File.separator, "_").replace(" ", "_") + "." + _ending);
+        return getFile(_name + "." + _ending);
     }
 
     /**
@@ -82,7 +82,7 @@ public abstract class FileUtil_Base
             if (!userFolder.exists()) {
                 userFolder.mkdirs();
             }
-            ret = new File(userFolder, _name);
+            ret = new File(userFolder,  _name.replaceAll("[^a-zA-Z0-9.-]", "_"));
         } catch (final IOException e) {
             throw new EFapsException(FileUtil_Base.class, "IOException", e);
         }
