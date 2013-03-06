@@ -405,7 +405,7 @@ public abstract class Field_Base
                 }
                 final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
                 final String[] types = typesStr.split(";");
-                final Type selType = Type.get(selected);
+                final Type selType = selected != null && !selected.isEmpty() ? Type.get(selected) : null;
                 for (final String typeStr  : types) {
                     final Set<Type> typeList = getTypeList(_parameter, Type.get(typeStr));
                     for (final Type type : typeList) {
