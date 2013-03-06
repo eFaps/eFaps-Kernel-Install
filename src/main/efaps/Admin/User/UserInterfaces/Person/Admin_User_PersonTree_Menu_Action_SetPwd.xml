@@ -41,6 +41,7 @@
     <target>
       <form>Admin_User_PersonSetPwdForm</form>
       <execute program="org.efaps.esjp.admin.user.Password" method="setPwdValueUI"/>
+      <validate method="validatePwdLengthUI" program="org.efaps.esjp.admin.user.Password"/>
     </target>
     <!-- properties -->
     <property name="Target">modal</property>
