@@ -92,6 +92,8 @@ public abstract class AbstractDynamicReport_Base
     {
         getReport().setColumnTitleStyle(getColumnTitleStyle4Html(_parameter))
             .setColumnStyle(getColumnStyle4Html(_parameter))
+            .setGroupStyle(getGroupStyle4Html(_parameter))
+            .setGroupTitleStyle(getGroupStyle4Html(_parameter))
                         .setIgnorePageWidth(true).setIgnorePagination(true).setHighlightDetailEvenRows(true);
     }
 
@@ -215,6 +217,21 @@ public abstract class AbstractDynamicReport_Base
                         .bold().setVerticalAlignment(VerticalAlignment.MIDDLE)
                         .setPadding(DynamicReports.stl.padding(2));
     }
+
+    /**
+     * Get the style for the group columns in case of a html document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return style as StyleBuilder
+     * @throws EFapsException on error
+     */
+    private StyleBuilder getGroupStyle4Html(final Parameter _parameter)
+    {
+        return DynamicReports.stl.style().bold()
+                        .setHorizontalAlignment(HorizontalAlignment.LEFT)
+                        .setPadding(DynamicReports.stl.padding(2));
+    }
+
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
