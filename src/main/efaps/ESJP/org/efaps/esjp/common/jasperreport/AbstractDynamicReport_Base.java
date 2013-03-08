@@ -36,6 +36,7 @@ import net.sf.dynamicreports.jasper.builder.export.JasperXlsExporterBuilder;
 import net.sf.dynamicreports.jasper.constant.SizeUnit;
 import net.sf.dynamicreports.report.builder.DynamicReports;
 import net.sf.dynamicreports.report.builder.component.SubreportBuilder;
+import net.sf.dynamicreports.report.builder.style.ReportStyleBuilder;
 import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import net.sf.dynamicreports.report.constant.HorizontalAlignment;
 import net.sf.dynamicreports.report.constant.VerticalAlignment;
@@ -94,6 +95,7 @@ public abstract class AbstractDynamicReport_Base
             .setColumnStyle(getColumnStyle4Html(_parameter))
             .setGroupStyle(getGroupStyle4Html(_parameter))
             .setGroupTitleStyle(getGroupStyle4Html(_parameter))
+            .setSubtotalStyle(getSubtotalStyle4Html(_parameter))
                         .setIgnorePageWidth(true).setIgnorePagination(true).setHighlightDetailEvenRows(true);
     }
 
@@ -107,7 +109,11 @@ public abstract class AbstractDynamicReport_Base
         throws EFapsException
     {
         getReport().setColumnTitleStyle(getColumnTitleStyle4Excel(_parameter))
-            .setColumnStyle(getColumnStyle4Excel(_parameter)).ignorePageWidth().ignorePagination();
+            .setColumnStyle(getColumnStyle4Excel(_parameter))
+            .setGroupStyle(getGroupStyle4Excel(_parameter))
+            .setGroupTitleStyle(getGroupStyle4Excel(_parameter))
+            .setSubtotalStyle(getSubtotalStyle4Excel(_parameter))
+            .ignorePageWidth().ignorePagination();
     }
 
     /**
@@ -122,6 +128,9 @@ public abstract class AbstractDynamicReport_Base
     {
         _builder.setColumnTitleStyle(getColumnTitleStyle4Pdf(_parameter))
             .setColumnStyle(getColumnStyle4Pdf(_parameter))
+            .setGroupStyle(getGroupStyle4Pdf(_parameter))
+            .setGroupTitleStyle(getGroupStyle4Pdf(_parameter))
+            .setSubtotalStyle(getSubtotalStyle4Pdf(_parameter))
                         .setIgnorePageWidth(false).setIgnorePagination(false).setHighlightDetailEvenRows(true);
     }
 
@@ -232,6 +241,72 @@ public abstract class AbstractDynamicReport_Base
                         .setPadding(DynamicReports.stl.padding(2));
     }
 
+    /**
+     * Get the style for the group columns in case of an excel document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return style as StyleBuilder
+     * @throws EFapsException on error
+     */
+    private StyleBuilder getGroupStyle4Excel(final Parameter _parameter)
+    {
+        return DynamicReports.stl.style().bold()
+                        .setHorizontalAlignment(HorizontalAlignment.LEFT)
+                        .setPadding(DynamicReports.stl.padding(2));
+    }
+
+    /**
+     * Get the style for the group columns in case of a pdf document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return style as StyleBuilder
+     * @throws EFapsException on error
+     */
+    private StyleBuilder getGroupStyle4Pdf(final Parameter _parameter)
+    {
+        return DynamicReports.stl.style().bold()
+                        .setHorizontalAlignment(HorizontalAlignment.LEFT)
+                        .setPadding(DynamicReports.stl.padding(2));
+    }
+
+    /**
+     * Get the style for the subtotal in case of a html document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return style as StyleBuilder
+     * @throws EFapsException on error
+     */
+    private ReportStyleBuilder getSubtotalStyle4Html(final Parameter _parameter)
+    {
+        return DynamicReports.stl.style().bold()
+                        .setTopBorder(DynamicReports.stl.pen1Point());
+    }
+
+    /**
+     * Get the style for the subtotal in case of an excel document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return style as StyleBuilder
+     * @throws EFapsException on error
+     */
+    private ReportStyleBuilder getSubtotalStyle4Excel(final Parameter _parameter)
+    {
+        return DynamicReports.stl.style().bold()
+                        .setTopBorder(DynamicReports.stl.pen1Point());
+    }
+
+    /**
+     * Get the style for the subtotal in case of a pdf document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return style as StyleBuilder
+     * @throws EFapsException on error
+     */
+    private ReportStyleBuilder getSubtotalStyle4Pdf(final Parameter _parameter)
+    {
+        return DynamicReports.stl.style().bold()
+                        .setTopBorder(DynamicReports.stl.pen1Point());
+    }
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
