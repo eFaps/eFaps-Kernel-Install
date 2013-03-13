@@ -115,20 +115,21 @@ public abstract class RangesValue_Base
             final QueryBuilder queryBldr = new QueryBuilder(Type.get(type));
             add2QueryBldr(_parameter, queryBldr);
             final MultiPrintQuery multi = queryBldr.getPrint();
-
             ValueList list = null;
-            if (value.contains("$<")) {
-                final ValueParser parser = new ValueParser(new StringReader(value));
-                try {
-                    list = parser.ExpressionString();
-                } catch (final ParseException e) {
-                    throw new EFapsException(RangesValue_Base.class.toString(), e);
+            if (multi.isMarked4execute()) {
+                if (value.contains("$<")) {
+                    final ValueParser parser = new ValueParser(new StringReader(value));
+                    try {
+                        list = parser.ExpressionString();
+                    } catch (final ParseException e) {
+                        throw new EFapsException(RangesValue_Base.class.toString(), e);
+                    }
+                    list.makeSelect(multi);
+                } else {
+                    multi.addAttribute(value);
                 }
-                list.makeSelect(multi);
-            } else {
-                multi.addAttribute(value);
+                multi.execute();
             }
-            multi.execute();
 
             final Map<String, String> tmpMap = new TreeMap<String, String>();
             final Map<String, Long> order = new TreeMap<String, Long>();
