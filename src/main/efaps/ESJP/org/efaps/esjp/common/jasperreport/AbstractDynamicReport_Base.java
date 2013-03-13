@@ -79,7 +79,9 @@ public abstract class AbstractDynamicReport_Base
      */
     private final JasperReportBuilder report = DynamicReports.report();
 
-
+    /**
+     * Name for the created file.
+     */
     private String fileName;
 
     /**
@@ -120,7 +122,9 @@ public abstract class AbstractDynamicReport_Base
      * Get the style for the columns in case of a pdf document.
      *
      * @param _parameter Parameter as passed by the eFaps API
+     * @param _builder buidler to be used
      * @throws EFapsException on error
+     *
      */
     protected void configure4Pdf(final Parameter _parameter,
                                  final JasperReportBuilder _builder)
@@ -234,7 +238,8 @@ public abstract class AbstractDynamicReport_Base
      * @return style as StyleBuilder
      * @throws EFapsException on error
      */
-    private StyleBuilder getGroupStyle4Html(final Parameter _parameter)
+    protected StyleBuilder getGroupStyle4Html(final Parameter _parameter)
+        throws EFapsException
     {
         return DynamicReports.stl.style().bold()
                         .setHorizontalAlignment(HorizontalAlignment.LEFT)
@@ -248,7 +253,8 @@ public abstract class AbstractDynamicReport_Base
      * @return style as StyleBuilder
      * @throws EFapsException on error
      */
-    private StyleBuilder getGroupStyle4Excel(final Parameter _parameter)
+    protected StyleBuilder getGroupStyle4Excel(final Parameter _parameter)
+        throws EFapsException
     {
         return DynamicReports.stl.style().bold()
                         .setHorizontalAlignment(HorizontalAlignment.LEFT)
@@ -262,7 +268,8 @@ public abstract class AbstractDynamicReport_Base
      * @return style as StyleBuilder
      * @throws EFapsException on error
      */
-    private StyleBuilder getGroupStyle4Pdf(final Parameter _parameter)
+    protected StyleBuilder getGroupStyle4Pdf(final Parameter _parameter)
+        throws EFapsException
     {
         return DynamicReports.stl.style().bold()
                         .setHorizontalAlignment(HorizontalAlignment.LEFT)
@@ -276,7 +283,8 @@ public abstract class AbstractDynamicReport_Base
      * @return style as StyleBuilder
      * @throws EFapsException on error
      */
-    private ReportStyleBuilder getSubtotalStyle4Html(final Parameter _parameter)
+    protected ReportStyleBuilder getSubtotalStyle4Html(final Parameter _parameter)
+        throws EFapsException
     {
         return DynamicReports.stl.style().bold()
                         .setTopBorder(DynamicReports.stl.pen1Point());
@@ -289,7 +297,8 @@ public abstract class AbstractDynamicReport_Base
      * @return style as StyleBuilder
      * @throws EFapsException on error
      */
-    private ReportStyleBuilder getSubtotalStyle4Excel(final Parameter _parameter)
+    protected ReportStyleBuilder getSubtotalStyle4Excel(final Parameter _parameter)
+        throws EFapsException
     {
         return DynamicReports.stl.style().bold()
                         .setTopBorder(DynamicReports.stl.pen1Point());
@@ -302,7 +311,8 @@ public abstract class AbstractDynamicReport_Base
      * @return style as StyleBuilder
      * @throws EFapsException on error
      */
-    private ReportStyleBuilder getSubtotalStyle4Pdf(final Parameter _parameter)
+    protected ReportStyleBuilder getSubtotalStyle4Pdf(final Parameter _parameter)
+        throws EFapsException
     {
         return DynamicReports.stl.style().bold()
                         .setTopBorder(DynamicReports.stl.pen1Point());
@@ -347,7 +357,6 @@ public abstract class AbstractDynamicReport_Base
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
-     * @param _strip     strip the body tags, so that onlty the table remains
      * @return html document as String
      * @throws EFapsException on error
      */
@@ -384,7 +393,6 @@ public abstract class AbstractDynamicReport_Base
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
-     * @param _strip     strip the body tags, so that onlty the table remains
      * @return html document as String
      * @throws EFapsException on error
      */
@@ -421,9 +429,8 @@ public abstract class AbstractDynamicReport_Base
     /**
      * Setter method for instance variable {@link #fileName}.
      *
-     * @param fileName value for instance variable {@link #fileName}
+     * @param _fileName value for instance variable {@link #fileName}
      */
-
     public void setFileName(final String _fileName)
     {
         this.fileName = _fileName;
@@ -458,14 +465,13 @@ public abstract class AbstractDynamicReport_Base
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
-     * @param _strip strip the body tags, so that onlty the table remains
      * @return html document as String
      * @throws EFapsException on error
      */
     public String getHtmlSnipplet(final Parameter _parameter)
         throws EFapsException
     {
-       return getHtml(_parameter, true);
+        return getHtml(_parameter, true);
     }
 
     public InputStream getTemplate(final Parameter _parameter,
