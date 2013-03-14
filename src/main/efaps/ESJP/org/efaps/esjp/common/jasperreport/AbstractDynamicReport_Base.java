@@ -107,10 +107,11 @@ public abstract class AbstractDynamicReport_Base
      * @param _parameter Parameter as passed by the eFaps API
      * @throws EFapsException on error
      */
-    protected void configure4Excel(final Parameter _parameter)
+    protected void configure4Excel(final Parameter _parameter,
+                                   final JasperReportBuilder _builder)
         throws EFapsException
     {
-        getReport().setColumnTitleStyle(getColumnTitleStyle4Excel(_parameter))
+        _builder.setColumnTitleStyle(getColumnTitleStyle4Excel(_parameter))
             .setColumnStyle(getColumnStyle4Excel(_parameter))
             .setGroupStyle(getGroupStyle4Excel(_parameter))
             .setGroupTitleStyle(getGroupStyle4Excel(_parameter))
@@ -399,19 +400,36 @@ public abstract class AbstractDynamicReport_Base
     public File getExcel(final Parameter _parameter)
         throws EFapsException
     {
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final String template = String.valueOf(properties.get("Template"));
         File file = null;
         try {
+            final JasperReportBuilder subreport = DynamicReports.report();
+            configure4Excel(_parameter, subreport);
+            addColumnDefintion(_parameter, subreport);
+
+            final SubreportBuilder sub = DynamicReports.cmp.subreport(subreport);
+            sub.setDataSource(createDataSource(_parameter));
+
+            getReport().detail(sub);
+
             file = new FileUtil().getFile(getFileName() == null ? "XLS" : getFileName(), "xls");
-            addColumnDefintion(_parameter, getReport());
             final JasperXlsExporterBuilder exporter = Exporters.xlsExporter(file);
             exporter.setIgnorePageMargins(true)
                     .setDetectCellType(true)
                     .setIgnoreCellBackground(true)
                     .setWhitePageBackground(false)
                     .setRemoveEmptySpaceBetweenColumns(true);
-            configure4Excel(_parameter);
+            configure4Excel(_parameter, getReport());
+
+            final InputStream in = getTemplate(_parameter, template);
+            getReport().setTemplateDesign(in);
+
+            final EFapsDataSource ds = new EFapsDataSource();
+            ds.init(getReport().toJasperReport(), _parameter, null, null);
+
             getReport().setLocale(Context.getThreadContext().getLocale())
-                .setDataSource(createDataSource(_parameter)).toXls(exporter);
+                .setDataSource(ds).toXls(exporter);
         } catch (final DRException e) {
             AbstractDynamicReport_Base.LOG.error("catched DRException", e);
         }
