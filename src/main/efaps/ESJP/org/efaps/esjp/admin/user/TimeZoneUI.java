@@ -68,7 +68,7 @@ public class TimeZoneUI
 
         if (instance != null && instance.getType().getUUID().equals(CIAdminUser.Person.uuid)) {
             final PrintQuery print = new PrintQuery(instance);
-            print.getAttribute(CIAdminUser.Person.TimeZone);
+            print.addAttribute(CIAdminUser.Person.TimeZone);
             if (print.execute()) {
                 actualTz = print.<String>getAttribute(CIAdminUser.Person.TimeZone);
             }
