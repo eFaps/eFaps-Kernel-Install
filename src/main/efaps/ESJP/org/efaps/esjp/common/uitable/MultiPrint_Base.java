@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.UUID;
 
 import org.efaps.admin.datamodel.Attribute;
@@ -48,6 +47,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateMidnight;
@@ -158,6 +158,7 @@ import org.slf4j.LoggerFactory;
 @EFapsUUID("49c223e8-e500-4c91-a949-576b63c4fb31")
 @EFapsRevision("$Rev$")
 public abstract class MultiPrint_Base
+    extends AbstractCommon
 {
     /**
      * Logger for this class.
@@ -299,32 +300,6 @@ public abstract class MultiPrint_Base
             attr = type.getStatusAttribute();
         }
         return attr.getName();
-    }
-
-    /**
-     * @param _parameter Parameter as passed by the eFaps API
-     * @return map with properties
-     * @throws EFapsException on error
-     */
-    protected Map<Integer, String> analyseProperty(final Parameter _parameter,
-                                                   final String _name)
-        throws EFapsException
-    {
-        final Map<Integer, String> ret = new TreeMap<Integer, String>();
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        // test for basic
-        if (properties.containsKey(_name)) {
-            ret.put(0, String.valueOf(properties.get(_name)));
-        }
-        for (int i = 1; i < 100; i++) {
-            final String nameTmp = _name + String.format("%02d", i);
-            if (properties.containsKey(nameTmp)) {
-                ret.put(i, String.valueOf(properties.get(nameTmp)));
-            } else {
-                break;
-            }
-        }
-        return ret;
     }
 
     /**

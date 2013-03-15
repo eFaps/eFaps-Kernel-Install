@@ -54,6 +54,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.InfinispanCache;
 import org.infinispan.Cache;
@@ -69,6 +70,7 @@ import org.joda.time.DateTime;
 @EFapsUUID("92337601-c2df-4f78-bb80-9c9b8b81c35c")
 @EFapsRevision("$Rev$")
 public abstract class Field_Base
+    extends AbstractCommon
 {
     /** Type of list to be rendered. */
     public enum ListType
@@ -888,6 +890,35 @@ public abstract class Field_Base
         }
         return ret;
     }
+
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return html snipplet presenting the values
+     * @throws EFapsException on error
+     */
+    public Return getDBPropertiesFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final StringBuilder html = new StringBuilder();
+        final Map<Integer, String> values = analyseProperty(_parameter, "DBProperty");
+        String seperator = getProperty(_parameter, "Seperator");
+        if (seperator == null) {
+            seperator = "<br\\>";
+        }
+        boolean first = true;
+        for (final String value : values.values()) {
+            if (first) {
+                first = false;
+            } else {
+                html.append(seperator);
+            }
+            html.append(DBProperties.getProperty(value));
+        }
+        ret.put(ReturnValues.SNIPLETT, html.toString());
+        return ret;
+    }
+
 
     /**
      * A position in a dropdown.
