@@ -671,11 +671,11 @@ public abstract class Edit_Base
     {
         final List<RowUpdate> rows = new ArrayList<RowUpdate>();
         boolean deleteAll = false;
-        if (_parameter.getParameterValues("eFapsTableRowID") == null) {
+        if (_parameter.getParameterValues("eFapsTRID") == null) {
             deleteAll = true;
         } else {
             // get all rows
-            for (final String rowId : _parameter.getParameterValues("eFapsTableRowID")) {
+            for (final String rowId : _parameter.getParameterValues("eFapsTRID")) {
                 rows.add(new RowUpdate(rowId));
             }
         }
