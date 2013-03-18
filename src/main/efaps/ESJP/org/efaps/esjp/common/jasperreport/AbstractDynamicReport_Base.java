@@ -401,17 +401,32 @@ public abstract class AbstractDynamicReport_Base
         throws EFapsException
     {
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String template = String.valueOf(properties.get("Template"));
         File file = null;
         try {
-            final JasperReportBuilder subreport = DynamicReports.report();
-            configure4Excel(_parameter, subreport);
-            addColumnDefintion(_parameter, subreport);
+            if (properties.get("Template") != null) {
+                final String template = String.valueOf(properties.get("Template"));
+                final JasperReportBuilder subreport = DynamicReports.report();
+                configure4Excel(_parameter, subreport);
+                addColumnDefintion(_parameter, subreport);
 
-            final SubreportBuilder sub = DynamicReports.cmp.subreport(subreport);
-            sub.setDataSource(createDataSource(_parameter));
+                final SubreportBuilder sub = DynamicReports.cmp.subreport(subreport);
+                sub.setDataSource(createDataSource(_parameter));
 
-            getReport().detail(sub);
+                getReport().detail(sub);
+
+                final InputStream in = getTemplate(_parameter, template);
+                getReport().setTemplateDesign(in);
+
+                final EFapsDataSource ds = new EFapsDataSource();
+                ds.init(getReport().toJasperReport(), _parameter, null, null);
+
+                getReport().setLocale(Context.getThreadContext().getLocale())
+                    .setDataSource(ds);
+            } else {
+                addColumnDefintion(_parameter, getReport());
+                getReport().setLocale(Context.getThreadContext().getLocale())
+                .setDataSource(createDataSource(_parameter));
+            }
 
             file = new FileUtil().getFile(getFileName() == null ? "XLS" : getFileName(), "xls");
             final JasperXlsExporterBuilder exporter = Exporters.xlsExporter(file);
@@ -422,14 +437,7 @@ public abstract class AbstractDynamicReport_Base
                     .setRemoveEmptySpaceBetweenColumns(true);
             configure4Excel(_parameter, getReport());
 
-            final InputStream in = getTemplate(_parameter, template);
-            getReport().setTemplateDesign(in);
-
-            final EFapsDataSource ds = new EFapsDataSource();
-            ds.init(getReport().toJasperReport(), _parameter, null, null);
-
-            getReport().setLocale(Context.getThreadContext().getLocale())
-                .setDataSource(ds).toXls(exporter);
+            getReport().toXls(exporter);
         } catch (final DRException e) {
             AbstractDynamicReport_Base.LOG.error("catched DRException", e);
         }
