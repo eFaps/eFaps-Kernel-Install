@@ -149,7 +149,7 @@ public abstract class AbstractDynamicReport_Base
     protected StyleBuilder getColumnStyle4Html(final Parameter _parameter)
         throws EFapsException
     {
-        return DynamicReports.stl.style().setPadding(DynamicReports.stl.padding(2));
+        return DynamicReports.stl.style().setPadding(DynamicReports.stl.padding(10));
     }
 
     /**
@@ -195,7 +195,7 @@ public abstract class AbstractDynamicReport_Base
                         .setHorizontalAlignment(HorizontalAlignment.CENTER)
                         .setBackgroundColor(Color.LIGHT_GRAY)
                         .bold().setVerticalAlignment(VerticalAlignment.MIDDLE)
-                        .setPadding(DynamicReports.stl.padding(2));
+                        .setPadding(DynamicReports.stl.padding(5));
     }
 
     /**
