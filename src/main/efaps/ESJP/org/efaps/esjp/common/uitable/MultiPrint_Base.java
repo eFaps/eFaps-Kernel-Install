@@ -462,7 +462,11 @@ public abstract class MultiPrint_Base
         final String from = (String) inner.get("from");
         final String to = (String) inner.get("to");
         if ((from == null || to == null) && _field.getFilter().getDefaultValue() == null) {
-            ret = false;
+            if (from != null && to == null && !from.isEmpty()) {
+                _queryBldr.addWhereAttrMatchValue(attr1, from).setIgnoreCase(true);
+            } else {
+                ret = false;
+            }
         } else {
             // Date or DateTime
             if (UUID.fromString("68ce3aa6-e3e8-40bb-b48f-2a67948c2e7e").equals(attrTypeUUId)
@@ -509,7 +513,11 @@ public abstract class MultiPrint_Base
         final String from = (String) inner.get("from");
         final String to = (String) inner.get("to");
         if ((from == null || to == null) && _field.getFilter().getDefaultValue() == null) {
-            ret = false;
+            if (from != null && to == null && !from.isEmpty()) {
+                _queryBldr.addWhereAttrMatchValue(_attrName, from).setIgnoreCase(true);
+            } else {
+                ret = false;
+            }
         } else {
             // Date or DateTime
             if (UUID.fromString("68ce3aa6-e3e8-40bb-b48f-2a67948c2e7e").equals(attrTypeUUId)
