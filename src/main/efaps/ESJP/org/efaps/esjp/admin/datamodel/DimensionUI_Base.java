@@ -70,6 +70,7 @@ public abstract class DimensionUI_Base
      * @return Return
      * @throws EFapsException on error
      */
+    @Override
     public Return execute(final Parameter _parameter)
         throws EFapsException
     {
@@ -79,7 +80,9 @@ public abstract class DimensionUI_Base
         final TreeMap<String, Long> map = new TreeMap<String, Long>();
         if (instance != null) {
             final Dimension dim = Dimension.get(instance.getId());
-            actual = dim.getBaseUoM().getId();
+            if (dim.getBaseUoM() != null) {
+                actual = dim.getBaseUoM().getId();
+            }
             for (final UoM uoM : dim.getUoMs()) {
                 map.put(uoM.getName(), uoM.getId());
             }
