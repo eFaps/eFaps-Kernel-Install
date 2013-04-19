@@ -30,7 +30,7 @@
         <attribute name="RunLevel">webapp</attribute>
         <attribute name="UUID">590ba27b-26eb-4bdf-ac30-1e1704c5f557</attribute>
         <linkattribute name="Parent" type="Admin_RunLevel_RunLevel">
-            <queryattribute name="RunLevel">shell</queryattribute>
+            <queryattribute name="RunLevel">bpm</queryattribute>
         </linkattribute>
 
         <object type="Admin_RunLevel_Definition">

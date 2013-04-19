@@ -122,6 +122,17 @@
                 DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_PersonToRole.xml")).updateInDB();
             }
 
+            EFAPS_LOGGER.info("    Check if Run Level bpm must be imported");
+            // import run level for the web application (if not already exists...)
+            // Admin_RunLevel_RunLevel
+            queryBldr = new QueryBuilder(UUID.fromString("a35ffe76-d9ef-44de-975c-56384a3cf694"));
+            queryBldr.addWhereAttrEqValue("UUID", "04403ff6-8ff4-4c52-9910-0619ed189f25");
+            query = queryBldr.getQuery();
+            query.executeWithoutAccessCheck();
+            if (!query.next()) {
+                DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_Bpm_RunLevel.xml")).updateInDB();
+            }
+
             EFAPS_LOGGER.info("    Check if Run Level webapp must be imported");
             // import run level for the web application (if not already exists...)
             // Admin_RunLevel_RunLevel

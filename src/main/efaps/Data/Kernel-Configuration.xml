@@ -136,7 +136,7 @@ Saltsize=8</value>
     </attribute>
     <attribute>
         <key>org.efaps.kernel.ActivateBPM</key>
-        <value>true</value>
+        <value>false</value>
         <description>Boolean (true/false): activate the BPM process mechanism.</description>
     </attribute>
   </definition>
