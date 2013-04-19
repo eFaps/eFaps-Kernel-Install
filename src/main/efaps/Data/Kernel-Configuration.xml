@@ -135,9 +135,9 @@ Saltsize=8</value>
         <description>The path to the libaries the webapp is build on. Needed for compilation of java and Jasperreports. e.g. "/tmp/Jetty_0_0_0_0_8060_efaps.war__efaps__.bo28gn/webapp/WEB-INF/lib/"</description>
     </attribute>
     <attribute>
-        <key>ActiveBpm</key>
+        <key>org.efaps.kernel.ActivateBPM</key>
         <value>true</value>
-        <description>activate bpm</description>
+        <description>Boolean (true/false): activate the BPM process mechanism.</description>
     </attribute>
   </definition>
 </common-systemconfiguration>
