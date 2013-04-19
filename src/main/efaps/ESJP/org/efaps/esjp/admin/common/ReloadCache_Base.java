@@ -26,7 +26,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.bpm.Bpm;
+import org.efaps.admin.runlevel.RunLevel;
 import org.efaps.db.Context;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
@@ -62,10 +62,8 @@ public abstract class ReloadCache_Base
         throws EFapsException
     {
         ReloadCache_Base.LOG.info("reload Cache by: " + Context.getThreadContext().getPerson().getName());
-//        RunLevel.init("webapp");
-//        RunLevel.execute();
-        Bpm.initialize();
-
+        RunLevel.init("webapp");
+        RunLevel.execute();
         ReloadCache_Base.LOG.info("reload Cache finished successfully");
         return new Return();
     }
@@ -84,7 +82,6 @@ public abstract class ReloadCache_Base
                         + Context.getThreadContext().getPerson().getName());
         SystemConfiguration.initialize();
         ReloadCache_Base.LOG.info("reload SystemConfigurations finished successfully");
-        Bpm.startProcess();
         return new Return();
     }
 }
