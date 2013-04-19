@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2013 The eFaps Team
 
@@ -21,26 +19,15 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
-
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>87001cc3-c45c-44de-b8f1-776df507f268</uuid>
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>2e7a7e2f-348c-4603-a1c4-c35e428fd4ee</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>MainToolBar</name>
-        <childs>
-            <child>Common_Main_Home</child>
-            <child>Admin_Common_MyDesk</child>
-            <child>Admin_Common_ReloadCache</child>
-            <child>Common_Main_Preferences</child>
-            <child>Common_Main_SetCompany</child>
-            <child>Common_Main_LogoutToolBar</child>
-        </childs>
+        <name>Common_Main_Home</name>
+        <icon>Main_Home</icon>
+        <!-- properties -->
+        <property name="HRef">${ROOTURL}/home</property>
     </definition>
-</ui-menu>
+</ui-command>
