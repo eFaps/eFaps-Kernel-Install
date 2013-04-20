@@ -686,14 +686,18 @@ function _eFapsInitRunLevel()  {
   _insert(stmt, null, null,
           "T_RUNLEVELDEF",
           "RUNLEVELID,PRIORITY,CLASS,METHOD",
-          "" + id + ",8, 'org.efaps.admin.datamodel.AbstractDataModelObject', 'initialize'");
+          "" + id + ",8, 'org.efaps.admin.user.Association', 'initialize'");
   _insert(stmt, null, null,
           "T_RUNLEVELDEF",
           "RUNLEVELID,PRIORITY,CLASS,METHOD",
-          "" + id + ",9, 'org.efaps.db.store.Store', 'initialize'");
+          "" + id + ",9, 'org.efaps.admin.datamodel.AbstractDataModelObject', 'initialize'");
   _insert(stmt, null, null,
           "T_RUNLEVELDEF",
           "RUNLEVELID,PRIORITY,CLASS,METHOD",
-          "" + id + ",10, 'org.efaps.jms.JmsHandler', 'initialize'");
+          "" + id + ",10, 'org.efaps.db.store.Store', 'initialize'");
+  _insert(stmt, null, null,
+          "T_RUNLEVELDEF",
+          "RUNLEVELID,PRIORITY,CLASS,METHOD",
+          "" + id + ",11, 'org.efaps.jms.JmsHandler', 'initialize'");
   conRsrc.commit();
 }
