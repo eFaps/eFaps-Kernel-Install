@@ -30,10 +30,12 @@
         <version-expression>(version==latest)</version-expression>
         <name>Admin_User_RoleAbstract</name>
         <parent>Admin_User_Abstract</parent>
+        <purpose abstract="true"/>
     </definition>
     <definition>
         <version-expression>(version==3)</version-expression>
         <name>Admin_User_RoleAbstract</name>
         <parent>Admin_User_Abstract</parent>
+        <purpose abstract="true"/>
     </definition>
 </datamodel-type>

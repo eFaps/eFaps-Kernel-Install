@@ -27,24 +27,24 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>b6f6c7bc-62ca-43e3-a63a-a271f0b85e93</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>b6f6c7bc-62ca-43e3-a63a-a271f0b85e93</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_User_RoleSearch</name>
-    <icon>Admin_User_RoleImage</icon>
-    <!-- target definitions -->
-    <target>
-      <form>Admin_User_AbstractForm</form>
-      <table>Admin_User_AbstractTable</table>
-      <evaluate program="org.efaps.esjp.common.uisearch.Search">
-        <property name="Types">Admin_User_RoleAbstract</property>
-      </evaluate>
-    </target>
-    <!-- properties -->
-    <property name="TargetMode">search</property>
-  </definition>
-
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_User_RoleSearch</name>
+        <icon>Admin_User_RoleImage</icon>
+        <!-- target definitions -->
+        <target>
+            <form>Admin_User_AbstractForm</form>
+            <table>Admin_User_AbstractTable</table>
+            <evaluate program="org.efaps.esjp.common.uisearch.Search">
+                <property name="Types">Admin_User_RoleAbstract</property>
+                <property name="ExpandChildTypes">true</property>
+            </evaluate>
+        </target>
+        <!-- properties -->
+        <property name="TargetMode">search</property>
+    </definition>
 </ui-command>

@@ -34,6 +34,7 @@
     <definition>
         <version-expression>(version==3) || (version==latest)</version-expression>
         <name>Admin_User_Abstract2Abstract</name>
+        <purpose abstract="true" />
         <!-- attributes -->
         <attribute>
             <name>Type</name>

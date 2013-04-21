@@ -30,6 +30,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Admin_User_RoleLocal</name>
         <parent>Admin_User_RoleAbstract</parent>
+        <purpose GeneralInstance="false"/>
         <trigger event="ACCESSCHECK" index="1" method="execute"
             name="Admin_User_Role_AccessCheck" program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType" />
         <trigger event="INSERT_POST" method="insertJaaskeyTrg"
@@ -41,5 +42,6 @@
         <version-expression>(version==3)</version-expression>
         <name>Admin_User_RoleLocal</name>
         <parent>Admin_User_RoleAbstract</parent>
+        <purpose GeneralInstance="false"/>
     </definition>
 </datamodel-type>

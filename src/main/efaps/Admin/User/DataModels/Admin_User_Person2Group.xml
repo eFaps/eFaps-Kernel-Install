@@ -27,30 +27,53 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>fec64148-a39b-4f69-bedd-9c3bcfe8e1602</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>fec64148-a39b-4f69-bedd-9c3bcfe8e1602</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <!-- define type (is already defined) -->
-  <definition>
-    <version-expression>(version==3) || (version==latest)</version-expression>
-    <name>Admin_User_Person2Group</name>
-    <parent>Admin_User_Abstract2Abstract</parent>
-    <!-- attributes -->
-    <attribute>
-      <name>UserFromLink</name>
-      <type>Link</type>
-      <typelink>Admin_User_Person</typelink>
-      <sqltable>Admin_User_Abstract2AbstractSQLTable</sqltable>
-      <sqlcolumn>USERABSTRACTFROM</sqlcolumn>
-    </attribute>
-    <attribute>
-      <name>UserToLink</name>
-      <type>Link</type>
-      <typelink>Admin_User_Group</typelink>
-      <sqltable>Admin_User_Abstract2AbstractSQLTable</sqltable>
-      <sqlcolumn>USERABSTRACTTO</sqlcolumn>
-    </attribute>
-   </definition>
-
+    <!-- define type (is already defined) -->
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_User_Person2Group</name>
+        <parent>Admin_User_Abstract2Abstract</parent>
+        <!-- attributes -->
+        <attribute>
+            <name>UserFromLink</name>
+            <type>Link</type>
+            <typelink>Admin_User_Person</typelink>
+            <sqltable>Admin_User_Abstract2AbstractSQLTable</sqltable>
+            <sqlcolumn>USERABSTRACTFROM</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>UserToLink</name>
+            <type>Link</type>
+            <typelink>Admin_User_Group</typelink>
+            <sqltable>Admin_User_Abstract2AbstractSQLTable</sqltable>
+            <sqlcolumn>USERABSTRACTTO</sqlcolumn>
+        </attribute>
+        <trigger program="org.efaps.esjp.admin.user.Association"
+            method="insertPostTrigger4PersonRelation"
+            name="Admin_User_Person2Group.INSERT_POST"
+            event="INSERT_POST"/>
+    </definition>
+    <definition>
+        <version-expression>(version==3)</version-expression>
+        <name>Admin_User_Person2Group</name>
+        <parent>Admin_User_Abstract2Abstract</parent>
+        <!-- attributes -->
+        <attribute>
+            <name>UserFromLink</name>
+            <type>Link</type>
+            <typelink>Admin_User_Person</typelink>
+            <sqltable>Admin_User_Abstract2AbstractSQLTable</sqltable>
+            <sqlcolumn>USERABSTRACTFROM</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>UserToLink</name>
+            <type>Link</type>
+            <typelink>Admin_User_Group</typelink>
+            <sqltable>Admin_User_Abstract2AbstractSQLTable</sqltable>
+            <sqlcolumn>USERABSTRACTTO</sqlcolumn>
+        </attribute>
+    </definition>
 </datamodel-type>

@@ -33,6 +33,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Admin_User_RoleGlobal</name>
         <parent>Admin_User_RoleAbstract</parent>
+        <purpose GeneralInstance="false"/>
         <trigger name="Admin_User_Role_AccessCheck"
             event="ACCESSCHECK"
             program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"
@@ -50,5 +51,6 @@
         <version-expression>(version==3)</version-expression>
         <name>Admin_User_RoleGlobal</name>
         <parent>Admin_User_RoleAbstract</parent>
+        <purpose GeneralInstance="false"/>
     </definition>
 </datamodel-type>
