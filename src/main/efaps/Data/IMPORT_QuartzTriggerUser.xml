@@ -42,7 +42,7 @@
         <linkattribute name="UserFromLink" type="Admin_User_Person">
             <queryattribute name="Name">QuartzTrigger</queryattribute>
         </linkattribute>
-        <linkattribute name="UserToLink" type="Admin_User_Role">
+        <linkattribute name="UserToLink" type="Admin_User_RoleGlobal">
             <queryattribute name="Name">Administration</queryattribute>
         </linkattribute>
         <linkattribute name="UserJAASSystem" type="Admin_User_JAASSystem">

@@ -27,7 +27,7 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <object type="Admin_User_JAASKey">
         <attribute name="Key">Admin_REST</attribute>
-        <linkattribute name="UserLink" type="Admin_User_Role">
+        <linkattribute name="UserLink" type="Admin_User_RoleGlobal">
             <queryattribute name="Name">Admin_REST</queryattribute>
         </linkattribute>
         <linkattribute name="JAASSystemLink" type="Admin_User_JAASSystem">

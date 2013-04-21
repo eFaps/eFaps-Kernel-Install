@@ -40,7 +40,8 @@
     <!-- for types -->
     <type>Admin_User_Group</type>
     <type>Admin_User_Person</type>
-    <type>Admin_User_Role</type>
+    <type>Admin_User_RoleGlobal</type>
+    <type>Admin_User_RoleLocal</type>
     <!-- depending users -->
     <role>Admin_User_ViewUsers</role>
   </definition>

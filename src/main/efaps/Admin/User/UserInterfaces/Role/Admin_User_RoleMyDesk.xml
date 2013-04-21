@@ -45,7 +45,7 @@
       <menu>Admin_User_RoleMyDesk_Menu</menu>
       <table>Admin_User_AbstractTable</table>
       <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-        <property name="Types">Admin_User_Role</property>
+        <property name="Types">Admin_User_RoleAbstract</property>
       </evaluate>
     </target>
     <!-- properties -->

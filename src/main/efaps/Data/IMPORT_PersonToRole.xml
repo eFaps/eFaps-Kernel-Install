@@ -32,7 +32,7 @@
             <queryattribute name="Name">Administrator</queryattribute>
         </linkattribute>
 
-        <linkattribute name="UserToLink" type="Admin_User_Role">
+        <linkattribute name="UserToLink" type="Admin_User_RoleGlobal">
             <queryattribute name="Name">Common_Main_PwdChg</queryattribute>
         </linkattribute>
 
@@ -45,7 +45,7 @@
             <queryattribute name="Name">Administrator</queryattribute>
         </linkattribute>
 
-        <linkattribute name="UserToLink" type="Admin_User_Role">
+        <linkattribute name="UserToLink" type="Admin_User_RoleGlobal">
             <queryattribute name="Name">Admin_REST</queryattribute>
         </linkattribute>
 
@@ -58,7 +58,7 @@
             <queryattribute name="Name">Administrator</queryattribute>
         </linkattribute>
 
-        <linkattribute name="UserToLink" type="Admin_User_Role">
+        <linkattribute name="UserToLink" type="Admin_User_RoleGlobal">
             <queryattribute name="Name">History_Reader</queryattribute>
         </linkattribute>
 

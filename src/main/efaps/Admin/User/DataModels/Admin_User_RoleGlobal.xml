@@ -31,8 +31,8 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_User_Role</name>
-        <parent>Admin_User_Abstract</parent>
+        <name>Admin_User_RoleGlobal</name>
+        <parent>Admin_User_RoleAbstract</parent>
         <trigger name="Admin_User_Role_AccessCheck"
             event="ACCESSCHECK"
             program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"
@@ -48,7 +48,7 @@
     </definition>
     <definition>
         <version-expression>(version==3)</version-expression>
-        <name>Admin_User_Role</name>
-        <parent>Admin_User_Abstract</parent>
+        <name>Admin_User_RoleGlobal</name>
+        <parent>Admin_User_RoleAbstract</parent>
     </definition>
 </datamodel-type>

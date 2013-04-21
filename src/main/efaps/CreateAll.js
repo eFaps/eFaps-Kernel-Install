@@ -285,8 +285,11 @@ function _eFapsCreateUserTablesStep2()  {
     text = "Insert Type for 'Admin_User_Person' (only to store ID for type)";
     var typeIdPerson        = _eFapsCreateInsertType(stmt, text, "fe9d94fd-2ed8-4c44-b1f0-00e150555888", "Admin_User_Person", null, 8);
 
-    text = "Insert Type for 'Admin_User_Role' (only to store ID for type)";
-    var typeIdRole          = _eFapsCreateInsertType(stmt, text, "e4d6ecbe-f198-4f84-aa69-5a9fd3165112", "Admin_User_Role", null, 8);
+    text = "Insert Type for 'Admin_User_RoleGlobal' (only to store ID for type)";
+    var typeIdRoleGlobal    = _eFapsCreateInsertType(stmt, text, "e4d6ecbe-f198-4f84-aa69-5a9fd3165112", "Admin_User_RoleGlobal", null, 8);
+
+    text = "Insert Type for 'Admin_User_RoleLocal' (only to store ID for type)";
+    var typeIdRoleLocal     = _eFapsCreateInsertType(stmt, text, "ae62fa23-6f5d-40e7-b1aa-d977fa4f188d", "Admin_User_RoleLocal", null, 8);
 
     text = "Insert Type for 'Admin_User_Group' (only to store ID for type)";
     var typeIdGroup         = _eFapsCreateInsertType(stmt, text, "f5e1e2ff-bfa9-40d9-8340-a259f48d5ad9", "Admin_User_Group", null, 8);
@@ -313,7 +316,7 @@ function _eFapsCreateUserTablesStep2()  {
       "update T_USERABSTRACT set TYPEID=" + typeIdPerson + " where TYPEID=-10000"
     );
     _exec(stmt, "Table 'T_USERABSTRACT'", "update type id for persons",
-      "update T_USERABSTRACT set TYPEID=" + typeIdRole + " where TYPEID=-11000"
+      "update T_USERABSTRACT set TYPEID=" + typeIdRoleGlobal + " where TYPEID=-11000"
     );
     _eFapsCommonSQLTableUpdate(stmt, "Foreign Contraint for column TYPEID", "T_USERABSTRACT", [
         ["constraint USERABSTR_FK_TYPEID foreign key(TYPEID) references T_DMTYPE(ID)"]
@@ -345,9 +348,10 @@ function _eFapsCreateUserTablesStep2()  {
         +       "T_USERABSTRACT.ID,"
         +       "T_USERABSTRACT.NAME, "
         +       "T_USERABSTRACT.UUID, "
-        +       "T_USERABSTRACT.STATUS "
+        +       "T_USERABSTRACT.STATUS, "
+        +       "T_USERABSTRACT.TYPEID "
         +   "from T_USERABSTRACT "
-        +   "where T_USERABSTRACT.TYPEID=" + typeIdRole
+        +   "where T_USERABSTRACT.TYPEID in (" + typeIdRoleGlobal + "," + typeIdRoleLocal +  ")"
     );
 
     _exec(stmt, "View 'V_USERROLEJASSKEY'", "view representing all roles related to the JAAS keys",
@@ -358,7 +362,7 @@ function _eFapsCreateUserTablesStep2()  {
         +       "T_USERJAASKEY.USERJAASSYSTEM as JAASSYSID,"
         +       "T_USERJAASKEY.JAASKEY as JAASKEY "
         +   "from T_USERABSTRACT,T_USERJAASKEY "
-        +   "where T_USERABSTRACT.TYPEID=" + typeIdRole + " "
+        +   "where T_USERABSTRACT.TYPEID in (" + typeIdRoleGlobal + "," + typeIdRoleLocal +  ") "
         +       "and T_USERABSTRACT.ID=T_USERJAASKEY.USERABSTRACT"
     );
 

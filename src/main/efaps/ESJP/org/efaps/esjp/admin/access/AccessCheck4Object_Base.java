@@ -505,7 +505,8 @@ public abstract class AccessCheck4Object_Base
                     final Map<String, String> map = new HashMap<String, String>();
                     map.put("eFapsAutoCompleteKEY", ((Long) role.getId()).toString());
                     map.put("eFapsAutoCompleteVALUE", role.getName());
-                    map.put("eFapsAutoCompleteCHOICE", role.getName() + " - " + CIAdminUser.Role.getType().getLabel());
+                    map.put("eFapsAutoCompleteCHOICE", role.getName() + " - "
+                                    + CIAdminUser.RoleAbstract.getType().getLabel());
                     tmpMap.put(role.getName(), map);
                 }
             }

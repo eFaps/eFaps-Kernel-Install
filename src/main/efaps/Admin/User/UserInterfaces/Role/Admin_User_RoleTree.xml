@@ -40,7 +40,7 @@
       <form>Admin_User_AbstractForm</form>
     </target>
     <!-- type tree for -->
-    <type>Admin_User_Role</type>
+    <type>Admin_User_RoleAbstract</type>
     <!-- childs -->
     <childs>
       <child>Admin_User_RoleTree_Persons</child>

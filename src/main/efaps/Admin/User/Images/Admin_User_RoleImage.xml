@@ -42,7 +42,7 @@
     <name>Admin_User_RoleImage</name>
     <file>Admin_User_RoleImage.gif</file>
     <!-- is type icon for -->
-    <type>Admin_User_Role</type>
+    <type>Admin_User_RoleAbstract</type>
   </definition>
 
 </ui-image>
