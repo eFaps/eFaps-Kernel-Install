@@ -21,44 +21,22 @@
 
 package org.efaps.esjp.bpm.task;
 
-import java.util.Map;
-
-import org.efaps.admin.datamodel.Status;
-import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Parameter.ParameterValues;
-import org.efaps.admin.event.Return;
-import org.efaps.db.Instance;
-import org.efaps.db.Update;
-import org.efaps.util.EFapsException;
+import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsUUID;
 
 
 /**
- * TODO comment!
+ * This class must be replaced for customization, therefore it is left empty.
+ * Functional description can be found in the related "<code>_Base</code>"
+ * class.
  *
  * @author The eFaps Team
  * @version $Id$
  */
+@EFapsUUID("c09c6982-edb5-4d86-a872-fcdde760b596")
+@EFapsRevision("$Rev$")
 public class StatusTask
     extends StatusTask_Base
 {
 
-    public Return setStatus(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return ret = new Return();
-        @SuppressWarnings("unchecked")
-        final Map<String, Object> parameters = (Map<String, Object>) _parameter.get(ParameterValues.BPM_VALUES);
-        final Instance inst = Instance.get((String) parameters.get("OID"));
-        final String statusStr = (String) parameters.get("Status");
-
-        if (inst.isValid()) {
-            final Status status = Status.find(inst.getType().getStatusAttribute().getLink().getUUID(), statusStr);
-            if (status != null) {
-                final Update update = new Update(inst);
-                update.add(inst.getType().getStatusAttribute(), status.getId());
-                update.execute();
-            }
-        }
-        return ret;
-    }
 }

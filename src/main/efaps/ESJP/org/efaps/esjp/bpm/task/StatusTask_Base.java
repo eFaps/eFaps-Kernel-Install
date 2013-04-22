@@ -21,6 +21,18 @@
 
 package org.efaps.esjp.bpm.task;
 
+import java.util.Map;
+
+import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
+import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Instance;
+import org.efaps.db.Update;
+import org.efaps.util.EFapsException;
+
 
 /**
  * TODO comment!
@@ -28,7 +40,28 @@ package org.efaps.esjp.bpm.task;
  * @author The eFaps Team
  * @version $Id$
  */
+@EFapsUUID("ed2cc573-d54f-4e8b-8fef-a45a2122305a")
+@EFapsRevision("$Rev$")
 public abstract class StatusTask_Base
 {
 
+    public Return setStatus(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        @SuppressWarnings("unchecked")
+        final Map<String, Object> parameters = (Map<String, Object>) _parameter.get(ParameterValues.BPM_VALUES);
+        final Instance inst = Instance.get((String) parameters.get("OID"));
+        final String statusStr = (String) parameters.get("Status");
+
+        if (inst.isValid()) {
+            final Status status = Status.find(inst.getType().getStatusAttribute().getLink().getUUID(), statusStr);
+            if (status != null) {
+                final Update update = new Update(inst);
+                update.add(inst.getType().getStatusAttribute(), status.getId());
+                update.execute();
+            }
+        }
+        return ret;
+    }
 }
