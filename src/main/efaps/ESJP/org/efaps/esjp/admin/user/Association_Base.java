@@ -31,6 +31,7 @@ import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.user.Role;
 import org.efaps.ci.CIAdminUser;
 import org.efaps.db.Insert;
 import org.efaps.db.InstanceQuery;
@@ -63,9 +64,9 @@ public abstract class Association_Base
         final Return ret = new Return();
         Long userId = null;
         final Map<Attribute, Object> values = (Map<Attribute, Object>) _parameter.get(ParameterValues.NEW_VALUES);
-        for (final Entry<Attribute,Object> entry : values.entrySet()) {
+        for (final Entry<Attribute, Object> entry : values.entrySet()) {
             if ("UserFromLink".equals(entry.getKey().getName())) {
-                userId = (Long) entry.getValue();
+                userId = Long.valueOf(((Object[]) entry.getValue())[0].toString());
                 break;
             }
         }
@@ -88,7 +89,10 @@ public abstract class Association_Base
                 roleMulti.addAttribute(CIAdminUser.Person2Role.UserToLink);
                 roleMulti.executeWithoutAccessCheck();
                 while (roleMulti.next()) {
-                    roleIds.add(roleMulti.<Long>getAttribute(CIAdminUser.Person2Role.UserToLink));
+                    final Role role = Role.get(roleMulti.<Long>getAttribute(CIAdminUser.Person2Role.UserToLink));
+                    if (role.isLocal()) {
+                        roleIds.add(role.getId());
+                    }
                 }
 
                 for (final Long roleId : roleIds) {
@@ -99,7 +103,8 @@ public abstract class Association_Base
                         final InstanceQuery query = assQueryBldr.getQuery();
                         query.executeWithoutAccessCheck();
                         if (!query.next()) {
-                            Association_Base.LOG.debug("Adding new Association with GroupID: {}, RoleID {}", groupId, roleId);
+                            Association_Base.LOG.debug("Adding new Association with GroupID: {}, RoleID {}", groupId,
+                                            roleId);
                             final Insert insert = new Insert(CIAdminUser.Association);
                             insert.add(CIAdminUser.Association.GroupLink, groupId);
                             insert.add(CIAdminUser.Association.RoleLink, roleId);
