@@ -364,28 +364,39 @@ public abstract class AbstractDynamicReport_Base
     public File getPDF(final Parameter _parameter)
         throws EFapsException
     {
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         File file = null;
         try {
-            final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-            final String template = String.valueOf(properties.get("Template"));
+            if (properties.get("Template") != null) {
+                final String template = String.valueOf(properties.get("Template"));
 
-            final JasperReportBuilder subreport = DynamicReports.report();
-            configure4Pdf(_parameter, subreport);
-            addColumnDefintion(_parameter, subreport);
+                final JasperReportBuilder subreport = DynamicReports.report();
+                configure4Pdf(_parameter, subreport);
+                addColumnDefintion(_parameter, subreport);
 
-            final SubreportBuilder sub = DynamicReports.cmp.subreport(subreport);
-            sub.setDataSource(createDataSource(_parameter));
+                final SubreportBuilder sub = DynamicReports.cmp.subreport(subreport);
+                sub.setDataSource(createDataSource(_parameter));
 
-            getReport().detail(sub);
+                getReport().detail(sub);
+
+                final InputStream in = getTemplate(_parameter, template);
+                getReport().setTemplateDesign(in);
+
+                final EFapsDataSource ds = new EFapsDataSource();
+                ds.init(getReport().toJasperReport(), _parameter, null, null);
+
+                getReport().setLocale(Context.getThreadContext().getLocale()).setDataSource(ds);
+            } else {
+                addColumnDefintion(_parameter, getReport());
+                getReport().setLocale(Context.getThreadContext().getLocale())
+                            .setDataSource(createDataSource(_parameter));
+            }
+
             file = new FileUtil().getFile(getFileName() == null ? "PDF" : getFileName(), "pdf");
             final JasperPdfExporterBuilder exporter = Exporters.pdfExporter(file);
+            configure4Pdf(_parameter, getReport());
 
-            final InputStream in = getTemplate(_parameter, template);
-            getReport().setTemplateDesign(in);
-
-            final EFapsDataSource ds = new EFapsDataSource();
-            ds.init(getReport().toJasperReport(), _parameter, null, null);
-            getReport().setLocale(Context.getThreadContext().getLocale()).setDataSource(ds).toPdf(exporter);
+            getReport().toPdf(exporter);
         } catch (final DRException e) {
             AbstractDynamicReport_Base.LOG.error("catched DRException", e);
         }
@@ -425,7 +436,7 @@ public abstract class AbstractDynamicReport_Base
             } else {
                 addColumnDefintion(_parameter, getReport());
                 getReport().setLocale(Context.getThreadContext().getLocale())
-                .setDataSource(createDataSource(_parameter));
+                                .setDataSource(createDataSource(_parameter));
             }
 
             file = new FileUtil().getFile(getFileName() == null ? "XLS" : getFileName(), "xls");
