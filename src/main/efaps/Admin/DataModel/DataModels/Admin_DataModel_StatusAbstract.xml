@@ -23,25 +23,25 @@
 
 -->
 
-<datamodel-type  xmlns="http://www.efaps.org/xsd" 
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   
+<datamodel-type  xmlns="http://www.efaps.org/xsd"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
   <uuid>f3eaf2f3-b24c-43c0-9ea1-0f6354438c81</uuid>
   <file-application>eFaps-Kernel</file-application>
   <file-revision>$Rev$</file-revision>
-  
+
   <definition>
-  
+
     <version-expression>(version==3) || (version==latest)</version-expression>
     <name>Admin_DataModel_StatusAbstract</name>
-    
+    <purpose abstract="true"/>
     <attribute>
       <name>OID</name>
       <type>OID</type>
       <sqltable>Admin_DataModel_StatusAbstractSQLTable</sqltable>
       <sqlcolumn>TYPEID, ID</sqlcolumn>
     </attribute>
-    
+
     <attribute>
       <name>Type</name>
       <type>Type</type>
@@ -55,14 +55,14 @@
       <sqltable>Admin_DataModel_StatusAbstractSQLTable</sqltable>
       <sqlcolumn>ID</sqlcolumn>
     </attribute>
-    
+
     <attribute>
       <name>Key</name>
       <type>String</type>
       <sqltable>Admin_DataModel_StatusAbstractSQLTable</sqltable>
       <sqlcolumn>KEY</sqlcolumn>
     </attribute>
-    
+
     <attribute>
       <name>Description</name>
       <type>String</type>
