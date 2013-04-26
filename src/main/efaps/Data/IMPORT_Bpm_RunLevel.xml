@@ -31,7 +31,7 @@
         <object type="Admin_RunLevel_Definition">
             <parentattribute name="RunLevelID" />
             <attribute name="Priority">1</attribute>
-            <attribute name="Class">org.efaps.bpm.Bpm</attribute>
+            <attribute name="Class">org.efaps.bpm.BPM</attribute>
             <attribute name="Method">initialize</attribute>
         </object>
     </object>
