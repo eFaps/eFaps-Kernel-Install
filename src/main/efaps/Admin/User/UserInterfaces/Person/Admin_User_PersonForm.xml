@@ -207,6 +207,32 @@
                 <property name="LinkFroms">UserFromLink</property>
             </evaluate>
         </field>
+        <field name="groupsheader" character="Heading">
+            <property name="Level">1</property>
+            <property name="Label">Admin_User_PersonForm.groupsheader.Heading</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessOnField"
+                method="configCheck"
+                name="Admin_User_PersonForm.groupsheader.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="SystemConfig">Kernel-Configuration</property>
+                <property name="Attribute">org.efaps.kernel.ActivateGroups</property>
+            </trigger>
+        </field>
+        <field name="groupstable" character="Target">
+            <table>Admin_User2User_AbstractTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Types">Admin_User_Person2Group</property>
+                <property name="LinkFroms">UserFromLink</property>
+            </evaluate>
+            <trigger program="org.efaps.esjp.admin.access.AccessOnField"
+                method="configCheck"
+                name="Admin_User_PersonForm.groupstable.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="SystemConfig">Kernel-Configuration</property>
+                <property name="Attribute">org.efaps.kernel.ActivateGroups</property>
+            </trigger>
+        </field>
         <field name="companieheader" character="Heading">
             <property name="Level">1</property>
             <property name="Label">Admin_User_PersonForm.companieheader.Heading</property>

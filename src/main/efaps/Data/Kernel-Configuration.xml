@@ -139,5 +139,10 @@ Saltsize=8</value>
         <value>false</value>
         <description>Boolean (true/false): activate the BPM process mechanism.</description>
     </attribute>
+     <attribute>
+        <key>org.efaps.kernel.ActivateGroups</key>
+        <value>false</value>
+        <description>Boolean (true/false): activate the Groups Access Mechanism. Default: false.</description>
+    </attribute>
   </definition>
 </common-systemconfiguration>

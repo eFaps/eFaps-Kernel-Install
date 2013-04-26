@@ -16,7 +16,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          tmo
+ Author:          The eFaps Team
  Revision:        $Rev$
  Last Changed:    $Date$
  Last Changed By: $Author$
@@ -27,24 +27,30 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>a097e68b-72ab-4f38-ad17-482d9d27e381</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>a097e68b-72ab-4f38-ad17-482d9d27e381</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_User_GroupSearch</name>
-    <icon>Admin_User_GroupImage</icon>
-    <!-- target definitions -->
-    <target>
-      <form>Admin_User_AbstractForm</form>
-      <table>Admin_User_AbstractTable</table>
-      <evaluate program="org.efaps.esjp.common.uisearch.Search">
-        <property name="Types">Admin_User_Group</property>
-      </evaluate>
-    </target>
-    <!-- properties -->
-    <property name="TargetMode">search</property>
-  </definition>
-
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_User_GroupSearch</name>
+        <icon>Admin_User_GroupImage</icon>
+        <!-- target definitions -->
+        <target>
+            <form>Admin_User_AbstractForm</form>
+            <table>Admin_User_AbstractTable</table>
+            <evaluate program="org.efaps.esjp.common.uisearch.Search">
+                <property name="Types">Admin_User_Group</property>
+            </evaluate>
+            <trigger program="org.efaps.esjp.admin.access.AccessOnField"
+                method="configCheck"
+                name="Admin_User_GroupSearch.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="SystemConfig">Kernel-Configuration</property>
+                <property name="Attribute">org.efaps.kernel.ActivateGroups</property>
+            </trigger>
+        </target>
+        <!-- properties -->
+        <property name="TargetMode">search</property>
+    </definition>
 </ui-command>

@@ -27,30 +27,29 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>f67e6e8b-5572-4013-8f73-7481eb7bd050</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>f67e6e8b-5572-4013-8f73-7481eb7bd050</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_User_RoleMyDesk</name>
-    <icon>Admin_User_RoleImage</icon>
-    <!-- access -->
-    <access>
-      <role>Administration</role>
-      <role>Admin_User_ModifyUsers</role>
-    </access>
-    <!-- target definitions -->
-    <target>
-      <menu>Admin_User_RoleMyDesk_Menu</menu>
-      <table>Admin_User_AbstractTable</table>
-      <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-        <property name="Types">Admin_User_RoleAbstract</property>
-      </evaluate>
-    </target>
-    <!-- properties -->
-    <property name="Target">content</property>
-    <property name="TargetShowCheckBoxes">true</property>
-  </definition>
-
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_User_RoleMyDesk</name>
+        <icon>Admin_User_RoleImage</icon>
+        <!-- access -->
+        <access>
+            <role>Administration</role>
+            <role>Admin_User_ModifyUsers</role>
+        </access>
+        <!-- target definitions -->
+        <target>
+            <menu>Admin_User_RoleMyDesk_Menu</menu>
+            <table>Admin_User_AbstractTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Types">Admin_User_RoleAbstract</property>
+            </evaluate>
+        </target>
+        <!-- properties -->
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
+    </definition>
 </ui-command>

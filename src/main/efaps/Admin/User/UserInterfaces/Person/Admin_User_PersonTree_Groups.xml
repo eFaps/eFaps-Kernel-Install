@@ -45,6 +45,13 @@
                 <property name="Types">Admin_User_Person2Group</property>
                 <property name="LinkFroms">UserFromLink</property>
             </evaluate>
+            <trigger program="org.efaps.esjp.admin.access.AccessOnField"
+                method="configCheck"
+                name="Admin_User_PersonTree_Groups.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="SystemConfig">Kernel-Configuration</property>
+                <property name="Attribute">org.efaps.kernel.ActivateGroups</property>
+            </trigger>
         </target>
         <!-- properties -->
         <property name="Target">content</property>
