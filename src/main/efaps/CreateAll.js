@@ -525,7 +525,7 @@ function _eFapsCreateDataModelTablesStep1()  {
   _eFapsCreateAttrType(stmt, null, 'ecbf543d-9c56-4ed3-b81c-d5b4918404ae', 'Rate',           'org.efaps.admin.datamodel.attributetype.RateType',           'org.efaps.admin.datamodel.ui.RateUI',           null, null);
   _eFapsCreateAttrType(stmt, null, '5a11337b-ec0b-4707-88d0-2f48217573cb', 'StringWithUoM',  'org.efaps.admin.datamodel.attributetype.StringWithUoMType',  'org.efaps.admin.datamodel.ui.StringWithUoMUI',  null, null);
   _eFapsCreateAttrType(stmt, null, '15e59dde-b79f-43d6-8b95-226c850af401', 'ConsortiumLink', 'org.efaps.admin.datamodel.attributetype.ConsortiumLinkType', 'org.efaps.admin.datamodel.ui.UserUI',           null, 1   );
-
+  _eFapsCreateAttrType(stmt, null, 'a48538dd-5d9b-468f-a84f-bf42791eed66', 'GroupLink',      'org.efaps.admin.datamodel.attributetype.GroupLinkType',      'org.efaps.admin.datamodel.ui.UserUI',           null, 1   );
 
   _eFapsCreateInsertAttr(stmt, ATTRTYPESQLTABLEID, ATTRTYPETYPEID, 'Classname',     'CLASSNAME',    'String', null);
   _eFapsCreateInsertAttr(stmt, ATTRTYPESQLTABLEID, ATTRTYPETYPEID, 'ClassnameUI',   'CLASSNAMEUI',  'String', null);

@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.efaps.admin.EFapsSystemConfiguration;
+import org.efaps.admin.KernelSettings;
 import org.efaps.admin.access.AccessSet;
 import org.efaps.admin.access.AccessType;
 import org.efaps.admin.access.AccessTypeEnums;
@@ -36,6 +38,7 @@ import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.user.Role;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.transaction.ConnectionResource;
@@ -70,6 +73,9 @@ public abstract class SimpleAccessCheckOnType_Base
         cmd.append("select count(*) from T_ACCESSSET2USER ");
 
         final Type type = _instance.getType();
+        final Set<Long> users = new HashSet<Long>();
+        final Set<Role> localRoles = new HashSet<Role>();
+
         if (type.isCheckStatus() && !_accessType.equals(AccessTypeEnums.CREATE.getAccessType())) {
             cmd.append(" join T_ACCESSSET2STATUS on T_ACCESSSET2USER.ACCESSSET = T_ACCESSSET2STATUS.ACCESSSET")
                 .append(" join ").append(type.getMainTable().getSqlTable())
@@ -82,18 +88,50 @@ public abstract class SimpleAccessCheckOnType_Base
         for (final AccessSet accessSet : type.getAccessSets()) {
             if (accessSet.getAccessTypes().contains(_accessType)) {
                 cmd.append(",").append(accessSet.getId());
+                users.addAll(accessSet.getUserIds());
             }
         }
         cmd.append(") ").append("and T_ACCESSSET2USER.USERABSTRACT in (").append(context.getPersonId());
-        for (final Long role : context.getPerson().getRoles()) {
-            cmd.append(",").append(role);
-        }
-        for (final Long group : context.getPerson().getGroups()) {
-            cmd.append(",").append(group);
+        for (final Long roleId : context.getPerson().getRoles()) {
+            if (users.contains(roleId)) {
+                cmd.append(",").append(roleId);
+                final Role role = Role.get(roleId);
+                if (role.isLocal()) {
+                    localRoles.add(role);
+                }
+            }
         }
         cmd.append(")");
         if (type.isCheckStatus() && !_accessType.equals(AccessTypeEnums.CREATE.getAccessType())) {
             cmd.append(" and ").append(type.getMainTable().getSqlTable()).append(".ID=").append(_instance.getId());
+        }
+
+        if (type.isGroupDepended() && !localRoles.isEmpty()
+                        && EFapsSystemConfiguration.KERNEL.get().getAttributeValueAsBoolean(
+                                        KernelSettings.ACTIVATE_GROUPS)) {
+            cmd.append(" and ").append(type.getMainTable().getSqlTable()).append(".")
+                            .append(type.getGroupAttribute().getSqlColNames().get(0)).append(" in (")
+                            .append(" select GROUPID from T_USERASSOC where ROLEID in (");
+            boolean first = true;
+            for (final Role role : localRoles) {
+                if (first) {
+                    first = false;
+                } else {
+                    cmd.append(",");
+                }
+                cmd.append(role.getId());
+            }
+            cmd.append(") and GROUPID in (");
+            first = true;
+            for (final Long group : context.getPerson().getGroups()) {
+                if (first) {
+                    first = false;
+                } else {
+                    cmd.append(",");
+                }
+                cmd.append(group);
+            }
+            cmd.append("))");
         }
         return executeStatement(_parameter, context, cmd);
     }
@@ -112,6 +150,8 @@ public abstract class SimpleAccessCheckOnType_Base
 
         final Type type = ((Instance) _instances.get(0)).getType();
         if (type.isCheckStatus()) {
+            final Set<Long> users = new HashSet<Long>();
+            final Set<Role> localRoles = new HashSet<Role>();
             final StringBuilder cmd = new StringBuilder();
             cmd.append("select ").append(type.getMainTable().getSqlTable()).append(".ID ")
                 .append(" from T_ACCESSSET2USER ")
@@ -124,16 +164,50 @@ public abstract class SimpleAccessCheckOnType_Base
             for (final AccessSet accessSet : type.getAccessSets()) {
                 if (accessSet.getAccessTypes().contains(_accessType)) {
                     cmd.append(",").append(accessSet.getId());
+                    users.addAll(accessSet.getUserIds());
                 }
             }
             cmd.append(") ").append("and T_ACCESSSET2USER.USERABSTRACT in (").append(context.getPersonId());
-            for (final Long role : context.getPerson().getRoles()) {
-                cmd.append(",").append(role);
-            }
-            for (final Long group : context.getPerson().getGroups()) {
-                cmd.append(",").append(group);
+            for (final Long roleId : context.getPerson().getRoles()) {
+                if (users.contains(roleId)) {
+                    cmd.append(",").append(roleId);
+                    final Role role = Role.get(roleId);
+                    if (role.isLocal()) {
+                        localRoles.add(role);
+                    }
+                }
             }
             cmd.append(")");
+            // add the check for groups if: the type is group depended, a local
+            // role is defined for the user, the group mechanism is activated
+            if (type.isGroupDepended() && !localRoles.isEmpty()
+                            && EFapsSystemConfiguration.KERNEL.get().getAttributeValueAsBoolean(
+                                            KernelSettings.ACTIVATE_GROUPS)) {
+                cmd.append(" and ").append(type.getMainTable().getSqlTable()).append(".")
+                                .append(type.getGroupAttribute().getSqlColNames().get(0)).append(" in (")
+                                .append(" select GROUPID from T_USERASSOC where ROLEID in (");
+                boolean first = true;
+                for (final Role role : localRoles) {
+                    if (first) {
+                        first = false;
+                    } else {
+                        cmd.append(",");
+                    }
+                    cmd.append(role.getId());
+                }
+                cmd.append(") and GROUPID in (");
+                first = true;
+                for (final Long group : context.getPerson().getGroups()) {
+                    if (first) {
+                        first = false;
+                    } else {
+                        cmd.append(",");
+                    }
+                    cmd.append(group);
+                }
+                cmd.append("))");
+            }
+
             final Set<Long> idList = new HashSet<Long>();
 
             ConnectionResource con = null;
@@ -157,9 +231,7 @@ public abstract class SimpleAccessCheckOnType_Base
                         stmt.close();
                     }
                 }
-
                 con.commit();
-
             } catch (final SQLException e) {
                 AccessCheckAbstract_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
             } finally {
@@ -170,7 +242,6 @@ public abstract class SimpleAccessCheckOnType_Base
                     accessMap.put((Instance) inst, idList.contains(((Instance) inst).getId()));
                 }
             }
-
         } else {
             final boolean access = checkAccess(_parameter, (Instance) _instances.get(0), _accessType);
             for (final Object inst : _instances) {
