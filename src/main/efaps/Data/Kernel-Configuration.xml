@@ -110,7 +110,7 @@ Saltsize=8</value>
     </attribute>
     <attribute>
         <key>SystemMessageTriggerActivated</key>
-        <value>true</value>
+        <value>false</value>
         <description>
             Boolean (true/false): activate the automatic search for messages.
         </description>
