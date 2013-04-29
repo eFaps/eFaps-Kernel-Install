@@ -58,6 +58,7 @@ import org.efaps.util.EFapsException;
 public abstract class SimpleAccessCheckOnType_Base
     extends AccessCheckAbstract
 {
+
     /**
      * {@inheritDoc}
      */
@@ -133,6 +134,7 @@ public abstract class SimpleAccessCheckOnType_Base
             }
             cmd.append("))");
         }
+        AccessCheckAbstract_Base.LOG.debug("cheking access with: {}", cmd);
         return executeStatement(_parameter, context, cmd);
     }
 
@@ -216,7 +218,7 @@ public abstract class SimpleAccessCheckOnType_Base
 
                 Statement stmt = null;
                 try {
-
+                    AccessCheckAbstract_Base.LOG.debug("Checking access with: {}", cmd);
                     stmt = con.getConnection().createStatement();
 
                     final ResultSet rs = stmt.executeQuery(cmd.toString());
@@ -270,7 +272,7 @@ public abstract class SimpleAccessCheckOnType_Base
         ConnectionResource con = null;
         try {
             con = _context.getConnectionResource();
-
+            AccessCheckAbstract_Base.LOG.debug("Checking access with: {}", _cmd);
             Statement stmt = null;
             try {
                 stmt = con.getConnection().createStatement();

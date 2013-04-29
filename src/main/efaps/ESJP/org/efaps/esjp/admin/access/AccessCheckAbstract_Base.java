@@ -21,7 +21,6 @@
 
 package org.efaps.esjp.admin.access;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,11 +56,6 @@ public abstract class AccessCheckAbstract_Base
     protected static final Logger LOG = LoggerFactory.getLogger(AccessCheckAbstract_Base.class);
 
     /**
-     * Key to store a Access mapping for a request to reduce access to the database.
-     */
-    public  static String REQUEST_KEY = "org.efaps.esjp.admin.access.AccessCheck";
-
-    /**
      * {@inheritDoc}
      */
     @Override
@@ -82,22 +76,6 @@ public abstract class AccessCheckAbstract_Base
         }
         return ret;
     }
-
-    @SuppressWarnings("unchecked")
-    protected Map<Instance, InstanceAccess> getAccessMap4Request()
-        throws EFapsException
-    {
-        Map<Instance, InstanceAccess> ret;
-        if (Context.getThreadContext().containsRequestAttribute(AccessCheckAbstract_Base.REQUEST_KEY)) {
-            ret = (Map<Instance, InstanceAccess>) Context.getThreadContext().getRequestAttribute(
-                            AccessCheckAbstract_Base.REQUEST_KEY);
-        } else {
-            ret = new HashMap<Instance, InstanceAccess>();
-            Context.getThreadContext().setRequestAttribute(AccessCheckAbstract_Base.REQUEST_KEY, ret);
-        }
-        return ret;
-    }
-
 
     /**
      * Check for the instance object if the current context user has the access
@@ -128,10 +106,4 @@ public abstract class AccessCheckAbstract_Base
                                                           final List<?> _instances,
                                                           final AccessType _accessType)
         throws EFapsException;
-
-
-    public class InstanceAccess
-    {
-
-    }
 }
