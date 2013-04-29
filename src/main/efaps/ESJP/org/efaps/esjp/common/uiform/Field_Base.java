@@ -241,8 +241,7 @@ public abstract class Field_Base
         if (uiObject instanceof FieldValue) {
             if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((FieldValue) uiObject).getDisplay())) {
                 ret = listFieldValue(_parameter, Field_Base.ListType.CHECKBOX);
-            }
-            else {
+            } else {
                 ret = new Return();
                 ret.put(ReturnValues.SNIPLETT, "");
             }

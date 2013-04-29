@@ -107,7 +107,8 @@ public abstract class SimpleAccessCheckOnType_Base
             cmd.append(" and ").append(type.getMainTable().getSqlTable()).append(".ID=").append(_instance.getId());
         }
 
-        if (type.isGroupDepended() && !localRoles.isEmpty()
+        if (type.isGroupDepended() && !_accessType.equals(AccessTypeEnums.CREATE.getAccessType())
+                        && !localRoles.isEmpty()
                         && EFapsSystemConfiguration.KERNEL.get().getAttributeValueAsBoolean(
                                         KernelSettings.ACTIVATE_GROUPS)) {
             cmd.append(" and ").append(type.getMainTable().getSqlTable()).append(".")
