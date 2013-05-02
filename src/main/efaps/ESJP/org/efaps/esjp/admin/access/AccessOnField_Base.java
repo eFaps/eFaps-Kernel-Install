@@ -101,6 +101,7 @@ public abstract class AccessOnField_Base
     public Return companyCheck(final Parameter _parameter)
         throws EFapsException
     {
+       
         final Return ret = new Return();
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final String companyStr = (String) properties.get("Companies");
@@ -108,7 +109,7 @@ public abstract class AccessOnField_Base
         for (final String company : companies) {
             final Company aCompany = Company.get(company);
             if (aCompany != null) {
-                if (Context.getThreadContext().getCompany().equals(aCompany)) {
+                if (Context.getThreadContext().getCompany().equals(aCompany) && checkStatus(_parameter)) {
                     ret.put(ReturnValues.TRUE, true);
                     break;
                 }
@@ -117,6 +118,10 @@ public abstract class AccessOnField_Base
         return ret;
     }
 
+    public boolean checkStatus(Parameter _parameter) throws EFapsException{
+        return true;
+        
+    }
     /**
      * Method is used to control access based on a Property of esjp.
      * Used for e.g. hiding a field in a form depending on a property of
