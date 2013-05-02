@@ -101,7 +101,7 @@ public abstract class AccessOnField_Base
     public Return companyCheck(final Parameter _parameter)
         throws EFapsException
     {
-       
+
         final Return ret = new Return();
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final String companyStr = (String) properties.get("Companies");
@@ -118,9 +118,10 @@ public abstract class AccessOnField_Base
         return ret;
     }
 
-    public boolean checkStatus(Parameter _parameter) throws EFapsException{
+    public boolean checkStatus(Parameter _parameter)
+        throws EFapsException
+    {
         return true;
-        
     }
     /**
      * Method is used to control access based on a Property of esjp.
