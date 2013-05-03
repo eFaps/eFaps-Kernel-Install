@@ -28,6 +28,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.efaps.admin.EFapsSystemConfiguration;
+import org.efaps.admin.KernelSettings;
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.AttributeSet;
 import org.efaps.admin.datamodel.Classification;
@@ -46,6 +48,7 @@ import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.Form;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.admin.ui.field.FieldSet;
+import org.efaps.bpm.BPM;
 import org.efaps.db.Checkin;
 import org.efaps.db.Context;
 import org.efaps.db.Delete;
@@ -87,8 +90,44 @@ public abstract class Create_Base
         fileUpload(_parameter, instance);
         // create classifications
         insertClassification(_parameter, instance);
-
+        // execute processes
+        executeProcess(_parameter, instance);
         return new Return();
+    }
+
+    /**
+     * @param _parameter Parameter as passed from the efaps API.
+     * @param _instance Instance on the insert
+     */
+    public void executeProcess(final Parameter _parameter,
+                               final Instance _instance)
+        throws EFapsException
+    {
+        if (EFapsSystemConfiguration.KERNEL.get().getAttributeValueAsBoolean(KernelSettings.ACTIVATE_BPM)) {
+            final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+            if (properties.containsKey("ProcessID")) {
+                final Map<String, Object> params = new HashMap<String,Object>();
+                params.put("OID", _instance.getOid());
+                add2ProcessMap(_parameter, _instance, params);
+                BPM.startProcess(properties.get("ProcessID").toString(), params);
+            }
+        }
+    }
+
+
+    /**
+     * Add additional values to the map passed to the process prior to execution.
+     *
+     * @param _parameter    Parameter as passed by the eFasp API
+     * @param _instance     Insert the values can be added to
+     * @param _params       Map passed to the Process
+     * @throws EFapsException on error
+     */
+    protected void add2ProcessMap(final Parameter _parameter,
+                                  final Instance _instance,
+                                  final  Map<String, Object> _params)
+    {
+
     }
 
     /**
