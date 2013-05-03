@@ -98,6 +98,7 @@ public abstract class Create_Base
     /**
      * @param _parameter Parameter as passed from the efaps API.
      * @param _instance Instance on the insert
+     * @throws EFapsException on error
      */
     public void executeProcess(final Parameter _parameter,
                                final Instance _instance)
@@ -106,7 +107,7 @@ public abstract class Create_Base
         if (EFapsSystemConfiguration.KERNEL.get().getAttributeValueAsBoolean(KernelSettings.ACTIVATE_BPM)) {
             final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
             if (properties.containsKey("ProcessID")) {
-                final Map<String, Object> params = new HashMap<String,Object>();
+                final Map<String, Object> params = new HashMap<String, Object>();
                 params.put("OID", _instance.getOid());
                 add2ProcessMap(_parameter, _instance, params);
                 BPM.startProcess(properties.get("ProcessID").toString(), params);
@@ -114,18 +115,19 @@ public abstract class Create_Base
         }
     }
 
-
     /**
-     * Add additional values to the map passed to the process prior to execution.
+     * Add additional values to the map passed to the process prior to
+     * execution.
      *
-     * @param _parameter    Parameter as passed by the eFasp API
-     * @param _instance     Insert the values can be added to
-     * @param _params       Map passed to the Process
+     * @param _parameter Parameter as passed by the eFasp API
+     * @param _instance Insert the values can be added to
+     * @param _params Map passed to the Process
      * @throws EFapsException on error
      */
     protected void add2ProcessMap(final Parameter _parameter,
                                   final Instance _instance,
-                                  final  Map<String, Object> _params)
+                                  final Map<String, Object> _params)
+        throws EFapsException
     {
 
     }
@@ -167,7 +169,7 @@ public abstract class Create_Base
                     if (attr != null
                                   && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType().getClassRepr())) {
                         if (_parameter.getParameters().containsKey(field.getName())) {
-                            add2Insert(insert, attr, field.getName());
+                            add2Insert(_parameter, insert, attr, field.getName(), 0);
                         }
                     }
                 }
@@ -203,27 +205,30 @@ public abstract class Create_Base
 
     /**
      * Add to the given update.
+     * @param _parameter    Parameter as passed by the eFaps API
      * @param _insert   Insert
      * @param _attr     Attribute
      * @param _fieldName name of the Field
+     *  @param _idx          index
      * @throws EFapsException on error
      */
-    protected void add2Insert(final Insert _insert,
+    protected void add2Insert(final Parameter _parameter,
+                              final Insert _insert,
                               final Attribute _attr,
-                              final String _fieldName)
+                              final String _fieldName,
+                              final int _idx)
         throws EFapsException
     {
-        final Context context = Context.getThreadContext();
         if (_attr.hasUoM()) {
-            _insert.add(_attr, new Object[] { context.getParameter(_fieldName),
-                            context.getParameter(_fieldName + "UoM") });
+            _insert.add(_attr, new Object[] { _parameter.getParameterValues(_fieldName)[_idx],
+                            _parameter.getParameterValues(_fieldName + "UoM")[_idx] });
         } else if (_attr.getAttributeType().getDbAttrType() instanceof RateType) {
-            final String value = context.getParameter(_fieldName);
-            final boolean inverted = "true".equalsIgnoreCase(context.getParameter(_fieldName
-                            + RateUI.INVERTEDSUFFIX));
+            final String value = _parameter.getParameterValues(_fieldName)[_idx];
+            final boolean inverted = "true".equalsIgnoreCase(_parameter.getParameterValues(_fieldName
+                            + RateUI.INVERTEDSUFFIX)[_idx]);
             _insert.add(_attr, new Object[] { inverted ? 1 : value, inverted ? value : 1 });
         } else {
-            _insert.add(_attr, context.getParameter(_fieldName));
+            _insert.add(_attr, _parameter.getParameterValues(_fieldName)[_idx]);
         }
     }
 
@@ -253,14 +258,14 @@ public abstract class Create_Base
                 if (_parameter.getParameters().containsKey(fieldset.getName() + "_ID")) {
                     final String[] idArray = _parameter.getParameterValues(fieldset.getName() + "_ID");
                     ids = new Object[idArray.length];
-                    for (int i = 0; i< idArray.length;i++) {
+                    for (int i = 0; i < idArray.length; i++) {
                         final Insert insert = new Insert(set);
                         insert.add(set.getAttribute(setName), _instance.getId());
                         for (final String attrName : fieldset.getOrder()) {
                             final Attribute child = set.getAttribute(attrName);
                             final String fieldName = fieldset.getName() + "_" + attrName;
                             if (_parameter.getParameters().containsKey(fieldName)) {
-                                add2Insert(insert, child, fieldName);
+                                add2Insert(_parameter, insert, child, fieldName, i);
                             }
                         }
                         insert.execute();
@@ -312,7 +317,7 @@ public abstract class Create_Base
                             final String fieldName = fieldset.getName() + "_eFapsNew_"
                                             + nf.format(Integer.parseInt(yCoord)) + nf.format(xCoord);
                             if (_parameter.getParameters().containsKey(fieldName)) {
-                                add2Insert(insert, child, fieldName);
+                                add2Insert(_parameter, insert, child, fieldName, 0);
                             }
                             xCoord++;
                         }
@@ -417,7 +422,7 @@ public abstract class Create_Base
                             if (attr != null
                                   && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType().getClassRepr())) {
                                 if (_parameter.getParameters().containsKey(field.getName())) {
-                                    add2Insert(classInsert, attr, field.getName());
+                                    add2Insert(_parameter, classInsert, attr, field.getName(), 0);
                                 }
                             }
                         }
