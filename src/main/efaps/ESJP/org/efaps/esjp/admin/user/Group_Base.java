@@ -25,7 +25,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -59,10 +61,15 @@ public abstract class Group_Base
         throws EFapsException
     {
         final Return ret = new Return();
+        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final Object value = fieldValue.getValue();
+
         final List<DropDownPosition> dropDownList = new ArrayList<DropDownPosition>();
         for (final Long groupId : Context.getThreadContext().getPerson().getGroups()) {
             final org.efaps.admin.user.Group group = org.efaps.admin.user.Group.get(groupId);
-            dropDownList.add(new DropDownPosition(groupId, group.getName(), group.getName()));
+            final DropDownPosition ddPos = new DropDownPosition(groupId, group.getName(), group.getName());
+            ddPos.setSelected(value != null && ((org.efaps.admin.user.Group) value).equals(group));
+            dropDownList.add(ddPos);
         }
         if (dropDownList.isEmpty()) {
             final QueryBuilder queryBldr = new QueryBuilder(CIAdminUser.Group);
@@ -71,12 +78,14 @@ public abstract class Group_Base
             while (query.next()) {
                 final org.efaps.admin.user.Group group = org.efaps.admin.user.Group
                                 .get(query.getCurrentValue().getId());
-                dropDownList.add(new DropDownPosition(group.getId(), group.getName(), group.getName()));
+                final DropDownPosition ddPos = new DropDownPosition(group.getId(), group.getName(), group.getName());
+                ddPos.setSelected(value != null && ((org.efaps.admin.user.Group) value).equals(group));
+                dropDownList.add(ddPos);
             }
         }
+
         Collections.sort(dropDownList, new Comparator<DropDownPosition>()
         {
-
             @SuppressWarnings("unchecked")
             @Override
             public int compare(final DropDownPosition _o1,
