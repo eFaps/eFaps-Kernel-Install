@@ -30,7 +30,10 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIAdminUser;
 import org.efaps.db.Context;
+import org.efaps.db.InstanceQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.util.EFapsException;
@@ -47,6 +50,11 @@ import org.efaps.util.EFapsException;
 public abstract class Group_Base
 {
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return containing snipplet
+     * @throws EFapsException on error
+     */
     public Return getFieldValue(final Parameter _parameter)
         throws EFapsException
     {
@@ -55,6 +63,16 @@ public abstract class Group_Base
         for (final Long groupId : Context.getThreadContext().getPerson().getGroups()) {
             final org.efaps.admin.user.Group group = org.efaps.admin.user.Group.get(groupId);
             dropDownList.add(new DropDownPosition(groupId, group.getName(), group.getName()));
+        }
+        if (dropDownList.isEmpty()) {
+            final QueryBuilder queryBldr = new QueryBuilder(CIAdminUser.Group);
+            final InstanceQuery query = queryBldr.getQuery();
+            query.executeWithoutAccessCheck();
+            while (query.next()) {
+                final org.efaps.admin.user.Group group = org.efaps.admin.user.Group
+                                .get(query.getCurrentValue().getId());
+                dropDownList.add(new DropDownPosition(group.getId(), group.getName(), group.getName()));
+            }
         }
         Collections.sort(dropDownList, new Comparator<DropDownPosition>()
         {
@@ -71,11 +89,17 @@ public abstract class Group_Base
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return containing true if no Group assigned or more than one
+     * @throws EFapsException on error
+     */
     public Return checkAccess4MoreThanOne(final Parameter _parameter)
         throws EFapsException
     {
         final Return ret = new Return();
-        if (Context.getThreadContext().getPerson().getGroups().size() > 1) {
+        if (Context.getThreadContext().getPerson().getGroups().isEmpty()
+                        || Context.getThreadContext().getPerson().getGroups().size() > 1) {
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
