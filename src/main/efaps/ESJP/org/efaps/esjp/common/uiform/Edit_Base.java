@@ -698,8 +698,15 @@ public abstract class Edit_Base
                         type = Type.get(typeStr);
                         conattr = typeatt[1];
                     } else {
-                        type = Type.get(event.getProperty("Types"));
-                        conattr = event.getProperty("LinkFroms");
+                        if (event.getProperty("Types") != null) {
+                            Edit_Base.LOG.error("Use of deprecated api calling for Field: '%s' in Collection '%s' ",
+                                            new Object[] { fieldTable.getName(), fieldTable.getCollection().getName() });
+                            type = Type.get(event.getProperty("Types"));
+                            conattr = event.getProperty("LinkFroms");
+                        } else {
+                            type = Type.get(event.getProperty("Type"));
+                            conattr = event.getProperty("LinkFrom");
+                        }
                     }
                     if (deleteAll) {
                         final RowUpdate fake = new RowUpdate(Edit_Base.FAKEROW);
