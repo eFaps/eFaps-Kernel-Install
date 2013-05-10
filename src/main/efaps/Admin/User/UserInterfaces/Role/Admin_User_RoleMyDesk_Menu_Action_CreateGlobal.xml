@@ -23,21 +23,27 @@
 
 -->
 
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>79ea1ad1-a493-4140-9740-330ec2fd9787</uuid>
+    <uuid>27412bbe-1dfd-49bb-a534-b6d317bceb28</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_User_RoleMyDesk_Menu_Action</name>
-        <!-- childs -->
-        <childs>
-            <child>Admin_User_RoleMyDesk_Menu_Action_CreateGlobal</child>
-            <child>Admin_User_RoleMyDesk_Menu_Action_CreateLocal</child>
-            <child>Admin_User_RoleMyDesk_Menu_Action_Delete</child>
-        </childs>
+        <name>Admin_User_RoleMyDesk_Menu_Action_CreateGlobal</name>
+        <icon>Admin_User_Role+Create+Image</icon>
+        <!-- target definitions -->
+        <target>
+            <form>Admin_User_AbstractForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Create" />
+        </target>
+        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Admin_User_RoleGlobal</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">250</property>
+        <property name="WindowWidth">560</property>
     </definition>
-</ui-menu>
+</ui-command>
