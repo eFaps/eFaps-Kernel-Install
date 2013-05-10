@@ -346,8 +346,8 @@ function _eFapsCreateUserTablesStep2()  {
       "create view V_USERROLE as "
         + "select "
         +       "T_USERABSTRACT.ID,"
-        +       "T_USERABSTRACT.NAME, "
         +       "T_USERABSTRACT.UUID, "
+        +       "T_USERABSTRACT.NAME, "
         +       "T_USERABSTRACT.STATUS, "
         +       "T_USERABSTRACT.TYPEID "
         +   "from T_USERABSTRACT "
@@ -370,6 +370,7 @@ function _eFapsCreateUserTablesStep2()  {
       "create view V_USERGROUP as "+
         "select "+
             "T_USERABSTRACT.ID,"+
+            "T_USERABSTRACT.UUID, " +
             "T_USERABSTRACT.NAME, "+
             "T_USERABSTRACT.STATUS "+
           "from T_USERABSTRACT "+
@@ -380,8 +381,8 @@ function _eFapsCreateUserTablesStep2()  {
             "create view V_USERCOMPANY as "+
               "select "+
                   "T_USERABSTRACT.ID,"+
-                  "T_USERABSTRACT.NAME, "+
                   "T_USERABSTRACT.UUID, " +
+                  "T_USERABSTRACT.NAME, "+
                   "T_USERABSTRACT.STATUS "+
                 "from T_USERABSTRACT "+
                 "where T_USERABSTRACT.TYPEID="+ typeIdCompany
@@ -391,8 +392,8 @@ function _eFapsCreateUserTablesStep2()  {
             "create view V_USERCONSORTIUM as "+
               "select "+
                   "T_USERABSTRACT.ID,"+
-                  "T_USERABSTRACT.NAME, "+
                   "T_USERABSTRACT.UUID, " +
+                  "T_USERABSTRACT.NAME, "+
                   "T_USERABSTRACT.STATUS "+
                 "from T_USERABSTRACT "+
                 "where T_USERABSTRACT.TYPEID="+ typeIdConsortium
