@@ -249,8 +249,8 @@ function _eFapsCreateUserTablesStep1()  {
 
   _insert(stmt, "Insert Administrator Person", null,
           "T_USERABSTRACT",
-          "TYPEID, NAME, CREATOR, CREATED, MODIFIER, MODIFIED",
-          "-10000, '" + EFAPS_USERNAME + "', 1, " + CURRENT_TIMESTAMP + ", 1, " + CURRENT_TIMESTAMP
+          "TYPEID, NAME, UUID, CREATOR, CREATED, MODIFIER, MODIFIED",
+          "-10000, 'f48e4b45-d910-4ac8-8a08-a4e99b9ade09', '" + EFAPS_USERNAME + "', 1, " + CURRENT_TIMESTAMP + ", 1, " + CURRENT_TIMESTAMP
   );
   _exec(stmt, null, null,
     "insert into T_USERPERSON(ID, FIRSTNAME, LASTNAME, PASSWORD) "+
