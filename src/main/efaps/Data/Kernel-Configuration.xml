@@ -144,5 +144,10 @@ Saltsize=8</value>
         <value>false</value>
         <description>Boolean (true/false): activate the Groups Access Mechanism. Default: false.</description>
     </attribute>
+    <attribute>
+        <key>org.efaps.kernel.RequirePersonUUID</key>
+        <value>false</value>
+        <description>Activate that UUID for Persons is Required.</description>
+    </attribute>
   </definition>
 </common-systemconfiguration>
