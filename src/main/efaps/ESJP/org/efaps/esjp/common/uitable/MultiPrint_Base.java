@@ -43,6 +43,7 @@ import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.admin.ui.AbstractUserInterfaceObject;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.admin.ui.field.Filter;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
@@ -368,7 +369,11 @@ public abstract class MultiPrint_Base
                     if (attrNames != null) {
                         exec = addInsideRangeFilter(entry, _queryBldr, _type, attrNames, field);
                     } else {
-                        exec = addFilter(entry, _queryBldr, _type, attrName, field);
+                        if (attrName != null && _type.getAttribute(attrName) != null) {
+                            exec = addFilter(entry, _queryBldr, _type, attrName, field);
+                        } else {
+                            exec = addFilter4Select(entry, _queryBldr, _type, field.getSelect(), field);
+                        }
                     }
                     if (!exec) {
                         break;
@@ -536,6 +541,49 @@ public abstract class MultiPrint_Base
                 _queryBldr.addWhereAttrLessValue(_attrName, dateTo);
             }
         }
+        return ret;
+    }
+
+    /**
+     * Method to add a Filter for one select.
+     *
+     * @param _entry entry to be evaluated
+     *@param _queryBldr QueryBuilder used to get the instances
+     * @param _type type for the query
+     * @param _select of the field
+     * @param _field field the filter belongs to
+     * @return true if the query must be executed, else false
+     * @throws EFapsException on error
+     */
+    protected boolean addFilter4Select(final Entry<?, ?> _entry,
+                                final QueryBuilder _queryBldr,
+                                final Type _type,
+                                final String _select,
+                                final Field _field)
+        throws EFapsException
+    {
+        final boolean ret = true;
+        final Map<?, ?> inner = (Map<?, ?>) _entry.getValue();
+        final String from = (String) inner.get("from");
+        if (_select.startsWith("class")) {
+            final String[] parts = _select.split("\\.");
+            if (parts[1].startsWith("attribute")) {
+                final String typeStr = parts[0].substring(6, parts[0].length() - 1);
+                final String attrName = parts[1].substring(10, parts[1].length() - 1);
+                final Classification classification = (Classification) Type.get(typeStr);
+
+                final QueryBuilder attrQueryBldr = new QueryBuilder(classification);
+                attrQueryBldr.addWhereAttrMatchValue(attrName, from).setIgnoreCase(true);
+                final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(classification.getLinkAttributeName());
+
+                _queryBldr.addWhereAttrInQuery("ID", attrQuery);
+            }
+        } else if (_select.startsWith("linkto")) {
+
+        } else if (_select.startsWith("linkfrom")) {
+
+        }
+
         return ret;
     }
 
