@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.event.Parameter;
@@ -53,6 +54,11 @@ public abstract class Group_Base
 {
 
     /**
+     * Key to be used to store the id of a goup in the session.
+     */
+    public static final String SESSIONVAR = "org.efaps.esjp.admin.user.Group.selected";
+
+    /**
      * @param _parameter Parameter as passed by the eFaps API
      * @return Return containing snipplet
      * @throws EFapsException on error
@@ -61,6 +67,8 @@ public abstract class Group_Base
         throws EFapsException
     {
         final Return ret = new Return();
+        final Map<?,?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final boolean setSessionVar = "true".equalsIgnoreCase((String) properties.get("SetSessionVariable"));
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         final Object value = fieldValue.getValue();
 
@@ -94,6 +102,19 @@ public abstract class Group_Base
                 return _o1.getOrderValue().compareTo(_o2.getOrderValue());
             }
         });
+        if (setSessionVar && !dropDownList.isEmpty()) {
+            boolean set = true;
+            for (final DropDownPosition ddPos: dropDownList) {
+                if (ddPos.isSelected()) {
+                    Context.getThreadContext().setSessionAttribute(Group_Base.SESSIONVAR, ddPos.getValue());
+                    set = false;
+                    break;
+                }
+            }
+            if (set) {
+                Context.getThreadContext().setSessionAttribute(Group_Base.SESSIONVAR, dropDownList.get(0).getValue());
+            }
+        }
         ret.put(ReturnValues.SNIPLETT, new Field().getDropDownField(_parameter, dropDownList).toString());
         return ret;
     }
