@@ -73,7 +73,8 @@ import org.slf4j.LoggerFactory;
  * <td>String</td>
  * <td>true</td>
  * <td>-</td>
- * <td>Name of a Type that will be used as the base for a QueryBuilder. If only one type or abstract type the numeral are not necessary.</td>
+ * <td>Name of a Type that will be used as the base for a QueryBuilder.
+ * If only one type or abstract type the numeral are not necessary.</td>
  * </tr>
  * <tr>
  * <td>LinkFromNN</td>
@@ -199,7 +200,7 @@ public abstract class MultiPrint_Base
             final int i = expands.containsKey(0) ? 0 : 1;
             for (final QueryBuilder queryBldr : getQueryBuilders(_parameter)) {
                 add2QueryBldr(_parameter, queryBldr);
-                if (!hasTable|| analyzeTable(_parameter,
+                if (!hasTable || analyzeTable(_parameter,
                                             (Map<?, ?>) _parameter.get(ParameterValues.OTHERS), queryBldr)) {
                     final InstanceQuery query = queryBldr.getQuery();
                     query.setIncludeChildTypes(!"false".equalsIgnoreCase(expands.get(i)));
@@ -247,7 +248,8 @@ public abstract class MultiPrint_Base
             ret.add(queryBldr);
 
             if (linkFroms.containsKey(typeEntry.getKey())) {
-                queryBldr.addWhereAttrEqValue(linkFroms.get(typeEntry.getKey()), getInstance4LinkFrom(_parameter).getId());
+                queryBldr.addWhereAttrEqValue(linkFroms.get(typeEntry.getKey()),
+                                getInstance4LinkFrom(_parameter).getId());
             }
             final List<Long> statusIds = new ArrayList<Long>();
             for (int i = 0; i < 100; i++) {
@@ -287,6 +289,7 @@ public abstract class MultiPrint_Base
     /**
      * Get the Status attribute name of a type by searching in the parent types.
      * @param _parameter Parameter as passed by the eFaps API
+     * @param _type Type to use
      * @return name of a StatusAttribute
      * @throws EFapsException on error
      */
@@ -321,7 +324,6 @@ public abstract class MultiPrint_Base
      * @param _parameter parameter from the eFaps API
      * @param _filter map of filters
      * @param _queryBldr QueryBuilder used to get the instances
-     * @param _type type the query is based on
      * @return List of instance
      * @throws EFapsException on error
      */
@@ -403,11 +405,11 @@ public abstract class MultiPrint_Base
         throws EFapsException
     {
         final Map<?, ?> inner = (Map<?, ?>) _entry.getValue();
-        boolean ret =false;
+        boolean ret = false;
         if (inner != null) {
             if (inner.containsKey("list")) {
                 final Set<?> list = (Set<?>) inner.get("list");
-               final Set<Classification> filters = new HashSet<Classification>();
+                final Set<Classification> filters = new HashSet<Classification>();
                 final Set<Classification> remove = new HashSet<Classification>();
                 for (final Object obj : list) {
                     filters.add((Classification) Type.get((UUID) obj));
@@ -556,10 +558,10 @@ public abstract class MultiPrint_Base
      * @throws EFapsException on error
      */
     protected boolean addFilter4Select(final Entry<?, ?> _entry,
-                                final QueryBuilder _queryBldr,
-                                final Type _type,
-                                final String _select,
-                                final Field _field)
+                                       final QueryBuilder _queryBldr,
+                                       final Type _type,
+                                       final String _select,
+                                       final Field _field)
         throws EFapsException
     {
         final boolean ret = true;
