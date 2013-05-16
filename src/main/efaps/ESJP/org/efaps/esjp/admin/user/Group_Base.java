@@ -67,7 +67,7 @@ public abstract class Group_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final Map<?,?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final boolean setSessionVar = "true".equalsIgnoreCase((String) properties.get("SetSessionVariable"));
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         final Object value = fieldValue.getValue();
@@ -128,8 +128,15 @@ public abstract class Group_Base
         throws EFapsException
     {
         final Return ret = new Return();
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final boolean inverse = "true".equalsIgnoreCase((String) props.get("Inverse"));
+        boolean access = false;
+
         if (Context.getThreadContext().getPerson().getGroups().isEmpty()
                         || Context.getThreadContext().getPerson().getGroups().size() > 1) {
+            access  = true;
+        }
+        if ((!inverse && access) || (inverse && !access)) {
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
