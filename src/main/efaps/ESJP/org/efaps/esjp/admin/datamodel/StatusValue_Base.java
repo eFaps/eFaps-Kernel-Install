@@ -73,6 +73,12 @@ public abstract class StatusValue_Base
                          || fieldValue.getTargetMode().equals(TargetMode.UNKNOWN)) {
             final Status status = Status.get((Long) fieldValue.getValue());
             map.put(status.getLabel(), ((Long) status.getId()).toString());
+        } else if (fieldValue.getTargetMode().equals(TargetMode.CREATE)) {
+            final Type type = fieldValue.getAttribute().getLink();
+            final StatusGroup group = Status.get(type.getUUID());
+            for (final Status status : group.values()) {
+                map.put(status.getLabel(), ((Long) status.getId()).toString());
+            }
         } else {
             if (fieldValue.getInstance().getType().isCheckStatus()) {
                 final Type type = fieldValue.getInstance().getType().getStatusAttribute().getLink();
