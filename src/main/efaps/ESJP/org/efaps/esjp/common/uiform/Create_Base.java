@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.runtime.process.ProcessInstance;
 import org.efaps.admin.EFapsSystemConfiguration;
 import org.efaps.admin.KernelSettings;
 import org.efaps.admin.datamodel.Attribute;
@@ -56,6 +57,7 @@ import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.ci.CIBPM;
 import org.efaps.util.EFapsException;
 
 
@@ -81,7 +83,6 @@ public abstract class Create_Base
     public Return execute(final Parameter _parameter)
         throws EFapsException
     {
-
         // create the basic object
         final Instance instance = basicInsert(_parameter);
         // connect the basic object to a middle object
@@ -110,7 +111,14 @@ public abstract class Create_Base
                 final Map<String, Object> params = new HashMap<String, Object>();
                 params.put("OID", _instance.getOid());
                 add2ProcessMap(_parameter, _instance, params);
-                BPM.startProcess(properties.get("ProcessID").toString(), params);
+                final ProcessInstance processInstance = BPM
+                                .startProcess(properties.get("ProcessID").toString(), params);
+                if ("true".equals(properties.get("RegisterProcess").toString())) {
+                    final Insert insert = new Insert(CIBPM.GeneralInstance2ProcessId);
+                    insert.add(CIBPM.GeneralInstance2ProcessId.ProcessId, processInstance.getId());
+                    insert.add(CIBPM.GeneralInstance2ProcessId.GeneralInstanceLink, _instance.getGeneralId());
+                    insert.executeWithoutTrigger();
+                }
             }
         }
     }
