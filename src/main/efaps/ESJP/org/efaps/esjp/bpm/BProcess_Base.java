@@ -57,7 +57,9 @@ public abstract class BProcess_Base
         final List<org.jbpm.task.Status> status;
         if (_status == null) {
             status = new ArrayList<org.jbpm.task.Status>();
-            status.add(org.jbpm.task.Status.Reserved);
+            for (final org.jbpm.task.Status statusTmp : org.jbpm.task.Status.values()) {
+                status.add(statusTmp);
+            }
         } else {
             status = _status;
         }
