@@ -20,8 +20,6 @@
 
 package org.efaps.esjp.admin.access;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.efaps.admin.datamodel.Attribute;
@@ -32,16 +30,9 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.bpm.BPM;
-import org.efaps.db.Context;
 import org.efaps.db.Instance;
-import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
-import org.efaps.db.QueryBuilder;
-import org.efaps.esjp.ci.CIBPM;
 import org.efaps.util.EFapsException;
-import org.jbpm.task.User;
-import org.jbpm.task.query.TaskSummary;
 
 /**
  * Class contains some smaller helper method for checking access to the
@@ -103,37 +94,6 @@ public class AccessCheck4UI
                         ret.put(ReturnValues.TRUE, true);
                         break;
                     }
-                }
-            }
-        }
-        return ret;
-    }
-
-    public Return check4TaskClaim(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return ret = new Return();
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final List<org.jbpm.task.Status> status = new ArrayList<org.jbpm.task.Status>();
-        status.add(org.jbpm.task.Status.Reserved);
-
-        final String taskName = (String) properties.get("TaskName");
-        final QueryBuilder queryBldr = new QueryBuilder(CIBPM.GeneralInstance2ProcessId);
-        queryBldr.addWhereAttrEqValue(CIBPM.GeneralInstance2ProcessId.GeneralInstanceLink, _parameter.getInstance()
-                        .getGeneralId());
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CIBPM.GeneralInstance2ProcessId.ProcessId);
-        multi.executeWithoutAccessCheck();
-
-        while (multi.next()) {
-            final Long processInstanceId = multi.<Long>getAttribute(CIBPM.GeneralInstance2ProcessId.ProcessId);
-            final List<TaskSummary> taskSummaries = BPM.getTasksByStatusByProcessIdByTaskName(processInstanceId, status,
-                            taskName);
-            for (final TaskSummary taskSummary : taskSummaries) {
-                final User owner = taskSummary.getActualOwner();
-                if (owner.getId().equals(Context.getThreadContext().getPerson().getUUID().toString())) {
-                    ret.put(ReturnValues.TRUE, true);
-                    break;
                 }
             }
         }
