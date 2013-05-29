@@ -40,7 +40,7 @@
             <table-name>T_PRGCOMPILED</table-name>
             <!-- columns -->
             <column name="TYPEID"   type="INTEGER" />
-            <column name="NAME"     type="STRING_SHORT" length="128"    not-null="true" />
+            <column name="NAME"     type="STRING_SHORT" length="256"    not-null="true" />
             <column name="PROGRAM"  type="INTEGER"                      not-null="true" />
             <column name="CREATOR"  type="INTEGER"                      not-null="true" />
             <column name="CREATED"  type="DATETIME"                     not-null="true" />
