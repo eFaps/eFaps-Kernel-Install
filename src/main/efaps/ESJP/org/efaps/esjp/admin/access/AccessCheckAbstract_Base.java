@@ -72,7 +72,9 @@ public abstract class AccessCheckAbstract_Base
             }
         } else {
             final List<?> instances = (List<?>) _parameter.get(ParameterValues.OTHERS);
-            ret.put(ReturnValues.VALUES, checkAccess(_parameter, instances, accessType));
+            if (instances != null) {
+                ret.put(ReturnValues.VALUES, checkAccess(_parameter, instances, accessType));
+            }
         }
         return ret;
     }
