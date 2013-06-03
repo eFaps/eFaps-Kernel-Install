@@ -34,8 +34,10 @@ import org.efaps.admin.KernelSettings;
 import org.efaps.admin.access.AccessSet;
 import org.efaps.admin.access.AccessType;
 import org.efaps.admin.access.AccessTypeEnums;
+import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.user.Role;
@@ -72,8 +74,12 @@ public abstract class SimpleAccessCheckOnType_Base
 
         final StringBuilder cmd = new StringBuilder();
         cmd.append("select count(*) from T_ACCESSSET2USER ");
-
-        final Type type = _instance.getType();
+        Type type;
+        if (_parameter.get(ParameterValues.CLASS) instanceof Classification) {
+            type = (Classification) _parameter.get(ParameterValues.CLASS);
+        } else {
+            type = _instance.getType();
+        }
         final Set<Long> users = new HashSet<Long>();
         final Set<Role> localRoles = new HashSet<Role>();
 
