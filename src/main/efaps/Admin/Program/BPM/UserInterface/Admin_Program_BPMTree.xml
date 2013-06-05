@@ -33,8 +33,10 @@
         <target>
             <form>Admin_Program_BPMForm</form>
         </target>
-
         <type>Admin_Program_BPM</type>
+        <childs>
+            <child>Admin_Program_BPMTree_Image</child>
+        </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>

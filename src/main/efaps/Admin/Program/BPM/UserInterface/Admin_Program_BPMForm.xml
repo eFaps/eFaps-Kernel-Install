@@ -77,5 +77,16 @@
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
+        <field name="imageHeader" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Admin_Program_BPMForm.imageHeader.Heading</property>
+        </field>
+        <field name="image">
+            <property name="HideLabel">true</property>
+            <trigger program="org.efaps.esjp.bpm.BProcess"
+                name="Admin_Program_BPMForm.image.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE"
+                method="getImageFieldValue"></trigger>
+        </field>
     </definition>
 </ui-form>

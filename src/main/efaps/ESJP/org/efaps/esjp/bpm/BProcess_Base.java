@@ -20,17 +20,28 @@
 
 package org.efaps.esjp.bpm;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.bpm.BPM;
+import org.efaps.ci.CIAdminProgram;
+import org.efaps.db.Checkout;
+import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIBPM;
 import org.efaps.util.EFapsException;
 import org.jbpm.task.query.TaskSummary;
@@ -77,6 +88,42 @@ public abstract class BProcess_Base
                             status,
                             taskName));
         }
+        return ret;
+    }
+
+
+    public Return getImageFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final StringBuilder html = new StringBuilder();
+        final Instance instance = _parameter.getInstance();
+
+        if (instance.getType().isKindOf(CIAdminProgram.BPM.getType())) {
+            final QueryBuilder queryBldr = new QueryBuilder(CIAdminProgram.BPM2Image);
+            queryBldr.addWhereAttrEqValue(CIAdminProgram.BPM2Image.FromLink, instance);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder sel = SelectBuilder.get().linkto(CIAdminProgram.BPM2Image.ToLink).instance();
+            multi.addSelect(sel);
+            multi.execute();
+            while (multi.next()) {
+                final Instance imageInst = multi.<Instance>getSelect(sel);
+                final Checkout checkout = new Checkout(imageInst);
+                final InputStream ins = checkout.execute();
+                final StringWriter strb = new StringWriter();
+                try {
+                    IOUtils.copy(ins, strb);
+                } catch (final IOException e) {
+                    e.printStackTrace();
+                }
+                html.append(strb);
+            }
+        }
+
+        if (html.length() < 1) {
+            html.append(DBProperties.getProperty("org.efaps.esjp.bpm.BProcess.NoImage"));
+        }
+        ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
     }
 }
