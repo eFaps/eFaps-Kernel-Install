@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.drools.runtime.process.ProcessInstance;
 import org.efaps.admin.EFapsSystemConfiguration;
@@ -57,7 +58,6 @@ import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
-import org.efaps.esjp.ci.CIBPM;
 import org.efaps.util.EFapsException;
 
 
@@ -114,9 +114,10 @@ public abstract class Create_Base
                 final ProcessInstance processInstance = BPM
                                 .startProcess(properties.get("ProcessID").toString(), params);
                 if ("true".equals(properties.get("RegisterProcess").toString())) {
-                    final Insert insert = new Insert(CIBPM.GeneralInstance2ProcessId);
-                    insert.add(CIBPM.GeneralInstance2ProcessId.ProcessId, processInstance.getId());
-                    insert.add(CIBPM.GeneralInstance2ProcessId.GeneralInstanceLink, _instance.getGeneralId());
+                    //BPM_GeneralInstance2ProcessId -- use of UUID because installed from different module
+                    final Insert insert = new Insert(UUID.fromString("f6731331-e3a7-4a98-be35-ad1bb8e88497"));
+                    insert.add("ProcessId", processInstance.getId());
+                    insert.add("GeneralInstanceLink", _instance.getGeneralId());
                     insert.executeWithoutTrigger();
                 }
             }
