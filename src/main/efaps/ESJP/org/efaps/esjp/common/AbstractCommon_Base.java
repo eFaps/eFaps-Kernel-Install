@@ -54,21 +54,22 @@ public abstract class AbstractCommon_Base
      * 2 - Value for Name02
      *
      * @param _parameter Parameter as passed by the eFaps API
+     * @param _key key of the Property
      * @return map with properties
      * @throws EFapsException on error
      */
     protected Map<Integer, String> analyseProperty(final Parameter _parameter,
-                                                   final String _name)
+                                                   final String _key)
         throws EFapsException
     {
         final Map<Integer, String> ret = new TreeMap<Integer, String>();
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         // test for basic
-        if (properties.containsKey(_name)) {
-            ret.put(0, String.valueOf(properties.get(_name)));
+        if (properties.containsKey(_key)) {
+            ret.put(0, String.valueOf(properties.get(_key)));
         }
         for (int i = 1; i < 100; i++) {
-            final String nameTmp = _name + String.format("%02d", i);
+            final String nameTmp = _key + String.format("%02d", i);
             if (properties.containsKey(nameTmp)) {
                 ret.put(i, String.valueOf(properties.get(nameTmp)));
             } else {
@@ -82,18 +83,19 @@ public abstract class AbstractCommon_Base
      * Get a Property form the ParameterValues.
      *
      * @param _parameter Parameter as passed by the eFaps API
+     * @param _key key of the Property
      * @return value for the Property, null if not found
      * @throws EFapsException on error
      */
     protected String getProperty(final Parameter _parameter,
-                                 final String _name)
+                                 final String _key)
         throws EFapsException
     {
         String ret = null;
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         // test for basic
-        if (properties.containsKey(_name)) {
-            ret = String.valueOf(properties.get(_name));
+        if (properties.containsKey(_key)) {
+            ret = String.valueOf(properties.get(_key));
         }
         return ret;
     }
