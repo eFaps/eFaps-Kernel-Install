@@ -108,6 +108,9 @@ public abstract class Create_Base
         if (EFapsSystemConfiguration.KERNEL.get().getAttributeValueAsBoolean(KernelSettings.ACTIVATE_BPM)) {
             final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
             if (properties.containsKey("ProcessID")) {
+                if ("true".equalsIgnoreCase((String) properties.get("SaveContextBeforeProcessStart"))) {
+                    Context.save();
+                }
                 final Map<String, Object> params = new HashMap<String, Object>();
                 params.put("OID", _instance.getOid());
                 add2ProcessMap(_parameter, _instance, params);
