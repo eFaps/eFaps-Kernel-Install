@@ -419,7 +419,7 @@ public abstract class Edit_Base
     {
 
         final List<?> classifications = (List<?>) _parameter.get(ParameterValues.CLASSIFICATIONS);
-        final Classification classType = (Classification) Type.get(_classifcationName);
+        final Classification classType = (Classification) Type.get(_classifcationName.split(";")[0]);
 
         final Map<Classification, Map<String, Object>> clas2values = new HashMap<Classification, Map<String, Object>>();
         // get the already existing classifications
