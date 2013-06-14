@@ -59,6 +59,7 @@
         <field name="status">
             <property name="Attribute">Status</property>
             <property name="Label">Admin_User_Person/Status.Label</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
