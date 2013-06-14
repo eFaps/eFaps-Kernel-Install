@@ -63,6 +63,7 @@ public abstract class Association_Base
     {
         final Return ret = new Return();
         Long userId = null;
+        @SuppressWarnings("unchecked")
         final Map<Attribute, Object> values = (Map<Attribute, Object>) _parameter.get(ParameterValues.NEW_VALUES);
         for (final Entry<Attribute, Object> entry : values.entrySet()) {
             if ("UserFromLink".equals(entry.getKey().getName())) {
