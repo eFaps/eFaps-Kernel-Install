@@ -39,8 +39,8 @@
             <menu>Admin_Common_DBPropertiesTree_Local_Menu</menu>
             <table>Admin_Common_DBPropertiesLocalTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Common_DBPropertiesLocal</property>
-                <property name="LinkFroms">PropertyID</property>
+                <property name="Type">Admin_Common_DBPropertiesLocal</property>
+                <property name="LinkFrom">PropertyID</property>
             </evaluate>
         </target>
         <!-- properties -->

@@ -39,8 +39,8 @@
             <menu>Admin_Common_DBPropertiesBundleTree_DBProperties_Menu</menu>
             <table>Admin_Common_DBPropertiesTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Common_DBProperties</property>
-                <property name="LinkFroms">BundleID</property>
+                <property name="Type">Admin_Common_DBProperties</property>
+                <property name="LinkFrom">BundleID</property>
             </evaluate>
         </target>
         <!-- properties -->

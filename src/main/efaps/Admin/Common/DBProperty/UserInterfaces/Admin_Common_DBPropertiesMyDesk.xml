@@ -43,7 +43,7 @@
         <target>
             <table>Admin_Common_DBPropertiesTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Common_DBProperties</property>
+                <property name="Type">Admin_Common_DBProperties</property>
             </evaluate>
         </target>
         <!-- properties -->
