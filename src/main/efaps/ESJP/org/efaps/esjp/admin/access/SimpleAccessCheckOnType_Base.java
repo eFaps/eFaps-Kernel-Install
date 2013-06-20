@@ -23,14 +23,18 @@ package org.efaps.esjp.admin.access;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.efaps.admin.EFapsSystemConfiguration;
 import org.efaps.admin.KernelSettings;
+import org.efaps.admin.access.AccessCache;
+import org.efaps.admin.access.AccessKey;
 import org.efaps.admin.access.AccessSet;
 import org.efaps.admin.access.AccessType;
 import org.efaps.admin.access.AccessTypeEnums;
@@ -45,6 +49,7 @@ import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.transaction.ConnectionResource;
 import org.efaps.util.EFapsException;
+import org.infinispan.Cache;
 
 /**
  * This Class is used to check if a user can Access this Type.<br>
@@ -68,6 +73,36 @@ public abstract class SimpleAccessCheckOnType_Base
     protected boolean checkAccess(final Parameter _parameter,
                                   final Instance _instance,
                                   final AccessType _accessType)
+        throws EFapsException
+    {
+        boolean ret = false;
+        final Cache<AccessKey, Boolean> cache = AccessCache.getKeyCache();
+        final AccessKey accessKey = AccessKey.get(_instance, _accessType);
+        final Boolean access = cache.get(accessKey);
+        if (access == null) {
+            ret = checkAccessOnDB(_parameter, _instance, _accessType);
+            AccessCheckAbstract_Base.LOG.trace("access result :{} from DB for: {}", ret, _instance);
+            cache.put(accessKey, ret);
+        } else {
+            ret = access;
+            AccessCheckAbstract_Base.LOG.trace("access result :{} from Cache for: {}", ret, _instance);
+        }
+        return ret;
+    }
+
+    /**
+     * Check for the instance object if the current context user has the access
+     * defined in the list of access types against the eFaps DataBase.
+     *
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _instance     instance to check for access for
+     * @param _accessType   accesstyep to check the access for
+     * @return true if access is granted, else false
+     * @throws EFapsException on error
+     */
+    protected boolean checkAccessOnDB(final Parameter _parameter,
+                                      final Instance _instance,
+                                      final AccessType _accessType)
         throws EFapsException
     {
         final Context context = Context.getThreadContext();
@@ -152,6 +187,46 @@ public abstract class SimpleAccessCheckOnType_Base
     protected Map<Instance, Boolean> checkAccess(final Parameter _parameter,
                                                  final List<?> _instances,
                                                  final AccessType _accessType)
+        throws EFapsException
+    {
+        final Map<Instance, Boolean> ret = new HashMap<Instance, Boolean>();
+        final Cache<AccessKey, Boolean> cache = AccessCache.getKeyCache();
+        final List<Instance> checkOnDB = new ArrayList<Instance>();
+        for (final Object instObj : _instances) {
+            final AccessKey accessKey = AccessKey.get((Instance) instObj, _accessType);
+            final Boolean access = cache.get(accessKey);
+            if (access == null) {
+                checkOnDB.add((Instance) instObj);
+            } else {
+                ret.put((Instance) instObj, access);
+            }
+            AccessCheckAbstract_Base.LOG.trace("access result from Cache: {}", ret);
+        }
+        if (!checkOnDB.isEmpty()) {
+            final Map<Instance, Boolean> accessMapTmp = checkAccessOnDB(_parameter, checkOnDB, _accessType);
+            for (final Entry<Instance, Boolean> entry : accessMapTmp.entrySet()) {
+                final AccessKey accessKey = AccessKey.get(entry.getKey(), _accessType);
+                cache.put(accessKey, entry.getValue());
+            }
+            AccessCheckAbstract_Base.LOG.trace("access result from DB: {}", accessMapTmp);
+            ret.putAll(accessMapTmp);
+        }
+        return ret;
+    }
+
+
+    /**
+     * Method to check the access for a list of instances against the efaps DataBase.
+     *
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _instances    instances to be checked
+     * @param _accessType   type of access
+     * @return map of access to boolean
+     * @throws EFapsException on error
+     */
+    protected Map<Instance, Boolean> checkAccessOnDB(final Parameter _parameter,
+                                                     final List<?> _instances,
+                                                     final AccessType _accessType)
         throws EFapsException
     {
         final Map<Instance, Boolean> accessMap = new HashMap<Instance, Boolean>();
