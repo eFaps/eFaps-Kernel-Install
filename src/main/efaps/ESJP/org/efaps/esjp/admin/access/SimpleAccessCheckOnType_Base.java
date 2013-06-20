@@ -200,8 +200,8 @@ public abstract class SimpleAccessCheckOnType_Base
             } else {
                 ret.put((Instance) instObj, access);
             }
-            AccessCheckAbstract_Base.LOG.trace("access result from Cache: {}", ret);
         }
+        AccessCheckAbstract_Base.LOG.trace("access result from Cache: {}", ret);
         if (!checkOnDB.isEmpty()) {
             final Map<Instance, Boolean> accessMapTmp = checkAccessOnDB(_parameter, checkOnDB, _accessType);
             for (final Entry<Instance, Boolean> entry : accessMapTmp.entrySet()) {
