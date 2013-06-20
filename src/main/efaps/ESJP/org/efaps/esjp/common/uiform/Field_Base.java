@@ -608,6 +608,9 @@ public abstract class Field_Base
                     }
                 });
             }
+
+            updatePositionList(_parameter, values);
+
             switch (_listType) {
                 case DROPDOWN:
                     html = getDropDownField(_parameter, values).toString();
@@ -628,6 +631,18 @@ public abstract class Field_Base
         final Return ret = new Return();
         ret.put(ReturnValues.SNIPLETT, html);
         return ret;
+    }
+
+    /**
+     * @param _parameter
+     * @param _values
+     * @throws EFapsException
+     */
+    protected void updatePositionList(final Parameter _parameter,
+                                      final List<DropDownPosition> _values)
+        throws EFapsException
+    {
+        // TODO Auto-generated method stub
     }
 
     /**
