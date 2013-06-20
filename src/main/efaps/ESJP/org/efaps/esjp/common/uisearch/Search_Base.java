@@ -74,10 +74,12 @@ public abstract class Search_Base
         throws EFapsException
     {
         final Return ret = new Return();
-
-        final QueryBuilder bldr = getQueryBuilder(_parameter);
-        add2QueryBuilder(_parameter, bldr);
-        ret.put(ReturnValues.VALUES, executeQuery(_parameter, bldr));
+        final List<Instance> instances = new ArrayList<Instance>();
+        for (final QueryBuilder bldr : getQueryBuilder(_parameter)) {
+            add2QueryBuilder(_parameter, bldr);
+            instances.addAll(executeQuery(_parameter, bldr));
+        }
+        ret.put(ReturnValues.VALUES, instances);
         return ret;
     }
 
@@ -130,9 +132,10 @@ public abstract class Search_Base
      * @return queryBldr QueryBuilder with values for search.
      * @throws EFapsException on error.
      */
-    protected QueryBuilder getQueryBuilder(final Parameter _parameter)
+    protected List<QueryBuilder> getQueryBuilder(final Parameter _parameter)
         throws EFapsException
     {
+        final List<QueryBuilder> ret = new ArrayList<QueryBuilder>();
         final Context context = Context.getThreadContext();
         final AbstractCommand command = (AbstractCommand) _parameter.get(ParameterValues.UIOBJECT);
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
@@ -151,29 +154,33 @@ public abstract class Search_Base
         if (Search_Base.LOG.isDebugEnabled()) {
             Search_Base.LOG.debug("types=" + types);
         }
-        final Type type = Type.get(types);
-        final QueryBuilder queryBldr = new QueryBuilder(type);
+        final String[] typesChar = types.split(";");
+        for (final String typeStr : typesChar) {
+            final Type type = Type.get(typeStr);
+            final QueryBuilder queryBldr = new QueryBuilder(type);
 
-        for (final Field field : command.getTargetForm().getFields()) {
-            final String value = context.getParameter(field.getName());
-            if ((value != null) && (value.length() > 0) && (!value.equals("*"))) {
-                if (type.getAttribute(field.getAttribute()) != null) {
-                    final Attribute attribute = type.getAttribute(field.getAttribute());
-                    if (attribute.getAttributeType().getDbAttrType() instanceof StringType) {
-                        queryBldr.addWhereAttrMatchValue(field.getAttribute(), value + "*")
-                                        .setIgnoreCase(ignoreFields.contains(field.getName()));
+            for (final Field field : command.getTargetForm().getFields()) {
+                final String value = context.getParameter(field.getName());
+                if ((value != null) && (value.length() > 0) && (!value.equals("*"))) {
+                    if (type.getAttribute(field.getAttribute()) != null) {
+                        final Attribute attribute = type.getAttribute(field.getAttribute());
+                        if (attribute.getAttributeType().getDbAttrType() instanceof StringType) {
+                            queryBldr.addWhereAttrMatchValue(field.getAttribute(), value + "*")
+                                            .setIgnoreCase(ignoreFields.contains(field.getName()));
+                        } else {
+                            queryBldr.addWhereAttrEqValue(field.getAttribute(), value);
+                        }
                     } else {
-                        queryBldr.addWhereAttrEqValue(field.getAttribute(), value);
-                    }
-                } else {
-                    if (field.getAttribute() != null) {
-                        queryBldr.addWhereAttrMatchValue(field.getAttribute(), value)
-                                                            .setIgnoreCase(ignoreFields.contains(field.getName()));
+                        if (field.getAttribute() != null) {
+                            queryBldr.addWhereAttrMatchValue(field.getAttribute(), value)
+                                                                .setIgnoreCase(ignoreFields.contains(field.getName()));
+                        }
                     }
                 }
             }
+            ret.add(queryBldr);
         }
-        return queryBldr;
+        return ret;
     }
 
     /**
