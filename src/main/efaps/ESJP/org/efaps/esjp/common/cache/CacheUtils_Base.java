@@ -39,10 +39,16 @@ import org.efaps.util.EFapsException;
  */
 @EFapsUUID("50b92f6d-8c95-4016-a1f7-db9f4b770516")
 @EFapsRevision("$Rev$")
-public class CacheUtils_Base
+public abstract class CacheUtils_Base
     extends AbstractCommon
 {
 
+    /**
+     * Clean keys form the QueryCache on a trigger.
+     * @param _parameter parameter as passed by the efasp API
+     * @return new empty return
+     * @throws EFapsException on error
+     */
     public Return cleanQueryCacheTrigger(final Parameter _parameter)
         throws EFapsException
     {
