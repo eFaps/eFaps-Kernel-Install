@@ -105,7 +105,7 @@ public abstract class Create_Base
                                final Instance _instance)
         throws EFapsException
     {
-        if (EFapsSystemConfiguration.KERNEL.get().getAttributeValueAsBoolean(KernelSettings.ACTIVATE_BPM)) {
+        if (EFapsSystemConfiguration.get().getAttributeValueAsBoolean(KernelSettings.ACTIVATE_BPM)) {
             final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
             if (properties.containsKey("ProcessID")) {
                 if ("true".equalsIgnoreCase((String) properties.get("SaveContextBeforeProcessStart"))) {
