@@ -150,7 +150,7 @@ public abstract class SimpleAccessCheckOnType_Base
 
         if (type.isGroupDepended() && !_accessType.equals(AccessTypeEnums.CREATE.getAccessType())
                         && !localRoles.isEmpty()
-                        && EFapsSystemConfiguration.KERNEL.get().getAttributeValueAsBoolean(
+                        && EFapsSystemConfiguration.get().getAttributeValueAsBoolean(
                                         KernelSettings.ACTIVATE_GROUPS)) {
             cmd.append(" and ").append(type.getMainTable().getSqlTable()).append(".")
                             .append(type.getGroupAttribute().getSqlColNames().get(0)).append(" in (")
@@ -265,7 +265,7 @@ public abstract class SimpleAccessCheckOnType_Base
             // add the check for groups if: the type is group depended, a local
             // role is defined for the user, the group mechanism is activated
             if (type.isGroupDepended() && !localRoles.isEmpty()
-                            && EFapsSystemConfiguration.KERNEL.get().getAttributeValueAsBoolean(
+                            && EFapsSystemConfiguration.get().getAttributeValueAsBoolean(
                                             KernelSettings.ACTIVATE_GROUPS)) {
                 cmd.append(" and ").append(type.getMainTable().getSqlTable()).append(".")
                                 .append(type.getGroupAttribute().getSqlColNames().get(0)).append(" in (")
