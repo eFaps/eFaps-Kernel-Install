@@ -59,7 +59,7 @@
       </description>
     </attribute>
     <attribute>
-      <key>PasswordStore</key>
+      <key>org.efaps.kernel.PasswordStore</key>
       <value>Algorithm=SHA-1
 Iterations=1000
 Saltsize=8</value>
@@ -68,12 +68,12 @@ Saltsize=8</value>
       </description>
     </attribute>
     <attribute>
-        <key>PasswordRepeatedThreshold</key>
+        <key>org.efaps.kernel.PasswordRepeatedThreshold</key>
         <value>5</value>
         <description>(Integer) The Threshold of how many passwords will be stored to compare it with a new given password.</description>
     </attribute>
     <attribute>
-      <key>DataBaseTimeZone</key>
+      <key>org.efaps.kernel.DataBaseTimeZone</key>
       <value>America/Lima</value>
       <description>
         This attribute defines the timezone the database server is running in. This
@@ -82,7 +82,7 @@ Saltsize=8</value>
       </description>
     </attribute>
     <attribute>
-      <key>JavaScriptCompiled_Warn</key>
+      <key>org.efaps.kernel.update.ActivateJavaScriptCompiledWarn</key>
       <value>false</value>
       <description>
         Boolean (true/false):
@@ -91,7 +91,7 @@ Saltsize=8</value>
       </description>
     </attribute>
     <attribute>
-        <key>JavaScript_deactivate_Compression</key>
+        <key>org.efaps.kernel.update.DeactivateJavaScriptCompression</key>
         <value>false</value>
         <description>
             Boolean (true/false): If set to true the javascript stored in the eFaps Database
@@ -99,7 +99,7 @@ Saltsize=8</value>
         </description>
     </attribute>
     <attribute>
-      <key>DefaultMenu</key>
+      <key>org.efaps.kernel.DefaultMenu</key>
       <value>none</value>
       <description>
         This Attribute defines the Menu which is added as a DefaultMenu to all
@@ -109,28 +109,21 @@ Saltsize=8</value>
       </description>
     </attribute>
     <attribute>
-        <key>SystemMessageTriggerActivated</key>
+        <key>org.efaps.kernel.SystemMessageTriggerActivated</key>
         <value>false</value>
         <description>
             Boolean (true/false): activate the automatic search for messages.
         </description>
     </attribute>
     <attribute>
-        <key>SystemMessageTriggerInterval</key>
+        <key>org.efaps.kernel.SystemMessageTriggerInterval</key>
         <value>1</value>
         <description>
             Integer: Interval in minutes for the system message trigger.
         </description>
     </attribute>
     <attribute>
-        <key>Cache4PersonMaxSize</key>
-        <value>100</value>
-        <description>
-            Integer: Size of the Cache for Persons can grow in the Context.
-        </description>
-    </attribute>
-    <attribute>
-        <key>ClassPaths</key>
+        <key>org.efaps.kernel.rest.ClassPaths</key>
         <value>to be set for implementation</value>
         <description>The path to the libaries the webapp is build on. Needed for compilation of java and Jasperreports. e.g. "/tmp/Jetty_0_0_0_0_8060_efaps.war__efaps__.bo28gn/webapp/WEB-INF/lib/"</description>
     </attribute>
