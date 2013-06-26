@@ -33,7 +33,7 @@
     <version-expression>(version==4)</version-expression>
     <name>Kernel-Configuration</name>
     <attribute>
-      <key>LoginTimeBeforeRetry</key>
+      <key>org.efaps.kernel.LoginTimeElapseBeforeRetry</key>
       <value>60</value>
       <description>
         This attribute defines the time in minutes which must elapse after trying
@@ -43,7 +43,7 @@
       </description>
     </attribute>
     <attribute>
-      <key>LoginTries</key>
+      <key>org.efaps.kernel.LoginMaximumTries</key>
       <value>3</value>
       <description>
         This attribute defines the maximum number of tries to login with the wrong

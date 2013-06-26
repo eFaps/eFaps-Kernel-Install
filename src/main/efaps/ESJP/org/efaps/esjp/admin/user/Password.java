@@ -24,7 +24,8 @@ import java.util.UUID;
 
 import javax.security.auth.login.LoginException;
 
-import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.EFapsSystemConfiguration;
+import org.efaps.admin.KernelSettings;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -166,9 +167,8 @@ public class Password
         final Return ret = new Return();
         final Object[] newPwd = (Object[]) _parameter.get(ParameterValues.NEW_VALUES);
         // Admin_User_PwdLengthMin
-        if (newPwd[0].toString().length() > SystemConfiguration.get(
-                        UUID.fromString("acf2b19b-f7c4-4e4a-a724-fb2d9ed30079")).getAttributeValueAsInteger(
-                        "PwdLengthMin")) {
+        if (newPwd[0].toString().length() > EFapsSystemConfiguration.get().getAttributeValueAsInteger(
+                        KernelSettings.PWDLENGHT)) {
             ret.put(ReturnValues.TRUE, "true");
         } else {
             ret.put(ReturnValues.VALUES, "Admin_User_PwdChgForm/Password.validatePwdValue.ShortPwd");
@@ -189,20 +189,19 @@ public class Password
         final Return ret = new Return();
         // Common_Main_PwdChg
         final Role setpwdRole = Role.get(UUID.fromString("2c101471-43e3-4c97-9045-f48f5b12b6ed"));
-        
+
         if (Context.getThreadContext().getPerson().isAssigned(setpwdRole)) {
             final String newPwd = Context.getThreadContext().getParameter("setpassword");
-	        // Admin_User_PwdLengthMin
-	        if (newPwd.length() > SystemConfiguration.get(
-	                        UUID.fromString("acf2b19b-f7c4-4e4a-a724-fb2d9ed30079")).getAttributeValueAsInteger(
-	                        "PwdLengthMin")) {
-	        	ret.put(ReturnValues.TRUE, "true");
-	        } else {
-	        	ret.put(ReturnValues.VALUES, "Admin_User_PwdChgForm/Password.validatePwdValue.ShortPwd");
-	        }
+            // Admin_User_PwdLengthMin
+            if (newPwd.length() > EFapsSystemConfiguration.get().getAttributeValueAsInteger(
+                            KernelSettings.PWDLENGHT)) {
+                ret.put(ReturnValues.TRUE, "true");
+            } else {
+                ret.put(ReturnValues.VALUES, "Admin_User_PwdChgForm/Password.validatePwdValue.ShortPwd");
+            }
         } else {
-	        ret.put(ReturnValues.VALUES, "Admin_User_PersonSetPwdForm/Password.setPwdValueUI.NoRight");
-	    }
+            ret.put(ReturnValues.VALUES, "Admin_User_PersonSetPwdForm/Password.setPwdValueUI.NoRight");
+        }
         return ret;
     }
 
