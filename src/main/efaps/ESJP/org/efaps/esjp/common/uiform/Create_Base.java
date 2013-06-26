@@ -116,7 +116,7 @@ public abstract class Create_Base
                 add2ProcessMap(_parameter, _instance, params);
                 final ProcessInstance processInstance = BPM
                                 .startProcess(properties.get("ProcessID").toString(), params);
-                if ("true".equals(properties.get("RegisterProcess").toString())) {
+                if ("true".equalsIgnoreCase((String) properties.get("RegisterProcess"))) {
                     //BPM_GeneralInstance2ProcessId -- use of UUID because installed from different module
                     final Insert insert = new Insert(UUID.fromString("f6731331-e3a7-4a98-be35-ad1bb8e88497"));
                     insert.add("ProcessId", processInstance.getId());
