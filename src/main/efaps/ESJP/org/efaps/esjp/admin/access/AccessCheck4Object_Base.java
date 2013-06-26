@@ -671,7 +671,7 @@ public abstract class AccessCheck4Object_Base
     protected Properties getProperties(final Parameter _parameter)
         throws EFapsException
     {
-        final SystemConfiguration config = EFapsSystemConfiguration.KERNEL.get();
+        final SystemConfiguration config = EFapsSystemConfiguration.get();
         final Properties props = new Properties();
         for (int i = 0; i < 100; i++) {
             final Properties propsi = config.getAttributeValueAsProperties("AccessCheck4Object" + i);
