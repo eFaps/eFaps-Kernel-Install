@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2013 The eFaps Team
 
@@ -22,20 +20,19 @@
  Last Changed By: $Author$
 
 -->
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>82c36c04-6064-41ae-b828-36829331cddf</uuid>
+    <uuid>1ced4218-6972-4d6a-8e35-f13106278425</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Common_SystemConfigurationTree_Menu_Action</name>
+        <name>Admin_Common_SystemConfigurationMyDesk_Menu_Action</name>
         <childs>
-            <child>Admin_Common_SystemConfigurationTree_Menu_Action_Edit</child>
+            <child>Admin_Common_SystemConfigurationMyDesk_Menu_Action_SetMasterPwd</child>
+            <child>Admin_Common_SystemConfigurationMyDesk_Menu_Action_Reload</child>
         </childs>
     </definition>
 </ui-menu>

@@ -99,4 +99,12 @@ public abstract class SystemConf_Base
 
         return field.dropDownFieldValue(_parameter);
     }
+
+    public Return setMasterPassword(final Parameter _parameter)
+        throws EFapsException
+    {
+        final String pwd = _parameter.getParameterValue("masterPassword");
+        SystemConfiguration.getPBEConfig().setPassword(pwd);
+        return new Return();
+    }
 }

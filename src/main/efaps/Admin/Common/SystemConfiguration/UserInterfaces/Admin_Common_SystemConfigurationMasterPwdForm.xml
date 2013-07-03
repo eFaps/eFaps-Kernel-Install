@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2013 The eFaps Team
 
@@ -22,26 +20,22 @@
  Last Changed By: $Author$
 
 -->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>487d7757-f838-4a91-be64-8f227f90f8bc</uuid>
+    <uuid>14c7cd6e-4c99-4dac-b09c-7eb5a02a4a08</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Common_SystemConfigurationTree_Menu_Action_Reload</name>
-        <!-- target definitions -->
-        <target>
-            <execute program="org.efaps.esjp.admin.common.ReloadCache"
-                method="reloadSystemConfigurations"/>
-        </target>
-        <!-- properties -->
-        <property name="AskUser">true</property>
-        <property name="Submit">true</property>
-        <property name="SubmitSelectedRows">-1</property>
+        <name>Admin_Common_SystemConfigurationMasterPwdForm</name>
+        <!-- fields -->
+        <field name="masterPassword">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Required">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Admin_Common_SystemConfigurationMasterPwdForm.masterPassword.Label</property>
+        </field>
     </definition>
-</ui-command>
+</ui-form>

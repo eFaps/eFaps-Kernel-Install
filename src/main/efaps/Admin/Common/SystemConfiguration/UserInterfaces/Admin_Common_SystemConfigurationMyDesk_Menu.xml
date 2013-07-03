@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2013 The eFaps Team
 
@@ -22,20 +20,19 @@
  Last Changed By: $Author$
 
 -->
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>82c36c04-6064-41ae-b828-36829331cddf</uuid>
+    <uuid>890c2f79-721a-4988-99bc-210c22d95d3f</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Common_SystemConfigurationTree_Menu_Action</name>
+        <name>Admin_Common_SystemConfigurationMyDesk_Menu</name>
+        <!-- childs -->
         <childs>
-            <child>Admin_Common_SystemConfigurationTree_Menu_Action_Edit</child>
+            <child>Admin_Common_SystemConfigurationMyDesk_Menu_Action</child>
         </childs>
     </definition>
 </ui-menu>

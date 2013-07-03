@@ -41,11 +41,13 @@
         </access>
         <!-- target definitions -->
         <target>
+            <menu>Admin_Common_SystemConfigurationMyDesk_Menu</menu>
             <table>Admin_Common_SystemConfigurationTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Common_SystemConfiguration</property>
+                <property name="Type">Admin_Common_SystemConfiguration</property>
             </evaluate>
         </target>
+        
         <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetTableSortKey">name</property>
