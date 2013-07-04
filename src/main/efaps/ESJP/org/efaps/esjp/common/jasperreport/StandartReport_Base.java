@@ -28,6 +28,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
+import java.util.UUID;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
@@ -47,6 +49,7 @@ import net.sf.jasperreports.engine.export.oasis.JROdtExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
 import net.sf.jasperreports.engine.util.JRLoader;
 
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -62,6 +65,8 @@ import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.common.file.FileUtil;
 import org.efaps.util.EFapsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
@@ -78,6 +83,8 @@ import org.efaps.util.EFapsException;
 public abstract class StandartReport_Base
     implements EventExecution
 {
+    protected static final Logger LOG = LoggerFactory.getLogger(StandartReport_Base.class);
+
     /**
      * Parameter map that will be passed to the jasper FillManager.
      */
@@ -100,7 +107,20 @@ public abstract class StandartReport_Base
         final Return ret = new Return();
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
 
-        final String name = (String) properties.get("JasperReport");
+        String name = (String) properties.get("JasperReport");
+        if (name == null) {
+            final SystemConfiguration sysConf = SystemConfiguration.get(UUID.fromString("9ac2673a-18f9-41ba-b9be-5b0980bdf6f3"));
+            final String key = (String) properties.get("JasperKey");
+            if (sysConf != null && key != null) {
+                final Properties props = sysConf.getAttributeValueAsProperties("org.efaps.commons.JasperKey", true);
+                name = props.getProperty(key);
+            }
+        }
+
+        if (name == null) {
+            LOG.error("Neither JasperReport nor JasperKey lead to valid Report Name");
+        }
+
         final String dataSourceClass = (String) properties.get("DataSourceClass");
 
         this.jrParameters.put(JRParameter.REPORT_FILE_RESOLVER, new JasperFileResolver());
