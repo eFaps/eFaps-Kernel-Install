@@ -283,7 +283,7 @@ function _eFapsCreateUserTablesStep2()  {
     var stmt = conRsrc.getConnection().createStatement();
 
     text = "Insert Type for 'Admin_User_Person' (only to store ID for type)";
-    var typeIdPerson        = _eFapsCreateInsertType(stmt, text, "fe9d94fd-2ed8-4c44-b1f0-00e150555888", "Admin_User_Person", null, 8);
+    var typeIdPerson        = _eFapsCreateInsertType(stmt, text, "fe9d94fd-2ed8-4c44-b1f0-00e150555888", "Admin_User_Person", null, null);
 
     text = "Insert Type for 'Admin_User_RoleGlobal' (only to store ID for type)";
     var typeIdRoleGlobal    = _eFapsCreateInsertType(stmt, text, "e4d6ecbe-f198-4f84-aa69-5a9fd3165112", "Admin_User_RoleGlobal", null, 8);

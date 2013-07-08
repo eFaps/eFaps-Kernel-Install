@@ -24,33 +24,46 @@
 -->
 
 <datamodel-type xmlns="http://www.efaps.org/xsd"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>a79898fb-966a-44ee-a338-d034e2aad83a</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>a79898fb-966a-44ee-a338-d034e2aad83a</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <!-- define type (is already defined) -->
-  <definition>
-    <version-expression>(version==3) || (version==latest)</version-expression>
-    <name>Admin_User_Person2Company</name>
-    <parent>Admin_User_Abstract2Abstract</parent>
-    <!-- attributes -->
-    <attribute>
-      <name>UserLink</name>
-      <type>Link</type>
-      <typelink>Admin_User_Person</typelink>
-      <sqltable>Admin_User_Abstract2AbstractSQLTable</sqltable>
-      <sqlcolumn>USERABSTRACTFROM</sqlcolumn>
-    </attribute>
-    <attribute>
-      <name>CompanyLink</name>
-      <type>Link</type>
-      <typelink>Admin_User_Company</typelink>
-      <sqltable>Admin_User_Abstract2AbstractSQLTable</sqltable>
-      <sqlcolumn>USERABSTRACTTO</sqlcolumn>
-    </attribute>
-   </definition>
-
+    <!-- define type (is already defined) -->
+    <definition>
+        <version-expression>(version==3) || (version==latest)</version-expression>
+        <name>Admin_User_Person2Company</name>
+        <parent>Admin_User_Abstract2Abstract</parent>
+        <!-- attributes -->
+        <attribute>
+            <name>UserLink</name>
+            <type>Link</type>
+            <typelink>Admin_User_Person</typelink>
+            <sqltable>Admin_User_Abstract2AbstractSQLTable</sqltable>
+            <sqlcolumn>USERABSTRACTFROM</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>CompanyLink</name>
+            <type>Link</type>
+            <typelink>Admin_User_Company</typelink>
+            <sqltable>Admin_User_Abstract2AbstractSQLTable</sqltable>
+            <sqlcolumn>USERABSTRACTTO</sqlcolumn>
+        </attribute>
+        <trigger program="org.efaps.esjp.common.history.ConnectHistoryTrigger" 
+            name="Admin_User_Person2Company.INSERT_POST" 
+            event="INSERT_POST">
+            <property name="Select4HistoryInstance">linkto[UserLink].instance</property>
+            <property name="Select4ConnectInstance">linkto[CompanyLink].instance</property>
+            <property name="Select4ConnectAttribute">linkto[CompanyLink].attribute[Name]</property>    
+        </trigger>
+        <trigger program="org.efaps.esjp.common.history.DisconnectHistoryTrigger" 
+            name="Admin_User_Person2Company.DELETE_PRE" 
+            event="DELETE_PRE">
+            <property name="Select4HistoryInstance">linkto[UserLink].instance</property>
+            <property name="Select4ConnectInstance">linkto[CompanyLink].instance</property>
+            <property name="Select4ConnectAttribute">linkto[CompanyLink].attribute[Name]</property>    
+        </trigger>
+    </definition>
 </datamodel-type>

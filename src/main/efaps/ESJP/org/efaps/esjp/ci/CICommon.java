@@ -73,4 +73,30 @@ public class CICommon
             super(_uuid);
         }
     }
+
+    public static final _HistoryConnect HistoryConnect = new _HistoryConnect("14514bc0-b251-4df3-9955-473115e6b682");
+
+    public static class _HistoryConnect
+        extends _HistoryAbstract
+    {
+
+        protected _HistoryConnect(final String _uuid)
+        {
+            super(_uuid);
+        }
+    }
+
+    public static final _HistoryDisconnect HistoryDisconnect = new _HistoryDisconnect("5631c300-5814-4ce8-8cee-6119b9ff6ab3");
+
+    public static class _HistoryDisconnect
+        extends _HistoryAbstract
+    {
+
+        protected _HistoryDisconnect(final String _uuid)
+        {
+            super(_uuid);
+        }
+    }
+
+
 }

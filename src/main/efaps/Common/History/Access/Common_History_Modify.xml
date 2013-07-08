@@ -19,9 +19,11 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
---><access-set xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<access-set xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>a7f8912c-2200-49f4-931a-52f77ad38585</uuid>
-    <file-application>eFapsApp-Sales</file-application>
+    <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
@@ -29,7 +31,7 @@
 
         <name>Common_History_Modify</name>
 
-         <access-type>show</access-type>
+        <access-type>show</access-type>
         <access-type>read</access-type>
         <access-type>modify</access-type>
         <access-type>checkout</access-type>
@@ -42,6 +44,8 @@
 
         <type>Common_HistoryCreate</type>
         <type>Common_HistoryUpdate</type>
+        <type>Common_HistoryConnect</type>
+        <type>Common_HistoryDisconnect</type>
 
         <role>Administration</role>
     </definition>
