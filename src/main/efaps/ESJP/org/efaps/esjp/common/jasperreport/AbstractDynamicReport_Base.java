@@ -383,7 +383,7 @@ public abstract class AbstractDynamicReport_Base
                 getReport().setTemplateDesign(in);
 
                 final EFapsDataSource ds = new EFapsDataSource();
-                ds.init(getReport().toJasperReport(), _parameter, null, null);
+                ds.init(getReport().toJasperReport(), _parameter, null, getReport().getJasperParameters());
 
                 getReport().setLocale(Context.getThreadContext().getLocale()).setDataSource(ds);
             } else {
@@ -429,7 +429,7 @@ public abstract class AbstractDynamicReport_Base
                 getReport().setTemplateDesign(in);
 
                 final EFapsDataSource ds = new EFapsDataSource();
-                ds.init(getReport().toJasperReport(), _parameter, null, null);
+                ds.init(getReport().toJasperReport(), _parameter, null, getReport().getJasperParameters());
 
                 getReport().setLocale(Context.getThreadContext().getLocale())
                     .setDataSource(ds);
@@ -518,7 +518,6 @@ public abstract class AbstractDynamicReport_Base
         InputStream ret = null;
         try {
             final QueryBuilder queryBldr = new QueryBuilder(CIAdminProgram.JasperReport);
-            ;
             queryBldr.addWhereAttrEqValue(CIAdminProgram.JasperReport.Name, _jasperFileName);
             final InstanceQuery query = queryBldr.getQuery();
             query.execute();
