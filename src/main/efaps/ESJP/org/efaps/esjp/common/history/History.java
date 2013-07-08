@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev: 9459 $
- * Last Changed:    $Date: 2013-05-17 15:09:07 -0500 (vie, 17 may 2013) $
- * Last Changed By: $Author: jorge.cueva@moxter.net $
+ * Revision:        $Rev$
+ * Last Changed:    $Date$
+ * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.common.history;
@@ -23,17 +23,18 @@ package org.efaps.esjp.common.history;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
-
 /**
- * This class will be replaced by the MultiPrint in Webapp-install. It serves
- * as a placeholder to be able to link to the esjp during a first time installation.
+ * This class must be replaced for customization, therefore it is left empty.
+ * Functional description can be found in the related "<code>_Base</code>"
+ * class.
  *
  * @author The eFaps Team
- * @version $Id: HistoryPrint.java 9459 2013-05-17 20:09:07Z jorge.cueva@moxter.net $
+ * @version $Id$
  */
-@EFapsUUID("6a954943-d7b8-45e2-b211-3b5f4731e64a")
-@EFapsRevision("$Rev: 9459 $")
-public class HistoryPrint
+@EFapsUUID("d29f3323-4d6c-4d28-9ed0-313342f6bfcb")
+@EFapsRevision("$Rev$")
+public class History
+    extends History_Base
 {
 
 }

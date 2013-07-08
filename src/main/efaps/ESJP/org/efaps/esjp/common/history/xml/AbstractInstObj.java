@@ -111,7 +111,6 @@ public abstract class AbstractInstObj
         this.oid = _oid;
     }
 
-
     /**
      * Getter method for the instance variable {@link #typeUUID}.
      *

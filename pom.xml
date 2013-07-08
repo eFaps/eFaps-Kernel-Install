@@ -168,7 +168,6 @@
                         <configuration>
                             <excludes>
                                 <exclude>**/org/efaps/esjp/common/uitable/MultiPrint.class</exclude>
-                                <exclude>**/org/efaps/esjp/common/history/HistoryPrint.class</exclude>
                             </excludes>
                         </configuration>
                     </execution>

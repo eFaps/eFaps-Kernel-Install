@@ -34,4 +34,13 @@
             <queryattribute name="Name">eFaps</queryattribute>
         </linkattribute>
     </object>
+    <object type="Admin_User_JAASKey">
+        <attribute name="Key">History_Modifier</attribute>
+        <linkattribute name="UserLink" type="Admin_User_RoleGlobal">
+            <queryattribute name="Name">History_Modifier</queryattribute>
+        </linkattribute>
+        <linkattribute name="JAASSystemLink" type="Admin_User_JAASSystem">
+            <queryattribute name="Name">eFaps</queryattribute>
+        </linkattribute>
+    </object>
 </import>

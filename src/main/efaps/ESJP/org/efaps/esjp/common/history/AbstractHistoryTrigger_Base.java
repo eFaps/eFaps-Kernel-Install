@@ -38,8 +38,12 @@ import org.efaps.esjp.ci.CICommon;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.history.xml.AbstractConnectLog;
 import org.efaps.esjp.common.history.xml.AbstractHistoryLog;
+import org.efaps.esjp.common.history.xml.AbstractInstObj;
+import org.efaps.esjp.common.history.xml.AttributeValue;
+import org.efaps.esjp.common.history.xml.ConnectInstObj;
 import org.efaps.esjp.common.history.xml.ConnectLog;
 import org.efaps.esjp.common.history.xml.DisconnectLog;
+import org.efaps.esjp.common.history.xml.HistoryInstObj;
 import org.efaps.esjp.common.history.xml.InstObj;
 import org.efaps.util.EFapsException;
 
@@ -75,7 +79,7 @@ public abstract class AbstractHistoryTrigger_Base
         add2LogObject(_parameter, log);
 
         try {
-            final JAXBContext jc = JAXBContext.newInstance(getClasses(_parameter));
+            final JAXBContext jc = JAXBContext.newInstance(AbstractHistoryTrigger_Base.getClasses(_parameter));
             final Marshaller marshaller = jc.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             final StringWriter writer = new StringWriter();
@@ -120,11 +124,12 @@ public abstract class AbstractHistoryTrigger_Base
      * @return class array for marschalling
      * @throws EFapsException on error
      */
-    protected Class<?>[] getClasses(final Parameter _parameter)
+    public static Class<?>[] getClasses(final Parameter _parameter)
         throws EFapsException
     {
         return new Class<?>[] { AbstractHistoryLog.class, AbstractConnectLog.class, ConnectLog.class,
-                        DisconnectLog.class };
+                        DisconnectLog.class, AbstractInstObj.class, InstObj.class, HistoryInstObj.class,
+                        ConnectInstObj.class, AttributeValue.class };
     }
 
 }

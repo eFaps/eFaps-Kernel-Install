@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.esjp.ci.CICommon;
 
 /**
  * TODO comment!
@@ -45,5 +46,14 @@ public class DisconnectLog
     public String toString()
     {
         return ToStringBuilder.reflectionToString(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTypeColumnValue()
+    {
+        return CICommon.HistoryDisconnect.getType().getLabel();
     }
 }

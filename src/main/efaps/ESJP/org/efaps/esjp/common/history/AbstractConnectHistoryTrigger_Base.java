@@ -31,14 +31,16 @@ import org.efaps.db.PrintQuery;
 import org.efaps.esjp.common.history.xml.AbstractConnectLog;
 import org.efaps.esjp.common.history.xml.AbstractHistoryLog;
 import org.efaps.esjp.common.history.xml.AttributeValue;
-import org.efaps.esjp.common.history.xml.InstObj;
+import org.efaps.esjp.common.history.xml.ConnectInstObj;
+import org.efaps.esjp.common.history.xml.HistoryInstObj;
 import org.efaps.util.EFapsException;
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: AbstractConnectHistoryTrigger_Base.java 9780 2013-07-08
+ *          17:04:43Z jan@moxter.net $
  */
 @EFapsUUID("28b038f6-3577-47d8-b611-b7c6552f218e")
 @EFapsRevision("$Rev$")
@@ -79,24 +81,24 @@ public abstract class AbstractConnectHistoryTrigger_Base
 
         final PrintQuery print = new PrintQuery(_parameter.getInstance());
         print.addSelect(selConTypeInst, selHistoryInst);
-        for (final String select :  selects.values()) {
+        for (final String select : selects.values()) {
             print.addSelect(select);
         }
         print.executeWithoutAccessCheck();
 
         final Instance conInst = print.<Instance>getSelect(selConTypeInst);
-        final InstObj conInstObj = new InstObj();
+        final ConnectInstObj conInstObj = new ConnectInstObj();
         conInstObj.setTypeUUID(conInst.getType().getUUID());
         conInstObj.setOid(conInst.getOid());
         log.setConnectInstance(conInstObj);
 
         this.historyInstance = print.<Instance>getSelect(selHistoryInst);
-        final InstObj hisInstObj = new InstObj();
+        final HistoryInstObj hisInstObj = new HistoryInstObj();
         hisInstObj.setTypeUUID(this.historyInstance.getType().getUUID());
         hisInstObj.setOid(this.historyInstance.getOid());
         log.setHistoryInstance(hisInstObj);
 
-        for (final String select :  selects.values()) {
+        for (final String select : selects.values()) {
             final Object value = print.getSelect(select);
             final Attribute attr = print.getAttribute4Select(select);
             final AttributeValue attrVal = new AttributeValue();

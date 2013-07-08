@@ -27,7 +27,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.esjp.ci.CICommon;
 
 /**
  * TODO comment!
@@ -35,26 +34,16 @@ import org.efaps.esjp.ci.CICommon;
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("013706e5-01ae-47d5-9877-5b5bc6bb55d9")
+@EFapsUUID("f02daf89-5a6a-4542-847c-0d4bd9232d0f")
 @EFapsRevision("$Rev$")
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = "connect")
-public class ConnectLog
-    extends AbstractConnectLog
+@XmlRootElement(name = "connectInstance")
+public class ConnectInstObj
+    extends AbstractInstObj
 {
-
     @Override
     public String toString()
     {
         return ToStringBuilder.reflectionToString(this);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getTypeColumnValue()
-    {
-        return CICommon.HistoryConnect.getType().getLabel();
     }
 }

@@ -18,16 +18,9 @@
  * Last Changed By: $Author$
  */
 
-package org.efaps.esjp.common.history.xml;
+package org.efaps.esjp.common.history;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.efaps.admin.program.esjp.EFapsRevision;
-import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.esjp.ci.CICommon;
+import org.efaps.util.EFapsException;
 
 /**
  * TODO comment!
@@ -35,26 +28,20 @@ import org.efaps.esjp.ci.CICommon;
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("013706e5-01ae-47d5-9877-5b5bc6bb55d9")
-@EFapsRevision("$Rev$")
-@XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = "connect")
-public class ConnectLog
-    extends AbstractConnectLog
+public interface IHistoryHtml
 {
 
-    @Override
-    public String toString()
-    {
-        return ToStringBuilder.reflectionToString(this);
-    }
+    /**
+     * @return the value for the type column
+     * @throws EFapsException on error
+     */
+    public String getTypeColumnValue()
+        throws EFapsException;
 
     /**
-     * {@inheritDoc}
+     * @return value fo rthe description column
+     * @throws EFapsException on error
      */
-    @Override
-    public String getTypeColumnValue()
-    {
-        return CICommon.HistoryConnect.getType().getLabel();
-    }
+    public StringBuilder getDescriptionColumnValue()
+        throws EFapsException;
 }

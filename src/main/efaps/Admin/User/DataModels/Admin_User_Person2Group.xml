@@ -55,7 +55,22 @@
             method="insertPostTrigger4PersonRelation"
             name="Admin_User_Person2Group.INSERT_POST"
             event="INSERT_POST"/>
+        <trigger program="org.efaps.esjp.common.history.ConnectHistoryTrigger" 
+            name="Admin_User_Person2Group.INSERT_POST_2" 
+            event="INSERT_POST">
+            <property name="Select4HistoryInstance">linkto[UserFromLink].instance</property>
+            <property name="Select4ConnectInstance">linkto[UserToLink].instance</property>
+            <property name="Select4ConnectAttribute">linkto[UserToLink].attribute[Name]</property>    
+        </trigger>
+        <trigger program="org.efaps.esjp.common.history.DisconnectHistoryTrigger" 
+            name="Admin_User_Person2Group.DELETE_PRE" 
+            event="DELETE_PRE">
+            <property name="Select4HistoryInstance">linkto[UserFromLink].instance</property>
+            <property name="Select4ConnectInstance">linkto[UserToLink].instance</property>
+            <property name="Select4ConnectAttribute">linkto[UserToLink].attribute[Name]</property>    
+        </trigger>
     </definition>
+    
     <definition>
         <version-expression>(version==3)</version-expression>
         <name>Admin_User_Person2Group</name>

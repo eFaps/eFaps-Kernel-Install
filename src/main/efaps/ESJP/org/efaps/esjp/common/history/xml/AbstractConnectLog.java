@@ -20,10 +20,15 @@
 
 package org.efaps.esjp.common.history.xml;
 
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
 
+import org.efaps.admin.datamodel.Attribute;
+import org.efaps.admin.datamodel.Type;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.esjp.common.history.IHistoryHtml;
+import org.efaps.util.EFapsException;
 
 /**
  * TODO comment!
@@ -35,25 +40,27 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 @EFapsRevision("$Rev$")
 public abstract class AbstractConnectLog
     extends AbstractHistoryLog
+    implements IHistoryHtml
 {
-    /**
-     * The instance Object.
-     */
-    @XmlElement(name = "connectInstance")
-    private AbstractInstObj connectInstance;
 
     /**
      * The instance Object.
      */
-    @XmlElement(name = "historyInstance")
-    private AbstractInstObj historyInstance;
+    @XmlElementRef
+    private ConnectInstObj connectInstance;
+
+    /**
+     * The instance Object.
+     */
+    @XmlElementRef
+    private HistoryInstObj historyInstance;
 
     /**
      * Getter method for the instance variable {@link #connectInstance}.
      *
      * @return value of instance variable {@link #connectInstance}
      */
-    public AbstractInstObj getConnectInstance()
+    public ConnectInstObj getConnectInstance()
     {
         return this.connectInstance;
     }
@@ -61,9 +68,10 @@ public abstract class AbstractConnectLog
     /**
      * Setter method for instance variable {@link #connectInstance}.
      *
-     * @param _connectInstance value for instance variable {@link #connectInstance}
+     * @param _connectInstance value for instance variable
+     *            {@link #connectInstance}
      */
-    public void setConnectInstance(final AbstractInstObj _connectInstance)
+    public void setConnectInstance(final ConnectInstObj _connectInstance)
     {
         this.connectInstance = _connectInstance;
     }
@@ -73,7 +81,7 @@ public abstract class AbstractConnectLog
      *
      * @return value of instance variable {@link #historyInstance}
      */
-    public AbstractInstObj getHistoryInstance()
+    public HistoryInstObj getHistoryInstance()
     {
         return this.historyInstance;
     }
@@ -81,10 +89,37 @@ public abstract class AbstractConnectLog
     /**
      * Setter method for instance variable {@link #historyInstance}.
      *
-     * @param _historyInstance value for instance variable {@link #historyInstance}
+     * @param _historyInstance value for instance variable
+     *            {@link #historyInstance}
      */
-    public void setHistoryInstance(final AbstractInstObj _historyInstance)
+    public void setHistoryInstance(final HistoryInstObj _historyInstance)
     {
         this.historyInstance = _historyInstance;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public StringBuilder getDescriptionColumnValue()
+        throws EFapsException
+    {
+        final AbstractInstObj conInst = getConnectInstance();
+        final Type type = Type.get(conInst.getTypeUUID());
+        final StringBuilder ret = new StringBuilder();
+        ret.append(type.getLabel()).append("<br/>");
+        boolean first = true;
+        for (final AttributeValue attrVal : conInst.getAttributes()) {
+            final Attribute attr = type.getAttribute(attrVal.getName());
+            if (attr != null) {
+                if (first) {
+                    first = false;
+                } else {
+                    ret.append("<br/>");
+                }
+                ret.append(DBProperties.getProperty(attr.getLabelKey())).append(": ").append(attrVal.getValue());
+            }
+        }
+        return ret;
     }
 }

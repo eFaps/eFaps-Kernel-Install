@@ -25,6 +25,7 @@ import java.util.Date;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
 
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -49,15 +50,15 @@ public abstract class AbstractHistoryLog
     /**
      * The instance Object.
      */
-    @XmlElement(name = "instance")
-    private AbstractInstObj instance;
+    @XmlElementRef
+    private InstObj instance;
 
     /**
      * Getter method for the instance variable {@link #instance}.
      *
      * @return value of instance variable {@link #instance}
      */
-    public AbstractInstObj getInstance()
+    public InstObj getInstance()
     {
         return this.instance;
     }
@@ -67,7 +68,7 @@ public abstract class AbstractHistoryLog
      *
      * @param _instance value for instance variable {@link #instance}
      */
-    public void setInstance(final AbstractInstObj _instance)
+    public void setInstance(final InstObj _instance)
     {
         this.instance = _instance;
     }

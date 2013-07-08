@@ -20,33 +20,16 @@
   Last Changed By: $Author$
 
 -->
-<access-set xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<user-role xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>a7f8912c-2200-49f4-931a-52f77ad38585</uuid>
+    <uuid>883e6c48-d814-4b7f-bf31-5083d88db7ec</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
-        <version-expression>(version==latest)</version-expression>
-
-        <name>Common_History_Modify</name>
-
-        <access-type>show</access-type>
-        <access-type>read</access-type>
-        <access-type>modify</access-type>
-        <access-type>checkout</access-type>
-        <access-type>checkin</access-type>
-        <access-type>create</access-type>
-        <access-type>statusBoost</access-type>
-        <access-type>statusModify</access-type>
-        <access-type>delete</access-type>
-        <access-type>grant</access-type>
-
-        <type>Common_HistoryCreate</type>
-        <type>Common_HistoryUpdate</type>
-        <type>Common_HistoryConnect</type>
-        <type>Common_HistoryDisconnect</type>
-
-        <role>History_Modifier</role>
+        <version-expression>(version==4) || (version==latest)</version-expression>
+        <name>History_Modifier</name>
+        <status>true</status>
+        <global>true</global>
     </definition>
-</access-set>
+</user-role>
