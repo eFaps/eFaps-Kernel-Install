@@ -25,8 +25,9 @@
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
-        <version-expression>(version==latest)</version-expression>
+        <version-expression>(version==3) || (version==latest)</version-expression>
         <name>GeneralInstance</name>
+        <purpose GeneralInstance="false"/>
         <!-- attributes -->
         <attribute>
             <name>ID</name>

@@ -27,57 +27,57 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>f9958e29-79ab-40f8-a947-0e22ce6c3fa3</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>f9958e29-79ab-40f8-a947-0e22ce6c3fa3</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==3) || (version==latest)</version-expression>
-    <name>Admin_RunLevel_Definition</name>
-    <!-- attributes -->
-    <attribute>
-      <name>OID</name>
-      <type>OID</type>
-      <sqltable>Admin_RunLevel_DefinitionSQLTable</sqltable>
-      <sqlcolumn>ID</sqlcolumn>
-    </attribute>
-    <attribute>
-      <name>ID</name>
-      <type>Long</type>
-      <sqltable>Admin_RunLevel_DefinitionSQLTable</sqltable>
-      <sqlcolumn>ID</sqlcolumn>
-    </attribute>
-    <attribute>
-      <name>RunLevelID</name>
-      <type>Link</type>
-      <typelink>Admin_RunLevel_RunLevel</typelink>
-      <sqltable>Admin_RunLevel_DefinitionSQLTable</sqltable>
-      <sqlcolumn>RUNLEVELID</sqlcolumn>
-    </attribute>
-    <attribute>
-      <name>Priority</name>
-      <type>Integer</type>
-      <sqltable>Admin_RunLevel_DefinitionSQLTable</sqltable>
-      <sqlcolumn>PRIORITY</sqlcolumn>
-    </attribute>
-    <attribute>
-      <name>Class</name>
-      <type>String</type>
-      <sqltable>Admin_RunLevel_DefinitionSQLTable</sqltable>
-      <sqlcolumn>CLASS</sqlcolumn>
-    </attribute>
-    <attribute>
-      <name>Method</name>
-      <type>String</type>
-      <sqltable>Admin_RunLevel_DefinitionSQLTable</sqltable>
-      <sqlcolumn>METHOD</sqlcolumn>
-    </attribute>
-    <attribute>
-      <name>Parameter</name>
-      <type>String</type>
-      <sqltable>Admin_RunLevel_DefinitionSQLTable</sqltable>
-      <sqlcolumn>PARAMETER</sqlcolumn>
-    </attribute>
-  </definition>
-
+    <definition>
+        <version-expression>(version==3) || (version==latest)</version-expression>
+        <name>Admin_RunLevel_Definition</name>
+        <purpose GeneralInstance="false" />
+        <!-- attributes -->
+        <attribute>
+            <name>OID</name>
+            <type>OID</type>
+            <sqltable>Admin_RunLevel_DefinitionSQLTable</sqltable>
+            <sqlcolumn>ID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ID</name>
+            <type>Long</type>
+            <sqltable>Admin_RunLevel_DefinitionSQLTable</sqltable>
+            <sqlcolumn>ID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>RunLevelID</name>
+            <type>Link</type>
+            <typelink>Admin_RunLevel_RunLevel</typelink>
+            <sqltable>Admin_RunLevel_DefinitionSQLTable</sqltable>
+            <sqlcolumn>RUNLEVELID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Priority</name>
+            <type>Integer</type>
+            <sqltable>Admin_RunLevel_DefinitionSQLTable</sqltable>
+            <sqlcolumn>PRIORITY</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Class</name>
+            <type>String</type>
+            <sqltable>Admin_RunLevel_DefinitionSQLTable</sqltable>
+            <sqlcolumn>CLASS</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Method</name>
+            <type>String</type>
+            <sqltable>Admin_RunLevel_DefinitionSQLTable</sqltable>
+            <sqlcolumn>METHOD</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Parameter</name>
+            <type>String</type>
+            <sqltable>Admin_RunLevel_DefinitionSQLTable</sqltable>
+            <sqlcolumn>PARAMETER</sqlcolumn>
+        </attribute>
+    </definition>
 </datamodel-type>

@@ -35,6 +35,5 @@
         <version-expression>(version==3) || (version==latest)</version-expression>
         <name>Admin_UI_Image</name>
         <parent>Admin_UI_File</parent>
-        <purpose GeneralInstance="true" />
     </definition>
 </datamodel-type>

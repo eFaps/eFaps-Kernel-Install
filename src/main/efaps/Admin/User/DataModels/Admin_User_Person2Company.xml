@@ -33,7 +33,7 @@
 
     <!-- define type (is already defined) -->
     <definition>
-        <version-expression>(version==3) || (version==latest)</version-expression>
+        <version-expression>(version==latest)</version-expression>
         <name>Admin_User_Person2Company</name>
         <parent>Admin_User_Abstract2Abstract</parent>
         <!-- attributes -->
@@ -65,5 +65,26 @@
             <property name="Select4ConnectInstance">linkto[CompanyLink].instance</property>
             <property name="Select4ConnectAttribute">linkto[CompanyLink].attribute[Name]</property>    
         </trigger>
+    </definition>
+    
+    <definition>
+        <version-expression>(version==3)</version-expression>
+        <name>Admin_User_Person2Company</name>
+        <parent>Admin_User_Abstract2Abstract</parent>
+        <!-- attributes -->
+        <attribute>
+            <name>UserLink</name>
+            <type>Link</type>
+            <typelink>Admin_User_Person</typelink>
+            <sqltable>Admin_User_Abstract2AbstractSQLTable</sqltable>
+            <sqlcolumn>USERABSTRACTFROM</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>CompanyLink</name>
+            <type>Link</type>
+            <typelink>Admin_User_Company</typelink>
+            <sqltable>Admin_User_Abstract2AbstractSQLTable</sqltable>
+            <sqlcolumn>USERABSTRACTTO</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>

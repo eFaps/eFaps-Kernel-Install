@@ -63,6 +63,7 @@
             import org.efaps.admin.datamodel.Type;
             import org.efaps.db.Context;
             import org.efaps.db.Update;
+            import org.efaps.db.Insert;
 
             EFAPS_LOGGER.info("    Update '" + EFAPS_USERNAME + "' Password");
             Context.getThreadContext().getPerson().setPassword(EFAPS_PASSWORD);
@@ -84,6 +85,14 @@
             Update update3 = new Update(Type.get("Admin_User_Abstract"), "2");
             update3.add("Status","true");
             update3.executeWithoutAccessCheck();
+            
+            EFAPS_LOGGER.info("    Create General-Instance for 'Administrator'");
+            Insert insert = new Insert(Type.get("GeneralInstance"));
+            insert.add("InstanceTypeID", Type.get("Admin_User_Person").getId());
+            insert.add("InstanceID", 1);
+            insert.add("ExchangeSystemID", 0);
+            insert.add("ExchangeID", 0);
+            insert.executeWithoutAccessCheck();
         </script>
     </version>
     <version number="6" compile="true">

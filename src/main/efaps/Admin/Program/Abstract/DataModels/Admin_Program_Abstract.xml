@@ -35,6 +35,7 @@
         <version-expression>(version==4) || (version==latest)</version-expression>
         <name>Admin_Program_Abstract</name>
         <parent>Admin_Abstract</parent>
+        <!-- To be able to use a store General instance is necessary -->
         <purpose GeneralInstance="true" abstract="true" />
         <store name="Admin_Program_JDBCStore" />
     </definition>
@@ -43,6 +44,7 @@
         <version-expression>(version==3)</version-expression>
         <name>Admin_Program_Abstract</name>
         <parent>Admin_Abstract</parent>
+        <!-- To be able to use a store General instance is necessary -->
         <purpose GeneralInstance="true" abstract="true" />
     </definition>
 </datamodel-type>

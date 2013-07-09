@@ -23,60 +23,53 @@
 
 -->
 
-<datamodel-type  xmlns="http://www.efaps.org/xsd" 
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   
-                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <uuid>af2a5069-6ee8-40c4-8f8e-80a11565869d</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
-  
-  <definition>
-  
-    <version-expression>(version==3) || (version==latest)</version-expression>
-    <name>Admin_DataModel_UoM</name>
-    
-    <attribute>
-      <name>OID</name>
-      <type>OID</type>
-      <sqltable>Admin_DataModel_UoMSQLTable</sqltable>
-      <sqlcolumn>ID</sqlcolumn>
-    </attribute>
+<datamodel-type xmlns="http://www.efaps.org/xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>af2a5069-6ee8-40c4-8f8e-80a11565869d</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-    <attribute>
-      <name>ID</name>
-      <type>Long</type>
-      <sqltable>Admin_DataModel_UoMSQLTable</sqltable>
-      <sqlcolumn>ID</sqlcolumn>
-    </attribute>
-    
-    <attribute>
-      <name>Dimension</name>
-      <type>Link</type>
-      <typelink>Admin_DataModel_Dimension</typelink>
-      <sqltable>Admin_DataModel_UoMSQLTable</sqltable>
-      <sqlcolumn>DIMID</sqlcolumn>
-    </attribute>
-    
-    <attribute>
-      <name>Name</name>
-      <type>String</type>
-      <sqltable>Admin_DataModel_UoMSQLTable</sqltable>
-      <sqlcolumn>NAME</sqlcolumn>
-    </attribute>
-    
-    <attribute>
-      <name>Numerator</name>
-      <type>Integer</type>
-      <sqltable>Admin_DataModel_UoMSQLTable</sqltable>
-      <sqlcolumn>NUMERATOR</sqlcolumn>
-    </attribute>
-  
-    <attribute>
-      <name>Denominator</name>
-      <type>Integer</type>
-      <sqltable>Admin_DataModel_UoMSQLTable</sqltable>
-      <sqlcolumn>DENOMINATOR</sqlcolumn>
-    </attribute>
-
-  </definition>
+    <definition>
+        <version-expression>(version==3) || (version==latest)</version-expression>
+        <name>Admin_DataModel_UoM</name>
+        <purpose GeneralInstance="false" />
+        <attribute>
+            <name>OID</name>
+            <type>OID</type>
+            <sqltable>Admin_DataModel_UoMSQLTable</sqltable>
+            <sqlcolumn>ID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ID</name>
+            <type>Long</type>
+            <sqltable>Admin_DataModel_UoMSQLTable</sqltable>
+            <sqlcolumn>ID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Dimension</name>
+            <type>Link</type>
+            <typelink>Admin_DataModel_Dimension</typelink>
+            <sqltable>Admin_DataModel_UoMSQLTable</sqltable>
+            <sqlcolumn>DIMID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Name</name>
+            <type>String</type>
+            <sqltable>Admin_DataModel_UoMSQLTable</sqltable>
+            <sqlcolumn>NAME</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Numerator</name>
+            <type>Integer</type>
+            <sqltable>Admin_DataModel_UoMSQLTable</sqltable>
+            <sqlcolumn>NUMERATOR</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Denominator</name>
+            <type>Integer</type>
+            <sqltable>Admin_DataModel_UoMSQLTable</sqltable>
+            <sqlcolumn>DENOMINATOR</sqlcolumn>
+        </attribute>
+    </definition>
 </datamodel-type>

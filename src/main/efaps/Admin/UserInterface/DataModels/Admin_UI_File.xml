@@ -35,6 +35,7 @@
         <version-expression>(version==4) || (version==latest)</version-expression>
         <name>Admin_UI_File</name>
         <parent>Admin_UI_Direct</parent>
+        <!-- To be able to use a store General instance is necessary -->
         <purpose GeneralInstance="true" />
         <store name="Admin_UI_JDBCStore" />
     </definition>
@@ -43,6 +44,7 @@
         <version-expression>(version==3)</version-expression>
         <name>Admin_UI_File</name>
         <parent>Admin_UI_Direct</parent>
+        <!-- To be able to use a store General instance is necessary -->
         <purpose GeneralInstance="true" />
     </definition>
 </datamodel-type>

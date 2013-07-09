@@ -27,44 +27,43 @@
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>a35ffe76-d9ef-44de-975c-56384a3cf694</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>a35ffe76-d9ef-44de-975c-56384a3cf694</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==3) || (version==latest)</version-expression>
-    <name>Admin_RunLevel_RunLevel</name>
-    <!-- attributes -->
-    <attribute>
-      <name>OID</name>
-      <type>OID</type>
-      <sqltable>Admin_RunLevel_RunLevelSQLTable</sqltable>
-      <sqlcolumn>ID</sqlcolumn>
-    </attribute>
-    <attribute>
-      <name>ID</name>
-      <type>Long</type>
-      <sqltable>Admin_RunLevel_RunLevelSQLTable</sqltable>
-      <sqlcolumn>ID</sqlcolumn>
-    </attribute>
-    <attribute>
-      <name>RunLevel</name>
-      <type>String</type>
-      <sqltable>Admin_RunLevel_RunLevelSQLTable</sqltable>
-      <sqlcolumn>RUNLEVEL</sqlcolumn>
-    </attribute>
-    <attribute>
-      <name>UUID</name>
-      <type>String</type>
-      <sqltable>Admin_RunLevel_RunLevelSQLTable</sqltable>
-      <sqlcolumn>UUID</sqlcolumn>
-    </attribute>
-    <attribute>
-      <name>Parent</name>
-      <type>Long</type>
-      <sqltable>Admin_RunLevel_RunLevelSQLTable</sqltable>
-      <sqlcolumn>PARENT</sqlcolumn>
-    </attribute>
-  </definition>
-
+    <definition>
+        <version-expression>(version==3) || (version==latest)</version-expression>
+        <name>Admin_RunLevel_RunLevel</name>
+        <purpose GeneralInstance="false" />
+        <attribute>
+            <name>OID</name>
+            <type>OID</type>
+            <sqltable>Admin_RunLevel_RunLevelSQLTable</sqltable>
+            <sqlcolumn>ID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ID</name>
+            <type>Long</type>
+            <sqltable>Admin_RunLevel_RunLevelSQLTable</sqltable>
+            <sqlcolumn>ID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>RunLevel</name>
+            <type>String</type>
+            <sqltable>Admin_RunLevel_RunLevelSQLTable</sqltable>
+            <sqlcolumn>RUNLEVEL</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>UUID</name>
+            <type>String</type>
+            <sqltable>Admin_RunLevel_RunLevelSQLTable</sqltable>
+            <sqlcolumn>UUID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Parent</name>
+            <type>Long</type>
+            <sqltable>Admin_RunLevel_RunLevelSQLTable</sqltable>
+            <sqlcolumn>PARENT</sqlcolumn>
+        </attribute>
+    </definition>
 </datamodel-type>

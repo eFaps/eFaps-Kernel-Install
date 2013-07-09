@@ -33,7 +33,7 @@
 
     <!-- History of Events for Objects -->
     <definition>
-        <version-expression>(version==latest)</version-expression>
+        <version-expression>(version==3) || (version==latest)</version-expression>
         <name>Common_HistorySQLTable</name>
         <typeid-column>TYPEID</typeid-column>
         <database>

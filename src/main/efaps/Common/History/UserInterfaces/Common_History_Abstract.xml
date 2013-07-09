@@ -39,9 +39,6 @@
         <!-- target definitions -->
         <target>
             <table>Common_History_AbstractTable</table>
-            <evaluate program="org.efaps.esjp.common.history.HistoryPrint">
-                <property name="Types">Common_HistoryAbstract</property>
-            </evaluate>
         </target>
         <!-- properties -->
         <property name="Target">content</property>
