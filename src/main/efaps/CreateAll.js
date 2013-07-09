@@ -549,7 +549,7 @@ function _eFapsCreateDataModelTablesStep2()  {
   var sqlTableIdSQLTable = _eFapsCreateInsertSQLTable(stmt, text, "5ffb40ef-3518-46c8-a78f-da3ffbfea4c0", "Admin_DataModel_SQLTableSQLTable", "T_DMTABLE", "ID", null, "Admin_Common_AbstractSQLTable");
 
   text = "Insert Type for 'Admin_DataModel_SQLTable'";
-  var typeIdSQLTable = _eFapsCreateInsertType(stmt, text, "ebf29cc2-cf42-4cd0-9b6e-92d9b644062b", "Admin_DataModel_SQLTable", "Admin_Abstract", 1);
+  var typeIdSQLTable = _eFapsCreateInsertType(stmt, text, "ebf29cc2-cf42-4cd0-9b6e-92d9b644062b", "Admin_DataModel_SQLTable", "Admin_Abstract", 8);
   _eFapsCreateInsertAttr(stmt, sqlTableIdSQLTable, typeIdSQLTable, 'SQLTable',         'SQLTABLE',         'String', null);
   _eFapsCreateInsertAttr(stmt, sqlTableIdSQLTable, typeIdSQLTable, 'SQLColumnID',      'SQLCOLUMNID',      'String', null);
   _eFapsCreateInsertAttr(stmt, sqlTableIdSQLTable, typeIdSQLTable, 'SQLColumnType',    'SQLCOLUMNTYPE',    'String', null);
@@ -565,7 +565,7 @@ function _eFapsCreateDataModelTablesStep2()  {
   var sqlTableIdType = _eFapsCreateInsertSQLTable(stmt, text, "8f4df2db-8fda-4f00-9144-9a3e344d0abc", "Admin_DataModel_TypeSQLTable", "T_DMTYPE", "ID", null, "Admin_Common_AbstractSQLTable");
 
   text = "Insert Type for 'Admin_DataModel_Type'";
-  var typeIdType = _eFapsCreateInsertType(stmt, text, "8770839d-60fd-4bb4-81fd-3903d4c916ec", "Admin_DataModel_Type", "Admin_Abstract", 1);
+  var typeIdType = _eFapsCreateInsertType(stmt, text, "8770839d-60fd-4bb4-81fd-3903d4c916ec", "Admin_DataModel_Type", "Admin_Abstract", 8);
   _eFapsCreateInsertAttr(stmt, sqlTableIdType, typeIdType, 'SQLCacheExpr',     'SQLCACHEEXPR',     'String', null);
   _eFapsCreateInsertAttr(stmt, sqlTableIdType, typeIdType, 'ParentType',       'PARENTDMTYPE',     'Link', "Admin_DataModel_Type");
 

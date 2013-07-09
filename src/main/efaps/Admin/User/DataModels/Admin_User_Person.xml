@@ -35,7 +35,8 @@
         <version-expression>(version==3)</version-expression>
         <name>Admin_User_Person</name>
         <parent>Admin_User_Abstract</parent>
-        <!-- attributes -->
+        <!-- needs GeneralInstance to be able to add History Log -->
+        <purpose GeneralInstance="true"/>
         <attribute>
             <name>FirstName</name>
             <type>String</type>
@@ -106,7 +107,8 @@
         <version-expression>(version==latest)</version-expression>
         <name>Admin_User_Person</name>
         <parent>Admin_User_Abstract</parent>
-        <!-- attributes -->
+        <!-- needs GeneralInstance to be able to add History Log -->
+        <purpose GeneralInstance="true"/>
         <attribute>
             <name>FirstName</name>
             <type>String</type>

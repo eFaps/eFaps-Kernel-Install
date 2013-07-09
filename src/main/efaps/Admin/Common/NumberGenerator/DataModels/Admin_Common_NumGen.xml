@@ -24,15 +24,15 @@
 -->
 
 <datamodel-type xmlns="http://www.efaps.org/xsd"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>95386cf8-bdd4-40cd-9b59-d791cad795a1</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==3) || (version==latest)</version-expression>
         <name>Admin_Common_NumGen</name>
-        <!-- attributes -->
+        <purpose GeneralInstance="false" />
         <attribute>
             <name>Type</name>
             <type>Type</type>
