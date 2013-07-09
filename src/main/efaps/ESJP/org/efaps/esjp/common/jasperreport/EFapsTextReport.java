@@ -31,7 +31,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  */
 @EFapsUUID("fdbcd5f9-9893-4302-9c67-9596b21d4a1b")
 @EFapsRevision("$Rev: 9255 $")
-public class EFapsTextReport
+public abstract class EFapsTextReport
+    extends EFapsTextReport_Base
 {
 
 }

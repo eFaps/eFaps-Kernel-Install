@@ -24,17 +24,21 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.text.Format;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -52,7 +56,7 @@ public abstract class EFapsTextReport_Base
 {
     protected final static Logger LOG = LoggerFactory.getLogger(EFapsTextReport_Base.class);
 
-    public enum Type
+    public static enum Type
     {
         /** */
         STRINGTYPE,
@@ -62,7 +66,7 @@ public abstract class EFapsTextReport_Base
         DATETYPE;
     }
 
-    public Return execute(final Parameter _parameter)
+    public Return getTextReport(final Parameter _parameter)
         throws EFapsException
     {
         final Return ret = new Return();
@@ -92,18 +96,32 @@ public abstract class EFapsTextReport_Base
 
         final List<List<Column>> values = new ArrayList<List<Column>>();
         for (final List<Object> row : dataSrcList) {
-            final Integer col = 0;
+            Integer col = 0;
             final List<Column> rowValues = new ArrayList<Column>();
             for (final Object colObj : row) {
                 final ColumnDefinition colDef = columnsList.get(col);
                 final Column colVal = new Column(colObj, colDef);
                 rowValues.add(colVal);
+                col++;
             }
             values.add(rowValues);
         }
 
+        final List<ColumnDefinition> headColList = new ArrayList<ColumnDefinition>();
+        addHeaderDefinition(_parameter, headColList);
+        final List<Object> headData = getHeaderData(_parameter);
+
+        Integer headCol = 0;
+        final List<Column> headValues = new ArrayList<Column>();
+        for (final Object colObj : headData) {
+            final ColumnDefinition colDef = headColList.get(headCol);
+            final Column colVal = new Column(colObj, colDef);
+            headValues.add(colVal);
+            headCol++;
+        }
+
         final StringBuilder data = new StringBuilder();
-        data.append(getHeader4TextReport())
+        data.append(buildHeader4TextReport(headValues))
                         .append(buildBody4TextReport(values));
 
         return data;
@@ -124,36 +142,45 @@ public abstract class EFapsTextReport_Base
      * @return
      * @throws EFapsException on error.
      */
-    protected abstract String getHeader4TextReport()
+    protected abstract void addHeaderDefinition(Parameter _parameter,
+                                                  List<ColumnDefinition> _columnsList)
         throws EFapsException;
-
-
-    /**
-     * @param _parameter on error.
-     * @param _columnsList
-     */
-    protected abstract void addColumnDefinition(Parameter _parameter,
-                                                List<ColumnDefinition> _columnsList);
 
     /**
      * @param _parameter
      * @return
      */
-    protected abstract List<List<Object>> createDataSource(final Parameter _parameter);
+    protected abstract List<Object> getHeaderData(Parameter _parameter)
+        throws EFapsException;
+
+    /**
+     * @param _parameter on error.
+     * @param _columnsList
+     * @throws EFapsException
+     */
+    protected abstract void addColumnDefinition(Parameter _parameter,
+                                                List<ColumnDefinition> _columnsList)
+        throws EFapsException;
+
+    /**
+     * @param _parameter
+     * @return
+     * @throws EFapsException
+     */
+    protected abstract List<List<Object>> createDataSource(final Parameter _parameter)
+        throws EFapsException;
 
     /**
      * @param _extension
      * @param _values
      * @return
      */
-    protected String buildName4TextReport(final String _extension,
-                                          final String... _values)
+    protected String buildName4TextReport(final String... _values)
     {
         final StringBuilder name = new StringBuilder();
         for (final String value : _values) {
             name.append(value);
         }
-        name.append(_extension);
         return name.toString();
     }
 
@@ -161,12 +188,13 @@ public abstract class EFapsTextReport_Base
      * @param _values
      * @return
      */
-    protected String buildHeader4TextReport(final String... _values)
+    protected String buildHeader4TextReport(final List<Column> _values)
     {
         final StringBuilder head = new StringBuilder();
-        for (final String value : _values) {
-            head.append(value);
+        for (final Column value : _values) {
+            head.append(value.getValue());
         }
+        head.append("\r\n");
         return head.toString();
     }
 
@@ -200,29 +228,33 @@ public abstract class EFapsTextReport_Base
 
         private final Integer decimalLength;
 
+        private final Boolean withDecimalSymbol;
+
         private final Type type;
 
         private final String defaultValue;
 
-        private final Pattern fillerPattern;
+        private final String formatPattern;
 
         private final Format formatter;
 
         public ColumnDefinition(final String _separator,
                                 final Integer _length,
                                 final Integer _decimalLength,
+                                final Boolean _withDecimalSymbol,
                                 final Format _formatter,
                                 final String _defaultValue,
                                 final Type _type,
-                                final Pattern _fillerPattern)
+                                final String _formatPattern)
         {
             this.separator = _separator;
             this.length = _length;
             this.decimalLength = _decimalLength;
+            this.withDecimalSymbol = _withDecimalSymbol;
             this.formatter = _formatter;
             this.type = _type;
             this.defaultValue = _defaultValue;
-            this.fillerPattern = _fillerPattern;
+            this.formatPattern = _formatPattern;
         }
 
         /**
@@ -247,6 +279,14 @@ public abstract class EFapsTextReport_Base
         private Integer getDecimalLength()
         {
             return decimalLength;
+        }
+
+        /**
+         * @return the withDecimalSymbol
+         */
+        private Boolean isWithDecimalSymbol()
+        {
+            return withDecimalSymbol;
         }
 
         /**
@@ -276,9 +316,9 @@ public abstract class EFapsTextReport_Base
         /**
          * @return the fillerPattern
          */
-        private Pattern getFillerPattern()
+        private String getFormatPattern()
         {
-            return fillerPattern;
+            return formatPattern;
         }
 
     }
@@ -336,11 +376,13 @@ public abstract class EFapsTextReport_Base
             if (_value != null) {
                 value = String.valueOf(_value);
             }
-
             if (value.length() > _column.getLength()) {
                 value = value.substring(0, _column.getLength());
             } else if (value.length() < _column.getLength()) {
-                // Implement pattern if it's required to complete the column width
+                final Formatter formatter = new Formatter();
+                value = formatter.format(_column.getFormatPattern(), value).toString();
+                formatter.close();
+                value = value.replace("\\s", _column.getDefaultValue());
             }
             return value;
         }
@@ -349,36 +391,41 @@ public abstract class EFapsTextReport_Base
                                         final ColumnDefinition _column)
             throws EFapsException
         {
-            String valStr = _column.getDefaultValue();
+            String valStr = "";
             final Format formatter = _column.getFormatter();
             if (_value != null) {
                 if (_value instanceof Integer) {
                     valStr = formatter != null ? formatter.format((Integer) _value) : ((Integer) _value).toString();
                 } else if (_value instanceof BigDecimal) {
-                    try {
-                        final BigDecimal valTmp = (BigDecimal) _value;
-                        if (formatter != null) {
-                            valStr = formatter.format(valTmp).toString();
-                        } else {
-                            if (valTmp.subtract(new BigDecimal(valTmp.intValue())).compareTo(BigDecimal.ZERO) != 0) {
-                                valStr = ((BigDecimal) _value).setScale(_column.getDecimalLength(),
-                                                BigDecimal.ROUND_HALF_UP).toString();
-                            } else {
-                                valStr = "" + ((BigDecimal) _value).intValue();
-                            }
-                        }
-                    } catch (final ArithmeticException e) {
-                        throw new EFapsException(EFapsTextReport_Base.class, "execute.IOException", e);
+                    final BigDecimal valTmp = (BigDecimal) _value;
+                    if (formatter != null) {
+                        valStr = formatter.format(valTmp).toString();
+                    }  else {
+                        final DecimalFormat format = (DecimalFormat) NumberFormat.getInstance(Context
+                                        .getThreadContext().getLocale());
+                        format.setMaximumIntegerDigits(_column.getLength() - _column.getDecimalLength());
+                        format.setMaximumFractionDigits(_column.getDecimalLength());
+                        format.setMinimumIntegerDigits(_column.getLength() - _column.getDecimalLength());
+                        format.setMinimumFractionDigits(_column.getDecimalLength());
+                        format.setRoundingMode(RoundingMode.HALF_UP);
+                        valStr = format.format(valTmp).toString();
                     }
                 } else if (_value instanceof String) {
                     valStr = parseString2Number(_value, _column, formatter);
                 }
-            }
 
-            if (valStr.length() > _column.getLength()) {
-                valStr = valStr.substring(0, _column.getLength());
-            } else if (valStr.length() < _column.getLength()) {
-                // Implement pattern if it's required to complete the column width
+            } else {
+                valStr = formatter.format(new BigDecimal("0"));
+            }
+            if (!_column.isWithDecimalSymbol()) {
+                if (".".equals(""+((DecimalFormat)formatter).getDecimalFormatSymbols().getDecimalSeparator())) {
+                    valStr = valStr.replaceAll("\\.", "");
+                } else {
+                    valStr = valStr.replaceAll(",", "");
+                }
+            }
+            if (_column.getDefaultValue() != null && !_column.getDefaultValue().equals("0")) {
+                valStr.replaceAll("0", _column.getDefaultValue());
             }
 
             return valStr;
@@ -397,7 +444,7 @@ public abstract class EFapsTextReport_Base
         {
             // final Format formatter = new SimpleDateFormat("yyyyMMdd");
             final Format formatter = _column.getFormatter();
-            String dateStr = _column.getDefaultValue();
+            String dateStr = _column.getDefaultValue() != null ? _column.getDefaultValue() : "";
             Date date = null;
             if (_value != null) {
                 if (_value instanceof String) {
@@ -407,14 +454,23 @@ public abstract class EFapsTextReport_Base
                     date = ((DateTime) _value).toDate();
                     dateStr = formatter.format(date);
                 } else if (_value instanceof Date) {
+                    date = (Date) _value;
                     dateStr = formatter.format(date);
+                }
+            } else {
+                if (_column.getFormatPattern() != null) {
+                    final Formatter strFormatTmp = new Formatter();
+                    dateStr = strFormatTmp.format(_column.getFormatPattern(), "").toString();
+                    strFormatTmp.close();
+
+                    if (_column.getDefaultValue() != null) {
+                        dateStr = dateStr.replace("\\s", _column.getDefaultValue());
+                    }
                 }
             }
 
             if (dateStr.length() > _column.getLength()) {
                 dateStr = dateStr.substring(0, _column.getLength());
-            } else if (dateStr.length() < _column.getLength()) {
-                // Implement pattern if it's required to complete the column width
             }
             return dateStr;
         }
