@@ -34,7 +34,7 @@
     <definition>
         <version-expression>(version==3) || (version==latest)</version-expression>
         <name>Admin_Common_SystemConfigurationAbstract</name>
-        <purpose abstract="true"/>
+        <purpose abstract="true" GeneralInstance="false" />
         <attribute>
             <name>Type</name>
             <type>Type</type>

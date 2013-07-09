@@ -35,5 +35,6 @@
         <version-expression>(version==3) || (version==latest)</version-expression>
         <name>Admin_Common_SystemConfiguration</name>
         <parent>Admin_Abstract</parent>
+        <purpose GeneralInstance="false" />
     </definition>
 </datamodel-type>
