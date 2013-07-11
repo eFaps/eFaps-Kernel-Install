@@ -110,19 +110,23 @@ public abstract class EFapsTextReport_Base
         final List<ColumnDefinition> headColList = new ArrayList<ColumnDefinition>();
         addHeaderDefinition(_parameter, headColList);
         final List<Object> headData = getHeaderData(_parameter);
-
-        Integer headCol = 0;
         final List<Column> headValues = new ArrayList<Column>();
-        for (final Object colObj : headData) {
-            final ColumnDefinition colDef = headColList.get(headCol);
-            final Column colVal = new Column(colObj, colDef);
-            headValues.add(colVal);
-            headCol++;
+        final boolean hasHead = !headColList.isEmpty() && headData != null;
+        if (hasHead) {
+            Integer headCol = 0;
+            for (final Object colObj : headData) {
+                final ColumnDefinition colDef = headColList.get(headCol);
+                final Column colVal = new Column(colObj, colDef);
+                headValues.add(colVal);
+                headCol++;
+            }
         }
 
         final StringBuilder data = new StringBuilder();
-        data.append(buildHeader4TextReport(headValues))
-                        .append(buildBody4TextReport(values));
+        if (hasHead) {
+            data.append(buildHeader4TextReport(headValues));
+        }
+        data.append(buildBody4TextReport(values));
 
         return data;
     }
@@ -395,7 +399,8 @@ public abstract class EFapsTextReport_Base
             final Format formatter = _column.getFormatter();
             if (_value != null) {
                 if (_value instanceof Integer) {
-                    valStr = formatter != null ? formatter.format((Integer) _value) : ((Integer) _value).toString();
+                    valStr = formatter != null ? formatter.format(new BigDecimal((Integer) _value))
+                                                : ((Integer) _value).toString();
                 } else if (_value instanceof BigDecimal) {
                     final BigDecimal valTmp = (BigDecimal) _value;
                     if (formatter != null) {
@@ -417,7 +422,7 @@ public abstract class EFapsTextReport_Base
             } else {
                 valStr = formatter.format(new BigDecimal("0"));
             }
-            if (!_column.isWithDecimalSymbol()) {
+            if (!(_value instanceof Integer) && !_column.isWithDecimalSymbol()) {
                 if (".".equals(""+((DecimalFormat)formatter).getDecimalFormatSymbols().getDecimalSeparator())) {
                     valStr = valStr.replaceAll("\\.", "");
                 } else {
