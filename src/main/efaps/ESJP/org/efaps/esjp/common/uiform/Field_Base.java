@@ -56,6 +56,7 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.CacheReloadException;
 import org.efaps.util.cache.InfinispanCache;
 import org.infinispan.Cache;
 import org.joda.time.DateTime;
@@ -438,14 +439,17 @@ public abstract class Field_Base
     }
 
     /**
-     * Recursive method to get a Type with his children and children children
-     * as a simple set.
-     * @param _parameter    Parameter as passed from the eFaps API
-     * @param _type         Type type
+     * Recursive method to get a Type with his children and children children as
+     * a simple set.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _type Type type
      * @return set of types
+     * @throws CacheReloadException on error
      */
     protected Set<Type> getTypeList(final Parameter _parameter,
                                     final Type _type)
+        throws CacheReloadException
     {
         final Set<Type> ret = new HashSet<Type>();
         ret.add(_type);
