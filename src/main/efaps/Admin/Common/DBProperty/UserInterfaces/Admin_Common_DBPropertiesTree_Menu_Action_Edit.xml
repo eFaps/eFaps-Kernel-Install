@@ -27,21 +27,21 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>95713a10-d98e-4a16-8599-c3c424195e22</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>95713a10-d98e-4a16-8599-c3c424195e22</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_Common_DBPropertiesTree_Menu_Action_Edit</name>
-    <!-- target definitions -->
-    <target>
-      <form>Admin_Common_DBPropertiesForm</form>
-      <execute program="org.efaps.esjp.common.uiform.Edit"/>
-    </target>
-    <!-- properties -->
-    <property name="Target">popup</property>
-    <property name="TargetMode">edit</property>
-  </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_Common_DBPropertiesTree_Menu_Action_Edit</name>
+        <!-- target definitions -->
+        <target>
+            <form>Admin_Common_DBPropertiesForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Edit" />
+        </target>
+        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
+    </definition>
 
 </ui-command>
