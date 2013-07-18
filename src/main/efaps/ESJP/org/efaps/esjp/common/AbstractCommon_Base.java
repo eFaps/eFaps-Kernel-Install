@@ -21,14 +21,18 @@
 
 package org.efaps.esjp.common;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.CacheReloadException;
 
 
 /**
@@ -96,6 +100,27 @@ public abstract class AbstractCommon_Base
         // test for basic
         if (properties.containsKey(_key)) {
             ret = String.valueOf(properties.get(_key));
+        }
+        return ret;
+    }
+
+    /**
+     * Recursive method to get a Type with his children and children children as
+     * a simple set.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _type Type type
+     * @return set of types
+     * @throws CacheReloadException on error
+     */
+    protected Set<Type> getTypeList(final Parameter _parameter,
+                                    final Type _type)
+        throws CacheReloadException
+    {
+        final Set<Type> ret = new HashSet<Type>();
+        ret.add(_type);
+        for (final Type child : _type.getChildTypes()) {
+            ret.addAll(getTypeList(_parameter, child));
         }
         return ret;
     }

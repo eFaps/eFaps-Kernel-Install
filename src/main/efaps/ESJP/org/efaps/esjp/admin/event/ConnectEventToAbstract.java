@@ -48,6 +48,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.CacheReloadException;
 
 /**
  * ESJP used to create and update events.
@@ -127,8 +128,11 @@ public class ConnectEventToAbstract
      *
      * @param _map map in which the information about the event types are stored
      * @param _type current event type to collect to the map
+     * @throws CacheReloadException on error
      */
-    protected void collectAllowedEventTypes(final Map<String, Long> _map, final Type _type)
+    protected void collectAllowedEventTypes(final Map<String, Long> _map,
+                                            final Type _type)
+        throws CacheReloadException
     {
         if (!_type.isAbstract()) {
             final String labelName = new StringBuilder(_type.getName()).append(".Label").toString();

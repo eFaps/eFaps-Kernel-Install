@@ -45,6 +45,7 @@ import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
 import org.slf4j.Logger;
@@ -57,6 +58,7 @@ import org.slf4j.LoggerFactory;
 @EFapsUUID("a036b0e7-20ce-47c7-83a0-f7644af80fd1")
 @EFapsRevision("$Rev$")
 public abstract class Search_Base
+    extends AbstractCommon
     implements EventExecution
 {
     /**
@@ -199,7 +201,7 @@ public abstract class Search_Base
         final Type type = Type.get(typeStr);
 
         final Map<String, Long> values = new TreeMap<String, Long>();
-        final Set<Type> types = getChildTypes(type);
+        final Set<Type> types = getTypeList(_parameter, type);
         for (final Type atype : types) {
             if (!atype.isAbstract()) {
                 values.put(atype.getLabel(), atype.getId());
@@ -215,21 +217,6 @@ public abstract class Search_Base
         }
         html.append("</select>");
         ret.put(ReturnValues.SNIPLETT, html.toString());
-        return ret;
-    }
-
-    /**
-     * Recursive method to get all types.
-     * @param _parent parent type
-     * @return all children
-     */
-    protected Set<Type> getChildTypes(final Type _parent)
-    {
-        final Set<Type> ret = new HashSet<Type>();
-        ret.add(_parent);
-        for (final Type child : _parent.getChildTypes()) {
-            ret.addAll(getChildTypes(child));
-        }
         return ret;
     }
 }
