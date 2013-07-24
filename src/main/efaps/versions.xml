@@ -163,7 +163,7 @@
                 DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_Admin_REST_JAASKey.xml")).updateInDB();
             }
 
-            EFAPS_LOGGER.info("    Check if for Person QuartzTrigger must be imported");
+            EFAPS_LOGGER.info("    Check if Person 'QuartzTrigger' must be imported");
             // Admin_User_Person
             queryBldr = new QueryBuilder(UUID.fromString("fe9d94fd-2ed8-4c44-b1f0-00e150555888"));
             queryBldr.addWhereAttrEqValue("Name", "QuartzTrigger");
