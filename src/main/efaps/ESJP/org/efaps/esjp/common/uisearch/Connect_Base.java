@@ -86,6 +86,7 @@ public abstract class Connect_Base
                 }
                 if (!check) {
                     final Insert insert = new Insert(type);
+                    addInsertConnect(_parameter,insert);
                     insert.add(parentAttr, parent.getId());
                     insert.add(childAttr, child.getId());
                     insert.execute();
@@ -93,6 +94,13 @@ public abstract class Connect_Base
             }
         }
         return new Return();
+    }
+
+    protected void addInsertConnect(final Parameter _parameter,
+                                    final Insert _insert)
+        throws EFapsException
+    {
+        // to implement
     }
 
     /**
