@@ -42,10 +42,14 @@ import org.efaps.esjp.common.history.xml.AbstractInstObj;
 import org.efaps.esjp.common.history.xml.AttributeValue;
 import org.efaps.esjp.common.history.xml.ConnectInstObj;
 import org.efaps.esjp.common.history.xml.ConnectLog;
+import org.efaps.esjp.common.history.xml.CreateLog;
 import org.efaps.esjp.common.history.xml.DisconnectLog;
 import org.efaps.esjp.common.history.xml.HistoryInstObj;
 import org.efaps.esjp.common.history.xml.InstObj;
+import org.efaps.esjp.common.history.xml.UpdateLog;
 import org.efaps.util.EFapsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO comment!
@@ -58,6 +62,11 @@ import org.efaps.util.EFapsException;
 public abstract class AbstractHistoryTrigger_Base
     extends AbstractCommon
 {
+
+    /**
+     * Logger for this class.
+     */
+    protected static final Logger LOG = LoggerFactory.getLogger(AbstractHistoryTrigger.class);
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
@@ -91,15 +100,13 @@ public abstract class AbstractHistoryTrigger_Base
             insert.executeWithoutTrigger();
 
         } catch (final JAXBException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            AbstractHistoryTrigger_Base.LOG.error("Catched error on marschalling.", e);
         }
-
         return new Return();
     }
 
     /**
-     * @return
+     * @return the Type for the History insert
      */
     protected abstract Type getHistoryType();
 
@@ -129,7 +136,7 @@ public abstract class AbstractHistoryTrigger_Base
     {
         return new Class<?>[] { AbstractHistoryLog.class, AbstractConnectLog.class, ConnectLog.class,
                         DisconnectLog.class, AbstractInstObj.class, InstObj.class, HistoryInstObj.class,
-                        ConnectInstObj.class, AttributeValue.class };
+                        ConnectInstObj.class, AttributeValue.class, UpdateLog.class, CreateLog.class };
     }
 
 }
