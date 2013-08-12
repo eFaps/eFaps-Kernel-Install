@@ -508,6 +508,19 @@ public abstract class Field_Base
                 queryBldr.addWhereAttrEqValue(parts[0], parts[1]);
             }
 
+            if (props.containsKey("StatusGroup")) {
+                final String statiStr = String.valueOf(props.get("Stati"));
+                final String[] statiAr = statiStr.split(";");
+                final List<Object> statusList = new ArrayList<Object>();
+                for (final String stati : statiAr) {
+                    final Status status = Status.find((String) props.get("StatusGroup"), stati);
+                    if (status != null) {
+                        statusList.add(status.getId());
+                    }
+                }
+                queryBldr.addWhereAttrEqValue(type.getStatusAttribute().getName(), statusList.toArray());
+            }
+
             add2QueryBuilder4List(_parameter, queryBldr);
 
             final InstanceQuery instQuery = queryBldr.getQuery();
@@ -529,19 +542,6 @@ public abstract class Field_Base
             final String orderSel = (String) props.get("OrderSelect");
             if (orderSel != null) {
                 multi.addSelect(orderSel);
-            }
-
-            if (props.containsKey("StatusGroup")) {
-                final String statiStr = String.valueOf(props.get("Stati"));
-                final String[] statiAr = statiStr.split(";");
-                final List<Object> statusList = new ArrayList<Object>();
-                for (final String stati : statiAr) {
-                    final Status status = Status.find((String) props.get("StatusGroup"), stati);
-                    if (status != null) {
-                        statusList.add(status.getId());
-                    }
-                }
-                queryBldr.addWhereAttrEqValue(type.getStatusAttribute().getName(), statusList.toArray());
             }
 
             multi.execute();
