@@ -68,6 +68,10 @@ import org.slf4j.LoggerFactory;
 @EFapsRevision("$Rev$")
 public abstract class AbstractDynamicReport_Base
 {
+    public enum ExportType
+    {
+        PDF, EXCEL, HTML;
+    }
 
     /**
      * Logging instance used to give logging information of this class.
@@ -83,6 +87,8 @@ public abstract class AbstractDynamicReport_Base
      * Name for the created file.
      */
     private String fileName;
+
+    private ExportType exType;
 
     /**
      * Get the style for the columns in case of a html document.
@@ -105,6 +111,7 @@ public abstract class AbstractDynamicReport_Base
      * Get the style for the columns in case of a excel document.
      *
      * @param _parameter Parameter as passed by the eFaps API
+     * @param _builder builder to add to
      * @throws EFapsException on error
      */
     protected void configure4Excel(final Parameter _parameter,
@@ -366,6 +373,7 @@ public abstract class AbstractDynamicReport_Base
     {
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         File file = null;
+        this.exType = ExportType.PDF;
         try {
             if (properties.get("Template") != null) {
                 final String template = String.valueOf(properties.get("Template"));
@@ -413,6 +421,7 @@ public abstract class AbstractDynamicReport_Base
     {
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         File file = null;
+        this.exType = ExportType.EXCEL;
         try {
             if (properties.get("Template") != null) {
                 final String template = String.valueOf(properties.get("Template"));
@@ -485,6 +494,7 @@ public abstract class AbstractDynamicReport_Base
     {
         final Writer writer = new StringWriter();
         try {
+            this.exType = ExportType.HTML;
             addColumnDefintion(_parameter, getReport());
             final JasperXhtmlExporterBuilder exporter = Exporters.xhtmlExporter(writer);
             if (_strip) {
@@ -511,6 +521,11 @@ public abstract class AbstractDynamicReport_Base
         return getHtml(_parameter, true);
     }
 
+    /**
+     * @param _parameter        Parameter as passed by the eFaps API
+     * @param _jasperFileName   file Name
+     * @return inputStream
+     */
     public InputStream getTemplate(final Parameter _parameter,
                                    final String _jasperFileName)
     {
@@ -529,5 +544,25 @@ public abstract class AbstractDynamicReport_Base
             AbstractDynamicReport_Base.LOG.error("error in getTemplate", e);
         }
         return ret;
+    }
+
+    /**
+     * Getter method for the instance variable {@link #exType}.
+     *
+     * @return value of instance variable {@link #exType}
+     */
+    protected ExportType getExType()
+    {
+        return this.exType;
+    }
+
+    /**
+     * Setter method for instance variable {@link #exType}.
+     *
+     * @param _exType value for instance variable {@link #exType}
+     */
+    protected void setExType(final ExportType _exType)
+    {
+        this.exType = _exType;
     }
 }
