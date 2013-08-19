@@ -462,17 +462,17 @@ public abstract class EFapsTextReport_Base
                     date = (Date) _value;
                     dateStr = formatter.format(date);
                 }
-            } else {
-                if (_column.getFormatPattern() != null) {
-                    final Formatter strFormatTmp = new Formatter();
-                    dateStr = strFormatTmp.format(_column.getFormatPattern(), "").toString();
-                    strFormatTmp.close();
+            }
+            if (_column.getFormatPattern() != null) {
+                final Formatter strFormatTmp = new Formatter();
+                dateStr = strFormatTmp.format(_column.getFormatPattern(), dateStr).toString();
+                strFormatTmp.close();
 
-                    if (_column.getDefaultValue() != null) {
-                        dateStr = dateStr.replace("\\s", _column.getDefaultValue());
-                    }
+                if (_column.getDefaultValue() != null) {
+                    dateStr = dateStr.replace("\\s", _column.getDefaultValue());
                 }
             }
+
 
             if (dateStr.length() > _column.getLength()) {
                 dateStr = dateStr.substring(0, _column.getLength());
