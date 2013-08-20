@@ -86,7 +86,7 @@ public abstract class Connect_Base
                 }
                 if (!check) {
                     final Insert insert = new Insert(type);
-                    addInsertConnect(_parameter,insert);
+                    addInsertConnect(_parameter, insert);
                     insert.add(parentAttr, parent.getId());
                     insert.add(childAttr, child.getId());
                     insert.execute();
