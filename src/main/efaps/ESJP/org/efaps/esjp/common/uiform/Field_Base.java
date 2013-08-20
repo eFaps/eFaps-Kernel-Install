@@ -168,7 +168,11 @@ public abstract class Field_Base
         return ret;
     }
 
-
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @return  Return containing snipplet
+     * @throws EFapsException on error
+     */
     public Return radioFieldValue(final Parameter _parameter)
         throws EFapsException
     {
@@ -195,8 +199,7 @@ public abstract class Field_Base
                 }
             }
             ret.put(ReturnValues.SNIPLETT, getInputField(_parameter, positions, Field_Base.ListType.RADIO));
-        }
-        else {
+        } else {
             ret.put(ReturnValues.SNIPLETT, "");
         }
         return ret;
@@ -216,8 +219,7 @@ public abstract class Field_Base
         if (uiObject instanceof FieldValue) {
             if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((FieldValue) uiObject).getDisplay())) {
                 ret = listFieldValue(_parameter, Field_Base.ListType.RADIO);
-            }
-            else {
+            } else {
                 ret = new Return();
                 ret.put(ReturnValues.SNIPLETT, "");
             }
@@ -227,6 +229,68 @@ public abstract class Field_Base
         return ret;
     }
 
+
+    /**
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @return Return containing Html Snipplet
+     * @throws EFapsException on error
+     */
+    public Return getRadioList4Enum(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
+        if (uiObject instanceof FieldValue) {
+            final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+            if (properties.containsKey("Enum")) {
+                final String enumName = (String) properties.get("Enum");
+                try {
+                    final Class<?> enumClazz = Class.forName(enumName);
+                    if (enumClazz.isEnum()) {
+                        final Object[] consts = enumClazz.getEnumConstants();
+                        Integer ordinal;
+                        if (((FieldValue) uiObject).getValue() != null) {
+                            ordinal = (Integer) ((FieldValue) uiObject).getValue();
+                        } else {
+                            ordinal = -1;
+                        }
+                        if (org.efaps.admin.ui.field.Field.Display.EDITABLE
+                                        .equals(((FieldValue) uiObject).getDisplay())) {
+                            final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
+                            int i = 0;
+                            for (final Object con : consts) {
+                                final String label = DBProperties.getProperty(enumName + "." + con.toString());
+                                final DropDownPosition pos = new DropDownPosition(i, label, label);
+                                values.add(pos);
+                                pos.setSelected(i == ordinal);
+                                i++;
+                            }
+                            Collections.sort(values, new Comparator<DropDownPosition>() {
+                                @SuppressWarnings("unchecked")
+                                @Override
+                                public int compare(final DropDownPosition _o1,
+                                                   final DropDownPosition _o2)
+                                {
+                                    return _o1.getOrderValue().compareTo(_o2.getOrderValue());
+                                }
+                            });
+                            ret.put(ReturnValues.SNIPLETT, getInputField(_parameter, values,
+                                            Field_Base.ListType.RADIO));
+                        } else {
+                            ret.put(ReturnValues.SNIPLETT, ordinal > -1
+                                            ? DBProperties.getProperty(enumName + "." + consts[ordinal].toString())
+                                                            : "");
+                        }
+                    }
+                } catch (final ClassNotFoundException e) {
+                    throw new EFapsException(Field_Base.class, "ClassNotFoundException", e);
+                }
+            } else {
+                throw new EFapsException(Field_Base.class, "No Enum defined");
+            }
+        }
+        return ret;
+    }
 
     /**
      * @param _parameter    Parameter as passed from the eFaps API
@@ -335,7 +399,7 @@ public abstract class Field_Base
                             } else {
                                 map.put(cont, clazz.getLabel() + " - ");
                             }
-                            clazz = (Classification) clazz.getParentClassification();
+                            clazz = clazz.getParentClassification();
                             cont--;
                         }
                         for (final String label : map.values()) {
@@ -356,7 +420,7 @@ public abstract class Field_Base
                         } else {
                             map.put(cont, clazz.getLabel() + " - ");
                         }
-                        clazz = (Classification) clazz.getParentClassification();
+                        clazz = clazz.getParentClassification();
                         cont--;
                     }
                     for (final String label : map.values()) {
@@ -450,8 +514,7 @@ public abstract class Field_Base
         if (uiObject instanceof FieldValue) {
             if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((FieldValue) uiObject).getDisplay())) {
                 ret = listFieldValue(_parameter, Field_Base.ListType.DROPDOWN);
-            }
-            else {
+            } else {
                 ret = new Return();
                 ret.put(ReturnValues.SNIPLETT, "");
             }
@@ -616,15 +679,15 @@ public abstract class Field_Base
     }
 
     /**
-     * @param _parameter
-     * @param _values
-     * @throws EFapsException
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _values   list of dropdownposition
+     * @throws EFapsException on error
      */
     protected void updatePositionList(final Parameter _parameter,
                                       final List<DropDownPosition> _values)
         throws EFapsException
     {
-        // TODO Auto-generated method stub
+     // to be implemented by subclasses
     }
 
     /**
@@ -771,7 +834,8 @@ public abstract class Field_Base
                     }
                 }
             } else {
-                final Cache<String, Dimension> cache = InfinispanCache.get().<String, Dimension>getCache("Dimension4Name");
+                final Cache<String, Dimension> cache = InfinispanCache.get().<String,
+                                Dimension>getCache("Dimension4Name");
                 for (final Dimension dim : cache.values()) {
                     group2dim.put(dim.getName(), dim);
                 }
@@ -827,7 +891,8 @@ public abstract class Field_Base
             final String displayStr = (String) props.get("Display");
 
             final TargetMode mode = TargetMode.valueOf(target);
-            final org.efaps.admin.ui.field.Field.Display display = org.efaps.admin.ui.field.Field.Display.valueOf(displayStr);
+            final org.efaps.admin.ui.field.Field.Display display = org.efaps.admin.ui.field.Field.Display.valueOf(
+                            displayStr);
 
             final String html;
             switch (display) {
@@ -849,6 +914,11 @@ public abstract class Field_Base
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return Snipplet
+     * @throws EFapsException on error
+     */
     public Return getHiddenInputField(final Parameter _parameter)
         throws EFapsException
     {
