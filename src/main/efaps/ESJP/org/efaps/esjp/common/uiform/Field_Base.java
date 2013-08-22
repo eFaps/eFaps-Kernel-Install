@@ -162,7 +162,13 @@ public abstract class Field_Base
         if (checked) {
             html.append(" checked=\"checked\" ");
         }
-        html.append("/>");
+        if (props.containsKey("comment")) {
+            html.append(">")
+                .append(DBProperties.getProperty((String) props.get("comment")))
+                .append("</input>");
+        } else {
+            html.append("/>");
+        }
         final Return ret = new Return();
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;

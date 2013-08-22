@@ -40,10 +40,11 @@
       <table-name>T_DMTYPE</table-name>
       <parent-table>T_CMABSTRACT</parent-table>
       <!-- columns -->
-      <column name="PARENTDMTYPE"  type="INTEGER"/>
-      <column name="SQLCACHEEXPR"  type="STRING_SHORT"  length="50"/>
+      <column name="PARENTDMTYPE"       type="INTEGER"/>
+      <column name="PARENTCLASSDMTYPE"  type="INTEGER"/>
       <!-- foreign keys -->
-      <foreign name="T_DMTYPE_FK_PRNTDMTP"    key="PARENTDMTYPE"  reference="T_DMTYPE(ID)"/>
+      <foreign name="T_DMTYPE_FK_PRNTDMTP"        key="PARENTDMTYPE"       reference="T_DMTYPE(ID)"/>
+      <foreign name="T_DMTYPE_FK_PRNTCLSSDMTP"    key="PARENTCLASSDMTYPE"  reference="T_DMTYPE(ID)"/>
     </database>
   </definition>
 
@@ -54,8 +55,8 @@
       <table-name>T_DMTYPE</table-name>
       <parent-table>T_CMABSTRACT</parent-table>
       <!-- columns -->
-      <column name="PARENTDMTYPE"  type="INTEGER"/>
-      <column name="SQLCACHEEXPR"  type="STRING_SHORT"  length="50"/>
+      <column name="PARENTDMTYPE"       type="INTEGER"/>
+      <column name="PARENTCLASSDMTYPE"  type="INTEGER"/>
       <!-- create view  representing all types -->
       <sql>
         create or replace view V_ADMINTYPE as
@@ -65,7 +66,7 @@
                 T_CMABSTRACT.NAME,
                 T_CMABSTRACT.PURPOSE,
                 T_DMTYPE.PARENTDMTYPE,
-                T_DMTYPE.SQLCACHEEXPR
+                T_DMTYPE.PARENTCLASSDMTYPE
             from T_DMTYPE
             join T_CMABSTRACT
               on T_CMABSTRACT.ID = T_DMTYPE.ID

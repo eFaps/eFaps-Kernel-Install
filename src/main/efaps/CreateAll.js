@@ -566,8 +566,8 @@ function _eFapsCreateDataModelTablesStep2()  {
 
   text = "Insert Type for 'Admin_DataModel_Type'";
   var typeIdType = _eFapsCreateInsertType(stmt, text, "8770839d-60fd-4bb4-81fd-3903d4c916ec", "Admin_DataModel_Type", "Admin_Abstract", 8);
-  _eFapsCreateInsertAttr(stmt, sqlTableIdType, typeIdType, 'SQLCacheExpr',     'SQLCACHEEXPR',     'String', null);
-  _eFapsCreateInsertAttr(stmt, sqlTableIdType, typeIdType, 'ParentType',       'PARENTDMTYPE',     'Link', "Admin_DataModel_Type");
+  _eFapsCreateInsertAttr(stmt, sqlTableIdType, typeIdType, 'ParentClassType',  'PARENTCLASSDMTYPE', 'Link', "Admin_DataModel_Type");
+  _eFapsCreateInsertAttr(stmt, sqlTableIdType, typeIdType, 'ParentType',       'PARENTDMTYPE',      'Link', "Admin_DataModel_Type");
 
   _exec(stmt, "Update type id for types",
               null, "update T_CMABSTRACT set TYPEID=" + typeIdType + " where TYPEID=-21000");

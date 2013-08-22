@@ -42,10 +42,11 @@
         <purpose GeneralInstance="false" />
         <!-- attributes -->
         <attribute>
-            <name>SQLCacheExpr</name>
-            <type>String</type>
+            <name>ParentClassType</name>
+            <type>Link</type>
+            <typelink>Admin_DataModel_Type</typelink>
             <sqltable>Admin_DataModel_TypeSQLTable</sqltable>
-            <sqlcolumn>SQLCACHEEXPR</sqlcolumn>
+            <sqlcolumn>PARENTCLASSDMTYPE</sqlcolumn>
         </attribute>
         <attribute>
             <name>ParentType</name>
@@ -67,10 +68,11 @@
         <purpose GeneralInstance="false" />
         <!-- attributes -->
         <attribute>
-            <name>SQLCacheExpr</name>
-            <type>String</type>
+            <name>ParentClassType</name>
+            <type>Link</type>
+            <typelink>Admin_DataModel_Type</typelink>
             <sqltable>Admin_DataModel_TypeSQLTable</sqltable>
-            <sqlcolumn>SQLCACHEEXPR</sqlcolumn>
+            <sqlcolumn>PARENTCLASSDMTYPE</sqlcolumn>
         </attribute>
         <attribute>
             <name>ParentType</name>

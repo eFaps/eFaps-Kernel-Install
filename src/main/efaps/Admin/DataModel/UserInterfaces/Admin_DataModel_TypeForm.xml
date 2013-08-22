@@ -83,9 +83,13 @@
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
-        <field name="SQLCacheExpr">
-            <property name="Attribute">SQLCacheExpr</property>
+        <field name="ParentClassType">
+            <property name="SelectAlternateOID">linkto[ParentClassType].oid</property>
+            <property name="Select">linkto[ParentClassType].attribute[Name]</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Admin_DataModel_Type/ParentClassType.Label</property>
             <property name="ModeSearch">EDITABLE</property>
+            <property name="ShowTypeIcon">true</property>
         </field>
         <field name="ParentType">
             <property name="SelectAlternateOID">linkto[ParentType].oid</property>
