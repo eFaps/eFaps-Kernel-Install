@@ -174,6 +174,11 @@ public abstract class SimpleAccessCheckOnType_Base
                 }
                 cmd.append(group);
             }
+            if (first) {
+                cmd.append("0");
+                AccessCheckAbstract_Base.LOG.error("Missing Group for '{}' on groupdependend Access on type '{}'",
+                                context.getPerson().getName(), type);
+            }
             cmd.append("))");
         }
         AccessCheckAbstract_Base.LOG.debug("cheking access with: {}", cmd);
@@ -288,6 +293,11 @@ public abstract class SimpleAccessCheckOnType_Base
                         cmd.append(",");
                     }
                     cmd.append(group);
+                }
+                if (first) {
+                    cmd.append("0");
+                    AccessCheckAbstract_Base.LOG.error("Missing Group for '{}' on groupdependend Access on type '{}'",
+                                    context.getPerson().getName(), type);
                 }
                 cmd.append("))");
             }
