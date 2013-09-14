@@ -36,6 +36,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import org.efaps.admin.EFapsSystemConfiguration;
+import org.efaps.admin.KernelSettings;
 import org.efaps.admin.access.AccessSet;
 import org.efaps.admin.access.AccessType;
 import org.efaps.admin.common.SystemConfiguration;
@@ -124,6 +125,13 @@ public abstract class AccessCheck4Object_Base
         return ret;
     }
 
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _instance     Instance of the object the access is checked on
+     * @param _accessType   type of access
+     * @return true if access, else false
+     * @throws EFapsException on error
+     */
     protected boolean getObjectAccess(final Parameter _parameter,
                                       final Instance _instance,
                                       final AccessType _accessType)
@@ -208,6 +216,13 @@ public abstract class AccessCheck4Object_Base
         return ret;
     }
 
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _instances    Instances to be checked
+     * @param _accessType   access type
+     * @return Mapping of access rights
+     * @throws EFapsException on error
+     */
     protected Map<Instance, Boolean> getObjectAccess(final Parameter _parameter,
                                                      final List<Instance> _instances,
                                                      final AccessType _accessType)
@@ -672,16 +687,7 @@ public abstract class AccessCheck4Object_Base
         throws EFapsException
     {
         final SystemConfiguration config = EFapsSystemConfiguration.get();
-        final Properties props = new Properties();
-        for (int i = 0; i < 100; i++) {
-            final Properties propsi = config.getAttributeValueAsProperties("AccessCheck4Object" + i);
-            if (propsi == null || propsi.isEmpty()) {
-                break;
-            } else {
-                props.putAll(propsi);
-            }
-        }
-        return props;
+        return config.getAttributeValueAsProperties(KernelSettings.ACCESS4OBJECT, true);
     }
 
     /**
