@@ -32,16 +32,21 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.UUID;
 
 import org.efaps.admin.access.AccessType;
+import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.transaction.ConnectionResource;
 import org.efaps.util.EFapsException;
@@ -78,7 +83,7 @@ public abstract class InheritAccessCheck4Object_Base
         throws EFapsException
     {
         boolean ret = false;
-        // check if for this object something is defined, if not gop for the parent object
+        // check if for this object something is defined, if not go for the parent object
         final StringBuilder cmd = new StringBuilder();
         cmd.append("select count(*) ")
             .append(" from T_ACCESS4OBJ ")
@@ -123,28 +128,61 @@ public abstract class InheritAccessCheck4Object_Base
         return ret;
     }
 
+    @Override
+    protected boolean check4SimpleAccessCheck(final Parameter _parameter,
+                                              final Instance _instance)
+        throws EFapsException
+    {
+        boolean ret = false;
+        final AccessType accessType = (AccessType) _parameter.get(ParameterValues.ACCESSTYPE);
+        //create
+        if (!accessType.getUUID().equals(UUID.fromString("1dd13a42-e04f-4bce-85cf-3931ae94267f"))) {
+            ret = super.check4SimpleAccessCheck(_parameter, _instance);
+        }
+        return ret;
+    }
+
     /**
-     * @param _parameter
-     * @param _instance
-     * @param _accessType
-     * @return
-     * @throws EFapsException
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _instance     Instanc the parent is wanted for
+     * @param _accessType   AccessType
+     * @return Instance of the parent if found
+     * @throws EFapsException on error
      */
     protected Instance getParentInstance(final Parameter _parameter,
-                                       final Instance _instance,
-                                       final AccessType _accessType)
+                                         final Instance _instance,
+                                         final AccessType _accessType)
         throws EFapsException
     {
         Instance ret = Instance.get("");
         final Properties props = getProperties(_parameter);
         final String parentAttribute = props.getProperty(_instance.getType().getName() + ".ParentAttribute");
-        if (parentAttribute != null)
-        {
-            final PrintQuery print = new PrintQuery(_instance);
-            final SelectBuilder sel = new SelectBuilder().linkto(parentAttribute).oid();
-            print.addSelect(sel);
-            if (print.executeWithoutAccessCheck()) {
-                ret = Instance.get(print.<String>getSelect(sel));
+        if (parentAttribute != null) {
+            //create
+            if (!_instance.isValid()
+                            && _accessType.getUUID().equals(UUID.fromString("1dd13a42-e04f-4bce-85cf-3931ae94267f"))) {
+                @SuppressWarnings("unchecked")
+                final Map<Attribute, Object[]> values = (Map<Attribute, Object[]>) _parameter.get(
+                                ParameterValues.NEW_VALUES);
+                for (final Entry<Attribute, Object[]> entry : values.entrySet()) {
+                    if (parentAttribute.equals(entry.getKey().getName())) {
+                        final Long parentId = (Long) entry.getValue()[0];
+                        final QueryBuilder queryBldr = new QueryBuilder(entry.getKey().getLink());
+                        queryBldr.addWhereAttrEqValue("ID", parentId);
+                        final InstanceQuery query = queryBldr.getQuery();
+                        query.executeWithoutAccessCheck();
+                        if (query.next()) {
+                            ret = query.getCurrentValue();
+                        }
+                    }
+                }
+            } else {
+                final PrintQuery print = new PrintQuery(_instance);
+                final SelectBuilder sel = new SelectBuilder().linkto(parentAttribute).oid();
+                print.addSelect(sel);
+                if (print.executeWithoutAccessCheck()) {
+                    ret = Instance.get(print.<String>getSelect(sel));
+                }
             }
         }
         return ret;
@@ -159,6 +197,7 @@ public abstract class InheritAccessCheck4Object_Base
                                                      final AccessType _accessType)
         throws EFapsException
     {
+        // check if for this objects something is defined, if not go for the parent object
         final Map<Instance, Boolean> ret = new HashMap<Instance, Boolean>();
         final StringBuilder cmd = new StringBuilder();
         final Map<Long, List<Long>> typeid2objectids = new HashMap<Long, List<Long>>();
@@ -266,11 +305,11 @@ public abstract class InheritAccessCheck4Object_Base
 
 
     /**
-     * @param _parameter
-     * @param _instance
-     * @param _accessType
-     * @return
-     * @throws EFapsException
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _instances    Instances the parent is wanted for
+     * @param _accessType   AccessType
+     * @return Instance of the parent if found
+     * @throws EFapsException on error
      */
     protected Map<Instance, Instance> getParentInstances(final Parameter _parameter,
                                                          final List<Instance> _instances,
@@ -295,8 +334,7 @@ public abstract class InheritAccessCheck4Object_Base
 
         for (final Entry<Type, List<Instance>> entry : type2instance.entrySet()) {
             final String parentAttribute = props.getProperty(entry.getKey().getName() + ".ParentAttribute");
-            if (parentAttribute != null)
-            {
+            if (parentAttribute != null) {
                 final MultiPrintQuery print = new MultiPrintQuery(entry.getValue());
                 final SelectBuilder sel = new SelectBuilder().linkto(parentAttribute).oid();
                 print.addSelect(sel);

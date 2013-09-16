@@ -188,7 +188,7 @@ public abstract class Create_Base
             }
         }
         if (command.getTargetConnectAttribute() != null) {
-            insert.add(command.getTargetConnectAttribute(), "" + parent.getId());
+            insert.add(command.getTargetConnectAttribute(), parent);
         }
         add2basicInsert(_parameter, insert);
         insert.execute();
