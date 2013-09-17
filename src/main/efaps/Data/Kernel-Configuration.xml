@@ -142,5 +142,10 @@ Saltsize=8</value>
         <value>false</value>
         <description>Activate that UUID for Persons is Required.</description>
     </attribute>
+    <attribute>
+        <key>org.efaps.kernel.ShowDBPropertiesKey</key>
+        <value>false</value>
+        <description>Boolean (true/false): show the Keys for the DBProperties.</description>
+    </attribute>
   </definition>
 </common-systemconfiguration>
