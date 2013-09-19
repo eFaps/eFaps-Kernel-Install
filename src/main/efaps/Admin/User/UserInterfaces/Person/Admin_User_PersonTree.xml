@@ -23,37 +23,35 @@
 
 -->
 
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>e40fe0d7-4e33-40a8-887b-1584814377d5</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>e40fe0d7-4e33-40a8-887b-1584814377d5</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_User_PersonTree</name>
-    <!-- targets -->
-    <target>
-      <menu>Admin_User_PersonTree_Menu</menu>
-      <form>Admin_User_PersonForm</form>
-    </target>
-    <!-- type tree for -->
-    <type>Admin_User_Person</type>
-    <!-- childs -->
-    <childs>
-      <child>Admin_User_PersonTree_Roles</child>
-      <child>Admin_User_PersonTree_Groups</child>
-      <child>Admin_User_PersonTree_Company</child>
-      <child>Admin_User_AbstractTree_JAASKeys</child>
-      <child>Admin_User_AbstractTree_Access</child>
-      <child>Admin_User_PersonTree_User_Attribute</child>
-      <child>Common_History_ObjectTree_HistoryLog</child>
-    </childs>
-    <!-- properties -->
-    <property name="Target">content</property>
-    <property name="TargetMode">view</property>
-  </definition>
-
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_User_PersonTree</name>
+        <!-- targets -->
+        <target>
+            <menu>Admin_User_PersonTree_Menu</menu>
+            <form>Admin_User_PersonForm</form>
+        </target>
+        <!-- type tree for -->
+        <type>Admin_User_Person</type>
+        <!-- childs -->
+        <childs>
+            <child>Admin_User_PersonTree_Roles</child>
+            <child>Admin_User_PersonTree_Groups</child>
+            <child>Admin_User_PersonTree_Company</child>
+            <child>Admin_User_AbstractTree_JAASKeys</child>
+            <child>Admin_User_AbstractTree_Access</child>
+            <child>Admin_User_PersonTree_User_Attribute</child>
+            <child>Common_History_ObjectTree_HistoryLog</child>
+        </childs>
+        <!-- properties -->
+        <property name="Target">content</property>
+        <property name="TargetMode">view</property>
+    </definition>
 </ui-menu>
