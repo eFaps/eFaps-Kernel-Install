@@ -40,6 +40,7 @@
             <property name="Label">Admin_Event_Definition/Type.Label</property>
             <property name="ShowTypeIcon">true</property>
             <property name="Width">3</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
         <field name="name">
             <property name="SelectAlternateOID">oid</property>
