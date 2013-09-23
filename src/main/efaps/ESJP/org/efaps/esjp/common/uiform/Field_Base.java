@@ -102,7 +102,7 @@ public abstract class Field_Base
     {
         final Return ret = new Return();
         final TargetMode mode  = (TargetMode) _parameter.get(ParameterValues.ACCESSMODE);
-        if (TargetMode.CREATE.equals(mode)) {
+        if (TargetMode.CREATE.equals(mode) || TargetMode.EDIT.equals(mode)) {
             final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
             DateTime date = new DateTime();
             if (props.containsKey("withDayOfWeek")) {
@@ -113,21 +113,21 @@ public abstract class Field_Base
                 final int dayOfMonth = Integer.parseInt((String) props.get("withDayOfMonth"));
                 date = date.withDayOfMonth(dayOfMonth);
             }
-            if (props.containsKey("minusDays")) {
-                final int days = Integer.parseInt((String) props.get("minusDays"));
+            if (props.containsKey("days")) {
+                final int days = Integer.parseInt((String) props.get("days"));
                 date = date.minusDays(days);
             }
-            if (props.containsKey("plusDays")) {
-                final int days = Integer.parseInt((String) props.get("plusDays"));
-                date = date.plusDays(days);
-            }
-            if (props.containsKey("minusWeeks")) {
-                final int weeks = Integer.parseInt((String) props.get("minusWeeks"));
+            if (props.containsKey("weeks")) {
+                final int weeks = Integer.parseInt((String) props.get("weeks"));
                 date = date.minusWeeks(weeks);
             }
-            if (props.containsKey("plusWeeks")) {
-                final int weeks = Integer.parseInt((String) props.get("plusWeeks"));
-                date = date.plusWeeks(weeks);
+            if (props.containsKey("months")) {
+                final int months = Integer.parseInt((String) props.get("months"));
+                date = date.plusMonths(months);
+            }
+            if (props.containsKey("years")) {
+                final int years = Integer.parseInt((String) props.get("years"));
+                date = date.plusYears(years);
             }
             ret.put(ReturnValues.VALUES, date);
         }
