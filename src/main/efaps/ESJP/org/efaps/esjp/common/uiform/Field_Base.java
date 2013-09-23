@@ -621,6 +621,7 @@ public abstract class Field_Base
             }
 
             final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
+            boolean selected = false;
             while (multi.next()) {
                 Object value;
                 if (valueSel == null) {
@@ -639,9 +640,17 @@ public abstract class Field_Base
                 if (orderSel != null) {
                     val.setOrderValue((Comparable<?>) multi.getSelect(orderSel));
                 }
-
-                if (dbValue != null && "true".equalsIgnoreCase((String) props.get("SetSelected"))) {
-                    val.setSelected(dbValue.equals(val.value));
+                // evaluate for selected only until the first is found
+                if (!selected) {
+                    if (dbValue != null && "true".equalsIgnoreCase((String) props.get("SetSelected"))) {
+                        val.setSelected(dbValue.equals(val.value));
+                        selected = true;
+                    } else if (props.containsKey("Regex4DefaultValue")) {
+                        if (String.valueOf(val.getOption()).matches((String) props.get("Regex4DefaultValue"))) {
+                            val.setSelected(true);
+                            selected = true;
+                        }
+                    }
                 }
             }
             if (props.containsKey("emptyValue")) {
