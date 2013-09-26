@@ -21,6 +21,8 @@
 package org.efaps.esjp.common.uisearch;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +49,6 @@ import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.util.EFapsException;
-import org.efaps.util.cache.CacheReloadException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +65,7 @@ public abstract class Search_Base
     /**
      * Logger for this class.
      */
-    private static final Logger LOG = LoggerFactory.getLogger(Search_Base.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Search.class);
 
     /**
      * @param _parameter Parameter as passed from the eFaps API
@@ -142,7 +143,12 @@ public abstract class Search_Base
         final AbstractCommand command = (AbstractCommand) _parameter.get(ParameterValues.UIOBJECT);
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
 
-        final String types = (String) properties.get("Types");
+        Collection<String> typesList  = analyseProperty(_parameter, "Type").values();
+        if (typesList.isEmpty() && getProperty(_parameter, "Types") != null) {
+            Search_Base.LOG.warn("Command '{}' uses deprecated API for type.", command.getName());
+            final String[] typesChar = getProperty(_parameter, "Types").split(";");
+            typesList = Arrays.asList(typesChar);
+        }
 
         final Set<String> ignoreFields = new HashSet<String>();
         final String ignoreFieldsStr = (String) properties.get("IgnoreCase4Fields");
@@ -154,11 +160,11 @@ public abstract class Search_Base
         }
 
         if (Search_Base.LOG.isDebugEnabled()) {
-            Search_Base.LOG.debug("types=" + types);
+            Search_Base.LOG.debug("types: {}", typesList);
         }
-        final String[] typesChar = types.split(";");
-        for (final String typeStr : typesChar) {
-            final Type type = Type.get(typeStr);
+
+        for (final String typeTmp : typesList) {
+            final Type type = Type.get(typeTmp);
             final QueryBuilder queryBldr = new QueryBuilder(type);
 
             for (final Field field : command.getTargetForm().getFields()) {
@@ -189,15 +195,19 @@ public abstract class Search_Base
      * Render a dropdown with the types.
      * @param _parameter Parameter as passed from the eFaps API
      * @return Return containing HTML snipplet
-     *  @throws CacheReloadException on erro
+     *  @throws EFapsException on error
      */
     public Return typeFieldValue(final Parameter _parameter)
-        throws CacheReloadException
+        throws EFapsException
     {
         final Return ret = new Return();
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String typeStr = (String) properties.get("Types");
+        String typeStr = getProperty(_parameter, "Types");
+        if (typeStr != null) {
+            Search_Base.LOG.warn("Field '{}' uses deprecated API", fieldValue.getField().getName());
+        } else {
+            typeStr = getProperty(_parameter, "Type");
+        }
         final Type type = Type.get(typeStr);
 
         final Map<String, Long> values = new TreeMap<String, Long>();

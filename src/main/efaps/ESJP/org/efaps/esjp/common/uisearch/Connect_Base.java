@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ConnectTypeMap * Copyright 2003 - 2013 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ package org.efaps.esjp.common.uisearch;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.EventExecution;
@@ -37,6 +38,8 @@ import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.util.EFapsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -52,6 +55,12 @@ public abstract class Connect_Base
     implements EventExecution
 {
     /**
+     * Logger for this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(Connect.class);
+
+
+    /**
      * @param _parameter Parameter as passed from the eFaps API
      * @return new Return
      * @throws EFapsException on error
@@ -59,43 +68,52 @@ public abstract class Connect_Base
     public Return execute(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final Instance parent = (Instance) _parameter.get(ParameterValues.INSTANCE);
         final Map<?, ?> others = (HashMap<?, ?>) _parameter.get(ParameterValues.OTHERS);
 
         final String[] childOids = (String[]) others.get("selectedRow");
         if (childOids != null) {
 
-            final String childAttr = (String) properties.get("ConnectChildAttribute");
-            final String parentAttr = (String) properties.get("ConnectParentAttribute");
-            final boolean allowAttr = "false".equals(properties.get("AllowMultiple"));
-
+            final String parentAttr = getProperty(_parameter, "ConnectParentAttribute");
+            final String childAttr = getProperty(_parameter, "ConnectChildAttribute");
+            final boolean allowAttr = "false".equals(getProperty(_parameter, "AllowMultiple"));
+            if (parentAttr == null || childAttr == null) {
+                Connect_Base.LOG.error("Missing properties 'ConnectParentAttribute' or 'ConnectChildAttribute'");
+            }
             for (final String childOid : childOids) {
                 final Instance child = Instance.get(childOid);
                 final Type type = getConnectType(_parameter, child);
-                boolean check = false;
-                if (allowAttr) {
-                    final QueryBuilder queryBldr = new QueryBuilder(type);
-                    queryBldr.addWhereAttrEqValue(parentAttr, parent.getId());
-                    queryBldr.addWhereAttrEqValue(childAttr, child.getId());
-                    final InstanceQuery query = queryBldr.getQuery();
-                    query.execute();
-                    if (query.next()) {
-                        check = true;
+                if (type != null) {
+                    boolean check = false;
+                    if (allowAttr) {
+                        final QueryBuilder queryBldr = new QueryBuilder(type);
+                        queryBldr.addWhereAttrEqValue(parentAttr, parent.getId());
+                        queryBldr.addWhereAttrEqValue(childAttr, child.getId());
+                        final InstanceQuery query = queryBldr.getQuery();
+                        query.executeWithoutAccessCheck();
+                        if (query.next()) {
+                            check = true;
+                        }
                     }
-                }
-                if (!check) {
-                    final Insert insert = new Insert(type);
-                    addInsertConnect(_parameter, insert);
-                    insert.add(parentAttr, parent.getId());
-                    insert.add(childAttr, child.getId());
-                    insert.execute();
+                    if (!check) {
+                        final Insert insert = new Insert(type);
+                        addInsertConnect(_parameter, insert);
+                        insert.add(parentAttr, parent.getId());
+                        insert.add(childAttr, child.getId());
+                        insert.execute();
+                    }
                 }
             }
         }
         return new Return();
     }
 
+    /**
+     * To be used by implementation to add to the basic insert.
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _insert       insert to be added to
+     * @throws EFapsException on error
+     */
     protected void addInsertConnect(final Parameter _parameter,
                                     final Insert _insert)
         throws EFapsException
@@ -104,6 +122,9 @@ public abstract class Connect_Base
     }
 
     /**
+     * Get the connect type.
+     * Can be used with a concatenated mapping of
+     * 'UUID from ChildObject';'UUID from MiddleObject'
      * @param _parameter Parameter as passed by the eFaps API
      * @param _childInstance Instance of the child that will be connected
      * @return the type used for the connection
@@ -114,6 +135,19 @@ public abstract class Connect_Base
         throws EFapsException
     {
         final String typeStr = getProperty(_parameter, "ConnectType");
-        return Type.get(typeStr);
+        Type ret = null;
+        // if no simple type, check for a mapping
+        if (typeStr == null) {
+            final Map<Integer, String> mapping = analyseProperty(_parameter, "ConnectTypeMap");
+            for (final String typeMap : mapping.values()) {
+                final String[] uuids = typeMap.split(";");
+                if (_childInstance.getType().getUUID().equals(UUID.fromString(uuids[0]))) {
+                    ret = Type.get(UUID.fromString(uuids[1]));
+                }
+            }
+        } else {
+            ret  = Type.get(typeStr);
+        }
+        return ret;
     }
 }
