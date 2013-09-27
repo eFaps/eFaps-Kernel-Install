@@ -384,9 +384,11 @@ public abstract class EFapsTextReport_Base
                 value = value.substring(0, _column.getLength());
             } else if (value.length() < _column.getLength()) {
                 final Formatter formatter = new Formatter();
-                value = formatter.format(_column.getFormatPattern(), value).toString();
-                formatter.close();
-                value = value.replace("\\s", _column.getDefaultValue());
+                if (_column.getFormatPattern() != null) {
+                    value = formatter.format(_column.getFormatPattern(), value).toString();
+                    formatter.close();
+                    value = value.replace("\\s", _column.getDefaultValue());
+                }
             }
             return value;
         }
