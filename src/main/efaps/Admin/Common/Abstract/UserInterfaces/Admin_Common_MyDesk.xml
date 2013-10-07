@@ -44,6 +44,7 @@
             <child>Admin_UI_AbstractMyDesk</child>
             <child>Admin_Integration_AbstractMyDesk</child>
             <child>Message_AbstractMyDesk</child>
+            <child>Common_Main_Connection</child>
         </childs>
     </definition>
 </ui-menu>
