@@ -47,6 +47,11 @@ public abstract class AbstractCommon_Base
 {
 
     /**
+     * Regex for testing a UUID for valid.
+     */
+    public static final String UUID_REGEX = "[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}";
+
+    /**
      * Search for the given Property and returns a tree map with the found values.<br/>
      * Properties like:<br/>
      * Name<br/>
@@ -125,4 +130,13 @@ public abstract class AbstractCommon_Base
         return ret;
     }
 
+
+    /**
+     * @param _string string to validate
+     * @return true if valid UUID else false.
+     */
+    protected boolean isUUID(final String _string)
+    {
+        return _string.matches(AbstractCommon_Base.UUID_REGEX);
+    }
 }
