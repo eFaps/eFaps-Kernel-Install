@@ -304,7 +304,7 @@ function _eFapsCreateUserTablesStep2()  {
     var typeIdPerson2Role   = _eFapsCreateInsertType(stmt, text, "37deb6ae-3e1c-4642-8823-715120386fc3", "Admin_User_Person2Role", null, 8);
 
     text = "Insert Type for 'Admin_User_Person2Group' (only to store ID for type)";
-    var typeIdPerson2Group  = _eFapsCreateInsertType(stmt, text, "fec64148-a39b-4f69-bedd-9c3bcfe8e1602", "Admin_User_Person2Group", null, 8);
+    var typeIdPerson2Group  = _eFapsCreateInsertType(stmt, text, "fec64148-a39b-4f69-bedd-c3bcfe8e1602", "Admin_User_Person2Group", null, 8);
 
     text = "Insert Type for 'Admin_User_Person2Company' (only to store ID for type)";
     var typeIdPerson2Company  = _eFapsCreateInsertType(stmt, text, "a79898fb-966a-44ee-a338-d034e2aad83a", "Admin_User_Person2Company", null, 8);
