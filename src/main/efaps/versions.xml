@@ -115,20 +115,9 @@
             InstanceQuery query = queryBldr.getQuery();
             query.executeWithoutAccessCheck();
             if (!query.next()) {
-                 DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_Language.xml")).updateInDB();
-            }
-
-            EFAPS_LOGGER.info("    Check if Person 2 Role must be imported");
-            // import person 2 role (if not already exists...)
-            // Admin_User_Person2Role
-            queryBldr = new QueryBuilder(UUID.fromString("37deb6ae-3e1c-4642-8823-715120386fc3"));
-            queryBldr.addWhereAttrEqValue("UserFromLink",   Context.getThreadContext().getPerson().getId());
-            queryBldr.addWhereAttrEqValue("UserToLink",     Role.get("Common_Main_PwdChg").getId());
-            queryBldr.addWhereAttrEqValue("UserJAASSystem", JAASSystem.getJAASSystem("eFaps").getId());
-            query = queryBldr.getQuery();
-            query.executeWithoutAccessCheck();
-            if (!query.next()) {
-                DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_PersonToRole.xml")).updateInDB();
+                Insert insert = new Insert(UUID.fromString("56851b99-c5fe-41f5-9e95-d7d94137acc1"));
+                insert.add("Language", "en");
+                insert.executeWithoutTrigger();
             }
 
             EFAPS_LOGGER.info("    Check if Run Level bpm must be imported");
@@ -139,7 +128,25 @@
             query = queryBldr.getQuery();
             query.executeWithoutAccessCheck();
             if (!query.next()) {
-                DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_Bpm_RunLevel.xml")).updateInDB();
+                 QueryBuilder queryBldr2 = new QueryBuilder(UUID.fromString("a35ffe76-d9ef-44de-975c-56384a3cf694"));
+                queryBldr2.addWhereAttrEqValue("UUID", "edfb9537-9d91-4fa0-acb1-cf3f2678a245");
+                InstanceQuery query = queryBldr2.getQuery();
+                query.executeWithoutAccessCheck();
+                if (query.next()) {
+                    Insert insert = new Insert(UUID.fromString("a35ffe76-d9ef-44de-975c-56384a3cf694"));
+                    insert.add("RunLevel", "bpm");
+                    insert.add("UUID", "04403ff6-8ff4-4c52-9910-0619ed189f25");
+                    insert.add("Parent", query.getCurrentValue());
+                    insert.executeWithoutTrigger();
+                    //Admin_RunLevel_Definition
+                    Insert insert2 = new Insert(UUID.fromString("f9958e29-79ab-40f8-a947-0e22ce6c3fa3"));
+                    insert2.add("RunLevelID", insert.getInstance());
+                    insert2.add("Priority", 1);
+                    insert2.add("Class", "org.efaps.bpm.BPM");
+                    insert2.add("Method", "initialize");
+                    insert2.executeWithoutTrigger();
+                }
+                
             }
 
             EFAPS_LOGGER.info("    Check if Run Level webapp must be imported");
@@ -150,38 +157,61 @@
             query = queryBldr.getQuery();
             query.executeWithoutAccessCheck();
             if (!query.next()) {
-                DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_Webapp_RunLevel.xml")).updateInDB();
+                //Admin_RunLevel
+                QueryBuilder queryBldr2 = new QueryBuilder(UUID.fromString("a35ffe76-d9ef-44de-975c-56384a3cf694"));
+                queryBldr2.addWhereAttrEqValue("UUID", "04403ff6-8ff4-4c52-9910-0619ed189f25");
+                InstanceQuery query = queryBldr2.getQuery();
+                query.executeWithoutAccessCheck();
+                if (query.next()) {
+                    Insert insert = new Insert(UUID.fromString("590ba27b-26eb-4bdf-ac30-1e1704c5f557"));
+                    insert.add("RunLevel", "webapp");
+                    insert.add("UUID", "590ba27b-26eb-4bdf-ac30-1e1704c5f557");
+                    insert.add("Parent", query.getCurrentValue());
+                    insert.executeWithoutTrigger();
+                    //Admin_RunLevel_Definition
+                    Insert insert2 = new Insert(UUID.fromString("f9958e29-79ab-40f8-a947-0e22ce6c3fa3"));
+                    insert2.add("RunLevelID", insert.getInstance());
+                    insert2.add("Priority", 1);
+                    insert2.add("Class", "org.efaps.admin.access.AccessType");
+                    insert2.add("Method", "initialize");
+                    insert2.executeWithoutTrigger();
+                    
+                    insert2 = new Insert(UUID.fromString("f9958e29-79ab-40f8-a947-0e22ce6c3fa3"));
+                    insert2.add("RunLevelID", insert.getInstance());
+                    insert2.add("Priority", 2);
+                    insert2.add("Class", "org.efaps.admin.access.AccessSet");
+                    insert2.add("Method", "initialize");
+                    insert2.executeWithoutTrigger();
+                    
+                    insert2 = new Insert(UUID.fromString("f9958e29-79ab-40f8-a947-0e22ce6c3fa3"));
+                    insert2.add("RunLevelID", insert.getInstance());
+                    insert2.add("Priority", 3);
+                    insert2.add("Class", "org.efaps.admin.access.AbstractUserInterfaceObject");
+                    insert2.add("Method", "initialize");
+                    insert2.executeWithoutTrigger();
+                    
+                    insert2 = new Insert(UUID.fromString("f9958e29-79ab-40f8-a947-0e22ce6c3fa3"));
+                    insert2.add("RunLevelID", insert.getInstance());
+                    insert2.add("Priority", 4);
+                    insert2.add("Class", "org.efaps.admin.access.EventDefinition");
+                    insert2.add("Method", "initialize");
+                    insert2.executeWithoutTrigger();
+                    
+                    insert2 = new Insert(UUID.fromString("f9958e29-79ab-40f8-a947-0e22ce6c3fa3"));
+                    insert2.add("RunLevelID", insert.getInstance());
+                    insert2.add("Priority", 5);
+                    insert2.add("Class", "org.efaps.admin.access.NumberGenerator");
+                    insert2.add("Method", "initialize");
+                    insert2.executeWithoutTrigger();
+                    
+                    insert2 = new Insert(UUID.fromString("f9958e29-79ab-40f8-a947-0e22ce6c3fa3"));
+                    insert2.add("RunLevelID", insert.getInstance());
+                    insert2.add("Priority", 6);
+                    insert2.add("Class", "org.efaps.admin.access.Quartz");
+                    insert2.add("Method", "initialize");
+                    insert2.executeWithoutTrigger();
             }
-
-            EFAPS_LOGGER.info("    Check if JAASKEY for Role ADMIN_REST must be imported");
-            // Admin_User_JAASKey
-            queryBldr = new QueryBuilder(UUID.fromString("0e7650c6-8ec3-4c63-b377-f3eb5fb85f16"));
-            queryBldr.addWhereAttrEqValue("Key", "Admin_REST");
-            query = queryBldr.getQuery();
-            query.executeWithoutAccessCheck();
-            if (!query.next()) {
-                DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_Admin_REST_JAASKey.xml")).updateInDB();
-            }
-
-            EFAPS_LOGGER.info("    Check if Person 'QuartzTrigger' must be imported");
-            // Admin_User_Person
-            queryBldr = new QueryBuilder(UUID.fromString("fe9d94fd-2ed8-4c44-b1f0-00e150555888"));
-            queryBldr.addWhereAttrEqValue("Name", "QuartzTrigger");
-            query = queryBldr.getQuery();
-            query.executeWithoutAccessCheck();
-            if (!query.next()) {
-                DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_QuartzTriggerUser.xml")).updateInDB();
-            }
-
-            EFAPS_LOGGER.info("    Check if JAASKEY for Role HistoryReader must be imported");
-            // Admin_User_JAASKey
-            queryBldr = new QueryBuilder(UUID.fromString("0e7650c6-8ec3-4c63-b377-f3eb5fb85f16"));
-            queryBldr.addWhereAttrEqValue("Key", "History_Reader");
-            query = queryBldr.getQuery();
-            query.executeWithoutAccessCheck();
-            if (!query.next()) {
-                 DataImport.readFile(new URL(EFAPS_ROOTURL, "Common/History/User/IMPORT_History_Reader_JAASKey.xml")).updateInDB();
-            }
+            
         </script>
     </version>
 </install>
