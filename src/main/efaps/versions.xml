@@ -97,7 +97,7 @@
     </version>
     <version number="6" compile="true">
         <description>Import Data</description>
-        <script type="groovy">
+        <script type="groovy"><![CDATA[
             import java.io.File;
             import java.util.UUID;
             import org.efaps.admin.user.JAASSystem;
@@ -105,6 +105,7 @@
             import org.efaps.db.Context;
             import org.efaps.db.QueryBuilder;
             import org.efaps.db.InstanceQuery;
+            import org.efaps.db.Insert;
             import org.efaps.importer.DataImport;
 
 
@@ -130,13 +131,13 @@
             if (!query.next()) {
                  QueryBuilder queryBldr2 = new QueryBuilder(UUID.fromString("a35ffe76-d9ef-44de-975c-56384a3cf694"));
                 queryBldr2.addWhereAttrEqValue("UUID", "edfb9537-9d91-4fa0-acb1-cf3f2678a245");
-                InstanceQuery query = queryBldr2.getQuery();
-                query.executeWithoutAccessCheck();
-                if (query.next()) {
+                InstanceQuery query2 = queryBldr2.getQuery();
+                query2.executeWithoutAccessCheck();
+                if (query2.next()) {
                     Insert insert = new Insert(UUID.fromString("a35ffe76-d9ef-44de-975c-56384a3cf694"));
                     insert.add("RunLevel", "bpm");
                     insert.add("UUID", "04403ff6-8ff4-4c52-9910-0619ed189f25");
-                    insert.add("Parent", query.getCurrentValue());
+                    insert.add("Parent", query2.getCurrentValue());
                     insert.executeWithoutTrigger();
                     //Admin_RunLevel_Definition
                     Insert insert2 = new Insert(UUID.fromString("f9958e29-79ab-40f8-a947-0e22ce6c3fa3"));
@@ -160,13 +161,13 @@
                 //Admin_RunLevel
                 QueryBuilder queryBldr2 = new QueryBuilder(UUID.fromString("a35ffe76-d9ef-44de-975c-56384a3cf694"));
                 queryBldr2.addWhereAttrEqValue("UUID", "04403ff6-8ff4-4c52-9910-0619ed189f25");
-                InstanceQuery query = queryBldr2.getQuery();
-                query.executeWithoutAccessCheck();
-                if (query.next()) {
-                    Insert insert = new Insert(UUID.fromString("590ba27b-26eb-4bdf-ac30-1e1704c5f557"));
+                InstanceQuery query2 = queryBldr2.getQuery();
+                query2.executeWithoutAccessCheck();
+                if (query2.next()) {
+                    Insert insert = new Insert(UUID.fromString("a35ffe76-d9ef-44de-975c-56384a3cf694"));
                     insert.add("RunLevel", "webapp");
                     insert.add("UUID", "590ba27b-26eb-4bdf-ac30-1e1704c5f557");
-                    insert.add("Parent", query.getCurrentValue());
+                    insert.add("Parent", query2.getCurrentValue());
                     insert.executeWithoutTrigger();
                     //Admin_RunLevel_Definition
                     Insert insert2 = new Insert(UUID.fromString("f9958e29-79ab-40f8-a947-0e22ce6c3fa3"));
@@ -210,8 +211,107 @@
                     insert2.add("Class", "org.efaps.admin.access.Quartz");
                     insert2.add("Method", "initialize");
                     insert2.executeWithoutTrigger();
+                }
             }
             
+            EFAPS_LOGGER.info("    Check if JAASKEY for Role ADMIN_REST must be imported");
+            // Admin_User_JAASKey
+            queryBldr = new QueryBuilder(UUID.fromString("0e7650c6-8ec3-4c63-b377-f3eb5fb85f16"));
+            queryBldr.addWhereAttrEqValue("Key", "Admin_REST");
+            query = queryBldr.getQuery();
+            query.executeWithoutAccessCheck();
+            if (!query.next()) {
+                //Admin_User_RoleGlobal
+                final QueryBuilder queryBldr2 = new QueryBuilder(UUID.fromString("e4d6ecbe-f198-4f84-aa69-5a9fd3165112"));
+                queryBldr2.addWhereAttrEqValue("UUID", "2d142645-140d-46ad-af67-835161a8d732");
+                final InstanceQuery query2 = queryBldr2.getQuery();
+                query2.executeWithoutAccessCheck();
+                //Admin_User_JAASSystem
+                final QueryBuilder queryBldr3 = new QueryBuilder(UUID.fromString("28e45c59-946d-4502-94b9-58a1bf23ab88"));
+                queryBldr3.addWhereAttrEqValue("UUID", "2d142645-140d-46ad-af67-835161a8d732");
+                final InstanceQuery query3 = queryBldr3.getQuery();
+                query3.executeWithoutAccessCheck();
+                
+                if (query2.next() && query3.next()) {
+                    //Admin_User_JAASKey
+                    final Insert insert = new Insert(UUID.fromString("0e7650c6-8ec3-4c63-b377-f3eb5fb85f16"));
+                    insert.add("Key", "Admin_REST");
+                    insert.add("UserLink", query2.getCurrentValue());
+                    insert.add("JAASSystemLink", query3.getCurrentValue());
+                    insert.executeWithoutTrigger();
+                }
+            }
+            EFAPS_LOGGER.info("    Check if JAASKEY for Role HistoryReader must be imported");
+            // Admin_User_JAASKey
+            queryBldr = new QueryBuilder(UUID.fromString("0e7650c6-8ec3-4c63-b377-f3eb5fb85f16"));
+            queryBldr.addWhereAttrEqValue("Key", "History_Reader");
+            query = queryBldr.getQuery();
+            query.executeWithoutAccessCheck();
+            if (!query.next()) {
+                  //Admin_User_RoleGlobal
+                final QueryBuilder queryBldr2 = new QueryBuilder(UUID.fromString("e4d6ecbe-f198-4f84-aa69-5a9fd3165112"));
+                queryBldr2.addWhereAttrEqValue("UUID", "e4d6ecbe-f198-4f84-aa69-5a9fd3165112");
+                final InstanceQuery query2 = queryBldr2.getQuery();
+                query2.executeWithoutAccessCheck();
+                //Admin_User_JAASSystem
+                final QueryBuilder queryBldr3 = new QueryBuilder(UUID.fromString("28e45c59-946d-4502-94b9-58a1bf23ab88"));
+                queryBldr3.addWhereAttrEqValue("UUID", "2d142645-140d-46ad-af67-835161a8d732");
+                final InstanceQuery query3 = queryBldr3.getQuery();
+                query3.executeWithoutAccessCheck();
+                
+                
+                if (query2.next() && query3.next()) {
+                    //Admin_User_JAASKey
+                    final Insert insert = new Insert(UUID.fromString("0e7650c6-8ec3-4c63-b377-f3eb5fb85f16"));
+                    insert.add("Key", "History_Reader");
+                    insert.add("UserLink", query2.getCurrentValue());
+                    insert.add("JAASSystemLink", query3.getCurrentValue());
+                    insert.executeWithoutTrigger();
+                }
+                
+                //Admin_User_RoleGlobal
+                queryBldr2 = new QueryBuilder(UUID.fromString("e4d6ecbe-f198-4f84-aa69-5a9fd3165112"));
+                queryBldr2.addWhereAttrEqValue("UUID", "883e6c48-d814-4b7f-bf31-5083d88db7ec");
+                query2 = queryBldr2.getQuery();
+                query2.executeWithoutAccessCheck();
+                //Admin_User_JAASSystem
+                queryBldr3 = new QueryBuilder(UUID.fromString("28e45c59-946d-4502-94b9-58a1bf23ab88"));
+                queryBldr3.addWhereAttrEqValue("UUID", "2d142645-140d-46ad-af67-835161a8d732");
+                query3 = queryBldr3.getQuery();
+                query3.executeWithoutAccessCheck();
+                
+                if (query2.next() && query3.next()) {
+                    //Admin_User_JAASKey
+                    final Insert insert = new Insert(UUID.fromString("0e7650c6-8ec3-4c63-b377-f3eb5fb85f16"));
+                    insert.add("Key", "History_Modifier");
+                    insert.add("UserLink", query2.getCurrentValue());
+                    insert.add("JAASSystemLink", query3.getCurrentValue());
+                    insert.executeWithoutTrigger();
+                }
+            }
+            
+            
+            EFAPS_LOGGER.info("    Check if Person 'QuartzTrigger' must be imported");
+            // Admin_User_Person
+            queryBldr = new QueryBuilder(UUID.fromString("fe9d94fd-2ed8-4c44-b1f0-00e150555888"));
+            queryBldr.addWhereAttrEqValue("Name", "QuartzTrigger");
+            query = queryBldr.getQuery();
+            query.executeWithoutAccessCheck();
+            if (!query.next()) {
+                //Admin_User_Person
+                final Insert insert = new Insert(UUID.fromString("fe9d94fd-2ed8-4c44-b1f0-00e150555888"));
+                insert.add("Name", "QuartzTrigger"); 
+                insert.add("UUID", "df2f02a7-c556-49ad-b019-e13db66e1cbf");
+                insert.add("FirstName", "The");
+                insert.add("LastName", "QuartzTrigger");
+                insert.add("TimeZone", "UTC");    
+                insert.add("Status", "true");    
+                insert.add("Locale", "en");    
+                insert.add("Language", "1");    
+                insert.executeWithoutTrigger();    
+            }
+            
+            ]]>
         </script>
     </version>
 </install>
