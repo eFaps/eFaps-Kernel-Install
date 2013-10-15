@@ -142,7 +142,9 @@
                     <transactionTimeout>900</transactionTimeout>
                     <excludes>
                         <exclude>**/CreateAll.js</exclude>
-                        <excludes>**/versions.xml</excludes>
+                        <exclude>**/versions.xml</exclude>
+                        <exclude>**/package-info.java</exclude>
+                        <exclude>**/.svn/**</exclude>
                     </excludes>
                 </configuration>
                 <dependencies>
