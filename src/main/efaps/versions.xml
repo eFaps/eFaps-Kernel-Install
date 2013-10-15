@@ -187,28 +187,28 @@
                     insert2 = new Insert(UUID.fromString("f9958e29-79ab-40f8-a947-0e22ce6c3fa3"));
                     insert2.add("RunLevelID", insert.getInstance());
                     insert2.add("Priority", 3);
-                    insert2.add("Class", "org.efaps.admin.access.AbstractUserInterfaceObject");
+                    insert2.add("Class", "org.efaps.admin.ui.AbstractUserInterfaceObject");
                     insert2.add("Method", "initialize");
                     insert2.executeWithoutTrigger();
                     
                     insert2 = new Insert(UUID.fromString("f9958e29-79ab-40f8-a947-0e22ce6c3fa3"));
                     insert2.add("RunLevelID", insert.getInstance());
                     insert2.add("Priority", 4);
-                    insert2.add("Class", "org.efaps.admin.access.EventDefinition");
+                    insert2.add("Class", "org.efaps.admin.event.EventDefinition");
                     insert2.add("Method", "initialize");
                     insert2.executeWithoutTrigger();
                     
                     insert2 = new Insert(UUID.fromString("f9958e29-79ab-40f8-a947-0e22ce6c3fa3"));
                     insert2.add("RunLevelID", insert.getInstance());
                     insert2.add("Priority", 5);
-                    insert2.add("Class", "org.efaps.admin.access.NumberGenerator");
+                    insert2.add("Class", "org.efaps.admin.common.NumberGenerator");
                     insert2.add("Method", "initialize");
                     insert2.executeWithoutTrigger();
                     
                     insert2 = new Insert(UUID.fromString("f9958e29-79ab-40f8-a947-0e22ce6c3fa3"));
                     insert2.add("RunLevelID", insert.getInstance());
                     insert2.add("Priority", 6);
-                    insert2.add("Class", "org.efaps.admin.access.Quartz");
+                    insert2.add("Class", "org.efaps.admin.common.Quartz");
                     insert2.add("Method", "initialize");
                     insert2.executeWithoutTrigger();
                 }
