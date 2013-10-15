@@ -228,7 +228,7 @@
                 query2.executeWithoutAccessCheck();
                 //Admin_User_JAASSystem
                 final QueryBuilder queryBldr3 = new QueryBuilder(UUID.fromString("28e45c59-946d-4502-94b9-58a1bf23ab88"));
-                queryBldr3.addWhereAttrEqValue("UUID", "2d142645-140d-46ad-af67-835161a8d732");
+                queryBldr3.addWhereAttrEqValue("UUID", "878a1347-a5f3-4a68-a9a4-d214e3570a62");
                 final InstanceQuery query3 = queryBldr3.getQuery();
                 query3.executeWithoutAccessCheck();
                 
@@ -250,12 +250,12 @@
             if (!query.next()) {
                   //Admin_User_RoleGlobal
                 final QueryBuilder queryBldr2 = new QueryBuilder(UUID.fromString("e4d6ecbe-f198-4f84-aa69-5a9fd3165112"));
-                queryBldr2.addWhereAttrEqValue("UUID", "e4d6ecbe-f198-4f84-aa69-5a9fd3165112");
+                queryBldr2.addWhereAttrEqValue("UUID", "25643ce4-1be9-4d3b-b83f-f5ac8f1803c7");
                 final InstanceQuery query2 = queryBldr2.getQuery();
                 query2.executeWithoutAccessCheck();
                 //Admin_User_JAASSystem
                 final QueryBuilder queryBldr3 = new QueryBuilder(UUID.fromString("28e45c59-946d-4502-94b9-58a1bf23ab88"));
-                queryBldr3.addWhereAttrEqValue("UUID", "2d142645-140d-46ad-af67-835161a8d732");
+                queryBldr3.addWhereAttrEqValue("UUID", "878a1347-a5f3-4a68-a9a4-d214e3570a62");
                 final InstanceQuery query3 = queryBldr3.getQuery();
                 query3.executeWithoutAccessCheck();
                 
@@ -276,7 +276,7 @@
                 query2.executeWithoutAccessCheck();
                 //Admin_User_JAASSystem
                 queryBldr3 = new QueryBuilder(UUID.fromString("28e45c59-946d-4502-94b9-58a1bf23ab88"));
-                queryBldr3.addWhereAttrEqValue("UUID", "2d142645-140d-46ad-af67-835161a8d732");
+                queryBldr3.addWhereAttrEqValue("UUID", "878a1347-a5f3-4a68-a9a4-d214e3570a62");
                 query3 = queryBldr3.getQuery();
                 query3.executeWithoutAccessCheck();
                 
