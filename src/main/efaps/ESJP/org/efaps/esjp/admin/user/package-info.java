@@ -13,28 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
+ * Revision:        $Rev:1563 $
+ * Last Changed:    $Date:2007-10-28 15:07:41 +0100 (So, 28 Okt 2007) $
+ * Last Changed By: $Author:tmo $
  */
 
-package org.efaps.esjp.admin.user;
-
-import org.efaps.admin.program.esjp.EFapsRevision;
-import org.efaps.admin.program.esjp.EFapsUUID;
-
 /**
- * This class must be replaced for customization, therefore it is left empty.
- * Functional description can be found in the related "<code>_Base</code>"
- * class.
+ * User and Persons related classes.
  *
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("1b777261-6da1-4003-87e4-2937e44ff269")
-@EFapsRevision("$Rev$")
-public class Person
-    extends Person_Base
-{
-
-}
+package org.efaps.esjp.admin.user;

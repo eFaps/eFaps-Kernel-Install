@@ -37,6 +37,7 @@
     <!-- childs -->
     <childs>
       <child>Admin_User_PersonMyDesk_Menu_Action_Create</child>
+      <child>Admin_User_PersonMyDesk_Menu_Action_CreateFromPerson</child>
       <child>Admin_User_PersonMyDesk_Menu_Action_Delete</child>
     </childs>
   </definition>

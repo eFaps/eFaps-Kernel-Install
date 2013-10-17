@@ -43,8 +43,8 @@
             <menu>Admin_User_PersonTree_Company_Menu</menu>
             <table>Admin_User2User_AbstractTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_User_Person2Company</property>
-                <property name="LinkFroms">UserLink</property>
+                <property name="Type">Admin_User_Person2Company</property>
+                <property name="LinkFrom">UserLink</property>
             </evaluate>
         </target>
         <!-- properties -->

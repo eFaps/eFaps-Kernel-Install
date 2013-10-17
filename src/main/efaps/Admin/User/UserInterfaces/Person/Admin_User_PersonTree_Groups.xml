@@ -43,8 +43,8 @@
             <menu>Admin_User_PersonTree_Groups_Menu</menu>
             <table>Admin_User2User_AbstractTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_User_Person2Group</property>
-                <property name="LinkFroms">UserFromLink</property>
+                <property name="Type">Admin_User_Person2Group</property>
+                <property name="LinkFrom">UserFromLink</property>
             </evaluate>
             <trigger program="org.efaps.esjp.admin.access.AccessOnField"
                 method="configCheck"

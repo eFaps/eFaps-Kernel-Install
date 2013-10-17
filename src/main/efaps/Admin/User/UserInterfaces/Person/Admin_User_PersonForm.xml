@@ -258,8 +258,8 @@
         <field name="rolestable" character="Target">
             <table>Admin_User2User_AbstractTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_User_Person2Role</property>
-                <property name="LinkFroms">UserFromLink</property>
+                <property name="Type">Admin_User_Person2Role</property>
+                <property name="LinkFrom">UserFromLink</property>
             </evaluate>
         </field>
         <field name="groupsheader" character="Heading">
@@ -277,8 +277,8 @@
         <field name="groupstable" character="Target">
             <table>Admin_User2User_AbstractTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_User_Person2Group</property>
-                <property name="LinkFroms">UserFromLink</property>
+                <property name="Type">Admin_User_Person2Group</property>
+                <property name="LinkFrom">UserFromLink</property>
             </evaluate>
             <trigger program="org.efaps.esjp.admin.access.AccessOnField"
                 method="configCheck"
@@ -296,8 +296,8 @@
         <field name="companietable" character="Target">
             <table>Admin_User2User_AbstractTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_User_Person2Company</property>
-                <property name="LinkFroms">UserLink</property>
+                <property name="Type">Admin_User_Person2Company</property>
+                <property name="LinkFrom">UserLink</property>
             </evaluate>
         </field>
         <field name="jaaskeyheader" character="Heading">
@@ -308,8 +308,8 @@
         <field name="jaaskeytable" character="Target">
             <table>Admin_User_JAASKeyTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_User_JAASKey</property>
-                <property name="LinkFroms">UserLink</property>
+                <property name="Type">Admin_User_JAASKey</property>
+                <property name="LinkFrom">UserLink</property>
             </evaluate>
         </field>
     </definition>
