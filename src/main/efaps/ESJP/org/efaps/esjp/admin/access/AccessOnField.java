@@ -33,6 +33,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  */
 @EFapsUUID("8bd4d9f4-4d8f-4a1a-b9f1-a155f6dedbe1")
 @EFapsRevision("$Rev$")
+@Deprecated
 public class AccessOnField
     extends  AccessOnField_Base
 {

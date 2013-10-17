@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.efaps.admin.access.AccessTypeEnums;
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
@@ -33,6 +34,10 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.AbstractCommand;
+import org.efaps.admin.ui.field.Field;
+import org.efaps.admin.user.Role;
+import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
 import org.efaps.esjp.common.AbstractCommon;
@@ -163,6 +168,108 @@ public abstract class AccessCheck4UI_Base
         } else {
             AccessCheck4UI_Base.LOG.error("Cannot evaluate Access for UI due to missing Instance for {}",
                             _parameter.get(ParameterValues.UIOBJECT));
+        }
+        return ret;
+    }
+
+    /**
+     * Method is used to control access based on a Property of esjp.
+     * Used for e.g. hiding a field in a form depending on a property of
+     * the calling command.<br>
+     * Example with automatic property ( "{FIELDNAME}_UIAccessCheck"):<br><code>
+     * &nbsp;&nbsp;&lt;trigger program=&quot;org.efaps.esjp.admin.access.AccessCheck4UI&quot;
+     *           method=&quot;propertyCheck&quot;
+     *           name=&quot;field.UI_ACCESSCHECK&quot;
+     *           event=&quot;UI_ACCESSCHECK&quot; &gt;<br>
+     * &nbsp;&nbsp;&nbsp;&nbsp;&lt;property name=&quot;CheckCallingCommand&quot;&gt;true&lt;/property&gt;<br>
+     * &nbsp;&nbsp;&lt;/trigger&gt;
+     * </code><br>
+     * Example with explicit property name:<br><code>
+     * &nbsp;&nbsp;&lt;trigger program=&quot;org.efaps.esjp.admin.access.AccessCheck4UI&quot;
+     *           method=&quot;propertyCheck&quot;
+     *           name=&quot;field.UI_ACCESSCHECK&quot;
+     *           event=&quot;UI_ACCESSCHECK&quot; &gt;<br>
+     * &nbsp;&nbsp;&nbsp;&nbsp;&lt;property name=&quot;CheckCallingCommand&quot;&gt;true&lt;/property&gt;<br>
+     * &nbsp;&nbsp;&nbsp;&nbsp;&lt;property name=&quot;Property&quot;&gt;PROPERTYNAME&lt;/property&gt;<br>
+     * &nbsp;&nbsp;&lt;/trigger&gt;
+     * </code>
+     * @param _parameter Parameter as passed from eFaps to an esjp
+     * @return Return with True if VIEW, else false
+     * @throws EFapsException on error
+     */
+    public Return propertyCheck(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
+        final boolean inverse = "true".equalsIgnoreCase(getProperty(_parameter, "Inverse"));
+        final boolean access;
+        if ("true".equalsIgnoreCase(getProperty(_parameter, "CheckCallingCommand"))) {
+            final AbstractCommand cmd = (AbstractCommand) _parameter.get(ParameterValues.CALL_CMD);
+            if (cmd != null) {
+                access = "true".equalsIgnoreCase(cmd.getProperty(getProperty(_parameter, "Property")))
+                                || "true".equalsIgnoreCase(cmd.getProperty(field.getName() + "_UIAccessCheck"));
+            } else {
+                access = false;
+            }
+        } else {
+            access= "true".equalsIgnoreCase(getProperty(_parameter, "UIAccessCheck"));
+            AccessCheck4UI_Base.LOG.error("Could not get Calling Command for: {}", field);
+        }
+        if ((!inverse && access) || (inverse && !access)) {
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+
+    /**
+     * Method is used to control access based on a SystemConfiguration.
+     *
+     * @param _parameter Parameter as passed from eFaps to an esjp
+     * @return Return with True if VIEW, else false
+     * @throws EFapsException on error
+     */
+    public Return configCheck(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final SystemConfiguration config = SystemConfiguration.get((String) props.get("SystemConfig"));
+        if (config != null) {
+            final Boolean access = config.getAttributeValueAsBoolean((String) props.get("Attribute"));
+            final boolean inverse = "true".equalsIgnoreCase((String) props.get("Inverse"));
+            if ((!inverse && access) || (inverse && !access)) {
+                ret.put(ReturnValues.TRUE, true);
+            }
+        }
+        return ret;
+    }
+
+
+    /**
+     * Method is used to control access based on a list of given Roles.
+     *
+     * @param _parameter Parameter as passed from eFaps to an esjp
+     * @return Return with True if VIEW, else false
+     * @throws EFapsException on error
+     */
+    public Return roleCheck(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final String roleStr = (String) properties.get("Roles");
+        final String[] roles = roleStr.split(";");
+        for (final String role : roles) {
+            final Role aRol = Role.get(role);
+            if (aRol != null) {
+                final boolean assigned = Context.getThreadContext().getPerson().isAssigned(aRol);
+                if (assigned) {
+                    ret.put(ReturnValues.TRUE, true);
+                    break;
+                }
+            }
         }
         return ret;
     }
