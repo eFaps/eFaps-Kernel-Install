@@ -52,9 +52,7 @@
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Admin_Event_Definition/JavaProg.Label</property>
             <property name="ShowTypeIcon">true</property>
-            <trigger name="Admin_Common_QuartzTriggerSecondlyForm.esjp4View"
-                     event="UI_ACCESSCHECK" program="org.efaps.esjp.admin.access.AccessOnField"
-                     method="viewOnly" />
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="esjp4NotView">
             <property name="ModeCreate">EDITABLE</property>

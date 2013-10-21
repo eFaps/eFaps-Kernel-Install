@@ -47,14 +47,12 @@
             <property name="ModeSearch">EDITABLE</property>
         </field>
         <field name="esjp4View">
+            <property name="ModeEdit">NONE</property>
             <property name="SelectAlternateOID">linkto[ESJPLink].oid</property>
             <property name="Select">linkto[ESJPLink].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Admin_Event_Definition/JavaProg.Label</property>
             <property name="ShowTypeIcon">true</property>
-            <trigger name="Admin_Common_QuartzTriggerDailyForm.esjp4View"
-                     event="UI_ACCESSCHECK" program="org.efaps.esjp.admin.access.AccessOnField"
-                     method="viewOnly" />
         </field>
         <field name="esjp4NotView">
             <property name="ModeCreate">EDITABLE</property>
