@@ -42,7 +42,7 @@
             <evaluate program="org.efaps.esjp.common.uisearch.Search">
                 <property name="Types">Admin_User_Group</property>
             </evaluate>
-            <trigger program="org.efaps.esjp.admin.access.AccessOnField"
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Admin_User_GroupSearch.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">

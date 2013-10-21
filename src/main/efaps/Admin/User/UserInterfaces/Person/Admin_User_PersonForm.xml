@@ -49,7 +49,7 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
-            <trigger program="org.efaps.esjp.admin.access.AccessOnField"
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Admin_User_PersonForm.uuidGroup.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
@@ -63,7 +63,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">UUID</property>
             <property name="ModeSearch">EDITABLE</property>
-            <trigger program="org.efaps.esjp.admin.access.AccessOnField"
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Admin_User_PersonForm.uUID.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
@@ -79,7 +79,7 @@
             <property name="Attribute">UUID</property>
             <property name="Required">true</property>
             <property name="ModeSearch">EDITABLE</property>
-             <trigger program="org.efaps.esjp.admin.access.AccessOnField"
+             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Admin_User_PersonForm.uUIDRequired.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
@@ -99,7 +99,7 @@
                 method="createUUID">
                 <property name="TargetField">uUIDRequired</property>
             </trigger>
-            <trigger program="org.efaps.esjp.admin.access.AccessOnField"
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Admin_User_PersonForm.createUUID.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
@@ -256,7 +256,7 @@
             <property name="Level">1</property>
             <property name="Label">Admin_User_PersonForm.groupsheader.Heading</property>
             <property name="ModeEdit">NONE</property>
-            <trigger program="org.efaps.esjp.admin.access.AccessOnField"
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Admin_User_PersonForm.groupsheader.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
@@ -270,7 +270,7 @@
                 <property name="Type">Admin_User_Person2Group</property>
                 <property name="LinkFrom">UserFromLink</property>
             </evaluate>
-            <trigger program="org.efaps.esjp.admin.access.AccessOnField"
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Admin_User_PersonForm.groupstable.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">

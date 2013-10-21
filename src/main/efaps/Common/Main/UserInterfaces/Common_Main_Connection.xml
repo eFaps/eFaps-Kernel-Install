@@ -34,7 +34,7 @@
             <role>Administration</role>
         </access>
         <target>
-            <trigger program="org.efaps.esjp.admin.access.AccessOnField" 
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" 
                 method="configCheck" name="Common_Main_Connection.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">WebApp-Configuration</property>
                 <property name="Attribute">org.efaps.webapp.WebSocket.activate</property>    

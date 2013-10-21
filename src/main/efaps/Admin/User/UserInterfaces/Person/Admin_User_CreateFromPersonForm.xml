@@ -39,7 +39,7 @@
             <property name="ModeCreate">READONLY</property>
             <trigger event="UI_ACCESSCHECK" method="configCheck"
                 name="Admin_User_CreateFromPersonForm.uuidGroup.UI_ACCESSCHECK"
-                program="org.efaps.esjp.admin.access.AccessOnField">
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <property name="SystemConfig">Kernel-Configuration</property>
                 <property name="Attribute">org.efaps.kernel.RequirePersonUUID</property>
             </trigger>
@@ -50,7 +50,7 @@
             <property name="Attribute">UUID</property>
             <trigger event="UI_ACCESSCHECK" method="configCheck"
                 name="Admin_User_CreateFromPersonForm.uUID.UI_ACCESSCHECK"
-                program="org.efaps.esjp.admin.access.AccessOnField">
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <property name="SystemConfig">Kernel-Configuration</property>
                 <property name="Attribute">org.efaps.kernel.RequirePersonUUID</property>
                 <property name="Inverse">true</property>
@@ -63,7 +63,7 @@
             <property name="Required">true</property>
             <trigger event="UI_ACCESSCHECK" method="configCheck"
                 name="Admin_User_CreateFromPersonForm.uUIDRequired.UI_ACCESSCHECK"
-                program="org.efaps.esjp.admin.access.AccessOnField">
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <property name="SystemConfig">Kernel-Configuration</property>
                 <property name="Attribute">org.efaps.kernel.RequirePersonUUID</property>
             </trigger>
@@ -79,7 +79,7 @@
             </trigger>
             <trigger event="UI_ACCESSCHECK" method="configCheck"
                 name="Admin_User_CreateFromPersonForm.createUUID.UI_ACCESSCHECK"
-                program="org.efaps.esjp.admin.access.AccessOnField">
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <property name="SystemConfig">Kernel-Configuration</property>
                 <property name="Attribute">org.efaps.kernel.RequirePersonUUID</property>
             </trigger>

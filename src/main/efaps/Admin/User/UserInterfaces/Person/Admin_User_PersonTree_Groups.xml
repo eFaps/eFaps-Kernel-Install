@@ -46,7 +46,7 @@
                 <property name="Type">Admin_User_Person2Group</property>
                 <property name="LinkFrom">UserFromLink</property>
             </evaluate>
-            <trigger program="org.efaps.esjp.admin.access.AccessOnField"
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Admin_User_PersonTree_Groups.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">

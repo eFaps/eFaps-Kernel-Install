@@ -46,10 +46,6 @@
                 event="UI_FIELD_VALUE"
                 program="org.efaps.esjp.admin.event.ConnectEventToAbstract"
                 method="getEventTypesUI" />
-            <trigger
-                name="Admin_Event_DefinitionForm.type4NotView.hideOnEdit"
-                event="UI_ACCESSCHECK" program="org.efaps.esjp.admin.access.AccessOnField"
-                method="hideOnEdit" />
         </field>
         <field name="name">
             <property name="ModeCreate">EDITABLE</property>
