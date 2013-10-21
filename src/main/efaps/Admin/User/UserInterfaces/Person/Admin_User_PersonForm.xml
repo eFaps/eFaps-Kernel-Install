@@ -135,12 +135,10 @@
             <property name="SelectAlternateOID">linkto[Creator].oid</property>
             <property name="Attribute">Creator</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="ModeSearch">EDITABLE</property>
             <property name="ShowTypeIcon">true</property>
         </field>
         <field name="created">
             <property name="Attribute">Created</property>
-            <property name="ModeSearch">EDITABLE</property>
         </field>
         <field name="modifyGroup" character="Group">
             <property name="GroupCount">2</property>
@@ -149,12 +147,10 @@
             <property name="SelectAlternateOID">linkto[Modifier].oid</property>
             <property name="Attribute">Modifier</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="ModeSearch">EDITABLE</property>
             <property name="ShowTypeIcon">true</property>
         </field>
         <field name="modified">
             <property name="Attribute">Modified</property>
-            <property name="ModeSearch">EDITABLE</property>
         </field>
         <field name="LastName">
             <property name="Columns">40</property>
@@ -182,12 +178,10 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
+            <property name="ModeSearch">NONE</property>
             <property name="Attribute">TimeZone</property>
             <trigger program="org.efaps.esjp.admin.user.TimeZoneUI" name="Admin_User_PersonForm/TimeZone4Edit"
                 event="UI_FIELD_VALUE" />
-            <trigger program="org.efaps.esjp.admin.access.AccessOnField"
-                method="hideOnSearch" name="Admin_User_PersonForm/TimeZone4Edit.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK" />
         </field>
         <field name="Chronology4View">
             <property name="Columns">40</property>
@@ -203,13 +197,11 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
+            <property name="ModeSearch">NONE</property>
             <property name="Attribute">Chronology</property>
             <trigger program="org.efaps.esjp.admin.user.ChronologyUI"
                 method="get4Edit" name="Admin_User_PersonForm/Chronology4Edit"
                 event="UI_FIELD_VALUE" />
-            <trigger program="org.efaps.esjp.admin.access.AccessOnField"
-                method="hideOnSearch" name="Admin_User_PersonForm/Chronology4Edit.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK" />
         </field>
         <field name="language">
             <property name="Columns">40</property>
