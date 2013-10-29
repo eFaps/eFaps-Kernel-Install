@@ -68,52 +68,57 @@ public abstract class Linked2ObjectAccessCheck_Base
         throws EFapsException
     {
         boolean ret = false;
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String middleTypeUUID = (String) properties.get("MiddleTypeUUID");
-        final String fromAttributeName = (String) properties.get("FromAttribute");
-        final String toAttributeName = (String) properties.get("ToAttribute");
-        final Type type = Type.get(UUID.fromString(middleTypeUUID));
-        final Attribute fromAttribute = type.getAttribute(fromAttributeName);
-        final Attribute toAttribute = type.getAttribute(toAttributeName);
-        final StringBuilder cmd = new StringBuilder();
-        cmd.append("select ").append(toAttribute.getSqlColNames().get(0))
-            .append(" from ").append(type.getMainTable().getSqlTable())
-            .append(" where ").append(fromAttribute.getSqlColNames().get(0)).append("=").append(_instance.getId());
+        if (AccessTypeEnums.CREATE.getAccessType().equals(_accessType)) {
+            final SimpleAccessCheckOnType accessCheck = new SimpleAccessCheckOnType();
+            ret = accessCheck.checkAccess(_parameter, _instance, _accessType);
+        } else {
+            final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+            final String middleTypeUUID = (String) properties.get("MiddleTypeUUID");
+            final String fromAttributeName = (String) properties.get("FromAttribute");
+            final String toAttributeName = (String) properties.get("ToAttribute");
+            final Type type = Type.get(UUID.fromString(middleTypeUUID));
+            final Attribute fromAttribute = type.getAttribute(fromAttributeName);
+            final Attribute toAttribute = type.getAttribute(toAttributeName);
+            final StringBuilder cmd = new StringBuilder();
+            cmd.append("select ").append(toAttribute.getSqlColNames().get(0))
+                .append(" from ").append(type.getMainTable().getSqlTable())
+                .append(" where ").append(fromAttribute.getSqlColNames().get(0)).append("=").append(_instance.getId());
 
-        if (type.getMainTable().getSqlColType() != null) {
-            cmd.append(" and ").append(type.getMainTable().getSqlColType()).append("=").append(type.getId());
-        }
-        long id = 0;
-        ConnectionResource con = null;
-        try {
-            con = Context.getThreadContext().getConnectionResource();
-            AbstractAccessCheck_Base.LOG.debug("Checking access with: {}", cmd);
-            Statement stmt = null;
+            if (type.getMainTable().getSqlColType() != null) {
+                cmd.append(" and ").append(type.getMainTable().getSqlColType()).append("=").append(type.getId());
+            }
+            long id = 0;
+            ConnectionResource con = null;
             try {
-                stmt = con.getConnection().createStatement();
-                final ResultSet rs = stmt.executeQuery(cmd.toString());
-                if (rs.next()) {
-                    id = rs.getLong(1);
+                con = Context.getThreadContext().getConnectionResource();
+                AbstractAccessCheck_Base.LOG.debug("Checking access with: {}", cmd);
+                Statement stmt = null;
+                try {
+                    stmt = con.getConnection().createStatement();
+                    final ResultSet rs = stmt.executeQuery(cmd.toString());
+                    if (rs.next()) {
+                        id = rs.getLong(1);
+                    }
+                    rs.close();
+                } finally {
+                    if (stmt != null) {
+                        stmt.close();
+                    }
                 }
-                rs.close();
+                con.commit();
+            } catch (final SQLException e) {
+                AbstractAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
             } finally {
-                if (stmt != null) {
-                    stmt.close();
+                if ((con != null) && con.isOpened()) {
+                    con.abort();
                 }
             }
-            con.commit();
-        } catch (final SQLException e) {
-            AbstractAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
-        } finally {
-            if ((con != null) && con.isOpened()) {
-                con.abort();
-            }
-        }
-        if (id > 0) {
-            final Instance instance = Instance.get(toAttribute.getLink(), id);
-            if (instance.getType().hasAccess(instance, AccessTypeEnums.READ.getAccessType())) {
-                final SimpleAccessCheckOnType accessCheck = new SimpleAccessCheckOnType();
-                ret = accessCheck.checkAccess(_parameter, _instance, _accessType);
+            if (id > 0) {
+                final Instance instance = Instance.get(toAttribute.getLink(), id);
+                if (instance.getType().hasAccess(instance, AccessTypeEnums.READ.getAccessType())) {
+                    final SimpleAccessCheckOnType accessCheck = new SimpleAccessCheckOnType();
+                    ret = accessCheck.checkAccess(_parameter, _instance, _accessType);
+                }
             }
         }
         return ret;
