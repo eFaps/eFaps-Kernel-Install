@@ -109,7 +109,7 @@ public abstract class InheritAccessCheck4Object_Base
             }
             con.commit();
         } catch (final SQLException e) {
-            AccessCheckAbstract_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
+            AbstractAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
         } finally {
             if ((con != null) && con.isOpened()) {
                 con.abort();
@@ -255,7 +255,7 @@ public abstract class InheritAccessCheck4Object_Base
             }
             con.commit();
         } catch (final SQLException e) {
-            AccessCheckAbstract_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
+            AbstractAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
         } finally {
             if ((con != null) && con.isOpened()) {
                 con.abort();

@@ -47,13 +47,13 @@ import org.slf4j.LoggerFactory;
  */
 @EFapsUUID("3b81f1a7-8ec0-4979-859e-0bd64e4d50d7")
 @EFapsRevision("$Rev$")
-public abstract class AccessCheckAbstract_Base
+public abstract class AbstractAccessCheck_Base
     implements EventExecution
 {
     /**
      * Logging instance used in this class.
      */
-    protected static final Logger LOG = LoggerFactory.getLogger(AccessCheckAbstract_Base.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(AbstractAccessCheck.class);
 
     /**
      * {@inheritDoc}

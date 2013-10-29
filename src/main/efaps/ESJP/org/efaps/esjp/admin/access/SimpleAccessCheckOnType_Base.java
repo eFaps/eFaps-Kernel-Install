@@ -63,7 +63,7 @@ import org.infinispan.Cache;
 @EFapsUUID("628a19f6-463f-415d-865b-ba72e303a507")
 @EFapsRevision("$Rev$")
 public abstract class SimpleAccessCheckOnType_Base
-    extends AccessCheckAbstract
+    extends AbstractAccessCheck
 {
 
     /**
@@ -81,11 +81,11 @@ public abstract class SimpleAccessCheckOnType_Base
         final Boolean access = cache.get(accessKey);
         if (access == null) {
             ret = checkAccessOnDB(_parameter, _instance, _accessType);
-            AccessCheckAbstract_Base.LOG.trace("access result :{} from DB for: {}", ret, _instance);
+            AbstractAccessCheck_Base.LOG.trace("access result :{} from DB for: {}", ret, _instance);
             cache.put(accessKey, ret);
         } else {
             ret = access;
-            AccessCheckAbstract_Base.LOG.trace("access result :{} from Cache for: {}", ret, _instance);
+            AbstractAccessCheck_Base.LOG.trace("access result :{} from Cache for: {}", ret, _instance);
         }
         return ret;
     }
@@ -176,12 +176,12 @@ public abstract class SimpleAccessCheckOnType_Base
             }
             if (first) {
                 cmd.append("0");
-                AccessCheckAbstract_Base.LOG.error("Missing Group for '{}' on groupdependend Access on type '{}'",
+                AbstractAccessCheck_Base.LOG.error("Missing Group for '{}' on groupdependend Access on type '{}'",
                                 context.getPerson().getName(), type);
             }
             cmd.append("))");
         }
-        AccessCheckAbstract_Base.LOG.debug("cheking access with: {}", cmd);
+        AbstractAccessCheck_Base.LOG.debug("cheking access with: {}", cmd);
         return executeStatement(_parameter, context, cmd);
     }
 
@@ -206,14 +206,14 @@ public abstract class SimpleAccessCheckOnType_Base
                 ret.put((Instance) instObj, access);
             }
         }
-        AccessCheckAbstract_Base.LOG.trace("access result from Cache: {}", ret);
+        AbstractAccessCheck_Base.LOG.trace("access result from Cache: {}", ret);
         if (!checkOnDB.isEmpty()) {
             final Map<Instance, Boolean> accessMapTmp = checkAccessOnDB(_parameter, checkOnDB, _accessType);
             for (final Entry<Instance, Boolean> entry : accessMapTmp.entrySet()) {
                 final AccessKey accessKey = AccessKey.get(entry.getKey(), _accessType);
                 cache.put(accessKey, entry.getValue());
             }
-            AccessCheckAbstract_Base.LOG.trace("access result from DB: {}", accessMapTmp);
+            AbstractAccessCheck_Base.LOG.trace("access result from DB: {}", accessMapTmp);
             ret.putAll(accessMapTmp);
         }
         return ret;
@@ -296,7 +296,7 @@ public abstract class SimpleAccessCheckOnType_Base
                 }
                 if (first) {
                     cmd.append("0");
-                    AccessCheckAbstract_Base.LOG.error("Missing Group for '{}' on groupdependend Access on type '{}'",
+                    AbstractAccessCheck_Base.LOG.error("Missing Group for '{}' on groupdependend Access on type '{}'",
                                     context.getPerson().getName(), type);
                 }
                 cmd.append("))");
@@ -310,7 +310,7 @@ public abstract class SimpleAccessCheckOnType_Base
 
                 Statement stmt = null;
                 try {
-                    AccessCheckAbstract_Base.LOG.debug("Checking access with: {}", cmd);
+                    AbstractAccessCheck_Base.LOG.debug("Checking access with: {}", cmd);
                     stmt = con.getConnection().createStatement();
 
                     final ResultSet rs = stmt.executeQuery(cmd.toString());
@@ -327,7 +327,7 @@ public abstract class SimpleAccessCheckOnType_Base
                 }
                 con.commit();
             } catch (final SQLException e) {
-                AccessCheckAbstract_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
+                AbstractAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
             } finally {
                 if ((con != null) && con.isOpened()) {
                     con.abort();
@@ -364,7 +364,7 @@ public abstract class SimpleAccessCheckOnType_Base
         ConnectionResource con = null;
         try {
             con = _context.getConnectionResource();
-            AccessCheckAbstract_Base.LOG.debug("Checking access with: {}", _cmd);
+            AbstractAccessCheck_Base.LOG.debug("Checking access with: {}", _cmd);
             Statement stmt = null;
             try {
                 stmt = con.getConnection().createStatement();
@@ -380,7 +380,7 @@ public abstract class SimpleAccessCheckOnType_Base
             }
             con.commit();
         } catch (final SQLException e) {
-            AccessCheckAbstract_Base.LOG.error("sql statement '" + _cmd.toString() + "' not executable!", e);
+            AbstractAccessCheck_Base.LOG.error("sql statement '" + _cmd.toString() + "' not executable!", e);
         } finally {
             if ((con != null) && con.isOpened()) {
                 con.abort();

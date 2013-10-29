@@ -33,8 +33,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  */
 @EFapsUUID("bdf98a2e-37f9-44a3-8ba5-54d6ecf3785e")
 @EFapsRevision("$Rev$")
-public abstract class AccessCheckAbstract
-    extends  AccessCheckAbstract_Base
+public abstract class AbstractAccessCheck
+    extends  AbstractAccessCheck_Base
 {
 
 }

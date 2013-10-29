@@ -103,7 +103,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("fa2720cc-8e76-476e-87cd-eef6eeb8b1e3")
 @EFapsRevision("$Rev$")
 public abstract class AccessCheck4Object_Base
-    extends AccessCheckAbstract
+    extends AbstractAccessCheck
 {
 
     /**
@@ -175,7 +175,7 @@ public abstract class AccessCheck4Object_Base
             }
             con.commit();
         } catch (final SQLException e) {
-            AccessCheckAbstract_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
+            AbstractAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
         } finally {
             if ((con != null) && con.isOpened()) {
                 con.abort();
@@ -295,7 +295,7 @@ public abstract class AccessCheck4Object_Base
             }
             con.commit();
         } catch (final SQLException e) {
-            AccessCheckAbstract_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
+            AbstractAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
         } finally {
             if ((con != null) && con.isOpened()) {
                 con.abort();
@@ -366,7 +366,7 @@ public abstract class AccessCheck4Object_Base
      * @return the access class for simple access check.
      * @throws EFapsException on error
      */
-    protected AccessCheckAbstract getSimpleAccess4Type(final Parameter _parameter)
+    protected AbstractAccessCheck getSimpleAccess4Type(final Parameter _parameter)
         throws EFapsException
     {
         return new SimpleAccessCheckOnType();
