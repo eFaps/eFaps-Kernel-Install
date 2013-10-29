@@ -111,8 +111,8 @@ public abstract class Linked2ObjectAccessCheck_Base
         }
         if (id > 0) {
             final Instance instance = Instance.get(toAttribute.getLink(), id);
-            final SimpleAccessCheckOnType accessCheck = new SimpleAccessCheckOnType();
-            if (accessCheck.checkAccess(_parameter, instance, AccessTypeEnums.READ.getAccessType())) {
+            if (instance.getType().hasAccess(instance, AccessTypeEnums.READ.getAccessType())) {
+                final SimpleAccessCheckOnType accessCheck = new SimpleAccessCheckOnType();
                 ret = accessCheck.checkAccess(_parameter, _instance, _accessType);
             }
         }
@@ -194,7 +194,7 @@ public abstract class Linked2ObjectAccessCheck_Base
                     tmpInsts.add((Instance) instObj);
                 }
             }
-            if (accessCheck.checkAccess(_parameter, instance, AccessTypeEnums.READ.getAccessType())) {
+            if (instance.getType().hasAccess(instance, AccessTypeEnums.READ.getAccessType())) {
                 ret.putAll(accessCheck.checkAccess(_parameter, tmpInsts, _accessType));
             } else {
                 for (final Instance instTmp : tmpInsts) {
