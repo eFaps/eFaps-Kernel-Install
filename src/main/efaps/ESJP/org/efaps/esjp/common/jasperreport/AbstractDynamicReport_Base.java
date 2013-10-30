@@ -35,6 +35,7 @@ import net.sf.dynamicreports.jasper.builder.export.JasperXhtmlExporterBuilder;
 import net.sf.dynamicreports.jasper.builder.export.JasperXlsExporterBuilder;
 import net.sf.dynamicreports.jasper.constant.SizeUnit;
 import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.ReportTemplateBuilder;
 import net.sf.dynamicreports.report.builder.component.SubreportBuilder;
 import net.sf.dynamicreports.report.builder.style.ReportStyleBuilder;
 import net.sf.dynamicreports.report.builder.style.StyleBuilder;
@@ -84,6 +85,11 @@ public abstract class AbstractDynamicReport_Base
     private final JasperReportBuilder report = DynamicReports.report();
 
     /**
+     * Reportbuilder this class is based on.
+     */
+    private final ReportTemplateBuilder reportTemplate = DynamicReports.template();
+
+    /**
      * Name for the created file.
      */
     private String fileName;
@@ -99,12 +105,16 @@ public abstract class AbstractDynamicReport_Base
     protected void configure4Html(final Parameter _parameter)
         throws EFapsException
     {
-        getReport().setColumnTitleStyle(getColumnTitleStyle4Html(_parameter))
+        getStyleTemplate().setColumnTitleStyle(getColumnTitleStyle4Html(_parameter))
             .setColumnStyle(getColumnStyle4Html(_parameter))
             .setGroupStyle(getGroupStyle4Html(_parameter))
             .setGroupTitleStyle(getGroupStyle4Html(_parameter))
             .setSubtotalStyle(getSubtotalStyle4Html(_parameter))
-                        .setIgnorePageWidth(true).setIgnorePagination(true).setHighlightDetailEvenRows(true);
+            .setCrosstabGroupStyle(getCrossTabGroupStyle4Html(_parameter))
+            .setCrosstabCellStyle(getCrossTabCellStyle4Html(_parameter))
+            .setCrosstabGroupTotalStyle(getCrossTabGroupTotalStyle4Html(_parameter))
+            .setCrosstabGrandTotalStyle(getCrossTabGrandTotalStyle4Html(_parameter))
+            .setIgnorePageWidth(true).setIgnorePagination(true).setHighlightDetailEvenRows(true);
     }
 
     /**
@@ -114,16 +124,19 @@ public abstract class AbstractDynamicReport_Base
      * @param _builder builder to add to
      * @throws EFapsException on error
      */
-    protected void configure4Excel(final Parameter _parameter,
-                                   final JasperReportBuilder _builder)
+    protected void configure4Excel(final Parameter _parameter)
         throws EFapsException
     {
-        _builder.setColumnTitleStyle(getColumnTitleStyle4Excel(_parameter))
+        getStyleTemplate().setColumnTitleStyle(getColumnTitleStyle4Excel(_parameter))
             .setColumnStyle(getColumnStyle4Excel(_parameter))
             .setGroupStyle(getGroupStyle4Excel(_parameter))
             .setGroupTitleStyle(getGroupStyle4Excel(_parameter))
             .setSubtotalStyle(getSubtotalStyle4Excel(_parameter))
-            .ignorePageWidth().ignorePagination();
+            .setCrosstabGroupStyle(getCrossTabGroupStyle4Excel(_parameter))
+            .setCrosstabCellStyle(getCrossTabCellStyle4Excel(_parameter))
+            .setCrosstabGroupTotalStyle(getCrossTabGroupTotalStyle4Excel(_parameter))
+            .setCrosstabGrandTotalStyle(getCrossTabGrandTotalStyle4Excel(_parameter))
+            .setIgnorePageWidth(true).setIgnorePagination(true);
     }
 
     /**
@@ -134,20 +147,23 @@ public abstract class AbstractDynamicReport_Base
      * @throws EFapsException on error
      *
      */
-    protected void configure4Pdf(final Parameter _parameter,
-                                 final JasperReportBuilder _builder)
+    protected void configure4Pdf(final Parameter _parameter)
         throws EFapsException
     {
-        _builder.setColumnTitleStyle(getColumnTitleStyle4Pdf(_parameter))
+        getStyleTemplate().setColumnTitleStyle(getColumnTitleStyle4Pdf(_parameter))
             .setColumnStyle(getColumnStyle4Pdf(_parameter))
             .setGroupStyle(getGroupStyle4Pdf(_parameter))
             .setGroupTitleStyle(getGroupStyle4Pdf(_parameter))
             .setSubtotalStyle(getSubtotalStyle4Pdf(_parameter))
-                        .setIgnorePageWidth(false).setIgnorePagination(false).setHighlightDetailEvenRows(true);
+            .setCrosstabGroupStyle(getCrossTabGroupStyle4Pdf(_parameter))
+            .setCrosstabCellStyle(getCrossTabCellStyle4Pdf(_parameter))
+            .setCrosstabGroupTotalStyle(getCrossTabGroupTotalStyle4Pdf(_parameter))
+            .setCrosstabGrandTotalStyle(getCrossTabGrandTotalStyle4Pdf(_parameter))
+            .setIgnorePageWidth(false).setIgnorePagination(false).setHighlightDetailEvenRows(true);
     }
 
     /**
-     * Get the style for the columns in case of a html document.
+     * Get style for the columns in case of a html document.
      *
      * @param _parameter Parameter as passed by the eFaps API
      * @return html document as String
@@ -160,7 +176,7 @@ public abstract class AbstractDynamicReport_Base
     }
 
     /**
-     * Get the style for the columns in case of a excel document.
+     * Get style for the columns in case of a excel document.
      *
      * @param _parameter Parameter as passed by the eFaps API
      * @return html document as String
@@ -173,7 +189,7 @@ public abstract class AbstractDynamicReport_Base
     }
 
     /**
-     * Get the style for the columns in case of a pdf document.
+     * Get style for the columns in case of a pdf document.
      *
      * @param _parameter Parameter as passed by the eFaps API
      * @return html document as String
@@ -188,7 +204,7 @@ public abstract class AbstractDynamicReport_Base
     }
 
     /**
-     * Get the style for the title columns in case of a html document.
+     * Get style for the title columns in case of a html document.
      *
      * @param _parameter Parameter as passed by the eFaps API
      * @return html document as String
@@ -206,7 +222,7 @@ public abstract class AbstractDynamicReport_Base
     }
 
     /**
-     * Get the style for the title columns in case of a excel document.
+     * Get style for the title columns in case of a excel document.
      *
      * @param _parameter Parameter as passed by the eFaps API
      * @return html document as String
@@ -222,7 +238,7 @@ public abstract class AbstractDynamicReport_Base
     }
 
     /**
-     * Get the style for the title columns in case of a pdf document.
+     * Get style for the title columns in case of a pdf document.
      *
      * @param _parameter Parameter as passed by the eFaps API
      * @return html document as String
@@ -240,7 +256,7 @@ public abstract class AbstractDynamicReport_Base
     }
 
     /**
-     * Get the style for the group columns in case of a html document.
+     * Get style for the group columns in case of a html document.
      *
      * @param _parameter Parameter as passed by the eFaps API
      * @return style as StyleBuilder
@@ -255,7 +271,7 @@ public abstract class AbstractDynamicReport_Base
     }
 
     /**
-     * Get the style for the group columns in case of an excel document.
+     * Get style for the group columns in case of an excel document.
      *
      * @param _parameter Parameter as passed by the eFaps API
      * @return style as StyleBuilder
@@ -270,7 +286,7 @@ public abstract class AbstractDynamicReport_Base
     }
 
     /**
-     * Get the style for the group columns in case of a pdf document.
+     * Get style for the group columns in case of a pdf document.
      *
      * @param _parameter Parameter as passed by the eFaps API
      * @return style as StyleBuilder
@@ -285,7 +301,7 @@ public abstract class AbstractDynamicReport_Base
     }
 
     /**
-     * Get the style for the subtotal in case of a html document.
+     * Get style for the subtotal in case of a html document.
      *
      * @param _parameter Parameter as passed by the eFaps API
      * @return style as StyleBuilder
@@ -299,7 +315,7 @@ public abstract class AbstractDynamicReport_Base
     }
 
     /**
-     * Get the style for the subtotal in case of an excel document.
+     * Get style for the subtotal in case of an excel document.
      *
      * @param _parameter Parameter as passed by the eFaps API
      * @return style as StyleBuilder
@@ -313,7 +329,7 @@ public abstract class AbstractDynamicReport_Base
     }
 
     /**
-     * Get the style for the subtotal in case of a pdf document.
+     * Get style for the subtotal in case of a pdf document.
      *
      * @param _parameter Parameter as passed by the eFaps API
      * @return style as StyleBuilder
@@ -324,6 +340,200 @@ public abstract class AbstractDynamicReport_Base
     {
         return DynamicReports.stl.style().bold()
                         .setTopBorder(DynamicReports.stl.pen1Point());
+    }
+
+    /**
+     * Get style for cross tab group in case of a html document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return html document as String
+     * @throws EFapsException on error
+     */
+    protected StyleBuilder getCrossTabGroupStyle4Html(final Parameter _parameter)
+        throws EFapsException
+    {
+        return DynamicReports.stl.style().setPadding(2)
+                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .setBorder(DynamicReports.stl.pen1Point())
+                        .setHorizontalAlignment(HorizontalAlignment.CENTER)
+                        .setBackgroundColor(Color.LIGHT_GRAY)
+                        .bold();
+    }
+
+    /**
+     * Get style for cross tab group in case of a excel document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return html document as String
+     * @throws EFapsException on error
+     */
+    protected StyleBuilder getCrossTabGroupStyle4Excel(final Parameter _parameter)
+        throws EFapsException
+    {
+        return DynamicReports.stl.style();
+    }
+
+    /**
+     * Get style for cross tab group in case of a pdf document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return html document as String
+     * @throws EFapsException on error
+     */
+    protected StyleBuilder getCrossTabGroupStyle4Pdf(final Parameter _parameter)
+        throws EFapsException
+    {
+        return DynamicReports.stl.style().setPadding(2)
+                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .setBorder(DynamicReports.stl.pen1Point())
+                        .setHorizontalAlignment(HorizontalAlignment.CENTER)
+                        .setBackgroundColor(Color.LIGHT_GRAY)
+                        .bold();
+    }
+
+    /**
+     * Get style for cross tab cell in case of a html document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return html document as String
+     * @throws EFapsException on error
+     */
+    protected StyleBuilder getCrossTabCellStyle4Html(final Parameter _parameter)
+        throws EFapsException
+    {
+        return DynamicReports.stl.style().setPadding(2)
+                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .setBorder(DynamicReports.stl.pen1Point());
+    }
+
+    /**
+     * Get style for cross tab cell in case of a excel document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return html document as String
+     * @throws EFapsException on error
+     */
+    protected StyleBuilder getCrossTabCellStyle4Excel(final Parameter _parameter)
+        throws EFapsException
+    {
+        return DynamicReports.stl.style();
+    }
+
+    /**
+     * Get style for cross tab cell in case of a pdf document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return html document as String
+     * @throws EFapsException on error
+     */
+    protected StyleBuilder getCrossTabCellStyle4Pdf(final Parameter _parameter)
+        throws EFapsException
+    {
+        return DynamicReports.stl.style().setPadding(2)
+                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .setBorder(DynamicReports.stl.pen1Point());
+    }
+
+    /**
+     * Get style for cross tab group total in case of a html document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return html document as String
+     * @throws EFapsException on error
+     */
+    protected StyleBuilder getCrossTabGroupTotalStyle4Html(final Parameter _parameter)
+        throws EFapsException
+    {
+        return DynamicReports.stl.style().setPadding(2)
+                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .setBorder(DynamicReports.stl.pen1Point())
+                        .setHorizontalAlignment(HorizontalAlignment.CENTER)
+                        .setBackgroundColor(Color.LIGHT_GRAY)
+                        .bold()
+                        .setBackgroundColor(new Color(170, 170, 170));
+    }
+
+    /**
+     * Get style for cross tab group total in case of a excel document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return html document as String
+     * @throws EFapsException on error
+     */
+    protected StyleBuilder getCrossTabGroupTotalStyle4Excel(final Parameter _parameter)
+        throws EFapsException
+    {
+        return DynamicReports.stl.style();
+    }
+
+    /**
+     * Get style for cross tab group total in case of a pdf document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return html document as String
+     * @throws EFapsException on error
+     */
+    protected StyleBuilder getCrossTabGroupTotalStyle4Pdf(final Parameter _parameter)
+        throws EFapsException
+    {
+        return DynamicReports.stl.style().setPadding(2)
+                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .setBorder(DynamicReports.stl.pen1Point())
+                        .setHorizontalAlignment(HorizontalAlignment.CENTER)
+                        .setBackgroundColor(Color.LIGHT_GRAY)
+                        .bold()
+                        .setBackgroundColor(new Color(170, 170, 170));
+    }
+
+    /**
+     * Get style for cross tab grand total in case of a html document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return html document as String
+     * @throws EFapsException on error
+     */
+    protected StyleBuilder getCrossTabGrandTotalStyle4Html(final Parameter _parameter)
+        throws EFapsException
+    {
+        return DynamicReports.stl.style().setPadding(2)
+                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .setBorder(DynamicReports.stl.pen1Point())
+                        .setHorizontalAlignment(HorizontalAlignment.CENTER)
+                        .setBackgroundColor(Color.LIGHT_GRAY)
+                        .bold()
+                        .setBackgroundColor(new Color(140, 140, 140));
+    }
+
+    /**
+     * Get style for cross tab grand total in case of a excel document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return html document as String
+     * @throws EFapsException on error
+     */
+    protected StyleBuilder getCrossTabGrandTotalStyle4Excel(final Parameter _parameter)
+        throws EFapsException
+    {
+        return DynamicReports.stl.style();
+    }
+
+    /**
+     * Get style for cross tab grand total in case of a pdf document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return html document as String
+     * @throws EFapsException on error
+     */
+    protected StyleBuilder getCrossTabGrandTotalStyle4Pdf(final Parameter _parameter)
+        throws EFapsException
+    {
+        return DynamicReports.stl.style().setPadding(2)
+                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .setBorder(DynamicReports.stl.pen1Point())
+                        .setHorizontalAlignment(HorizontalAlignment.CENTER)
+                        .setBackgroundColor(Color.LIGHT_GRAY)
+                        .bold()
+                        .setBackgroundColor(new Color(140, 140, 140));
     }
 
     /**
@@ -354,6 +564,16 @@ public abstract class AbstractDynamicReport_Base
     }
 
     /**
+     * Getter method for the instance variable {@link #reportTemplate}.
+     *
+     * @return value of instance variable {@link #reportTemplate}
+     */
+    public ReportTemplateBuilder getStyleTemplate()
+    {
+        return this.reportTemplate;
+    }
+
+    /**
      * @param _parameter    Parameter as passed by the eFaps API
      * @return html document as String
      * @throws EFapsException on error
@@ -379,7 +599,8 @@ public abstract class AbstractDynamicReport_Base
                 final String template = String.valueOf(properties.get("Template"));
 
                 final JasperReportBuilder subreport = DynamicReports.report();
-                configure4Pdf(_parameter, subreport);
+                configure4Pdf(_parameter);
+                subreport.setTemplate(getStyleTemplate());
                 addColumnDefintion(_parameter, subreport);
 
                 final SubreportBuilder sub = DynamicReports.cmp.subreport(subreport);
@@ -402,7 +623,8 @@ public abstract class AbstractDynamicReport_Base
 
             file = new FileUtil().getFile(getFileName() == null ? "PDF" : getFileName(), "pdf");
             final JasperPdfExporterBuilder exporter = Exporters.pdfExporter(file);
-            configure4Pdf(_parameter, getReport());
+            configure4Pdf(_parameter);
+            getReport().setTemplate(getStyleTemplate());
 
             getReport().toPdf(exporter);
         } catch (final DRException e) {
@@ -426,7 +648,8 @@ public abstract class AbstractDynamicReport_Base
             if (properties.get("Template") != null) {
                 final String template = String.valueOf(properties.get("Template"));
                 final JasperReportBuilder subreport = DynamicReports.report();
-                configure4Excel(_parameter, subreport);
+                configure4Excel(_parameter);
+                subreport.setTemplate(getStyleTemplate());
                 addColumnDefintion(_parameter, subreport);
 
                 final SubreportBuilder sub = DynamicReports.cmp.subreport(subreport);
@@ -455,7 +678,8 @@ public abstract class AbstractDynamicReport_Base
                     .setIgnoreCellBackground(true)
                     .setWhitePageBackground(false)
                     .setRemoveEmptySpaceBetweenColumns(true);
-            configure4Excel(_parameter, getReport());
+            configure4Excel(_parameter);
+            getReport().setTemplate(getStyleTemplate());
 
             getReport().toXls(exporter);
         } catch (final DRException e) {
@@ -502,6 +726,7 @@ public abstract class AbstractDynamicReport_Base
             }
             exporter.setIgnorePageMargins(true).setSizeUnit(SizeUnit.PIXEL);
             configure4Html(_parameter);
+            getReport().setTemplate(getStyleTemplate());
             getReport().setLocale(Context.getThreadContext().getLocale())
                 .setDataSource(createDataSource(_parameter)).toXhtml(exporter);
         } catch (final DRException e) {
