@@ -69,8 +69,14 @@ import org.slf4j.LoggerFactory;
 @EFapsRevision("$Rev$")
 public abstract class AbstractDynamicReport_Base
 {
+    /**
+     * ExportType enum.
+     */
     public enum ExportType
     {
+        /**
+         * PDF, EXCEL, HTML.
+         */
         PDF, EXCEL, HTML;
     }
 
@@ -94,6 +100,9 @@ public abstract class AbstractDynamicReport_Base
      */
     private String fileName;
 
+    /**
+     * Current ExportType.
+     */
     private ExportType exType;
 
     /**
@@ -114,14 +123,16 @@ public abstract class AbstractDynamicReport_Base
             .setCrosstabCellStyle(getCrossTabCellStyle4Html(_parameter))
             .setCrosstabGroupTotalStyle(getCrossTabGroupTotalStyle4Html(_parameter))
             .setCrosstabGrandTotalStyle(getCrossTabGrandTotalStyle4Html(_parameter))
-            .setIgnorePageWidth(true).setIgnorePagination(true).setHighlightDetailEvenRows(true);
+            .setIgnorePageWidth(true)
+            .setIgnorePagination(true)
+            .setCrosstabHighlightEvenRows(true)
+            .setHighlightDetailEvenRows(true);
     }
 
     /**
      * Get the style for the columns in case of a excel document.
      *
      * @param _parameter Parameter as passed by the eFaps API
-     * @param _builder builder to add to
      * @throws EFapsException on error
      */
     protected void configure4Excel(final Parameter _parameter)
@@ -143,7 +154,6 @@ public abstract class AbstractDynamicReport_Base
      * Get the style for the columns in case of a pdf document.
      *
      * @param _parameter Parameter as passed by the eFaps API
-     * @param _builder buidler to be used
      * @throws EFapsException on error
      *
      */
@@ -159,7 +169,10 @@ public abstract class AbstractDynamicReport_Base
             .setCrosstabCellStyle(getCrossTabCellStyle4Pdf(_parameter))
             .setCrosstabGroupTotalStyle(getCrossTabGroupTotalStyle4Pdf(_parameter))
             .setCrosstabGrandTotalStyle(getCrossTabGrandTotalStyle4Pdf(_parameter))
-            .setIgnorePageWidth(false).setIgnorePagination(false).setHighlightDetailEvenRows(true);
+            .setIgnorePageWidth(false)
+            .setIgnorePagination(false)
+            .setHighlightDetailEvenRows(true)
+            .setCrosstabHighlightEvenRows(true);
     }
 
     /**

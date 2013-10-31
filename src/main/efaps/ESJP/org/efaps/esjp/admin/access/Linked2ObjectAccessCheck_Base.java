@@ -68,6 +68,7 @@ public abstract class Linked2ObjectAccessCheck_Base
         throws EFapsException
     {
         boolean ret = false;
+        // for create the accesscheck is send directly to SimpleAccessCheckOnType
         if (AccessTypeEnums.CREATE.getAccessType().equals(_accessType)) {
             final SimpleAccessCheckOnType accessCheck = new SimpleAccessCheckOnType();
             ret = accessCheck.checkAccess(_parameter, _instance, _accessType);
