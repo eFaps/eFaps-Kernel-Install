@@ -247,9 +247,9 @@ public abstract class Field_Base
         final Return ret = new Return();
         final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
         if (uiObject instanceof FieldValue) {
-            final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-            if (properties.containsKey("Enum")) {
-                final String enumName = (String) properties.get("Enum");
+            final String enumName = getProperty(_parameter, "Enum");
+            if (enumName != null) {
+                final boolean orderByOrdinal = "true".equalsIgnoreCase(getProperty(_parameter, "OrderByOrdinal"));
                 try {
                     final Class<?> enumClazz = Class.forName(enumName);
                     if (enumClazz.isEnum()) {
@@ -266,7 +266,8 @@ public abstract class Field_Base
                             int i = 0;
                             for (final Object con : consts) {
                                 final String label = DBProperties.getProperty(enumName + "." + con.toString());
-                                final DropDownPosition pos = new DropDownPosition(i, label, label);
+                                final DropDownPosition pos = new DropDownPosition(i, label, orderByOrdinal
+                                                ? new Integer(i) : label);
                                 values.add(pos);
                                 pos.setSelected(i == ordinal);
                                 i++;

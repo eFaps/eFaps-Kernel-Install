@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.NumberFormat;
 
+import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
@@ -82,7 +83,8 @@ public abstract class FileUtil_Base
             if (!userFolder.exists()) {
                 userFolder.mkdirs();
             }
-            ret = new File(userFolder,  _name.replaceAll("[^a-zA-Z0-9.-]", "_"));
+            final String name = StringUtils.stripAccents(_name);
+            ret = new File(userFolder,  name.replaceAll("[^a-zA-Z0-9.-]", "_"));
         } catch (final IOException e) {
             throw new EFapsException(FileUtil_Base.class, "IOException", e);
         }
