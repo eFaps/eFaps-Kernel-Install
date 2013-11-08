@@ -23,6 +23,7 @@ package org.efaps.esjp.admin.access;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Properties;
 
 import org.efaps.admin.access.AccessTypeEnums;
 import org.efaps.admin.common.SystemConfiguration;
@@ -246,6 +247,30 @@ public abstract class AccessCheck4UI_Base
         return ret;
     }
 
+    /**
+     * Method is used to control access based on a ObjectSystemConfiguration.
+     *
+     * @param _parameter Parameter as passed from eFaps to an esjp
+     * @return Return with True if VIEW, else false
+     * @throws EFapsException on error
+     */
+    public Return configObjectCheck(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Instance instance = _parameter.getInstance();
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final SystemConfiguration config = SystemConfiguration.get((String) props.get("SystemConfig"));
+        if (config != null && instance.isValid()) {
+            final Properties properties = config.getObjectAttributeValueAsProperties(instance);
+            final Boolean access = Boolean.valueOf((String) properties.get(props.get("Key")));
+            final boolean inverse = "true".equalsIgnoreCase((String) props.get("Inverse"));
+            if ((!inverse && access) || (inverse && !access)) {
+                ret.put(ReturnValues.TRUE, true);
+            }
+        }
+        return ret;
+    }
 
     /**
      * Method is used to control access based on a list of given Roles.
