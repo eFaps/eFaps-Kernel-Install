@@ -49,7 +49,7 @@ public abstract class AbstractCommon_Base
     /**
      * Regex for testing a UUID for valid.
      */
-    public static final String UUID_REGEX = "[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}";
+    public static final String UUID_REGEX = "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}";
 
     /**
      * Search for the given Property and returns a tree map with the found values.<br/>
