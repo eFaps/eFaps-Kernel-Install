@@ -608,7 +608,7 @@ public abstract class AbstractDynamicReport_Base
         File file = null;
         this.exType = ExportType.PDF;
         try {
-            if (properties.get("Template") != null) {
+            if (properties.containsKey("Template")) {
                 final String template = String.valueOf(properties.get("Template"));
 
                 final JasperReportBuilder subreport = DynamicReports.report();
@@ -628,10 +628,17 @@ public abstract class AbstractDynamicReport_Base
                 ds.init(getReport().toJasperReport(), _parameter, null, getReport().getJasperParameters());
 
                 getReport().setLocale(Context.getThreadContext().getLocale()).setDataSource(ds);
+            } else if (properties.containsKey("TemplateDesign4PDF")) {
+                final String template = String.valueOf(properties.get("TemplateDesign4PDF"));
+                final InputStream in = getTemplate(_parameter, template);
+                getReport().setTemplateDesign(in);
+                addColumnDefintion(_parameter, getReport());
+                getReport().setLocale(Context.getThreadContext().getLocale())
+                                .setDataSource(createDataSource(_parameter));
             } else {
                 addColumnDefintion(_parameter, getReport());
                 getReport().setLocale(Context.getThreadContext().getLocale())
-                            .setDataSource(createDataSource(_parameter));
+                                .setDataSource(createDataSource(_parameter));
             }
 
             file = new FileUtil().getFile(getFileName() == null ? "PDF" : getFileName(), "pdf");
@@ -678,6 +685,13 @@ public abstract class AbstractDynamicReport_Base
 
                 getReport().setLocale(Context.getThreadContext().getLocale())
                     .setDataSource(ds);
+            }   else if (properties.containsKey("TemplateDesign4XLS")) {
+                final String template = String.valueOf(properties.get("TemplateDesign4XLS"));
+                final InputStream in = getTemplate(_parameter, template);
+                getReport().setTemplateDesign(in);
+                addColumnDefintion(_parameter, getReport());
+                getReport().setLocale(Context.getThreadContext().getLocale())
+                                .setDataSource(createDataSource(_parameter));
             } else {
                 addColumnDefintion(_parameter, getReport());
                 getReport().setLocale(Context.getThreadContext().getLocale())
