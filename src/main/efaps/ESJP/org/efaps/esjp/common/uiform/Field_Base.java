@@ -56,6 +56,7 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.CacheReloadException;
 import org.efaps.util.cache.InfinispanCache;
 import org.infinispan.Cache;
 import org.joda.time.DateTime;
@@ -508,6 +509,76 @@ public abstract class Field_Base
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return Return containing Html Snipplet
+     * @throws EFapsException on error
+     */
+    public Return getClassificationDropDownFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final StringBuilder html = new StringBuilder();
+        final FieldValue fieldvalue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        if (Display.EDITABLE.equals(fieldvalue.getDisplay())) {
+            final Map<Integer, String> rootClasses = analyseProperty(_parameter, "Classification");
+            final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
+            final List<Classification> clazzList = new ArrayList<Classification>();
+            for (final String clazzName : rootClasses.values()) {
+                final Classification clazz;
+                if (isUUID(clazzName)) {
+                    clazz = Classification.get(UUID.fromString(clazzName));
+                } else {
+                    clazz = Classification.get(clazzName);
+                }
+                clazzList.add(clazz);
+                clazzList.addAll(getChildClassifications(clazz));
+            }
+            for (final Classification clazz : clazzList) {
+                Classification tmp = clazz;
+                String label = tmp.getLabel();
+                while (tmp.getParentClassification() != null) {
+                    tmp = tmp.getParentClassification();
+                    label = tmp.getLabel() + " - " + label;
+                }
+                final DropDownPosition pos = new DropDownPosition(clazz.getId(), label, label);
+                positions.add(pos);
+                if (Long.valueOf(clazz.getId()).equals(fieldvalue.getValue())) {
+                    pos.setSelected(true);
+                }
+            }
+            Collections.sort(positions, new Comparator<DropDownPosition>()
+            {
+                @SuppressWarnings("unchecked")
+                @Override
+                public int compare(final DropDownPosition _o1,
+                                   final DropDownPosition _o2)
+                {
+                    return _o1.getOrderValue().compareTo(_o2.getOrderValue());
+                }
+            });
+            html.append(getDropDownField(_parameter, positions));
+        }
+        ret.put(ReturnValues.SNIPLETT, html.toString());
+        return ret;
+    }
+
+    /**
+     * Get the list of child classifications.
+     * @param _parent parent classification
+     * @return list of classifications
+     * @throws CacheReloadException on error
+     */
+    protected List<Classification> getChildClassifications(final Classification _parent)
+        throws CacheReloadException
+    {
+        final List<Classification> ret = new ArrayList<Classification>();
+        for (final Classification child : _parent.getChildClassifications()) {
+            ret.addAll(getChildClassifications(child));
+            ret.add(child);
+        }
+        return ret;
+    }
     /**
      * @param _parameter    Parameter as passed from the eFaps API
      * @return Return containing Html Snipplet
