@@ -34,6 +34,7 @@ import net.sf.jasperreports.engine.JasperReport;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.util.EFapsException;
 
 
@@ -46,6 +47,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("02c64d22-161b-4e99-9614-c34a23fbea77")
 @EFapsRevision("$Rev$")
 public abstract class EFapsMapDataSource_Base
+    extends AbstractCommon
     implements IeFapsDataSource
 {
     /**
@@ -76,7 +78,6 @@ public abstract class EFapsMapDataSource_Base
 
     }
 
-
     /**
      * Getter method for the instance variable {@link #iter}.
      *
@@ -86,7 +87,6 @@ public abstract class EFapsMapDataSource_Base
     {
         return this.iter;
     }
-
 
     /**
      * Setter method for instance variable {@link #iter}.
@@ -99,7 +99,6 @@ public abstract class EFapsMapDataSource_Base
         this.iter = _iter;
     }
 
-
     /**
      * Getter method for the instance variable {@link #current}.
      *
@@ -109,7 +108,6 @@ public abstract class EFapsMapDataSource_Base
     {
         return this.current;
     }
-
 
     /**
      * Setter method for instance variable {@link #current}.
@@ -121,7 +119,6 @@ public abstract class EFapsMapDataSource_Base
     {
         this.current = _current;
     }
-
 
     /**
      * Getter method for the instance variable {@link #values}.
@@ -138,6 +135,7 @@ public abstract class EFapsMapDataSource_Base
      * @return true if a next value exist, else false
      * @throws JRException on error
      */
+    @Override
     public boolean next()
         throws JRException
     {
@@ -157,7 +155,9 @@ public abstract class EFapsMapDataSource_Base
      * @return value for the given field
      * @throws JRException on error
      */
-    public Object getFieldValue(final JRField _field) throws JRException
+    @Override
+    public Object getFieldValue(final JRField _field)
+        throws JRException
     {
         Object ret = null;
         final String key = _field.getPropertiesMap().getProperty("Key");
