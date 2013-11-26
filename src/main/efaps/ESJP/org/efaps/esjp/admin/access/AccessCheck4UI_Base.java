@@ -24,6 +24,7 @@ package org.efaps.esjp.admin.access;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
+import java.util.UUID;
 
 import org.efaps.admin.access.AccessTypeEnums;
 import org.efaps.admin.common.SystemConfiguration;
@@ -37,6 +38,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.admin.ui.field.Field;
+import org.efaps.admin.user.Company;
 import org.efaps.admin.user.Role;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
@@ -290,6 +292,36 @@ public abstract class AccessCheck4UI_Base
             final Role aRol = Role.get(role);
             if (aRol != null) {
                 final boolean assigned = Context.getThreadContext().getPerson().isAssigned(aRol);
+                if (assigned) {
+                    ret.put(ReturnValues.TRUE, true);
+                    break;
+                }
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * Method is used to control access based on a list of given Companies.
+     *
+     * @param _parameter Parameter as passed from eFaps to an esjp
+     * @return Return with True if VIEW, else false
+     * @throws EFapsException on error
+     */
+    public Return companyCheck(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Map<Integer, String> companies = analyseProperty(_parameter, "Companies");
+        for (final String companyStr : companies.values()) {
+            Company company;
+            if (isUUID(companyStr)) {
+                company = Company.get(UUID.fromString(companyStr));
+            } else {
+                company = Company.get(companyStr);
+            }
+            if (company != null) {
+                final boolean assigned = company.equals(Context.getThreadContext().getCompany());
                 if (assigned) {
                     ret.put(ReturnValues.TRUE, true);
                     break;
