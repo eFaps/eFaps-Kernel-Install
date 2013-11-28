@@ -64,6 +64,8 @@
             import org.efaps.db.Context;
             import org.efaps.db.Update;
             import org.efaps.db.Insert;
+            import org.efaps.db.QueryBuilder;
+            import org.efaps.db.InstanceQuery;
 
             EFAPS_LOGGER.info("    Update '" + EFAPS_USERNAME + "' Password");
             Context.getThreadContext().getPerson().setPassword(EFAPS_PASSWORD);
@@ -93,6 +95,22 @@
             insert.add("ExchangeSystemID", 0);
             insert.add("ExchangeID", 0);
             insert.executeWithoutAccessCheck();
+            
+            
+            EFAPS_LOGGER.info("    Create JAASKEY for User Administrator");
+            //Admin_User_JAASSystem
+            final QueryBuilder queryBldr3 = new QueryBuilder(UUID.fromString("28e45c59-946d-4502-94b9-58a1bf23ab88"));
+            queryBldr3.addWhereAttrEqValue("UUID", "878a1347-a5f3-4a68-a9a4-d214e3570a62");
+            final InstanceQuery query3 = queryBldr3.getQuery();
+            query3.executeWithoutAccessCheck();
+            if (query3.next()) {
+                //Admin_User_JAASKey
+                insert = new Insert(UUID.fromString("0e7650c6-8ec3-4c63-b377-f3eb5fb85f16"));
+                insert.add("Key", "Administrator");
+                insert.add("UserLink", 1);
+                insert.add("JAASSystemLink", query3.getCurrentValue());
+                insert.executeWithoutTrigger();
+            }
         </script>
     </version>
     <version number="6" compile="true">
