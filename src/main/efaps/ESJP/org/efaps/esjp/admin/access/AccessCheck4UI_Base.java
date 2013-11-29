@@ -23,6 +23,7 @@ package org.efaps.esjp.admin.access;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -37,6 +38,7 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractCommand;
+import org.efaps.admin.ui.Command;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.admin.user.Company;
 import org.efaps.admin.user.Role;
@@ -328,6 +330,43 @@ public abstract class AccessCheck4UI_Base
                 }
             }
         }
+        return ret;
+    }
+
+    /**
+     * Method is used to control access based on a checks to commands.
+     *
+     * @param _parameter Parameter as passed from  the eFaps API.
+     * @return Return with True if VIEW, else false
+     * @throws EFapsException on error
+     */
+    public Return check4Cmd(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+
+        final Command cmd = (Command) _parameter.get(ParameterValues.CALL_CMD);
+        final Map<Integer, String> cmdUUIDs = analyseProperty(_parameter, "CmdUUID");
+        final boolean inverse = "true".equalsIgnoreCase(getProperty(_parameter, "Inverse"));
+
+        if (cmdUUIDs.isEmpty() && !inverse) {
+            ret.put(ReturnValues.TRUE, true);
+        } else {
+            Boolean access = null;
+            for (final Entry<Integer, String> cmdUUID : cmdUUIDs.entrySet()) {
+                if (isUUID(cmdUUID.getValue())) {
+                    final UUID uuid = UUID.fromString(cmdUUID.getValue());
+                    if (cmd.getUUID().equals(uuid)) {
+                        access = true;
+                        break;
+                    }
+                }
+            }
+            if ((access == null && inverse) || (access && !inverse)) {
+                ret.put(ReturnValues.TRUE, true);
+            }
+        }
+
         return ret;
     }
 }
