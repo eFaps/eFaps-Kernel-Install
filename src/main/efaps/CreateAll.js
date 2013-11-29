@@ -185,7 +185,7 @@ function _eFapsCreateInsertType(_stmt, _text, _uuid, _name, _parentType, _purpos
   return ret;
 }
 
-function _eFapsCreateInsertAttr(_stmt, _tableId, _typeId, _name, _sqlColumn, _attrType, _typeLink)  {
+function _eFapsCreateInsertAttr(_stmt, _tableId, _typeId, _name, _sqlColumn, _attrType, _typeLink, _className)  {
   // get if for type 'Admin_DataModel_Attribute'
   var rs = _stmt.executeQuery("select ID from T_CMABSTRACT where NAME='Admin_DataModel_Attribute'");
   var typeIdAttr = "-22000";
@@ -213,7 +213,14 @@ function _eFapsCreateInsertAttr(_stmt, _tableId, _typeId, _name, _sqlColumn, _at
                     "T_CMABSTRACT",
                     "TYPEID,NAME,REVISION,CREATOR,CREATED,MODIFIER,MODIFIED",
                     typeIdAttr + ", '" + _name + "', '', 1," + CURRENT_TIMESTAMP + ",1," + CURRENT_TIMESTAMP);
-  _exec(_stmt, null, null, "insert into T_DMATTRIBUTE (ID, DMTABLE, DMTYPE, DMATTRIBUTETYPE, DMTYPELINK, SQLCOLUMN ) values  (" + ret + ", " + _tableId + ", " + _typeId + ",  " + attrTypeId + ", " + typeLinkId + ", '" + _sqlColumn + "')");
+  
+  sql = "insert into T_DMATTRIBUTE (ID, DMTABLE, DMTYPE, DMATTRIBUTETYPE, DMTYPELINK, SQLCOLUMN, CLASSNAME) values  (" + ret + ", " + _tableId + ", " + _typeId + ",  " + attrTypeId + ", " + typeLinkId + ", '" + _sqlColumn + "',";
+  if (_className != null) {
+      sql = sql + "'" + _className + "')";
+  } else {
+      sql = sql + _className + ")";
+  }
+  _exec(_stmt, null, null, sql);
   return ret;
 }
 
@@ -527,11 +534,13 @@ function _eFapsCreateDataModelTablesStep1()  {
   _eFapsCreateAttrType(stmt, null, '5a11337b-ec0b-4707-88d0-2f48217573cb', 'StringWithUoM',  'org.efaps.admin.datamodel.attributetype.StringWithUoMType',  'org.efaps.admin.datamodel.ui.StringWithUoMUI',  null, null);
   _eFapsCreateAttrType(stmt, null, '15e59dde-b79f-43d6-8b95-226c850af401', 'ConsortiumLink', 'org.efaps.admin.datamodel.attributetype.ConsortiumLinkType', 'org.efaps.admin.datamodel.ui.UserUI',           null, 1   );
   _eFapsCreateAttrType(stmt, null, 'a48538dd-5d9b-468f-a84f-bf42791eed66', 'GroupLink',      'org.efaps.admin.datamodel.attributetype.GroupLinkType',      'org.efaps.admin.datamodel.ui.UserUI',           null, 1   );
+  _eFapsCreateAttrType(stmt, null, 'b7c6a324-5dec-425f-b778-fa8fabf80202', 'Enum',           'org.efaps.admin.datamodel.attributetype.EnumType',           'org.efaps.admin.datamodel.ui.EnumUI',           null, null);
+  _eFapsCreateAttrType(stmt, null, 'a9b1abde-d58d-4aea-8cdc-f2870111f1cd', 'BitEnum',        'org.efaps.admin.datamodel.attributetype.BitEnumType',        'org.efaps.admin.datamodel.ui.BitEnumUI',        null, null);
 
-  _eFapsCreateInsertAttr(stmt, ATTRTYPESQLTABLEID, ATTRTYPETYPEID, 'Classname',     'CLASSNAME',    'String', null);
-  _eFapsCreateInsertAttr(stmt, ATTRTYPESQLTABLEID, ATTRTYPETYPEID, 'ClassnameUI',   'CLASSNAMEUI',  'String', null);
-  _eFapsCreateInsertAttr(stmt, ATTRTYPESQLTABLEID, ATTRTYPETYPEID, 'AlwaysUpdate',  'ALWAYSUPDATE', 'Boolean', null);
-  _eFapsCreateInsertAttr(stmt, ATTRTYPESQLTABLEID, ATTRTYPETYPEID, 'CreateUpdate',  'CREATEUPDATE', 'Boolean', null);
+  _eFapsCreateInsertAttr(stmt, ATTRTYPESQLTABLEID, ATTRTYPETYPEID, 'Classname',     'CLASSNAME',    'String', null, null);
+  _eFapsCreateInsertAttr(stmt, ATTRTYPESQLTABLEID, ATTRTYPETYPEID, 'ClassnameUI',   'CLASSNAMEUI',  'String', null, null);
+  _eFapsCreateInsertAttr(stmt, ATTRTYPESQLTABLEID, ATTRTYPETYPEID, 'AlwaysUpdate',  'ALWAYSUPDATE', 'Boolean', null, null);
+  _eFapsCreateInsertAttr(stmt, ATTRTYPESQLTABLEID, ATTRTYPETYPEID, 'CreateUpdate',  'CREATEUPDATE', 'Boolean', null, null);
 
   conRsrc.commit();
 }
@@ -550,10 +559,10 @@ function _eFapsCreateDataModelTablesStep2()  {
 
   text = "Insert Type for 'Admin_DataModel_SQLTable'";
   var typeIdSQLTable = _eFapsCreateInsertType(stmt, text, "ebf29cc2-cf42-4cd0-9b6e-92d9b644062b", "Admin_DataModel_SQLTable", "Admin_Abstract", 8);
-  _eFapsCreateInsertAttr(stmt, sqlTableIdSQLTable, typeIdSQLTable, 'SQLTable',         'SQLTABLE',         'String', null);
-  _eFapsCreateInsertAttr(stmt, sqlTableIdSQLTable, typeIdSQLTable, 'SQLColumnID',      'SQLCOLUMNID',      'String', null);
-  _eFapsCreateInsertAttr(stmt, sqlTableIdSQLTable, typeIdSQLTable, 'SQLColumnType',    'SQLCOLUMNTYPE',    'String', null);
-  _eFapsCreateInsertAttr(stmt, sqlTableIdSQLTable, typeIdSQLTable, 'DMTableMain',      'DMTABLEMAIN',      'Link', "Admin_DataModel_SQLTable");
+  _eFapsCreateInsertAttr(stmt, sqlTableIdSQLTable, typeIdSQLTable, 'SQLTable',         'SQLTABLE',         'String', null, null);
+  _eFapsCreateInsertAttr(stmt, sqlTableIdSQLTable, typeIdSQLTable, 'SQLColumnID',      'SQLCOLUMNID',      'String', null, null);
+  _eFapsCreateInsertAttr(stmt, sqlTableIdSQLTable, typeIdSQLTable, 'SQLColumnType',    'SQLCOLUMNTYPE',    'String', null, null);
+  _eFapsCreateInsertAttr(stmt, sqlTableIdSQLTable, typeIdSQLTable, 'DMTableMain',      'DMTABLEMAIN',      'Link', "Admin_DataModel_SQLTable", null);
 
   _exec(stmt, "Update type id for sql tables",
               null, "update T_CMABSTRACT set TYPEID=" + typeIdSQLTable + " where TYPEID=-20000");
@@ -566,8 +575,8 @@ function _eFapsCreateDataModelTablesStep2()  {
 
   text = "Insert Type for 'Admin_DataModel_Type'";
   var typeIdType = _eFapsCreateInsertType(stmt, text, "8770839d-60fd-4bb4-81fd-3903d4c916ec", "Admin_DataModel_Type", "Admin_Abstract", 8);
-  _eFapsCreateInsertAttr(stmt, sqlTableIdType, typeIdType, 'ParentClassType',  'PARENTCLASSDMTYPE', 'Link', "Admin_DataModel_Type");
-  _eFapsCreateInsertAttr(stmt, sqlTableIdType, typeIdType, 'ParentType',       'PARENTDMTYPE',      'Link', "Admin_DataModel_Type");
+  _eFapsCreateInsertAttr(stmt, sqlTableIdType, typeIdType, 'ParentClassType',  'PARENTCLASSDMTYPE', 'Link', "Admin_DataModel_Type", null);
+  _eFapsCreateInsertAttr(stmt, sqlTableIdType, typeIdType, 'ParentType',       'PARENTDMTYPE',      'Link', "Admin_DataModel_Type", null);
 
   _exec(stmt, "Update type id for types",
               null, "update T_CMABSTRACT set TYPEID=" + typeIdType + " where TYPEID=-21000");
@@ -580,12 +589,12 @@ function _eFapsCreateDataModelTablesStep2()  {
 
   text = "Insert Type for 'Admin_DataModel_Attribute'";
   var typeIdAttr = _eFapsCreateInsertType(stmt, text, "518a9802-cf0e-4359-9b3c-880f71e1387f", "Admin_DataModel_Attribute", "Admin_Abstract", 8);
-  _eFapsCreateInsertAttr(stmt, sqlTableIdAttr, typeIdAttr, 'Table',             'DMTABLE',         'Link', "Admin_DataModel_SQLTable");
-  _eFapsCreateInsertAttr(stmt, sqlTableIdAttr, typeIdAttr, 'ParentType',        'DMTYPE',          'Link', "Admin_DataModel_Type");
-  _eFapsCreateInsertAttr(stmt, sqlTableIdAttr, typeIdAttr, 'AttributeType',     'DMATTRIBUTETYPE', 'Link', "Admin_DataModel_AttributeType");
-  _eFapsCreateInsertAttr(stmt, sqlTableIdAttr, typeIdAttr, 'TypeLink',          'DMTYPELINK',      'Link', "Admin_DataModel_Type");
-  _eFapsCreateInsertAttr(stmt, sqlTableIdAttr, typeIdAttr, 'SQLColumn',         'SQLCOLUMN',       'String', null);
-  _eFapsCreateInsertAttr(stmt, sqlTableIdAttr, typeIdAttr, 'DefaultValue',      'DEFAULTVAL',      'String', null);
+  _eFapsCreateInsertAttr(stmt, sqlTableIdAttr, typeIdAttr, 'Table',             'DMTABLE',         'Link', "Admin_DataModel_SQLTable", null);
+  _eFapsCreateInsertAttr(stmt, sqlTableIdAttr, typeIdAttr, 'ParentType',        'DMTYPE',          'Link', "Admin_DataModel_Type", null);
+  _eFapsCreateInsertAttr(stmt, sqlTableIdAttr, typeIdAttr, 'AttributeType',     'DMATTRIBUTETYPE', 'Link', "Admin_DataModel_AttributeType", null);
+  _eFapsCreateInsertAttr(stmt, sqlTableIdAttr, typeIdAttr, 'TypeLink',          'DMTYPELINK',      'Link', "Admin_DataModel_Type", null);
+  _eFapsCreateInsertAttr(stmt, sqlTableIdAttr, typeIdAttr, 'SQLColumn',         'SQLCOLUMN',       'String', null, null);
+  _eFapsCreateInsertAttr(stmt, sqlTableIdAttr, typeIdAttr, 'DefaultValue',      'DEFAULTVAL',      'String', null, null);
 
   _exec(stmt, "Update type id for attributes",
               null, "update T_CMABSTRACT set TYPEID=" + typeIdAttr + " where TYPEID=-22000");
@@ -605,11 +614,11 @@ function _eFapsCreateDataModelTablesStep2()  {
 
   text = "Insert Type for 'Admin_Common_Property'";
   var typeIdProp = _eFapsCreateInsertType(stmt, text, "f3d54a86-c323-43d8-9c78-284d61d955b3", "Admin_Common_Property", null, 8);
-  _eFapsCreateInsertAttr(stmt, sqlTableIdProp, typeIdProp, 'OID',              'ID',               'OID',      null);
-  _eFapsCreateInsertAttr(stmt, sqlTableIdProp, typeIdProp, 'ID',               'ID',               'Integer',  null);
-  _eFapsCreateInsertAttr(stmt, sqlTableIdProp, typeIdProp, 'Name',             'NAME',             'String',   null);
-  _eFapsCreateInsertAttr(stmt, sqlTableIdProp, typeIdProp, 'Value',            'VALUE',            'String',   null);
-  _eFapsCreateInsertAttr(stmt, sqlTableIdProp, typeIdProp, 'Abstract',         'ABSTRACT',         'Link',     "Admin_Abstract");
+  _eFapsCreateInsertAttr(stmt, sqlTableIdProp, typeIdProp, 'OID',              'ID',               'OID',      null, null);
+  _eFapsCreateInsertAttr(stmt, sqlTableIdProp, typeIdProp, 'ID',               'ID',               'Integer',  null, null);
+  _eFapsCreateInsertAttr(stmt, sqlTableIdProp, typeIdProp, 'Name',             'NAME',             'String',   null, null);
+  _eFapsCreateInsertAttr(stmt, sqlTableIdProp, typeIdProp, 'Value',            'VALUE',            'String',   null, null);
+  _eFapsCreateInsertAttr(stmt, sqlTableIdProp, typeIdProp, 'Abstract',         'ABSTRACT',         'Link',     "Admin_Abstract", null);
 
   conRsrc.commit();
 }
@@ -627,17 +636,17 @@ function _eFapsCreateCommonTablesStep2()  {
 
   text = "Insert Type for 'Admin_Abstract'";
   var typeIdAbstract = _eFapsCreateInsertType(stmt, text, "2a869f46-0ec7-4afb-98e7-8b1125e1c43c", "Admin_Abstract",        null, 1);
-  _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'Type',             'TYPEID',           'Type',         null);
-  _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'OID',              'TYPEID,ID',        'OID',          null);
-  _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'ID',               'ID',               'Long',         null);
-  _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'Creator',          'CREATOR',          'CreatorLink',  null);
-  _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'Created',          'CREATED',          'Created',      null);
-  _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'Modifier',         'MODIFIER',         'ModifierLink', null);
-  _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'Modified',         'MODIFIED',         'Modified',     null);
-  _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'Name',             'NAME',             'String',       null);
-  _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'UUID',             'UUID',             'String',       null);
-  _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'Revision',         'REVISION',         'String',       null);
-  _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'Purpose',          'PURPOSE',          'Integer',      null);
+  _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'Type',             'TYPEID',           'Type',         null, null);
+  _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'OID',              'TYPEID,ID',        'OID',          null, null);
+  _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'ID',               'ID',               'Long',         null, null);
+  _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'Creator',          'CREATOR',          'CreatorLink',  null, null);
+  _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'Created',          'CREATED',          'Created',      null, null);
+  _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'Modifier',         'MODIFIER',         'ModifierLink', null, null);
+  _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'Modified',         'MODIFIED',         'Modified',     null, null);
+  _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'Name',             'NAME',             'String',       null, null);
+  _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'UUID',             'UUID',             'String',       null, null);
+  _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'Revision',         'REVISION',         'String',       null, null);
+  _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'Purpose',          'PURPOSE',          'BitEnum',      null, "org.efaps.admin.datamodel.Type$Purpose");
 
   /////////////////////////////////////////
   // update attribute types

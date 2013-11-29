@@ -83,7 +83,11 @@
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
-        <field name="ParentClassType">
+         <field name="purpose">
+            <property name="Label">Admin_DataModel_Type/Purpose.Label</property>
+            <property name="Attribute">Purpose</property>                        
+        </field>
+        <field name="parentClassType">
             <property name="SelectAlternateOID">linkto[ParentClassType].oid</property>
             <property name="Select">linkto[ParentClassType].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
@@ -91,7 +95,7 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="ShowTypeIcon">true</property>
         </field>
-        <field name="ParentType">
+        <field name="parentType">
             <property name="SelectAlternateOID">linkto[ParentType].oid</property>
             <property name="Select">linkto[ParentType].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
