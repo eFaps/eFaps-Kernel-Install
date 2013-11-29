@@ -373,7 +373,7 @@
             if (!query.next()) {
                 //Admin_User_RoleGlobal
                 final QueryBuilder queryBldr2 = new QueryBuilder(UUID.fromString("e4d6ecbe-f198-4f84-aa69-5a9fd3165112"));
-                queryBldr2.addWhereAttrEqValue("UUID", "140ed35c-d07b-4856-8fee-99b297dfb686");
+                queryBldr2.addWhereAttrEqValue("UUID", "2c101471-43e3-4c97-9045-f48f5b12b6ed");
                 final InstanceQuery query2 = queryBldr2.getQuery();
                 query2.executeWithoutAccessCheck();
                 //Admin_User_JAASSystem
@@ -400,7 +400,7 @@
             if (!query.next()) {
                 //Admin_User_RoleGlobal
                 final QueryBuilder queryBldr2 = new QueryBuilder(UUID.fromString("e4d6ecbe-f198-4f84-aa69-5a9fd3165112"));
-                queryBldr2.addWhereAttrEqValue("UUID", "2c101471-43e3-4c97-9045-f48f5b12b6ed");
+                queryBldr2.addWhereAttrEqValue("UUID", "140ed35c-d07b-4856-8fee-99b297dfb686");
                 final InstanceQuery query2 = queryBldr2.getQuery();
                 query2.executeWithoutAccessCheck();
                 //Admin_User_JAASSystem
