@@ -37,6 +37,7 @@ import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.attributetype.AbstractFileType;
 import org.efaps.admin.datamodel.attributetype.RateType;
+import org.efaps.admin.datamodel.ui.BitEnumUI;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.EventDefinition;
 import org.efaps.admin.event.EventExecution;
@@ -175,13 +176,13 @@ public abstract class Edit_Base
             final Update update = new Update(_instance);
             for (final Field field : fields) {
                 if (context.getParameters().containsKey(field.getName())) {
-                    final String newValue = context.getParameter(field.getName());
+                    final String[] newValue = _parameter.getParameterValues(field.getName());
                     final String attrName = field.getAttribute();
                     final Object object = print.getAttribute(attrName);
                     final String oldValue = object != null ? object.toString() : null;
                     if (!newValue.equals(oldValue)) {
                         final Attribute attr = _instance.getType().getAttribute(attrName);
-                        add2Update(update, attr, field.getName());
+                        add2Update(_parameter, update, attr, field.getName());
                     }
                 }
             }
@@ -200,22 +201,25 @@ public abstract class Edit_Base
      * @param _fieldName name of the Field
      * @throws EFapsException on error
      */
-    protected void add2Update(final Update _update,
+    protected void add2Update(final Parameter _parameter,
+                              final Update _update,
                               final Attribute _attr,
                               final String _fieldName)
         throws EFapsException
     {
         final Context context = Context.getThreadContext();
         if (_attr.hasUoM()) {
-            _update.add(_attr, new Object[] { context.getParameter(_fieldName),
-                            context.getParameter(_fieldName + "UoM") });
+            _update.add(_attr, new Object[] { _parameter.getParameterValue(_fieldName),
+                            _parameter.getParameterValue(_fieldName + "UoM") });
         } else if (_attr.getAttributeType().getDbAttrType() instanceof RateType) {
-            final String value = context.getParameter(_fieldName);
+            final String value =  _parameter.getParameterValue(_fieldName);
             final boolean inverted = "true".equalsIgnoreCase(context.getParameter(_fieldName
                             + RateUI.INVERTEDSUFFIX));
             _update.add(_attr, new Object[] { inverted ? 1 : value, inverted ? value : 1 });
+        } else if (_attr.getAttributeType().getUIProvider() instanceof BitEnumUI) {
+            _update.add(_attr, (Object[]) _parameter.getParameterValues(_fieldName));
         } else {
-            _update.add(_attr, context.getParameter(_fieldName));
+            _update.add(_attr,  _parameter.getParameterValue(_fieldName));
         }
     }
 
@@ -291,7 +295,7 @@ public abstract class Edit_Base
                             final String oldValue = object != null ? object.toString() : null;
                             final String newValue = _parameter.getParameterValue(fieldName);
                             if (!newValue.equals(oldValue)) {
-                                add2Update(setupdate, child, fieldName);
+                                add2Update(_parameter, setupdate, child, fieldName);
                                 update = true;
                             }
                         }
@@ -322,7 +326,7 @@ public abstract class Edit_Base
                             final String fieldName = fieldset.getName() + "_eFapsNew_"
                                             + nf.format(Integer.parseInt(ayCoord)) + nf.format(xCoord);
                             if (_parameter.getParameters().containsKey(fieldName)) {
-                                add2Update(insert, child, fieldName);
+                                add2Update(_parameter, insert, child, fieldName);
                             }
                             xCoord++;
                         }
@@ -491,7 +495,7 @@ public abstract class Edit_Base
                                 if (attr != null && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType()
                                                 .getClassRepr())) {
                                     if (_parameter.getParameters().containsKey(field.getName())) {
-                                        add2Update(classInsert, attr, field.getName());
+                                        add2Update(_parameter, classInsert, attr, field.getName());
                                     }
                                 }
                             }
@@ -520,7 +524,7 @@ public abstract class Edit_Base
                                         final String oldValue = value != null ? value.toString() : null;
                                         if (!newValue.equals(oldValue)) {
                                             execUpdate = true;
-                                            add2Update(update, attr, field.getName());
+                                            add2Update(_parameter, update, attr, field.getName());
                                         }
                                     }
                                 }
