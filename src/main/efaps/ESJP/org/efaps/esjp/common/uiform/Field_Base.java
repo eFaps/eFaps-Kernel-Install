@@ -715,8 +715,10 @@ public abstract class Field_Base
                 // evaluate for selected only until the first is found
                 if (!selected) {
                     if (dbValue != null && "true".equalsIgnoreCase((String) props.get("SetSelected"))) {
-                        val.setSelected(dbValue.equals(val.value));
-                        selected = true;
+                        if (dbValue.equals(val.value)) {
+                            val.setSelected(true);
+                            selected = true;
+                        }
                     } else if (props.containsKey("Regex4DefaultValue")) {
                         if (String.valueOf(val.getOption()).matches((String) props.get("Regex4DefaultValue"))) {
                             val.setSelected(true);
