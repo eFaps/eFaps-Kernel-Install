@@ -79,6 +79,11 @@ import org.efaps.util.EFapsException;
  * <th>Property</th><th>Value</th><th>Description</th>
  * </tr>
  * <tr>
+ * <td>[TYPENAME].Person.InRole</td><td>List of ";"-separated Roles </td>
+ * <td>The Roles that must be assigned to a Person to be be shown in the dropdown
+ * used to assign an access.</td>
+ * </tr>
+ * <tr>
  * <td>[TYPENAME].Roles.AsList</td><td>List of ";"-separated Roles </td>
  * <td>The Roles that will be shown in the dropdown used to assign an access.</td>
  * </tr>
