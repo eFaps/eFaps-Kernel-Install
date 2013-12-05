@@ -38,6 +38,7 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractCommand;
+import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.Command;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.admin.user.Company;
@@ -345,26 +346,30 @@ public abstract class AccessCheck4UI_Base
     {
         final Return ret = new Return();
 
-        final Command cmd = (Command) _parameter.get(ParameterValues.CALL_CMD);
-        final Map<Integer, String> cmdUUIDs = analyseProperty(_parameter, "CmdUUID");
-        final boolean inverse = "true".equalsIgnoreCase(getProperty(_parameter, "Inverse"));
+        if (!TargetMode.VIEW.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
+            final Command cmd = (Command) _parameter.get(ParameterValues.CALL_CMD);
+            final Map<Integer, String> cmdUUIDs = analyseProperty(_parameter, "CmdUUID");
+            final boolean inverse = "true".equalsIgnoreCase(getProperty(_parameter, "Inverse"));
 
-        if (cmdUUIDs.isEmpty() && !inverse) {
-            ret.put(ReturnValues.TRUE, true);
-        } else {
-            Boolean access = null;
-            for (final Entry<Integer, String> cmdUUID : cmdUUIDs.entrySet()) {
-                if (isUUID(cmdUUID.getValue())) {
-                    final UUID uuid = UUID.fromString(cmdUUID.getValue());
-                    if (cmd.getUUID().equals(uuid)) {
-                        access = true;
-                        break;
+            if (cmdUUIDs.isEmpty() && !inverse) {
+                ret.put(ReturnValues.TRUE, true);
+            } else {
+                Boolean access = null;
+                for (final Entry<Integer, String> cmdUUID : cmdUUIDs.entrySet()) {
+                    if (isUUID(cmdUUID.getValue())) {
+                        final UUID uuid = UUID.fromString(cmdUUID.getValue());
+                        if (cmd.getUUID().equals(uuid)) {
+                            access = true;
+                            break;
+                        }
                     }
                 }
+                if ((access == null && inverse) || (access && !inverse)) {
+                    ret.put(ReturnValues.TRUE, true);
+                }
             }
-            if ((access == null && inverse) || (access && !inverse)) {
-                ret.put(ReturnValues.TRUE, true);
-            }
+        } else {
+            ret.put(ReturnValues.TRUE, true);
         }
 
         return ret;
