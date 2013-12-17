@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -38,6 +38,8 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.Update;
 import org.efaps.util.EFapsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -50,6 +52,12 @@ import org.efaps.util.EFapsException;
 @EFapsRevision("$Rev$")
 public class UIUpdate
 {
+
+    /**
+     * Logging instance used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(UIUpdate.class);
+
     /**
      * Method is used to add a Command or Menu to an existing Menu in a defined
      * position. This esjp is only used from the install scripts.
@@ -140,12 +148,12 @@ public class UIUpdate
                     }
                 }
             } else {
-                //TODO add Exception to properties
-                throw new EFapsException(UIUpdate.class, "missingMenu2Add2", _uuidMenu);
+                UIUpdate.LOG.warn("Could not find Cmd/Menu '{}' that should be added to Cmd/Menu '{}'.", _uuidMenu,
+                                _uuidAdd);
             }
         } else {
-            //TODO add Exception to properties
-            throw new EFapsException(UIUpdate.class, "missingCmdMenu2Add", _uuidAdd);
+            UIUpdate.LOG.warn("Could not find the Cmd/Menu '{}' the Cmd/Menu '{}' should be added to", _uuidAdd,
+                            _uuidMenu);
         }
     }
 
