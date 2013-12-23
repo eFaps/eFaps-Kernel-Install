@@ -20,6 +20,8 @@
 
 package org.efaps.esjp.common.quartz;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.UUID;
 
 import org.efaps.admin.datamodel.Type;
@@ -51,12 +53,11 @@ public abstract class EventDefinitionJob_Base
         throws JobExecutionException
     {
         final String[] quartzObj = _jobExec.getJobDetail().getKey().getName().split("_");
-        final String name = quartzObj[0];
-        final String clazz = quartzObj[1];
+        final String qClazzName = quartzObj[1];
 
         try {
             final QueryBuilder attrQueryBldr = new QueryBuilder(CIAdminProgram.Java);
-            attrQueryBldr.addWhereAttrEqValue(CIAdminProgram.Java.Name, name);
+            attrQueryBldr.addWhereAttrEqValue(CIAdminProgram.Java.Name, qClazzName);
             final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIAdminProgram.Java.ID);
 
             // ERP_EventDefinitionAbstract
@@ -64,20 +65,49 @@ public abstract class EventDefinitionJob_Base
                             .get(UUID.fromString("847cf68b-c23a-4826-a154-dc38ff7f76fd")));
             attrQueryBldr2.addWhereAttrInQuery("QuartzDefinitionLink", attrQuery);
             final AttributeQuery attrQuery2 = attrQueryBldr2.getAttributeQuery("ID");
+            attrQuery2.setCompanyDepended(false);
 
             // ERP_EventDefinition2JavaProgram
             final QueryBuilder queryBldr = new QueryBuilder(Type
                             .get(UUID.fromString("b8405fb3-2dd1-440d-88bd-a64491fc27df")));
             queryBldr.addWhereAttrInQuery("EventDefinitionLink", attrQuery2);
             final MultiPrintQuery multi = queryBldr.getPrint();
-            final SelectBuilder selProgInst = new SelectBuilder().linkto("JavaProgramLink").instance();
-            multi.addSelect(selProgInst);
+            final SelectBuilder selProgName = new SelectBuilder().linkto("JavaProgramLink")
+                            .attribute(CIAdminProgram.Java.Name);
+            multi.addSelect(selProgName);
             multi.executeWithoutAccessCheck();
             while (multi.next()) {
-
+                final String clazzName = multi.<String>getSelect(selProgName);
+                final Class<?> clazz = Class.forName(clazzName);
+                final Object ins = clazz.newInstance();
+                if (ins instanceof IEventDefinition) {
+                    final Method method = clazz.getMethod("execute");
+                    method.invoke(ins);
+                }
             }
 
         } catch (final EFapsException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (final IllegalAccessException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (final IllegalArgumentException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (final InvocationTargetException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (final ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (final NoSuchMethodException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (final SecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (final InstantiationException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
