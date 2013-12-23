@@ -958,12 +958,54 @@ public abstract class Field_Base
     }
 
     /**
-    *
+    * get a drop down of UoM for edit mode.
     *
     * @param _parameter Parameter as passed from the eFaps API
     * @return empty Return
     * @throws EFapsException on error
     */
+    public Return getUoMDropDownFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        if (_parameter.get(ParameterValues.ACCESSMODE) == TargetMode.EDIT) {
+            final StringBuilder html = new StringBuilder();
+            final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+            final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
+            if (fieldValue.getValue() != null) {
+                final UoM uomValue = Dimension.getUoM((Long) fieldValue.getValue());
+                if (uomValue != null) {
+                    final Dimension dim = uomValue.getDimension();
+                    for (final UoM uom : dim.getUoMs()) {
+                        final DropDownPosition position = getDropDownPosition(_parameter, uom.getId(), uom.getName());
+                        positions.add(position);
+                        position.setSelected(uomValue.equals(uom));
+                    }
+                }
+            }
+            Collections.sort(positions, new Comparator<DropDownPosition>()
+            {
+                @SuppressWarnings("unchecked")
+                @Override
+                public int compare(final DropDownPosition _o1,
+                                   final DropDownPosition _o2)
+                {
+                    return _o1.getOrderValue().compareTo(_o2.getOrderValue());
+                }
+            });
+            html.append(getDropDownField(_parameter, positions));
+            ret.put(ReturnValues.SNIPLETT, html.toString());
+        }
+        return ret;
+    }
+
+    /**
+     *
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return empty Return
+     * @throws EFapsException on error
+     */
     public Return getField4Mode(final Parameter _parameter)
         throws EFapsException
     {
