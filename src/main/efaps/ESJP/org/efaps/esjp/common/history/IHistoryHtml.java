@@ -35,13 +35,13 @@ public interface IHistoryHtml
      * @return the value for the type column
      * @throws EFapsException on error
      */
-    public String getTypeColumnValue()
+    String getTypeColumnValue()
         throws EFapsException;
 
     /**
-     * @return value fo rthe description column
+     * @return value for the description column
      * @throws EFapsException on error
      */
-    public StringBuilder getDescriptionColumnValue()
+    StringBuilder getDescriptionColumnValue()
         throws EFapsException;
 }
