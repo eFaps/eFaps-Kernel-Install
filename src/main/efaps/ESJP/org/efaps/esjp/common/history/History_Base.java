@@ -20,12 +20,6 @@
 
 package org.efaps.esjp.common.history;
 
-import java.io.StringReader;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -81,21 +75,10 @@ public abstract class History_Base
             final Person person = multi.<Person>getAttribute(CICommon.HistoryAbstract.Creator);
             html.append("<td>").append(person.getLastName()).append(", ").append(person.getFirstName()).append("</td>");
 
-            final String xml = multi.<String>getAttribute(CICommon.HistoryAbstract.Value);
-            try {
-                final JAXBContext jc = JAXBContext.newInstance(AbstractHistoryTrigger_Base.getClasses(_parameter));
-                final Unmarshaller unmarshaller = jc.createUnmarshaller();
-                final StringReader reader = new StringReader(xml);
-                final Object obj = unmarshaller.unmarshal(reader);
-                if (obj instanceof IHistoryHtml) {
-                    final IHistoryHtml hObj = (IHistoryHtml) obj;
-                    html.append("<td>").append(hObj.getTypeColumnValue()).append("</td>");
-                    html.append("<td>").append(hObj.getDescriptionColumnValue()).append("</td>");
-                }
-            } catch (final JAXBException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            final IHistoryHtml hObj = multi.<IHistoryHtml>getAttribute(CICommon.HistoryAbstract.Value);
+            html.append("<td>").append(hObj.getTypeColumnValue()).append("</td>");
+            html.append("<td>").append(hObj.getDescriptionColumnValue()).append("</td>");
+
             html.append("</tr>");
         }
         html.append("</table>");

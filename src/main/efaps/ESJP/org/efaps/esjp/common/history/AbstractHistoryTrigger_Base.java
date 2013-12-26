@@ -20,12 +20,7 @@
 
 package org.efaps.esjp.common.history;
 
-import java.io.StringWriter;
 import java.util.Date;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
@@ -36,17 +31,8 @@ import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.esjp.ci.CICommon;
 import org.efaps.esjp.common.AbstractCommon;
-import org.efaps.esjp.common.history.xml.AbstractConnectLog;
 import org.efaps.esjp.common.history.xml.AbstractHistoryLog;
-import org.efaps.esjp.common.history.xml.AbstractInstObj;
-import org.efaps.esjp.common.history.xml.AttributeValue;
-import org.efaps.esjp.common.history.xml.ConnectInstObj;
-import org.efaps.esjp.common.history.xml.ConnectLog;
-import org.efaps.esjp.common.history.xml.CreateLog;
-import org.efaps.esjp.common.history.xml.DisconnectLog;
-import org.efaps.esjp.common.history.xml.HistoryInstObj;
 import org.efaps.esjp.common.history.xml.InstObj;
-import org.efaps.esjp.common.history.xml.UpdateLog;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,21 +73,11 @@ public abstract class AbstractHistoryTrigger_Base
 
         add2LogObject(_parameter, log);
 
-        try {
-            final JAXBContext jc = JAXBContext.newInstance(AbstractHistoryTrigger_Base.getClasses(_parameter));
-            final Marshaller marshaller = jc.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            final StringWriter writer = new StringWriter();
-            marshaller.marshal(log, writer);
+        final Insert insert = new Insert(getHistoryType());
+        insert.add(CICommon.HistoryAbstract.GeneralInstanceLink, getHistoryInstance(_parameter).getGeneralId());
+        insert.add(CICommon.HistoryAbstract.Value, log);
+        insert.executeWithoutTrigger();
 
-            final Insert insert = new Insert(getHistoryType());
-            insert.add(CICommon.HistoryAbstract.GeneralInstanceLink, getHistoryInstance(_parameter).getGeneralId());
-            insert.add(CICommon.HistoryAbstract.Value, writer.toString());
-            insert.executeWithoutTrigger();
-
-        } catch (final JAXBException e) {
-            AbstractHistoryTrigger_Base.LOG.error("Catched error on marschalling.", e);
-        }
         return new Return();
     }
 
@@ -125,18 +101,4 @@ public abstract class AbstractHistoryTrigger_Base
 
     protected abstract AbstractHistoryLog getLogObject(final Parameter _parameter)
         throws EFapsException;
-
-    /**
-     * @param _parameter Parameter as passed by the eFaps API
-     * @return class array for marschalling
-     * @throws EFapsException on error
-     */
-    public static Class<?>[] getClasses(final Parameter _parameter)
-        throws EFapsException
-    {
-        return new Class<?>[] { AbstractHistoryLog.class, AbstractConnectLog.class, ConnectLog.class,
-                        DisconnectLog.class, AbstractInstObj.class, InstObj.class, HistoryInstObj.class,
-                        ConnectInstObj.class, AttributeValue.class, UpdateLog.class, CreateLog.class };
-    }
-
 }

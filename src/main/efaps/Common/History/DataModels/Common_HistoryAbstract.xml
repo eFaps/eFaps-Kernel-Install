@@ -61,7 +61,8 @@
         </attribute>
          <attribute>
             <name>Value</name>
-            <type>String</type>
+            <type>Jaxb</type>
+            <className>org.efaps.esjp.common.history.HistoryAttribute</className>
             <sqltable>Common_HistorySQLTable</sqltable>
             <sqlcolumn>VALUE</sqlcolumn>
         </attribute>
