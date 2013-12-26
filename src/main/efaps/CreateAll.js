@@ -213,7 +213,7 @@ function _eFapsCreateInsertAttr(_stmt, _tableId, _typeId, _name, _sqlColumn, _at
                     "T_CMABSTRACT",
                     "TYPEID,NAME,REVISION,CREATOR,CREATED,MODIFIER,MODIFIED",
                     typeIdAttr + ", '" + _name + "', '', 1," + CURRENT_TIMESTAMP + ",1," + CURRENT_TIMESTAMP);
-  
+
   sql = "insert into T_DMATTRIBUTE (ID, DMTABLE, DMTYPE, DMATTRIBUTETYPE, DMTYPELINK, SQLCOLUMN, CLASSNAME) values  (" + ret + ", " + _tableId + ", " + _typeId + ",  " + attrTypeId + ", " + typeLinkId + ", '" + _sqlColumn + "',";
   if (_className != null) {
       sql = sql + "'" + _className + "')";
@@ -536,6 +536,7 @@ function _eFapsCreateDataModelTablesStep1()  {
   _eFapsCreateAttrType(stmt, null, 'a48538dd-5d9b-468f-a84f-bf42791eed66', 'GroupLink',      'org.efaps.admin.datamodel.attributetype.GroupLinkType',      'org.efaps.admin.datamodel.ui.UserUI',           null, 1   );
   _eFapsCreateAttrType(stmt, null, 'b7c6a324-5dec-425f-b778-fa8fabf80202', 'Enum',           'org.efaps.admin.datamodel.attributetype.EnumType',           'org.efaps.admin.datamodel.ui.EnumUI',           null, null);
   _eFapsCreateAttrType(stmt, null, 'a9b1abde-d58d-4aea-8cdc-f2870111f1cd', 'BitEnum',        'org.efaps.admin.datamodel.attributetype.BitEnumType',        'org.efaps.admin.datamodel.ui.BitEnumUI',        null, null);
+  _eFapsCreateAttrType(stmt, null, '58817bd8-db76-4b40-8acd-18112fe96170', 'Jaxb',           'org.efaps.admin.datamodel.attributetype.JaxbType',           'org.efaps.admin.datamodel.ui.JaxbUI',           null, null);
 
   _eFapsCreateInsertAttr(stmt, ATTRTYPESQLTABLEID, ATTRTYPETYPEID, 'Classname',     'CLASSNAME',    'String', null, null);
   _eFapsCreateInsertAttr(stmt, ATTRTYPESQLTABLEID, ATTRTYPETYPEID, 'ClassnameUI',   'CLASSNAMEUI',  'String', null, null);
