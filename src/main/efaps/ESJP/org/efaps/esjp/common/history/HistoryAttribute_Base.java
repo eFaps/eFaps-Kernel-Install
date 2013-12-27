@@ -34,6 +34,7 @@ import org.efaps.esjp.common.history.xml.DisconnectLog;
 import org.efaps.esjp.common.history.xml.HistoryInstObj;
 import org.efaps.esjp.common.history.xml.InstObj;
 import org.efaps.esjp.common.history.xml.UpdateLog;
+import org.efaps.util.EFapsException;
 
 /**
  * TODO comment!
@@ -53,5 +54,13 @@ public abstract class HistoryAttribute_Base
         return new Class<?>[] { AbstractHistoryLog.class, AbstractConnectLog.class, ConnectLog.class,
                                 DisconnectLog.class, AbstractInstObj.class, InstObj.class, HistoryInstObj.class,
                                 ConnectInstObj.class, AttributeValue.class, UpdateLog.class, CreateLog.class };
+    }
+
+    @Override
+    public String getUIValue(final Object _object)
+        throws EFapsException
+    {
+        // NOT USED IN THIS CASE
+        return "";
     }
 }
