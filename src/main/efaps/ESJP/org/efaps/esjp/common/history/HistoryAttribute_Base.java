@@ -21,8 +21,10 @@
 package org.efaps.esjp.common.history;
 
 import org.efaps.admin.datamodel.IJaxb;
+import org.efaps.admin.datamodel.ui.UIValue;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.esjp.common.history.xml.AbstractConnectLog;
 import org.efaps.esjp.common.history.xml.AbstractHistoryLog;
 import org.efaps.esjp.common.history.xml.AbstractInstObj;
@@ -34,7 +36,6 @@ import org.efaps.esjp.common.history.xml.DisconnectLog;
 import org.efaps.esjp.common.history.xml.HistoryInstObj;
 import org.efaps.esjp.common.history.xml.InstObj;
 import org.efaps.esjp.common.history.xml.UpdateLog;
-import org.efaps.util.EFapsException;
 
 /**
  * TODO comment!
@@ -57,8 +58,8 @@ public abstract class HistoryAttribute_Base
     }
 
     @Override
-    public String getUIValue(final Object _object)
-        throws EFapsException
+    public String getUISnipplet(final TargetMode _mode,
+                                final UIValue _value)
     {
         // NOT USED IN THIS CASE
         return "";
