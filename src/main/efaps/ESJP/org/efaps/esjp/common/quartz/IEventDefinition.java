@@ -20,18 +20,31 @@
 
 package org.efaps.esjp.common.quartz;
 
+import java.util.Properties;
+
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.util.EFapsException;
+import org.quartz.JobExecutionContext;
 
 /**
- * TODO comment!
+ * Interface an esjp must implement to be executed as part of an EventDefinition.
  *
  * @author The eFaps Team
- * @version $Id: Project_Base.java 11050 2013-11-20 22:25:09Z jorge.cueva@moxter.net $
+ * @version $Id: Project_Base.java 11050 2013-11-20 22:25:09Z
+ *          jorge.cueva@moxter.net $
  */
 @EFapsUUID("e55a454e-494b-4ef1-95ab-7bdf7a73b390")
 @EFapsRevision("$Rev: 11050 $")
 public interface IEventDefinition
 {
-    void execute();
+    /**
+     * Execute the related esjp.
+     * @param _properties Properties generated (must not be null)
+     * @param _jobExec JobExecutionContext as passed from a Quartztrigger (can be null)
+     * @throws EFapsException on error
+     */
+    void execute(final Properties _properties,
+                 final JobExecutionContext _jobExec)
+        throws EFapsException;
 }
