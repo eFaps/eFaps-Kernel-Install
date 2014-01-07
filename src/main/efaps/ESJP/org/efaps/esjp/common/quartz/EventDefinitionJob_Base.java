@@ -20,9 +20,6 @@
 
 package org.efaps.esjp.common.quartz;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Properties;
 import java.util.UUID;
 
 import org.efaps.admin.datamodel.Type;
@@ -31,6 +28,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIAdminCommon;
 import org.efaps.ci.CIAdminProgram;
 import org.efaps.db.AttributeQuery;
+import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
@@ -74,19 +72,17 @@ public abstract class EventDefinitionJob_Base
             final MultiPrintQuery multi = queryBldr.getPrint();
             final SelectBuilder selProgName = new SelectBuilder().linkto("JavaProgramLink")
                             .attribute(CIAdminProgram.Java.Name);
-            final SelectBuilder selProperties = new SelectBuilder().linkto("EventDefinitionLink")
-                            .attribute("Properties");
-            multi.addSelect(selProgName, selProperties);
+            final SelectBuilder selDefInstance = new SelectBuilder().linkto("EventDefinitionLink")
+                            .instance();
+            multi.addSelect(selProgName, selDefInstance);
             multi.executeWithoutAccessCheck();
             while (multi.next()) {
                 final String clazzName = multi.<String>getSelect(selProgName);
-                final String properties = multi.<String>getSelect(selProperties);
-                final Properties props = new Properties();
-                props.load(new  StringReader(properties));
+                final Instance defInstance = multi.<Instance>getSelect(selDefInstance);
                 final Class<?> clazz = Class.forName(clazzName);
                 final Object ins = clazz.newInstance();
                 if (ins instanceof IEventDefinition) {
-                    ((IEventDefinition)ins).execute(props, _jobExec);
+                    ((IEventDefinition)ins).execute(defInstance, _jobExec);
                 }
             }
         } catch (final EFapsException e) {
@@ -105,9 +101,6 @@ public abstract class EventDefinitionJob_Base
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (final InstantiationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (final IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

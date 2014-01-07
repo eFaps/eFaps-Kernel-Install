@@ -20,10 +20,9 @@
 
 package org.efaps.esjp.common.quartz;
 
-import java.util.Properties;
-
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Instance;
 import org.efaps.util.EFapsException;
 import org.quartz.JobExecutionContext;
 
@@ -40,11 +39,11 @@ public interface IEventDefinition
 {
     /**
      * Execute the related esjp.
-     * @param _properties Properties generated (must not be null)
+     * @param _definitionInstance Instance of the definition (must not be null)
      * @param _jobExec JobExecutionContext as passed from a Quartztrigger (can be null)
      * @throws EFapsException on error
      */
-    void execute(final Properties _properties,
+    void execute(final Instance _definitionInstance,
                  final JobExecutionContext _jobExec)
         throws EFapsException;
 }
