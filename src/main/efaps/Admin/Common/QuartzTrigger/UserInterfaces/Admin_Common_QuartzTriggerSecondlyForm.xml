@@ -70,6 +70,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">IntervalInSeconds</property>
+            <property name="Required">true</property>
         </field>
         <field name="repeatCount">
             <property name="Columns">20</property>

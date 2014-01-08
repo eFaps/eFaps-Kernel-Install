@@ -43,7 +43,7 @@
             <menu>Admin_Common_QuartzTriggerMyDesk_Menu</menu>
             <table>Admin_Common_QuartzTriggerTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Common_QuartzTriggerAbstract</property>
+                <property name="Type">Admin_Common_QuartzTriggerAbstract</property>
                 <property name="ExpandChildTypes">true</property>
             </evaluate>
         </target>

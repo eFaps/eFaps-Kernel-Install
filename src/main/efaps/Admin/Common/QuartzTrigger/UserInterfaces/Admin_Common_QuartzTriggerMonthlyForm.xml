@@ -70,18 +70,21 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">DayOfMonth</property>
+            <property name="Required">true</property>
         </field>
         <field name="hour">
             <property name="Columns">20</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Hour</property>
+            <property name="Required">true</property>
         </field>
         <field name="minute">
             <property name="Columns">20</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Minute</property>
+            <property name="Required">true</property>
         </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>
