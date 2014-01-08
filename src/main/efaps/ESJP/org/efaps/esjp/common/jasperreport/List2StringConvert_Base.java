@@ -52,7 +52,9 @@ public abstract class List2StringConvert_Base
                 ret.append(obj).append("\n");
             }
         } else {
-            ret.append(_value);
+            if (_value != null) {
+                ret.append(_value);
+            }
         }
         return ret.toString();
     }
