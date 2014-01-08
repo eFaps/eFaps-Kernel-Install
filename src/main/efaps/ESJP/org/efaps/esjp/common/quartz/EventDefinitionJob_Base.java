@@ -62,6 +62,7 @@ public abstract class EventDefinitionJob_Base
             final QueryBuilder attrQueryBldr2 = new QueryBuilder(Type
                             .get(UUID.fromString("847cf68b-c23a-4826-a154-dc38ff7f76fd")));
             attrQueryBldr2.addWhereAttrInQuery("QuartzDefinitionLink", attrQuery);
+            attrQueryBldr2.addWhereAttrEqValue("Active", true);
             final AttributeQuery attrQuery2 = attrQueryBldr2.getAttributeQuery("ID");
             attrQuery2.setCompanyDepended(false);
 
@@ -69,7 +70,6 @@ public abstract class EventDefinitionJob_Base
             final QueryBuilder queryBldr = new QueryBuilder(Type
                             .get(UUID.fromString("b8405fb3-2dd1-440d-88bd-a64491fc27df")));
             queryBldr.addWhereAttrInQuery("EventDefinitionLink", attrQuery2);
-            queryBldr.addWhereAttrEqValue("Active", true);
             final MultiPrintQuery multi = queryBldr.getPrint();
             final SelectBuilder selProgName = new SelectBuilder().linkto("JavaProgramLink")
                             .attribute(CIAdminProgram.Java.Name);
