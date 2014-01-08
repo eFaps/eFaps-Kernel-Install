@@ -69,6 +69,7 @@ public abstract class EventDefinitionJob_Base
             final QueryBuilder queryBldr = new QueryBuilder(Type
                             .get(UUID.fromString("b8405fb3-2dd1-440d-88bd-a64491fc27df")));
             queryBldr.addWhereAttrInQuery("EventDefinitionLink", attrQuery2);
+            queryBldr.addWhereAttrEqValue("Active", true);
             final MultiPrintQuery multi = queryBldr.getPrint();
             final SelectBuilder selProgName = new SelectBuilder().linkto("JavaProgramLink")
                             .attribute(CIAdminProgram.Java.Name);
@@ -82,7 +83,7 @@ public abstract class EventDefinitionJob_Base
                 final Class<?> clazz = Class.forName(clazzName);
                 final Object ins = clazz.newInstance();
                 if (ins instanceof IEventDefinition) {
-                    ((IEventDefinition)ins).execute(defInstance, _jobExec);
+                    ((IEventDefinition) ins).execute(defInstance, _jobExec);
                 }
             }
         } catch (final EFapsException e) {
