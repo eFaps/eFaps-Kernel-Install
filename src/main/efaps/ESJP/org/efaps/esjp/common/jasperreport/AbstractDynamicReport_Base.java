@@ -53,6 +53,7 @@ import org.efaps.db.Checkout;
 import org.efaps.db.Context;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.file.FileUtil;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
@@ -68,6 +69,7 @@ import org.slf4j.LoggerFactory;
 @EFapsUUID("599905c7-373a-4c9c-928f-2cf2714d30b3")
 @EFapsRevision("$Rev$")
 public abstract class AbstractDynamicReport_Base
+    extends AbstractCommon
 {
     /**
      * ExportType enum.
