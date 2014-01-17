@@ -42,6 +42,7 @@ import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractCommand;
@@ -93,7 +94,10 @@ public abstract class Create_Base
         insertClassification(_parameter, instance);
         // execute processes
         executeProcess(_parameter, instance);
-        return new Return();
+
+        final Return ret = new Return();
+        ret.put(ReturnValues.INSTANCE, instance);
+        return ret;
     }
 
     /**
