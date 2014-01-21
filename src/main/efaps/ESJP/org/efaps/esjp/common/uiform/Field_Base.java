@@ -339,25 +339,34 @@ public abstract class Field_Base
     public Return systemConfigurationObjectFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        final StringBuilder html = new StringBuilder();
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        if (props.containsKey("SystemConfigurationUUID")) {
-            final UUID uuid = UUID.fromString((String) props.get("SystemConfigurationUUID"));
+        final Return ret = new Return();
+        final String configurationUUID = getProperty(_parameter, "SystemConfigurationUUID");
+        if (configurationUUID != null) {
+            final UUID uuid = UUID.fromString(configurationUUID);
             final SystemConfiguration config = SystemConfiguration.get(uuid);
             if (config != null) {
+                final FieldValue fieldvalue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
                 final Properties confProps = config.getObjectAttributeValueAsProperties(_parameter.getInstance());
-                html.append("<table>");
-                for (final Entry<Object, Object>entry : confProps.entrySet()) {
-                    html.append("<tr>")
-                        .append("<td>").append(entry.getKey()).append("</td>")
-                        .append("<td>").append(entry.getValue()).append("</td>")
-                        .append("</tr>");
+                if (Display.EDITABLE.equals(fieldvalue.getDisplay())) {
+                    final StringBuilder propStr = new StringBuilder();
+                    for (final Entry<Object, Object> entry : confProps.entrySet()) {
+                        propStr.append(entry.getKey()).append("=").append(entry.getValue()).append("\n");
+                    }
+                    ret.put(ReturnValues.VALUES, propStr.toString());
+                } else {
+                    final StringBuilder html = new StringBuilder();
+                    html.append("<table>");
+                    for (final Entry<Object, Object> entry : confProps.entrySet()) {
+                        html.append("<tr>")
+                             .append("<td>").append(entry.getKey()).append("</td>")
+                             .append("<td>").append(entry.getValue()).append("</td>")
+                             .append("</tr>");
+                    }
+                    html.append("</table>");
+                    ret.put(ReturnValues.SNIPLETT, html.toString());
                 }
-                html.append("</table>");
             }
         }
-        final Return ret = new Return();
-        ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
     }
 
