@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import org.efaps.admin.access.AccessTypeEnums;
 import org.efaps.admin.common.SystemConfiguration;
@@ -43,6 +44,7 @@ import org.efaps.admin.ui.Command;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.admin.user.Company;
 import org.efaps.admin.user.Role;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
@@ -107,7 +109,8 @@ public abstract class AccessCheck4UI_Base
                 UUID statusGrpUUID = null;
                 final String select4Instance = getProperty(_parameter, "Select4Instance");
                 if (select4Instance != null) {
-                    final PrintQuery print = new PrintQuery(orgInstance);
+                    final PrintQuery print = new CachedPrintQuery(orgInstance, getRequestKey())
+                                                            .setLifespanUnit(TimeUnit.SECONDS).setLifespan(30);
                     print.addSelect(select4Instance);
                     print.executeWithoutAccessCheck();
                     final Object obj = print.getSelect(select4Instance);
@@ -125,7 +128,8 @@ public abstract class AccessCheck4UI_Base
                 if (instance != null && instance.isValid() && instance.getType().isCheckStatus()) {
                     final Attribute statusAttr = instance.getType().getStatusAttribute();
                     statusGrpUUID = statusAttr.getLink().getUUID();
-                    final PrintQuery print = new PrintQuery(instance);
+                    final PrintQuery print = new CachedPrintQuery(instance, getRequestKey())
+                                                    .setLifespanUnit(TimeUnit.SECONDS).setLifespan(30);
                     print.addAttribute(statusAttr);
                     print.executeWithoutAccessCheck();
                     statusID = print.<Long>getAttribute(statusAttr);

@@ -26,11 +26,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
 
@@ -49,7 +51,15 @@ public abstract class AbstractCommon_Base
     /**
      * Regex for testing a UUID for valid.
      */
+    //CHECKSTYLE:OFF
     public static final String UUID_REGEX = "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}";
+    //CHECKSTYLE:ON
+
+    /**
+     * Used to store a Key for caching mechanism in the RequestAttributes from
+     * the Context.
+     */
+    public static final String REQUESTKEY4CACHING = AbstractCommon.class.getName() + ".UniqueKey4Request";
 
     /**
      * Search for the given Property and returns a tree map with the found values.<br/>
@@ -130,7 +140,6 @@ public abstract class AbstractCommon_Base
         return ret;
     }
 
-
     /**
      * @param _string string to validate
      * @return true if valid UUID else false.
@@ -138,5 +147,22 @@ public abstract class AbstractCommon_Base
     protected boolean isUUID(final String _string)
     {
         return _string.matches(AbstractCommon_Base.UUID_REGEX);
+    }
+
+    /**
+     * @return key used for Caching
+     * @throws EFapsException on error
+     */
+    protected String getRequestKey()
+        throws EFapsException
+    {
+        String ret;
+        if (Context.getThreadContext().containsRequestAttribute(AbstractCommon_Base.REQUESTKEY4CACHING)) {
+            ret = (String) Context.getThreadContext().getRequestAttribute(AbstractCommon_Base.REQUESTKEY4CACHING);
+        } else {
+            ret = RandomStringUtils.random(16);
+            Context.getThreadContext().setRequestAttribute(AbstractCommon_Base.REQUESTKEY4CACHING, ret);
+        }
+        return ret;
     }
 }
