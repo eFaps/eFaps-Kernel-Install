@@ -67,7 +67,7 @@ public abstract class AccessCheck4UI_Base
     /**
      * Logging instance used in this class.
      */
-    protected static final Logger LOG = LoggerFactory.getLogger(AccessCheck4UI.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AccessCheck4UI.class);
 
     /**
      * Method is used for access checks on commands depending on the status of
@@ -79,7 +79,8 @@ public abstract class AccessCheck4UI_Base
      * &nbsp;&nbsp;method=&quot;check4Status&quot;<br>
      * &nbsp;&nbsp;name=&quot;Sales_ReservationTree_Menu_Action_SetClosed.UI_ACCESSCHECK&quot;<br>
      * &nbsp;&nbsp;event=&quot;UI_ACCESSCHECK&quot;&gt;<br>
-     * &nbsp;&nbsp;&nbsp;&nbsp;&lt;property name=&quot;Stati&quot;&gt;Open&lt;/property&gt;<br>
+     * &nbsp;&nbsp;&nbsp;&nbsp;&lt;property name=&quot;Status&quot;&gt;Open&lt;/property&gt;<br>
+     * &nbsp;&nbsp;&nbsp;&nbsp;&lt;property name=&quot;Status01&quot;&gt;Closed&lt;/property&gt;<br>
      * &lt;/trigger&gt;<br>
      * </code>
      * Additionally an explicit StatusGroup Property can be set, to define the StatusGroup. If not set the
@@ -94,6 +95,81 @@ public abstract class AccessCheck4UI_Base
     public Return check4Status(final Parameter _parameter)
         throws EFapsException
     {
+        Return ret = new Return();
+        final Map<Integer, String> status = analyseProperty(_parameter, "Status");
+        if (status.isEmpty()) {
+            ret = toBeRemoved(_parameter);
+        } else {
+            final Instance orgInstance = _parameter.getInstance();
+            if (orgInstance != null) {
+                Instance instance = null;
+
+                UUID statusGrpUUID = null;
+                final String select4Instance = getProperty(_parameter, "Select4Instance");
+                if (select4Instance != null) {
+                    final PrintQuery print = new PrintQuery(orgInstance);
+                    print.addSelect(select4Instance);
+                    print.executeWithoutAccessCheck();
+                    final Object obj = print.getSelect(select4Instance);
+                    if (obj instanceof Instance) {
+                        instance = (Instance) obj;
+                    } else {
+                        AccessCheck4UI_Base.LOG.error("UI_ACCESSCHECK Event for Cmd '{}' is not "
+                                        + "returning an instance for 'Select4Instance'", getCmd(_parameter).getName());
+                    }
+                } else {
+                    instance = orgInstance;
+                }
+
+                final Long statusID;
+                if (instance != null && instance.isValid() && instance.getType().isCheckStatus()) {
+                    final Attribute statusAttr = instance.getType().getStatusAttribute();
+                    statusGrpUUID = statusAttr.getLink().getUUID();
+                    final PrintQuery print = new PrintQuery(instance);
+                    print.addAttribute(statusAttr);
+                    print.executeWithoutAccessCheck();
+                    statusID = print.<Long>getAttribute(statusAttr);
+                } else {
+                    statusID = null;
+                    AccessCheck4UI_Base.LOG.error("UI_ACCESSCHECK Event for Cmd '{}' is executed on"
+                                    + " type that does not depend on Status.", getCmd(_parameter).getName());
+                }
+
+                if (statusID != null) {
+                    final Map<Integer, String> statusGroup = analyseProperty(_parameter, "StatusGroup");
+                    if (!statusGroup.isEmpty() && statusGroup.size() != status.size()) {
+                        AccessCheck4UI_Base.LOG.error("UI_ACCESSCHECK Event for Cmd '{}' is defined wrong",
+                                        getCmd(_parameter).getName());
+                    }
+                    for (final Entry<Integer, String> entry : status.entrySet()) {
+                        Status stat;
+                        if (statusGroup.containsKey(entry.getKey())) {
+                            stat = Status.find(statusGroup.get(entry.getKey()), entry.getValue());
+                        } else {
+                            stat = Status.find(statusGrpUUID, entry.getValue());
+                        }
+                        if (stat != null && statusID.equals(stat.getId())) {
+                            ret.put(ReturnValues.TRUE, true);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * Will be removed!!!!.
+     *
+     * @param _parameter Parameter as passed from eFaps to an esjp
+     * @throws EFapsException never
+     * @return Return with true if access is granted
+     */
+    private Return toBeRemoved(final Parameter _parameter)
+        throws EFapsException
+    {
+        AccessCheck4UI_Base.LOG.warn("Cmd '{}' uses deprecated API for ACCESSCHEFCK.", getCmd(_parameter).getName());
         final Return ret = new Return();
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final String statiStr = (String) props.get("Stati");
@@ -122,6 +198,22 @@ public abstract class AccessCheck4UI_Base
         }
         return ret;
     }
+
+    protected AbstractCommand getCmd(final Parameter _parameter)
+    {
+        AbstractCommand ret = null;
+        final Object obj =  _parameter.get(ParameterValues.UIOBJECT);
+        if (obj instanceof AbstractCommand) {
+            ret = (AbstractCommand) obj;
+        } else {
+            final Object obj2 =  _parameter.get(ParameterValues.CALL_CMD);
+            if (obj2 instanceof AbstractCommand) {
+                ret = (AbstractCommand) obj2;
+            }
+        }
+        return ret;
+    }
+
 
     /**
      * Method is used for access checks on commands depending on the AccessTypes
@@ -219,7 +311,7 @@ public abstract class AccessCheck4UI_Base
                 access = false;
             }
         } else {
-            access= "true".equalsIgnoreCase(getProperty(_parameter, "UIAccessCheck"));
+            access = "true".equalsIgnoreCase(getProperty(_parameter, "UIAccessCheck"));
             AccessCheck4UI_Base.LOG.error("Could not get Calling Command for: {}", field);
         }
         if ((!inverse && access) || (inverse && !access)) {
