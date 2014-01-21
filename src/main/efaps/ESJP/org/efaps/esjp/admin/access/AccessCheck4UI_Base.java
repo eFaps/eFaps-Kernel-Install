@@ -199,14 +199,20 @@ public abstract class AccessCheck4UI_Base
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return command that called the function
+     * @throws EFapsException on error
+     */
     protected AbstractCommand getCmd(final Parameter _parameter)
+        throws EFapsException
     {
         AbstractCommand ret = null;
-        final Object obj =  _parameter.get(ParameterValues.UIOBJECT);
+        final Object obj = _parameter.get(ParameterValues.UIOBJECT);
         if (obj instanceof AbstractCommand) {
             ret = (AbstractCommand) obj;
         } else {
-            final Object obj2 =  _parameter.get(ParameterValues.CALL_CMD);
+            final Object obj2 = _parameter.get(ParameterValues.CALL_CMD);
             if (obj2 instanceof AbstractCommand) {
                 ret = (AbstractCommand) obj2;
             }
