@@ -32,8 +32,13 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIAdminCommon;
+import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.db.Update;
+import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.util.EFapsException;
 
@@ -47,6 +52,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("aa441e81-fd9f-4462-99c2-2d27bd37f137")
 @EFapsRevision("$Rev$")
 public abstract class SystemConf_Base
+    extends AbstractCommon
 {
     /**
      * Add an ObjectAttribute for the Instance to the SystemConfiguration
@@ -69,10 +75,67 @@ public abstract class SystemConf_Base
                 insert.add(CIAdminCommon.SystemConfigurationObjectAttribute.Key, _instance.getOid());
                 insert.add(CIAdminCommon.SystemConfigurationObjectAttribute.Value, _value);
                 insert.execute();
+                config.reload();
             }
         }
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
+    public Return updateObjectAttribute(final Parameter _parameter)
+        throws EFapsException
+    {
+        final String systemConfigurationUUID = getProperty(_parameter, "SystemConfigurationUUID");
+        if (systemConfigurationUUID != null) {
+            final SystemConfiguration config = SystemConfiguration.get(UUID.fromString(systemConfigurationUUID));
+            if (config != null && config.getObjectAttributeValue(_parameter.getInstance()) != null) {
+                final String fieldName = getProperty(_parameter, "FieldName");
+                final QueryBuilder queryBldr = new QueryBuilder(CIAdminCommon.SystemConfigurationObjectAttribute);
+                queryBldr.addWhereAttrEqValue(CIAdminCommon.SystemConfigurationObjectAttribute.AbstractLink,
+                                config.getId());
+                queryBldr.addWhereAttrEqValue(CIAdminCommon.SystemConfigurationObjectAttribute.Key, _parameter
+                                .getInstance().getOid());
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.addAttribute(CIAdminCommon.SystemConfigurationObjectAttribute.CompanyLink);
+                multi.executeWithoutAccessCheck();
+
+                Instance instance = null;
+                // only one found
+                if (multi.getInstanceList().size() == 1) {
+                    multi.next();
+                    instance = multi.getCurrentInstance();
+                } else {
+                    while (multi.next()) {
+                        final Long companyId = multi.<Long>getAttribute(
+                                        CIAdminCommon.SystemConfigurationObjectAttribute.CompanyLink);
+                        if (companyId == null || (companyId != null && companyId == 0)) {
+                            instance = multi.getCurrentInstance();
+                        } else if (companyId == Context.getThreadContext().getCompany().getId()) {
+                            instance = multi.getCurrentInstance();
+                            break;
+                        }
+                    }
+                }
+                if (instance != null) {
+                    final Update update = new Update(instance);
+                    update.add(CIAdminCommon.SystemConfigurationObjectAttribute.Value,
+                                    _parameter.getParameterValue(fieldName));
+                    update.execute();
+                }
+                config.reload();
+            }
+        }
+        return new Return();
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return containing list map for dropdown
+     * @throws EFapsException on error
+     */
     public Return dropDownFieldValue(final Parameter _parameter)
         throws EFapsException
     {
@@ -94,12 +157,15 @@ public abstract class SystemConf_Base
                 _values.set(0, new DropDownPosition("0", "--"));
                 return super.getDropDownField(_parameter, _values);
             }
-
         };
-
         return field.dropDownFieldValue(_parameter);
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
     public Return setMasterPassword(final Parameter _parameter)
         throws EFapsException
     {
