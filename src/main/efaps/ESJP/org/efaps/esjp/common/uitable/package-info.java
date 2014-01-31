@@ -18,23 +18,14 @@
  * Last Changed By: $Author$
  */
 
-package org.efaps.esjp.common.uitable;
-
-import org.efaps.admin.program.esjp.EFapsRevision;
-import org.efaps.admin.program.esjp.EFapsUUID;
-
 /**
- * This class must be replaced for customization, therefore it is left empty.
- * Functional description can be found in the related "<code>_Base</code>"
- * class.
+ * Classes used in conjunction with a Table presented in an UserInterface.<br/>
+ * Careful the class {@link org.efaps.esjp.common.uitable.MultiPrint MultiPrint}
+ * will be replaced be another class during installation on only serves here
+ * as a placeholder.
+ *
  *
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("b8d99ead-ceb1-4ee8-bf6f-d1022cc4485f")
-@EFapsRevision("$Rev$")
-public class CommonDelete
-    extends CommonDelete_Base
-{
-
-}
+package org.efaps.esjp.common.uitable;
