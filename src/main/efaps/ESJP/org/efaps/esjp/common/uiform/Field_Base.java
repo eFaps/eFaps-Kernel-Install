@@ -60,6 +60,8 @@ import org.efaps.util.cache.CacheReloadException;
 import org.efaps.util.cache.InfinispanCache;
 import org.infinispan.Cache;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class contains basic methods used to render standard Fields that are not
@@ -73,6 +75,12 @@ import org.joda.time.DateTime;
 public abstract class Field_Base
     extends AbstractCommon
 {
+
+    /**
+     * Logger for this class.
+     */
+    protected static final Logger LOG = LoggerFactory.getLogger(Field.class);
+
     /** Type of list to be rendered. */
     public enum ListType
     {
@@ -456,66 +464,128 @@ public abstract class Field_Base
         return ret;
     }
 
+    public Return getTypeDropDownFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        StringBuilder html = new StringBuilder();
+
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final FieldValue fieldvalue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        if (Display.EDITABLE.equals(fieldvalue.getDisplay())) {
+            if (properties.containsKey("Types")) {
+                html = tobeRemoved(_parameter);
+            } else {
+                final String selected = (String) properties.get("SelectedType");
+                final boolean includeAbstract = "true".equalsIgnoreCase((String) properties.get("IncludeAbstract"));
+                final Map<Integer, String> types = analyseProperty(_parameter, "Type");
+                final Map<Integer, String> excludeTypes = analyseProperty(_parameter, "ExcludeType");
+
+                if (!types.isEmpty()) {
+                    final Set<Type> excludes = new HashSet<Type>();
+                    if (!excludeTypes.isEmpty()) {
+                        for (final Entry<Integer, String> entryExclude : excludeTypes.entrySet()) {
+                            final Type type4Exclude = Type.get(entryExclude.getValue());
+                            if (type4Exclude != null) {
+                                excludes.add(type4Exclude);
+                            }
+                        }
+                    }
+                    final Type selectedType = selected != null && !selected.isEmpty() ? Type.get(selected) : null;
+
+                    final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
+                    for (final Entry<Integer, String> entryType  : types.entrySet()) {
+                        final Set<Type> typeList = getTypeList(_parameter, Type.get(entryType.getValue()));
+                        for (final Type type : typeList) {
+                            if (!excludes.contains(type) && (!type.isAbstract() || includeAbstract)) {
+                                final DropDownPosition pos = new DropDownPosition(type.getId(), type.getLabel(),
+                                                type.getLabel());
+                                positions.add(pos);
+                                if (type.equals(selectedType)) {
+                                    pos.setSelected(true);
+                                }
+                            }
+                        }
+                    }
+                    Collections.sort(positions, new Comparator<DropDownPosition>() {
+
+                        @SuppressWarnings("unchecked")
+                        @Override
+                        public int compare(final DropDownPosition _o1,
+                                           final DropDownPosition _o2)
+                        {
+                            return _o1.getOrderValue().compareTo(_o2.getOrderValue());
+                        }
+                    });
+                    html.append(getDropDownField(_parameter, positions));
+                }
+            }
+        }
+        final Return ret = new Return();
+        ret.put(ReturnValues.SNIPLETT, html.toString());
+        return ret;
+    }
+
     /**
      * @param _parameter Parameter as passed from the eFaps API
      * @return Return containing Html Snipplet
      * @throws EFapsException on error
      */
-    public Return getTypeDropDownFieldValue(final Parameter _parameter)
+    @Deprecated
+    private StringBuilder tobeRemoved(final Parameter _parameter)
         throws EFapsException
     {
-        final Return ret = new Return();
+        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        Field_Base.LOG.warn("Command: '{}' uses deprecated API defintion for Field.",
+                        fieldValue.getField().getCollection().getName());
+
         final StringBuilder html = new StringBuilder();
-        final FieldValue fieldvalue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        if (Display.EDITABLE.equals(fieldvalue.getDisplay())) {
-            final Map<? , ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-            final String typesStr = (String) props.get("Types");
-            final String selected = (String) props.get("SelectedType");
-            final boolean includeAbstract = "true".equalsIgnoreCase((String) props.get("IncludeAbstract"));
-            final String excludeTypesStr = (String) props.get("ExcludeTypes");
 
-            if (typesStr != null && !typesStr.isEmpty()) {
-                final Set<Type>excludes = new HashSet<Type>();
-                if (excludeTypesStr != null && !excludeTypesStr.isEmpty()) {
-                    final String[] excludesStr = excludeTypesStr.split(";");
-                    for (final String typeStr  : excludesStr) {
-                        final Type type = Type.get(typeStr);
-                        if (type != null) {
-                            excludes.add(type);
-                        }
+        final Map<? , ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final String typesStr = (String) props.get("Types");
+        final String selected = (String) props.get("SelectedType");
+        final boolean includeAbstract = "true".equalsIgnoreCase((String) props.get("IncludeAbstract"));
+        final String excludeTypesStr = (String) props.get("ExcludeTypes");
+
+        if (typesStr != null && !typesStr.isEmpty()) {
+            final Set<Type>excludes = new HashSet<Type>();
+            if (excludeTypesStr != null && !excludeTypesStr.isEmpty()) {
+                final String[] excludesStr = excludeTypesStr.split(";");
+                for (final String typeStr  : excludesStr) {
+                    final Type type = Type.get(typeStr);
+                    if (type != null) {
+                        excludes.add(type);
                     }
                 }
-                final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
-                final String[] types = typesStr.split(";");
-                final Type selType = selected != null && !selected.isEmpty() ? Type.get(selected) : null;
-                for (final String typeStr  : types) {
-                    final Set<Type> typeList = getTypeList(_parameter, Type.get(typeStr));
-                    for (final Type type : typeList) {
-                        if (!excludes.contains(type) && (!type.isAbstract() || includeAbstract)) {
-                            final DropDownPosition pos = new DropDownPosition(type.getId(), type.getLabel(),
-                                            type.getLabel());
-                            positions.add(pos);
-                            if (type.equals(selType)) {
-                                pos.setSelected(true);
-                            }
-                        }
-                    }
-                }
-                Collections.sort(positions, new Comparator<DropDownPosition>() {
-
-                    @SuppressWarnings("unchecked")
-                    @Override
-                    public int compare(final DropDownPosition _o1,
-                                       final DropDownPosition _o2)
-                    {
-                        return _o1.getOrderValue().compareTo(_o2.getOrderValue());
-                    }
-                });
-                html.append(getDropDownField(_parameter, positions));
             }
+            final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
+            final String[] types = typesStr.split(";");
+            final Type selType = selected != null && !selected.isEmpty() ? Type.get(selected) : null;
+            for (final String typeStr  : types) {
+                final Set<Type> typeList = getTypeList(_parameter, Type.get(typeStr));
+                for (final Type type : typeList) {
+                    if (!excludes.contains(type) && (!type.isAbstract() || includeAbstract)) {
+                        final DropDownPosition pos = new DropDownPosition(type.getId(), type.getLabel(),
+                                        type.getLabel());
+                        positions.add(pos);
+                        if (type.equals(selType)) {
+                            pos.setSelected(true);
+                        }
+                    }
+                }
+            }
+            Collections.sort(positions, new Comparator<DropDownPosition>() {
+
+                @SuppressWarnings("unchecked")
+                @Override
+                public int compare(final DropDownPosition _o1,
+                                   final DropDownPosition _o2)
+                {
+                    return _o1.getOrderValue().compareTo(_o2.getOrderValue());
+                }
+            });
+            html.append(getDropDownField(_parameter, positions));
         }
-        ret.put(ReturnValues.SNIPLETT, html.toString());
-        return ret;
+        return html;
     }
 
     /**
