@@ -909,8 +909,19 @@ public abstract class Field_Base
         throws EFapsException
     {
         final StringBuilder html = new StringBuilder();
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        final String name = fieldValue != null ? fieldValue.getField().getName() : "eFapsCheckBoxes";
+        final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
+        final String name;
+        final String fieldName = getProperty(_parameter, "FieldName");
+        if (fieldName != null) {
+            name = fieldName;
+        } else if (uiObject instanceof FieldValue) {
+            name = ((FieldValue) uiObject).getField().getName();
+        } else if (uiObject instanceof org.efaps.admin.ui.field.Field) {
+            name = ((org.efaps.admin.ui.field.Field) uiObject).getName();
+        } else {
+            name = "eFapsCheckBoxes";
+        }
+
         for (final DropDownPosition value : _values) {
             html.append("<input type=\"").append(_listType.equals(Field_Base.ListType.CHECKBOX) ? "checkbox" : "radio")
                 .append("\" value=\"").append(value.getValue()).append("\" name=\"")
