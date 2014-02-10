@@ -931,7 +931,7 @@ public abstract class Field_Base
                 html.append(" checked=\"checked\"");
             }
             html.append(" />").append(value.getOption());
-            if (horizontal == null && !"true".equals(horizontal)) {
+            if (horizontal == null) {
                 html.append("<br/>");
             }
         }
