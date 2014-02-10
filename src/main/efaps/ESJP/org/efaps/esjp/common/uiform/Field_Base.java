@@ -912,6 +912,7 @@ public abstract class Field_Base
         final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
         final String name;
         final String fieldName = getProperty(_parameter, "FieldName");
+        final String horizontal = getProperty(_parameter, "Horizontal");
         if (fieldName != null) {
             name = fieldName;
         } else if (uiObject instanceof FieldValue) {
@@ -929,7 +930,10 @@ public abstract class Field_Base
             if (value.isSelected()) {
                 html.append(" checked=\"checked\"");
             }
-            html.append(" />").append(value.getOption()).append("<br/>");
+            html.append(" />").append(value.getOption());
+            if (horizontal == null && !"true".equals(horizontal)) {
+                html.append("<br/>");
+            }
         }
         return html;
     }
