@@ -34,7 +34,7 @@ import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
 /**
- * TODO description
+ * TODO description.
  *
  * @author The eFaps Team
  * @version $Id$
@@ -44,6 +44,11 @@ import org.joda.time.DateTime;
 public abstract class History_Base
 {
 
+    /**
+     * @param _parameter Parameter as passed by  the efasp API
+     * @return filed for the history
+     * @throws EFapsException on error
+     */
     public Return getLogFieldValue(final Parameter _parameter)
         throws EFapsException
     {
@@ -63,7 +68,9 @@ public abstract class History_Base
         final QueryBuilder queryBldr = new QueryBuilder(CICommon.HistoryAbstract);
         queryBldr.addWhereAttrEqValue(CICommon.HistoryAbstract.GeneralInstanceLink, _parameter.getInstance()
                         .getGeneralId());
+        queryBldr.addOrderByAttributeDesc(CICommon.HistoryAbstract.Created);
         final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.setEnforceSorted(true);
         multi.addAttribute(CICommon.HistoryAbstract.Value, CICommon.HistoryAbstract.Created,
                         CICommon.HistoryAbstract.Creator);
         multi.execute();
