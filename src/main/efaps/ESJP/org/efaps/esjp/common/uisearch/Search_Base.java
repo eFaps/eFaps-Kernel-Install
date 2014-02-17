@@ -166,9 +166,12 @@ public abstract class Search_Base
         for (final String typeTmp : typesList) {
             final Type type = Type.get(typeTmp);
             final QueryBuilder queryBldr = new QueryBuilder(type);
-
+            boolean add = false;
             for (final Field field : command.getTargetForm().getFields()) {
                 final String value = context.getParameter(field.getName());
+                if (value!= null) {
+                    add = true;
+                }
                 if ((value != null) && (value.length() > 0) && (!value.equals("*"))) {
                     if (type.getAttribute(field.getAttribute()) != null) {
                         final Attribute attribute = type.getAttribute(field.getAttribute());
@@ -186,7 +189,9 @@ public abstract class Search_Base
                     }
                 }
             }
-            ret.add(queryBldr);
+            if (add) {
+                ret.add(queryBldr);
+            }
         }
         return ret;
     }
