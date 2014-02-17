@@ -25,10 +25,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.efaps.admin.datamodel.Attribute;
+import org.efaps.admin.datamodel.attributetype.PasswordType;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.PrintQuery;
 import org.efaps.esjp.common.history.xml.AbstractHistoryLog;
 import org.efaps.esjp.common.history.xml.AttributeValue;
 import org.efaps.util.EFapsException;
@@ -55,14 +57,32 @@ public abstract class AbstractUpdateHistoryTrigger_Base
         throws EFapsException
     {
         final Map<?, ?> values = (Map<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
+        analyseProperty(_parameter, "");
+        ;
         for (final Entry<?, ?> entry : values.entrySet()) {
             final Attribute attr = (Attribute) entry.getKey();
             if (!attr.getAttributeType().isAlwaysUpdate() && !attr.getAttributeType().isCreateUpdate()) {
                 final AttributeValue attrValue = new AttributeValue();
                 attrValue.setName(attr.getName());
-                final Object obj = entry.getValue();
-                if (obj instanceof Object[]) {
-                    attrValue.setValue(((Object[]) obj)[0]);
+                if (attr.getAttributeType().getDbAttrType() instanceof PasswordType) {
+                    attrValue.setValue("****************");
+                } else {
+                    final String phrase = getProperty(_parameter, "Phrase4Attribute_" + attr.getName());
+                    String phraseVal = null;
+                    if (phrase != null) {
+                        final PrintQuery print = new PrintQuery(getHistoryInstance(_parameter));
+                        print.addPhrase("SelectPhrase", phrase);
+                        print.executeWithoutAccessCheck();
+                        phraseVal  = print.getPhrase("SelectPhrase");
+                    }
+                    if (phraseVal != null) {
+                        attrValue.setValue(phraseVal);
+                    } else {
+                        final Object obj = entry.getValue();
+                        if (obj instanceof Object[]) {
+                            attrValue.setValue(((Object[]) obj)[0]);
+                        }
+                    }
                 }
                 _log.getInstance().getAttributes().add(attrValue);
             }

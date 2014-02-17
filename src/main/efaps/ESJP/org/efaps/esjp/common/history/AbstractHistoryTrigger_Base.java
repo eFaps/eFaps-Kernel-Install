@@ -82,23 +82,35 @@ public abstract class AbstractHistoryTrigger_Base
     }
 
     /**
-     * @return the Type for the History insert
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return instance that belongs to the HistoryTrigger
+     * @throws EFapsException on error
      */
-    protected abstract Type getHistoryType();
-
     protected Instance getHistoryInstance(final Parameter _parameter)
+        throws EFapsException
     {
         return _parameter.getInstance();
     }
 
     /**
-     * @param _parameter
-     * @param _log
+     * @return the Type for the History insert
+     */
+    protected abstract Type getHistoryType();
+
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
+     * @param _log log to be added to
+     * @throws EFapsException on error
      */
     protected abstract void add2LogObject(final Parameter _parameter,
                                           final AbstractHistoryLog _log)
         throws EFapsException;
 
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return the log object for this trigger
+     * @throws EFapsException on error
+     */
     protected abstract AbstractHistoryLog getLogObject(final Parameter _parameter)
         throws EFapsException;
 }

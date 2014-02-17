@@ -234,6 +234,7 @@
             index="2"
             name="Admin_User_Person.UPDATE_POST.2"
             event="UPDATE_POST">
+            <property name="Phrase4Attribute_Language">$&lt;linkto[Language].attribute[Language]&gt;</property>
         </trigger>
         <trigger program="org.efaps.esjp.common.history.InsertHistoryTrigger"
             index="2"
