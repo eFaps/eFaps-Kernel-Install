@@ -230,6 +230,16 @@
             event="UPDATE_POST"
             program="org.efaps.esjp.admin.user.Person"
             method="updateJaaskeyTrg" />
+        <trigger program="org.efaps.esjp.common.history.UpdateHistoryTrigger"
+            index="2"
+            name="Admin_User_Person.UPDATE_POST.2"
+            event="UPDATE_POST">
+        </trigger>
+        <trigger program="org.efaps.esjp.common.history.InsertHistoryTrigger"
+            index="2"
+            name="Admin_User_Person.INSERT_POST.2"
+            event="INSERT_POST">
+        </trigger>
     </definition>
 
 </datamodel-type>
