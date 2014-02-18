@@ -24,6 +24,8 @@ package org.efaps.esjp.admin.util;
 import java.util.UUID;
 
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Delete;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -37,6 +39,8 @@ import org.efaps.util.EFapsException;
  * @author The eFaps Team
  * @version $Id$
  */
+@EFapsUUID("5cd048cd-1ee0-47cd-8c8e-1480d18b5dae")
+@EFapsRevision("$Rev$")
 public class ProgramUtil
     extends AbstractUtil
 {
