@@ -223,31 +223,33 @@ public abstract class Field_Base
         final Map<Integer, String> comments = analyseProperty(_parameter, "Comment");
         final boolean jS = "true".equals(getProperty(_parameter, "JavaScript"));
 
-        if ((!comments.isEmpty() && !values.isEmpty() && !checkeds.isEmpty())
-                        && values.size() == comments.size()) {
-            for (final Entry<Integer, String> value : values.entrySet()) {
-                html.append("<input type=\"checkbox\" name=\"").append(fieldValue.getField().getName()).append("\" ")
-                    .append(UIInterface.EFAPSTMPTAG).append(" value=\"").append(value.getValue()).append("\" ");
-                if ("true".equals(checkeds.get(value.getKey()))) {
-                    html.append(" checked=\"checked\" ");
-                }
-                if (jS) {
-                    html.append("onClick=\"require(['dojo/query', 'dojo/dom'], function(query, dom){")
-                        .append("query('input', event.currentTarget.parentNode).forEach(function(node){")
-                        .append("if (event.currentTarget == node) {")
-                        .append("node.checked = true;")
-                        .append("} else {")
-                        .append("node.checked = false;")
-                        .append("}")
-                        .append("});")
-                        .append("})\" ");
-                }
-                if (!value.getValue().isEmpty()) {
-                    html.append(">")
-                        .append(DBProperties.getProperty(comments.get(value.getKey())))
-                        .append("</input>");
-                } else {
-                    html.append("/>");
+        if (Display.EDITABLE.equals(fieldValue.getDisplay())) {
+            if ((!comments.isEmpty() && !values.isEmpty() && !checkeds.isEmpty())
+                            && values.size() == comments.size()) {
+                for (final Entry<Integer, String> value : values.entrySet()) {
+                    html.append("<input type=\"checkbox\" name=\"").append(fieldValue.getField().getName()).append("\" ")
+                        .append(UIInterface.EFAPSTMPTAG).append(" value=\"").append(value.getValue()).append("\" ");
+                    if ("true".equals(checkeds.get(value.getKey()))) {
+                        html.append(" checked=\"checked\" ");
+                    }
+                    if (jS) {
+                        html.append("onClick=\"require(['dojo/query', 'dojo/dom'], function(query, dom){")
+                            .append("query('input', event.currentTarget.parentNode).forEach(function(node){")
+                            .append("if (event.currentTarget == node) {")
+                            .append("node.checked = true;")
+                            .append("} else {")
+                            .append("node.checked = false;")
+                            .append("}")
+                            .append("});")
+                            .append("})\" ");
+                    }
+                    if (!value.getValue().isEmpty()) {
+                        html.append(">")
+                            .append(DBProperties.getProperty(comments.get(value.getKey())))
+                            .append("</input>");
+                    } else {
+                        html.append("/>");
+                    }
                 }
             }
         }
