@@ -31,6 +31,8 @@ import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.util.EFapsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -44,6 +46,13 @@ import org.efaps.util.EFapsException;
 public class ProgramUtil
     extends AbstractUtil
 {
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(ProgramUtil.class);
+
+
     /**
      * Delete all events related to Attributes, Commands and Menus.
      * @param _parameter Parameter as passed by the eFasp API
@@ -54,12 +63,16 @@ public class ProgramUtil
     {
         if (checkAccess()) {
             // Admin_Program_Java
+            final String name = _parameter.getParameterValue("valueField");
+            ProgramUtil.LOG.info("Searching for esjp: '{}'", name);
             final QueryBuilder queryBldr = new QueryBuilder(UUID.fromString("11043a35-f73c-481c-8c77-00306dbce824"));
-            queryBldr.addWhereAttrEqValue("Name", _parameter.getParameterValue("valueField"));
+            queryBldr.addWhereAttrEqValue("Name", name);
             final InstanceQuery query = queryBldr.getQuery();
             query.execute();
             if (query.next()) {
                 final Instance prgInst = query.getCurrentValue();
+                ProgramUtil.LOG.info("Found esjp: '{}'", name);
+
                 // Admin_Program_JavaClass
                 final QueryBuilder classQueryBldr = new QueryBuilder(
                                 UUID.fromString("9118e1e3-ed4c-425d-8578-8d1f1d385110"));
@@ -67,11 +80,26 @@ public class ProgramUtil
                 final InstanceQuery classQuery = classQueryBldr.getQuery();
                 classQuery.execute();
                 while (classQuery.next()) {
+                    ProgramUtil.LOG.info("Removing compiled Classes: '{}'", classQuery.getCurrentValue());
                     final Delete del = new Delete(classQuery.getCurrentValue());
                     del.execute();
                 }
+
+                //Admin_Event_Definition
+                final QueryBuilder eventQueryBldr = new QueryBuilder(
+                                UUID.fromString("9c1d52f4-94d6-4f95-ab81-bed23884cf03"));
+                eventQueryBldr.addWhereAttrEqValue("JavaProg", prgInst);
+                final InstanceQuery eventQuery = eventQueryBldr.getQuery();
+                eventQuery.execute();
+                while (eventQuery.next()) {
+                    ProgramUtil.LOG.info("Removing related EventDefintion: '{}'", eventQuery.getCurrentValue());
+                    final Delete del = new Delete(eventQuery.getCurrentValue());
+                    del.execute();
+                }
+
                 final Delete del = new Delete(prgInst);
                 del.execute();
+                ProgramUtil.LOG.info("Removed esjp sucessfully");
             }
         }
     }
