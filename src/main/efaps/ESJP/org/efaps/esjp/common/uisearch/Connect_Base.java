@@ -82,25 +82,27 @@ public abstract class Connect_Base
             }
             for (final String childOid : childOids) {
                 final Instance child = Instance.get(childOid);
-                final Type type = getConnectType(_parameter, child);
-                if (type != null) {
-                    boolean check = false;
-                    if (allowAttr) {
-                        final QueryBuilder queryBldr = new QueryBuilder(type);
-                        queryBldr.addWhereAttrEqValue(parentAttr, parent.getId());
-                        queryBldr.addWhereAttrEqValue(childAttr, child.getId());
-                        final InstanceQuery query = queryBldr.getQuery();
-                        query.executeWithoutAccessCheck();
-                        if (query.next()) {
-                            check = true;
+                if (child.isValid()) {
+                    final Type type = getConnectType(_parameter, child);
+                    if (type != null) {
+                        boolean check = false;
+                        if (allowAttr) {
+                            final QueryBuilder queryBldr = new QueryBuilder(type);
+                            queryBldr.addWhereAttrEqValue(parentAttr, parent.getId());
+                            queryBldr.addWhereAttrEqValue(childAttr, child.getId());
+                            final InstanceQuery query = queryBldr.getQuery();
+                            query.executeWithoutAccessCheck();
+                            if (query.next()) {
+                                check = true;
+                            }
                         }
-                    }
-                    if (!check) {
-                        final Insert insert = new Insert(type);
-                        addInsertConnect(_parameter, insert);
-                        insert.add(parentAttr, parent.getId());
-                        insert.add(childAttr, child.getId());
-                        insert.execute();
+                        if (!check) {
+                            final Insert insert = new Insert(type);
+                            addInsertConnect(_parameter, insert);
+                            insert.add(parentAttr, parent.getId());
+                            insert.add(childAttr, child.getId());
+                            insert.execute();
+                        }
                     }
                 }
             }
