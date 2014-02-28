@@ -56,10 +56,13 @@ public class EventUtil
     {
         if (checkAccess()) {
             final List<String> events = new ArrayList<String>();
+            events.add("1497940a-f5e7-4701-a8ce-09311a429d2d"); //Admin_DataModel_AttributeInsertEvent
             events.add("031e3816-d9f3-4535-9bb4-05b25a4db61f"); //Admin_DataModel_AttributeRangeEvent
             events.add("cd4b6f31-726b-4fc5-9597-27a2b41c7e03"); //Admin_DataModel_AttributeRateEvent
-            events.add("71b3a912-ec7a-4ab9-81f2-59b4b3db808d"); //Admin_UI_TableEvaluateEvent
+            events.add("48f94042-0ffd-4836-9849-255dc956f2f1"); //Admin_DataModel_AttributeReadEvent
+            events.add("f609fd67-6648-4ecf-94c2-aa66ece7dfb3"); //Admin_DataModel_AttributeUpdateEvent
             events.add("4eb14278-f982-4a53-92ad-be95b4ee6b30"); //Admin_DataModel_AttributeValidateEvent
+            events.add("71b3a912-ec7a-4ab9-81f2-59b4b3db808d"); //Admin_UI_TableEvaluateEvent
             events.add("939e78ba-9254-4790-848a-ca6402f7ee58"); //Admin_UI_ValidateEvent
             events.add("850296d7-cddf-4add-bc0f-dc0ae2f53b27"); //Admin_UI_InstanceManagerEvent
             events.add("83f314e5-1c99-4602-95b8-a257d04c0ce6"); //Admin_UI_AbstractAccessCheckEvent
