@@ -339,6 +339,7 @@ public abstract class EFapsDataSource_Base
     public boolean next()
         throws JRException
     {
+        boolean ret = false;
         final boolean tmp = this.hasSubReport;
         if (this.hasSubReport) {
             this.hasSubReport = false;
@@ -354,7 +355,12 @@ public abstract class EFapsDataSource_Base
                 }
             }
         }
-        return this.print == null ? tmp : this.print.next();
+        try {
+            ret = this.print == null ? tmp : this.print.next();
+        } catch (final EFapsException e) {
+            new JRException(e);
+        }
+        return ret;
     }
 
     /**
