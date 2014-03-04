@@ -187,7 +187,7 @@ public abstract class AbstractDynamicReport_Base
     protected StyleBuilder getColumnStyle4Html(final Parameter _parameter)
         throws EFapsException
     {
-        return DynamicReports.stl.style().setPadding(DynamicReports.stl.padding(10));
+        return DynamicReports.stl.style().setPadding(DynamicReports.stl.padding(5));
     }
 
     /**
