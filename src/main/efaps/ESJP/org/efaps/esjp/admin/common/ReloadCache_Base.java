@@ -20,6 +20,9 @@
 
 package org.efaps.esjp.admin.common;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
@@ -31,6 +34,7 @@ import org.efaps.db.Context;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * Class to reload the Cache.<br>
  * This Class is a Java eFaps Program which is stored inside the eFaps-Database.
@@ -49,10 +53,13 @@ public abstract class ReloadCache_Base
     /**
      * Logger for this class.
      */
-    protected static final Logger LOG = LoggerFactory.getLogger(ReloadCache_Base.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ReloadCache.class);
+
+    private static Set<IReloadCacheListener> LISTENER = new HashSet<IReloadCacheListener>();
 
     /**
      * Reload the whole Cache for eFaps.
+     *
      * @param _parameter Parameter as pased from the eFaps API
      * @throws EFapsException on error
      * @return new empty Return
@@ -64,12 +71,16 @@ public abstract class ReloadCache_Base
         ReloadCache_Base.LOG.info("reload Cache by: " + Context.getThreadContext().getPerson().getName());
         RunLevel.init("webapp");
         RunLevel.execute();
+        for (final IReloadCacheListener listener : ReloadCache_Base.LISTENER) {
+            listener.onReloadCache(_parameter);
+        }
         ReloadCache_Base.LOG.info("reload Cache finished successfully");
         return new Return();
     }
 
     /**
      * Relaod the SystemConfigurations.
+     *
      * @param _parameter Parameter as pased from the eFaps API
      * @throws EFapsException on error
      * @return new empty Return
@@ -81,7 +92,15 @@ public abstract class ReloadCache_Base
         ReloadCache_Base.LOG.info("reload SystemConfigurations by: "
                         + Context.getThreadContext().getPerson().getName());
         SystemConfiguration.initialize();
+        for (final IReloadCacheListener listener : ReloadCache_Base.LISTENER) {
+            listener.onReloadSystemConfig(_parameter);
+        }
         ReloadCache_Base.LOG.info("reload SystemConfigurations finished successfully");
         return new Return();
+    }
+
+    public static void addListener(final IReloadCacheListener _listener)
+    {
+        ReloadCache_Base.LISTENER.add(_listener);
     }
 }
