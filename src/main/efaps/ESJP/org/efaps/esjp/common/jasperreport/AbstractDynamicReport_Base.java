@@ -128,7 +128,7 @@ public abstract class AbstractDynamicReport_Base
             .setIgnorePageWidth(true)
             .setIgnorePagination(true)
             .setCrosstabHighlightEvenRows(true)
-            .setHighlightDetailEvenRows(true);
+            .setHighlightDetailOddRows(true);
     }
 
     /**
@@ -233,7 +233,7 @@ public abstract class AbstractDynamicReport_Base
                         .setHorizontalAlignment(HorizontalAlignment.CENTER)
                         .setBackgroundColor(Color.LIGHT_GRAY)
                         .bold().setVerticalAlignment(VerticalAlignment.MIDDLE)
-                        .setPadding(DynamicReports.stl.padding(5));
+                        .setPadding(DynamicReports.stl.padding(5)).setSpacingAfter(4);
     }
 
     /**
