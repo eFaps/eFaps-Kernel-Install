@@ -40,7 +40,7 @@
             <form>Admin_User_AbstractForm</form>
             <table>Admin_User_AbstractTable</table>
             <evaluate program="org.efaps.esjp.common.uisearch.Search">
-                <property name="Types">Admin_User_RoleAbstract</property>
+                <property name="Type">Admin_User_RoleAbstract</property>
                 <property name="ExpandChildTypes">true</property>
             </evaluate>
         </target>

@@ -40,7 +40,7 @@
             <form>Admin_User_PersonForm</form>
             <table>Admin_User_PersonTable</table>
             <evaluate program="org.efaps.esjp.common.uisearch.Search">
-                <property name="Types">Admin_User_Person</property>
+                <property name="Type">Admin_User_Person</property>
             </evaluate>
         </target>
         <!-- properties -->
