@@ -1020,7 +1020,7 @@ public abstract class Field_Base
      * @return new DropDownValue
      * @throws EFapsException on error
      */
-    protected DropDownPosition getDropDownPosition(final Parameter _parameter,
+    public DropDownPosition getDropDownPosition(final Parameter _parameter,
                                                    final Object _value,
                                                    final Object _option)
         throws EFapsException
