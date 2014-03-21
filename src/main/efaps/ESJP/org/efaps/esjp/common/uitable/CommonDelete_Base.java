@@ -20,8 +20,6 @@
 
 package org.efaps.esjp.common.uitable;
 
-import java.util.Map;
-
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -29,6 +27,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Delete;
+import org.efaps.db.Instance;
 import org.efaps.util.EFapsException;
 
 /**
@@ -58,25 +57,35 @@ public abstract class CommonDelete_Base
      * @throws EFapsException if a delete of the selected oids is not possible
      * @return new Return()
      */
+    @Override
     public Return execute(final Parameter _parameter)
         throws EFapsException
     {
         final String[] allOids = (String[]) _parameter.get(ParameterValues.OTHERS);
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
 
         if (allOids != null) {
-
-            int delIdx = 0;
-            final String delIdxStr = (String) properties.get("DeleteIndex");
-            if ((delIdxStr != null) && (delIdxStr.length() > 0)) {
-                delIdx = Integer.parseInt(delIdxStr);
-            }
-
             for (final String rowOids : allOids) {
-                final String[] colOids = rowOids.split("\\|");
-                (new Delete(colOids[delIdx])).execute();
+                final Instance instance = Instance.get(rowOids);
+                if (instance.isValid()) {
+                    if (getValidate4Instance(_parameter)) {
+                        new Delete(rowOids).execute();
+                    }
+                }
             }
         }
         return new Return();
+    }
+
+    /**
+     * Method to validate instance a delete.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return boolean.
+     * @throws EFapsException on error.
+     */
+    protected boolean getValidate4Instance(final Parameter _parameter)
+        throws EFapsException
+    {
+        return true;
     }
 }
