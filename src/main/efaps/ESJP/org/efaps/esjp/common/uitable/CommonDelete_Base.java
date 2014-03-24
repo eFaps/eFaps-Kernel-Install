@@ -65,9 +65,9 @@ public abstract class CommonDelete_Base
 
         if (allOids != null) {
             for (final String rowOids : allOids) {
-                final Instance instance = Instance.get(rowOids);
-                if (instance.isValid()) {
-                    if (getValidate4Instance(_parameter)) {
+                final Instance delete = Instance.get(rowOids);
+                if (delete.isValid()) {
+                    if (getValidate4Instance(_parameter, delete)) {
                         new Delete(rowOids).execute();
                     }
                 }
@@ -83,7 +83,8 @@ public abstract class CommonDelete_Base
      * @return boolean.
      * @throws EFapsException on error.
      */
-    protected boolean getValidate4Instance(final Parameter _parameter)
+    protected boolean getValidate4Instance(final Parameter _parameter,
+                                           final Instance _delete)
         throws EFapsException
     {
         return true;
