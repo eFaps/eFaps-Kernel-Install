@@ -1262,6 +1262,30 @@ public abstract class Field_Base
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return html snipplet presenting the values
+     * @throws EFapsException on error
+     */
+    public Return getEmptyFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        // if the call instance is the same as the instance do not show
+        if ("true".equalsIgnoreCase(getProperty(_parameter, "check4InstanceNotCallInstance"))) {
+            final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+            if (fieldValue.getInstance().equals(fieldValue.getCallInstance())) {
+                if (fieldValue.getDisplay().equals(Display.NONE)) {
+                    ret.put(ReturnValues.VALUES, "");
+                } else {
+                    ret.put(ReturnValues.SNIPLETT, "&nbsp;");
+                }
+            }
+        } else {
+            ret.put(ReturnValues.SNIPLETT, "&nbsp;");
+        }
+        return ret;
+    }
 
     /**
      * A position in a dropdown.
