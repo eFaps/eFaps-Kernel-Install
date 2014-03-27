@@ -34,13 +34,13 @@
             <role>Administration</role>
         </access>
         <target>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" 
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck" name="Common_Main_Connection.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">WebApp-Configuration</property>
-                <property name="Attribute">org.efaps.webapp.WebSocket.activate</property>    
+                <property name="Attribute">org.efaps.webapp.ConnectionManagement.activate</property>
             </trigger>
         </target>
         <property name="HRef">${ROOTURL}/connection</property>
-        
+
     </definition>
 </ui-command>
