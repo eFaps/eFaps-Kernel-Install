@@ -48,6 +48,7 @@
             <child>Admin_User_AbstractTree_JAASKeys</child>
             <child>Admin_User_AbstractTree_Access</child>
             <child>Admin_User_PersonTree_User_Attribute</child>
+            <child>Admin_User_PersonTree_LoginOut</child>
             <child>Common_History_ObjectTree_HistoryLog</child>
         </childs>
         <!-- properties -->

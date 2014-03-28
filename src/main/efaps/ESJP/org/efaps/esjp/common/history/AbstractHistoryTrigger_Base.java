@@ -22,7 +22,6 @@ package org.efaps.esjp.common.history;
 
 import java.util.Date;
 
-import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -30,7 +29,6 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.esjp.ci.CICommon;
-import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.history.xml.AbstractHistoryLog;
 import org.efaps.esjp.common.history.xml.InstObj;
 import org.efaps.util.EFapsException;
@@ -46,13 +44,13 @@ import org.slf4j.LoggerFactory;
 @EFapsUUID("2e099cd6-eafe-49df-84f1-0a4a18235d6e")
 @EFapsRevision("$Rev$")
 public abstract class AbstractHistoryTrigger_Base
-    extends AbstractCommon
+    extends AbstractHistory
 {
 
     /**
      * Logger for this class.
      */
-    protected static final Logger LOG = LoggerFactory.getLogger(AbstractHistoryTrigger.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractHistoryTrigger.class);
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
@@ -77,7 +75,7 @@ public abstract class AbstractHistoryTrigger_Base
         insert.add(CICommon.HistoryAbstract.GeneralInstanceLink, getHistoryInstance(_parameter).getGeneralId());
         insert.add(CICommon.HistoryAbstract.Value, log);
         insert.executeWithoutTrigger();
-
+        AbstractHistoryTrigger_Base.LOG.debug("Registered for History: {}", log);
         return new Return();
     }
 
@@ -91,26 +89,4 @@ public abstract class AbstractHistoryTrigger_Base
     {
         return _parameter.getInstance();
     }
-
-    /**
-     * @return the Type for the History insert
-     */
-    protected abstract Type getHistoryType();
-
-    /**
-     * @param _parameter Parameter as passed by the eFasp API
-     * @param _log log to be added to
-     * @throws EFapsException on error
-     */
-    protected abstract void add2LogObject(final Parameter _parameter,
-                                          final AbstractHistoryLog _log)
-        throws EFapsException;
-
-    /**
-     * @param _parameter Parameter as passed by the eFasp API
-     * @return the log object for this trigger
-     * @throws EFapsException on error
-     */
-    protected abstract AbstractHistoryLog getLogObject(final Parameter _parameter)
-        throws EFapsException;
 }

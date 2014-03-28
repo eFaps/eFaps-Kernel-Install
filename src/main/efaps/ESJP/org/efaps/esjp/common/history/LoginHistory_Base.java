@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2014 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,23 +18,41 @@
  * Last Changed By: $Author$
  */
 
+
 package org.efaps.esjp.common.history;
 
+import org.efaps.admin.datamodel.Type;
+import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.esjp.ci.CICommon;
+import org.efaps.esjp.common.history.xml.AbstractHistoryLog;
+import org.efaps.esjp.common.history.xml.LoginLog;
+import org.efaps.util.EFapsException;
+
 
 /**
- * This class must be replaced for customization, therefore it is left empty.
- * Functional description can be found in the related "<code>_Base</code>"
- * class.
+ * TODO comment!
  *
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("bded0b82-76ff-4605-ac5a-391442094102")
+@EFapsUUID("255f8006-27f0-41cb-a377-7912471587a1")
 @EFapsRevision("$Rev$")
-public abstract class AbstractHistoryTrigger
-    extends AbstractHistoryTrigger_Base
+public abstract class LoginHistory_Base
+    extends AbstractLoginOutHistory
 {
 
+    @Override
+    protected Type getHistoryType()
+    {
+        return CICommon.HistoryLogin.getType();
+    }
+
+    @Override
+    protected AbstractHistoryLog getLogObject(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new LoginLog();
+    }
 }

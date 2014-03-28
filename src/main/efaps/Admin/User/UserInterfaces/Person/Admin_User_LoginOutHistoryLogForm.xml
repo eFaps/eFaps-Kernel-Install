@@ -20,20 +20,25 @@
  Last Changed By: $Author$
 
 -->
-<datamodel-type xmlns="http://www.efaps.org/xsd"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>5631c300-5814-4ce8-8cee-6119b9ff6ab3</uuid>
+    <uuid>e0aa99ed-7d99-421b-8252-0a39e0954a31</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Common_HistoryDisconnect</name>
-        <parent>Common_HistoryAbstractUpdate</parent>
-        <purpose GeneralInstance="false" />
-        <trigger event="ACCESSCHECK" name="Common_HistoryDisconnect.ACCESSCHECK"
-            program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType" />
+        <name>Admin_User_LoginOutHistoryLogForm</name>
+        <field name="log">
+            <property name="HideLabel">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="ModeView">READONLY</property>
+            <trigger event="UI_FIELD_VALUE" method="getLogFieldValue"
+                name="Common_History_LogForm.log.UI_FIELD_VALUE"
+                program="org.efaps.esjp.common.history.History" >
+                <!-- Common_HistoryLogin,Common_HistoryLogout -->
+                <property name="Type01">ec564e40-81aa-42f7-a7c0-8f4bcc54dd2a</property>
+                <property name="Type02">ee4bf603-a15e-4f7d-904f-585e0593b069</property>
+            </trigger>
+        </field>
     </definition>
-</datamodel-type>
+</ui-form>

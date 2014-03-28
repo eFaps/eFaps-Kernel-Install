@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2014 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,10 +31,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("bded0b82-76ff-4605-ac5a-391442094102")
+@EFapsUUID("b39cf982-2e67-4c70-945a-85e314c4dc5a")
 @EFapsRevision("$Rev$")
-public abstract class AbstractHistoryTrigger
-    extends AbstractHistoryTrigger_Base
+public abstract class AbstractHistory
+    extends AbstractHistory_Base
 {
 
 }

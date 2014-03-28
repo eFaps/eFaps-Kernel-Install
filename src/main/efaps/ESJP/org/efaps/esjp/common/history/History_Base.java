@@ -20,6 +20,11 @@
 
 package org.efaps.esjp.common.history;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
+
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -30,6 +35,7 @@ import org.efaps.admin.user.Person;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CICommon;
+import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -42,6 +48,7 @@ import org.joda.time.DateTime;
 @EFapsUUID("be48d384-c721-470c-b099-7141874ca537")
 @EFapsRevision("$Rev$")
 public abstract class History_Base
+    extends AbstractCommon
 {
 
     /**
@@ -65,7 +72,20 @@ public abstract class History_Base
             .append("<th>").append(DBProperties.getProperty("org.efaps.esjp.common.history.History.Desc"))
             .append("</th>")
             .append("</tr>");
-        final QueryBuilder queryBldr = new QueryBuilder(CICommon.HistoryAbstract);
+
+        final Map<Integer, String> types = analyseProperty(_parameter, "Type");
+        final QueryBuilder queryBldr;
+        if (types.isEmpty()) {
+            queryBldr = new QueryBuilder(CICommon.HistoryAbstractUpdate);
+        } else {
+            final Iterator<String> iter = types.values().iterator();
+            String typeStr = iter.next();
+            queryBldr = new QueryBuilder(isUUID(typeStr) ? Type.get(UUID.fromString(typeStr)) : Type.get(typeStr));
+            while (iter.hasNext()) {
+                typeStr = iter.next();
+                queryBldr.addType(isUUID(typeStr) ? Type.get(UUID.fromString(typeStr)) : Type.get(typeStr));
+            }
+        }
         queryBldr.addWhereAttrEqValue(CICommon.HistoryAbstract.GeneralInstanceLink, _parameter.getInstance()
                         .getGeneralId());
         queryBldr.addOrderByAttributeDesc(CICommon.HistoryAbstract.Created);

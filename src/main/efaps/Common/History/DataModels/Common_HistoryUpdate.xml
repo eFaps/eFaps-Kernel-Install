@@ -34,7 +34,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Common_HistoryUpdate</name>
-        <parent>Common_HistoryAbstract</parent>
+        <parent>Common_HistoryAbstractUpdate</parent>
         <purpose GeneralInstance="false"/>
         <trigger program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"
              name="Common_HistoryUpdate.ACCESSCHECK"

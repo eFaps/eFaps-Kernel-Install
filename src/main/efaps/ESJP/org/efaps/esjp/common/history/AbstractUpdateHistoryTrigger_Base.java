@@ -58,7 +58,6 @@ public abstract class AbstractUpdateHistoryTrigger_Base
     {
         final Map<?, ?> values = (Map<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
         analyseProperty(_parameter, "");
-        ;
         for (final Entry<?, ?> entry : values.entrySet()) {
             final Attribute attr = (Attribute) entry.getKey();
             if (!attr.getAttributeType().isAlwaysUpdate() && !attr.getAttributeType().isCreateUpdate()) {

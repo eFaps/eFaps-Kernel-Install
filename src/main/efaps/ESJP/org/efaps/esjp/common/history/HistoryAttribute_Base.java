@@ -35,6 +35,8 @@ import org.efaps.esjp.common.history.xml.CreateLog;
 import org.efaps.esjp.common.history.xml.DisconnectLog;
 import org.efaps.esjp.common.history.xml.HistoryInstObj;
 import org.efaps.esjp.common.history.xml.InstObj;
+import org.efaps.esjp.common.history.xml.LoginLog;
+import org.efaps.esjp.common.history.xml.LogoutLog;
 import org.efaps.esjp.common.history.xml.UpdateLog;
 
 /**
@@ -54,7 +56,8 @@ public abstract class HistoryAttribute_Base
     {
         return new Class<?>[] { AbstractHistoryLog.class, AbstractConnectLog.class, ConnectLog.class,
                                 DisconnectLog.class, AbstractInstObj.class, InstObj.class, HistoryInstObj.class,
-                                ConnectInstObj.class, AttributeValue.class, UpdateLog.class, CreateLog.class };
+                                ConnectInstObj.class, AttributeValue.class, UpdateLog.class, CreateLog.class,
+                                LoginLog.class, LogoutLog.class };
     }
 
     @Override

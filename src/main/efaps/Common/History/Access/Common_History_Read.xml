@@ -38,6 +38,8 @@
         <type>Common_HistoryUpdate</type>
         <type>Common_HistoryConnect</type>
         <type>Common_HistoryDisconnect</type>
+        <type>Common_HistoryLogin</type>
+        <type>Common_HistoryLogout</type>
 
         <role>History_Reader</role>
     </definition>

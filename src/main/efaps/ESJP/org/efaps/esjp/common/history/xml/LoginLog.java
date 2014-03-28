@@ -18,23 +18,46 @@
  * Last Changed By: $Author$
  */
 
-package org.efaps.esjp.common.history;
 
+package org.efaps.esjp.common.history.xml;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.esjp.ci.CICommon;
+import org.efaps.util.EFapsException;
+
 
 /**
- * This class must be replaced for customization, therefore it is left empty.
- * Functional description can be found in the related "<code>_Base</code>"
- * class.
+ * TODO comment!
  *
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("bded0b82-76ff-4605-ac5a-391442094102")
+@EFapsUUID("56ed35ce-5b6f-4ad3-a4f9-1053a6f26dfc")
 @EFapsRevision("$Rev$")
-public abstract class AbstractHistoryTrigger
-    extends AbstractHistoryTrigger_Base
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlRootElement(name = "login")
+public class LoginLog
+    extends AbstractLoginOutLog
 {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTypeColumnValue()
+        throws EFapsException
+    {
+        return CICommon.HistoryLogin.getType().getLabel();
+    }
 
+    @Override
+    public String toString()
+    {
+        return ToStringBuilder.reflectionToString(this);
+    }
 }

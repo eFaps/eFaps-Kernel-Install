@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2014 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,13 @@
  * Last Changed By: $Author$
  */
 
+
 package org.efaps.esjp.common.history;
 
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+
+
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
@@ -31,10 +34,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("bded0b82-76ff-4605-ac5a-391442094102")
+@EFapsUUID("13bd2319-c33d-41de-90ea-7da2c4bf248b")
 @EFapsRevision("$Rev$")
-public abstract class AbstractHistoryTrigger
-    extends AbstractHistoryTrigger_Base
+public class LoginHistory
+    extends LoginHistory_Base
 {
 
 }
