@@ -147,7 +147,7 @@ public abstract class RangesValue_Base
             Map retmap;
             if (_parameter.get(ParameterValues.UIOBJECT) instanceof FieldValue) {
                 retmap = tmpMap;
-                setSelectedValue(_parameter);
+                setSelectedValue(_parameter, retmap);
             } else {
                 retmap = new LinkedHashMap<Long, String>();
                 for (final Entry<String, Long> entry : order.entrySet()) {
@@ -178,7 +178,8 @@ public abstract class RangesValue_Base
      * @param _parameter Parameter as passed from the eFaps API
      * @throws EFapsException on error
      */
-    protected void setSelectedValue(final Parameter _parameter)
+    protected void setSelectedValue(final Parameter _parameter,
+                                    final Map<?,?> _map)
         throws EFapsException
     {
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
@@ -187,6 +188,5 @@ public abstract class RangesValue_Base
                         && properties.containsKey("Default")) {
             fieldValue.setValue(properties.get("Default"));
         }
-
     }
 }

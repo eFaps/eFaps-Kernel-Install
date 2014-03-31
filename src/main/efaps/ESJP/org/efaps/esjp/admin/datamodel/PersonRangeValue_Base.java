@@ -55,7 +55,8 @@ public abstract class PersonRangeValue_Base
      * {@inheritDoc}
      */
     @Override
-    protected void setSelectedValue(final Parameter _parameter)
+    protected void setSelectedValue(final Parameter _parameter,
+                                    final Map<?,?> _valueMap)
         throws EFapsException
     {
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
