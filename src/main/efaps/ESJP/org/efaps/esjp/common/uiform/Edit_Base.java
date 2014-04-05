@@ -175,13 +175,15 @@ public abstract class Edit_Base
         if (print.execute()) {
             final Update update = new Update(_instance);
             for (final Field field : fields) {
-                if (context.getParameters().containsKey(field.getName())) {
+                final String attrName = field.getAttribute();
+                final Attribute attr = _instance.getType().getAttribute(attrName);
+                if (attr != null && (context.getParameters().containsKey(field.getName())
+                                || attr.getAttributeType().getUIProvider() instanceof BitEnumUI)) {
                     final String[] newValue = _parameter.getParameterValues(field.getName());
-                    final String attrName = field.getAttribute();
                     final Object object = print.getAttribute(attrName);
                     final String oldValue = object != null ? object.toString() : null;
-                    if (!newValue.equals(oldValue)) {
-                        final Attribute attr = _instance.getType().getAttribute(attrName);
+                    if ((newValue == null && oldValue != null)
+                                    || (newValue != null && !newValue.equals(oldValue))) {
                         add2Update(_parameter, update, attr, field.getName());
                     }
                 }
@@ -195,7 +197,7 @@ public abstract class Edit_Base
 
     /**
      * Add to the given update.
-     *
+     * @param _parameter Parameter as passed by the eFaps API
      * @param _update Update
      * @param _attr Attribute
      * @param _fieldName name of the Field
@@ -359,8 +361,8 @@ public abstract class Edit_Base
                                 final List<FieldSet> _fieldsets)
         throws EFapsException
     {
-        @SuppressWarnings("unchecked") final Map<String, String> idmap = (Map<String, String>) _parameter
-                        .get(ParameterValues.OIDMAP4UI);
+        @SuppressWarnings("unchecked")
+        final Map<String, String> idmap = (Map<String, String>) _parameter.get(ParameterValues.OIDMAP4UI);
         for (final FieldSet fieldset : _fieldsets) {
             if (_parameter.getParameters().containsKey(fieldset.getName() + "eFapsRemove")) {
                 // to mantain backward compatibility
@@ -494,9 +496,7 @@ public abstract class Edit_Base
                                 final Attribute attr = classification.getAttribute(attrName);
                                 if (attr != null && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType()
                                                 .getClassRepr())) {
-                                    if (_parameter.getParameters().containsKey(field.getName())) {
-                                        add2Update(_parameter, classInsert, attr, field.getName());
-                                    }
+                                    add2Update(_parameter, classInsert, attr, field.getName());
                                 }
                             }
                         }
@@ -518,11 +518,13 @@ public abstract class Edit_Base
                                 final Attribute attr = classification.getAttribute(attrName);
                                 if (attr != null && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType()
                                                 .getClassRepr())) {
-                                    if (_parameter.getParameters().containsKey(field.getName())) {
+                                    if (_parameter.getParameters().containsKey(field.getName())
+                                                    || attr.getAttributeType().getUIProvider() instanceof BitEnumUI) {
                                         final String newValue = _parameter.getParameterValue(field.getName());
                                         final Object value = values.get(field.getName());
                                         final String oldValue = value != null ? value.toString() : null;
-                                        if (!newValue.equals(oldValue)) {
+                                        if ((newValue == null && oldValue != null)
+                                                        || (newValue != null && !newValue.equals(oldValue))) {
                                             execUpdate = true;
                                             add2Update(_parameter, update, attr, field.getName());
                                         }
@@ -704,7 +706,7 @@ public abstract class Edit_Base
                     } else {
                         if (event.getProperty("Types") != null) {
                             Edit_Base.LOG.error("Use of deprecated api calling for Field: '%s' in Collection '%s' ",
-                                            new Object[] { fieldTable.getName(), fieldTable.getCollection().getName() });
+                                           new Object[] { fieldTable.getName(), fieldTable.getCollection().getName() });
                             type = Type.get(event.getProperty("Types"));
                             conattr = event.getProperty("LinkFroms");
                         } else {
