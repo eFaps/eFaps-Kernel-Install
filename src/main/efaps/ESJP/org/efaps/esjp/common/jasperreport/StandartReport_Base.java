@@ -105,11 +105,22 @@ public abstract class StandartReport_Base
         throws EFapsException
     {
         final Return ret = new Return();
+        ret.put(ReturnValues.VALUES, getFile(_parameter));
+        ret.put(ReturnValues.TRUE, true);
+        return ret;
+    }
+
+    public File getFile(final Parameter _parameter)
+        throws EFapsException
+    {
+        File ret = null;
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
 
         String name = (String) properties.get("JasperReport");
         if (name == null) {
-            final SystemConfiguration sysConf = SystemConfiguration.get(UUID.fromString("9ac2673a-18f9-41ba-b9be-5b0980bdf6f3"));
+            // Commons-Configuration
+            final SystemConfiguration sysConf = SystemConfiguration.get(UUID
+                            .fromString("9ac2673a-18f9-41ba-b9be-5b0980bdf6f3"));
             final String key = (String) properties.get("JasperKey");
             if (sysConf != null && key != null) {
                 final Properties props = sysConf.getAttributeValueAsProperties("org.efaps.commons.JasperKey", true);
@@ -118,7 +129,7 @@ public abstract class StandartReport_Base
         }
 
         if (name == null) {
-            LOG.error("Neither JasperReport nor JasperKey lead to valid Report Name");
+            StandartReport_Base.LOG.error("Neither JasperReport nor JasperKey lead to valid Report Name");
         }
 
         final String dataSourceClass = (String) properties.get("DataSourceClass");
@@ -128,7 +139,7 @@ public abstract class StandartReport_Base
         this.jrParameters.put(JRParameter.REPORT_RESOURCE_BUNDLE, new EFapsResourceBundle());
 
         final QueryBuilder queryBldr = new QueryBuilder(CIAdminProgram.JasperReportCompiled);
-        queryBldr.addWhereAttrEqValue("Name", name);
+        queryBldr.addWhereAttrEqValue(CIAdminProgram.JasperReportCompiled.Name, name);
         final InstanceQuery query = queryBldr.getQuery();
         query.execute();
         Instance instance = null;
@@ -169,9 +180,7 @@ public abstract class StandartReport_Base
                     setFileName((String) this.jrParameters.get("FileName"));
                 }
             }
-            ret.put(ReturnValues.VALUES, getFile(jasperPrint, mime));
-            ret.put(ReturnValues.TRUE, true);
-
+            ret = getFile(jasperPrint, mime);
         } catch (final ClassNotFoundException e) {
             throw new EFapsException(StandartReport_Base.class, "execute.ClassNotFoundException", e);
         } catch (final SecurityException e) {
@@ -194,6 +203,7 @@ public abstract class StandartReport_Base
         return ret;
     }
 
+
     /**
      * Method to get the File.
      *
@@ -209,7 +219,6 @@ public abstract class StandartReport_Base
         throws IOException, JRException, EFapsException
     {
         File file = null;
-
         if ("pdf".equalsIgnoreCase(_mime) || _mime == null) {
             file = new FileUtil().getFile(getFileName() == null ? "PDF" : getFileName(), "pdf");
             final FileOutputStream os = new FileOutputStream(file);
