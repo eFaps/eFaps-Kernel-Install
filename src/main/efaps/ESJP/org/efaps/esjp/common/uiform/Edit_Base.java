@@ -543,10 +543,17 @@ public abstract class Edit_Base
         // remove the classifications that are not any more wanted
         for (final Classification clas : clas2values.keySet()) {
             if (classifications == null || !classifications.contains(clas)) {
-                Delete del = new Delete((String) clas2values.get(clas).get("OID"));
-                del.execute();
-                del = new Delete((String) clas2values.get(clas).get("relOID"));
-                del.execute();
+                final Instance delInst = Instance.get((String) clas2values.get(clas).get("OID"));
+                if (delInst.isValid()) {
+                    final Delete del = new Delete(delInst);
+                    del.execute();
+                }
+                final Instance relDelInst = Instance.get((String) clas2values.get(clas).get("relOID"));
+                if (relDelInst.isValid()) {
+                    final Delete del = new Delete(relDelInst);
+                    del.execute();
+                }
+
             }
         }
     }
