@@ -781,35 +781,51 @@ public abstract class Field_Base
         throws EFapsException
     {
         final String html;
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String typeStr = (String) props.get("Type");
+        final String typeStr = getProperty(_parameter, "Type");
         final Type type = Type.get(typeStr);
         if (type != null) {
-            final boolean includeChildTypes = !"false".equalsIgnoreCase((String) props.get("ExpandChildTypes"));
+            final boolean includeChildTypes = !"false".equalsIgnoreCase(getProperty(_parameter,"ExpandChildTypes"));
 
             final QueryBuilder queryBldr = new QueryBuilder(type);
-            final String linkfrom = (String) props.get("LinkFrom");
+            final String linkfrom = getProperty(_parameter, "LinkFrom");
             if (linkfrom != null) {
                 final Instance instance = _parameter.getInstance() == null
                                                 ? _parameter.getCallInstance() : _parameter.getInstance();
+
                 if (instance != null && instance.isValid()) {
-                    queryBldr.addWhereAttrEqValue(linkfrom, instance.getId());
+                    queryBldr.addWhereAttrEqValue(linkfrom, instance);
                 }
             }
-            final String where = (String) props.get("WhereAttrEqValue");
+            final String where = getProperty(_parameter, "WhereAttrEqValue");
             if (where != null) {
                 final String[] parts = where.split("\\|");
                 queryBldr.addWhereAttrEqValue(parts[0], parts[1]);
             }
 
-            if (props.containsKey("StatusGroup")) {
-                final String statiStr = String.valueOf(props.get("Stati"));
-                final String[] statiAr = statiStr.split(";");
+            if (containsProperty(_parameter,"StatusGroup")) {
                 final List<Object> statusList = new ArrayList<Object>();
-                for (final String stati : statiAr) {
-                    final Status status = Status.find((String) props.get("StatusGroup"), stati);
-                    if (status != null) {
-                        statusList.add(status.getId());
+
+                final Map<Integer, String> statusMap = analyseProperty(_parameter, "Status");
+
+                if (statusMap.isEmpty()) {
+                    // to be removed
+                    final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+                    final String statiStr = String.valueOf(getProperty(_parameter, "Stati"));
+                    final String[] statiAr = statiStr.split(";");
+                    Field_Base.LOG.warn("Command: '{}' uses deprecated API defintion for Field.",
+                                    fieldValue.getField().getCollection().getName());
+                    for (final String stati : statiAr) {
+                        final Status status = Status.find(getProperty(_parameter, "StatusGroup"), stati);
+                        if (status != null) {
+                            statusList.add(status.getId());
+                        }
+                    }
+                } else {
+                    for (final String astatus : statusMap.values()) {
+                        final Status status = Status.find(getProperty(_parameter, "StatusGroup"), astatus);
+                        if (status != null) {
+                            statusList.add(status.getId());
+                        }
                     }
                 }
                 queryBldr.addWhereAttrEqValue(type.getStatusAttribute().getName(), statusList.toArray());
@@ -821,19 +837,19 @@ public abstract class Field_Base
             instQuery.setIncludeChildTypes(includeChildTypes);
 
             final MultiPrintQuery multi = new MultiPrintQuery(instQuery.execute());
-            final String select = (String) props.get("Select");
+            final String select = getProperty(_parameter, "Select");
             if (select != null) {
                 multi.addSelect(select);
             }
-            final String phrase = (String) props.get("Phrase");
+            final String phrase = getProperty(_parameter, "Phrase");
             if (phrase != null) {
                 multi.addPhrase("Phrase", phrase);
             }
-            final String valueSel = (String) props.get("ValueSelect");
+            final String valueSel = getProperty(_parameter, "ValueSelect");
             if (valueSel != null) {
                 multi.addSelect(valueSel);
             }
-            final String orderSel = (String) props.get("OrderSelect");
+            final String orderSel = getProperty(_parameter, "OrderSelect");
             if (orderSel != null) {
                 multi.addSelect(orderSel);
             }
@@ -867,21 +883,21 @@ public abstract class Field_Base
                 }
                 // evaluate for selected only until the first is found
                 if (!selected) {
-                    if (dbValue != null && "true".equalsIgnoreCase((String) props.get("SetSelected"))) {
+                    if (dbValue != null && "true".equalsIgnoreCase(getProperty(_parameter, "SetSelected"))) {
                         if (dbValue.equals(val.value)) {
                             val.setSelected(true);
                             selected = true;
                         }
-                    } else if (props.containsKey("Regex4DefaultValue")) {
-                        if (String.valueOf(val.getOption()).matches((String) props.get("Regex4DefaultValue"))) {
+                    } else if (containsProperty(_parameter, "Regex4DefaultValue")) {
+                        if (String.valueOf(val.getOption()).matches(getProperty(_parameter, "Regex4DefaultValue"))) {
                             val.setSelected(true);
                             selected = true;
                         }
                     }
                 }
             }
-            if (props.containsKey("emptyValue")) {
-                values.add(0, new DropDownPosition("", DBProperties.getProperty((String) props.get("emptyValue"))));
+            if (containsProperty(_parameter, "emptyValue")) {
+                values.add(0, new DropDownPosition("", DBProperties.getProperty(getProperty(_parameter,"emptyValue"))));
             }
 
             if (orderSel != null) {

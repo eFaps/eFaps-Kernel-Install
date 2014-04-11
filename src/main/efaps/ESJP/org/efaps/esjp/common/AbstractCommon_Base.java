@@ -120,6 +120,21 @@ public abstract class AbstractCommon_Base
     }
 
     /**
+     * Check for a Property form the ParameterValues.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _key key of the Property
+     * @return value for the Property, null if not found
+     * @throws EFapsException on error
+     */
+    protected boolean containsProperty(final Parameter _parameter,
+                                       final String _key)
+    {
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        return properties.containsKey(_key);
+    }
+
+    /**
      * Recursive method to get a Type with his children and children children as
      * a simple set.
      *
