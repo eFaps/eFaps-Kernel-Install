@@ -318,13 +318,13 @@ public abstract class Field_Base
         return ret;
     }
 
-
     /**
      * @param _parameter    Parameter as passed from the eFaps API
      * @return Return containing Html Snipplet
      * @throws EFapsException on error
      */
-    public Return getRadioList4Enum(final Parameter _parameter)
+    public Return getList4Enum(final Parameter _parameter,
+                               final Field_Base.ListType _type)
         throws EFapsException
     {
         final Return ret = new Return();
@@ -355,7 +355,9 @@ public abstract class Field_Base
                                 pos.setSelected(i == ordinal);
                                 i++;
                             }
-                            Collections.sort(values, new Comparator<DropDownPosition>() {
+                            Collections.sort(values, new Comparator<DropDownPosition>()
+                            {
+
                                 @SuppressWarnings("unchecked")
                                 @Override
                                 public int compare(final DropDownPosition _o1,
@@ -364,12 +366,19 @@ public abstract class Field_Base
                                     return _o1.getOrderValue().compareTo(_o2.getOrderValue());
                                 }
                             });
-                            ret.put(ReturnValues.SNIPLETT, getInputField(_parameter, values,
-                                            Field_Base.ListType.RADIO));
+                            switch (_type) {
+                                case DROPDOWN:
+                                    ret.put(ReturnValues.SNIPLETT, getDropDownField(_parameter, values));
+                                    break;
+                                case RADIO:
+                                    ret.put(ReturnValues.SNIPLETT, getInputField(_parameter, values, _type));
+                                    break;
+                            }
+
                         } else {
                             ret.put(ReturnValues.SNIPLETT, ordinal > -1
                                             ? DBProperties.getProperty(enumName + "." + consts[ordinal].toString())
-                                                            : "");
+                                            : "");
                         }
                     }
                 } catch (final ClassNotFoundException e) {
@@ -380,6 +389,18 @@ public abstract class Field_Base
             }
         }
         return ret;
+    }
+
+    public Return getDropDown4Enum(final Parameter _parameter)
+        throws EFapsException
+    {
+        return getList4Enum(_parameter, ListType.DROPDOWN);
+    }
+
+    public Return getRadioList4Enum(final Parameter _parameter)
+        throws EFapsException
+    {
+        return getList4Enum(_parameter, ListType.RADIO);
     }
 
     /**
