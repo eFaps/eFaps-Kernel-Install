@@ -129,6 +129,7 @@ public abstract class AbstractCommon_Base
      */
     protected boolean containsProperty(final Parameter _parameter,
                                        final String _key)
+        throws EFapsException
     {
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         return properties.containsKey(_key);
