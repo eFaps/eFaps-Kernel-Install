@@ -122,11 +122,11 @@ public abstract class Field_Base
             }
             if (props.containsKey("days")) {
                 final int days = Integer.parseInt((String) props.get("days"));
-                date = date.minusDays(days);
+                date = date.plusDays(days);
             }
             if (props.containsKey("weeks")) {
                 final int weeks = Integer.parseInt((String) props.get("weeks"));
-                date = date.minusWeeks(weeks);
+                date = date.plusWeeks(weeks);
             }
             if (props.containsKey("months")) {
                 final int months = Integer.parseInt((String) props.get("months"));
