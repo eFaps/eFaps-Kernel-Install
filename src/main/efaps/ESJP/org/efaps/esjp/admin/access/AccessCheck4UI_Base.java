@@ -343,7 +343,13 @@ public abstract class AccessCheck4UI_Base
     {
         final Return ret = new Return();
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final SystemConfiguration config = SystemConfiguration.get((String) props.get("SystemConfig"));
+        final String sysConfstr = (String) props.get("SystemConfig");
+        final SystemConfiguration config;
+        if (isUUID(sysConfstr)) {
+            config = SystemConfiguration.get(UUID.fromString(sysConfstr));
+        } else {
+            config = SystemConfiguration.get(sysConfstr);
+        }
         if (config != null) {
             final Boolean access = config.getAttributeValueAsBoolean((String) props.get("Attribute"));
             final boolean inverse = "true".equalsIgnoreCase((String) props.get("Inverse"));
@@ -367,7 +373,13 @@ public abstract class AccessCheck4UI_Base
         final Return ret = new Return();
         final Instance instance = _parameter.getInstance();
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final SystemConfiguration config = SystemConfiguration.get((String) props.get("SystemConfig"));
+        final String sysConfstr = (String) props.get("SystemConfig");
+        final SystemConfiguration config;
+        if (isUUID(sysConfstr)) {
+            config = SystemConfiguration.get(UUID.fromString(sysConfstr));
+        } else {
+            config = SystemConfiguration.get(sysConfstr);
+        }
         if (config != null && instance.isValid()) {
             final Properties properties = config.getObjectAttributeValueAsProperties(instance);
             final Boolean access = Boolean.valueOf((String) properties.get(props.get("Key")));
