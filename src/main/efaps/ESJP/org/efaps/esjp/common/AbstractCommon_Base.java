@@ -221,19 +221,21 @@ public abstract class AbstractCommon_Base
     {
         final List<Status> ret = new ArrayList<Status>();
         final Map<Integer, String> statusGroupMap = analyseProperty(_parameter, "StatusGroup");
-        final String defaultStaturGrp = statusGroupMap.values().iterator().next();
-        final Map<Integer, String> statusMap = analyseProperty(_parameter, "Status");
-        for (final Entry<Integer, String> entry : statusMap.entrySet()) {
-            final String stGrpStr = statusGroupMap.containsKey(entry.getKey()) ? statusGroupMap.get(entry.getKey())
-                            : defaultStaturGrp;
-            final Status status;
-            if (isUUID(stGrpStr)) {
-                status = Status.find(UUID.fromString(stGrpStr), entry.getValue());
-            } else {
-                status = Status.find(stGrpStr, entry.getValue());
-            }
-            if (status != null) {
-                ret.add(status);
+        if (!statusGroupMap.isEmpty()) {
+            final String defaultStaturGrp = statusGroupMap.values().iterator().next();
+            final Map<Integer, String> statusMap = analyseProperty(_parameter, "Status");
+            for (final Entry<Integer, String> entry : statusMap.entrySet()) {
+                final String stGrpStr = statusGroupMap.containsKey(entry.getKey()) ? statusGroupMap.get(entry.getKey())
+                                : defaultStaturGrp;
+                final Status status;
+                if (isUUID(stGrpStr)) {
+                    status = Status.find(UUID.fromString(stGrpStr), entry.getValue());
+                } else {
+                    status = Status.find(stGrpStr, entry.getValue());
+                }
+                if (status != null) {
+                    ret.add(status);
+                }
             }
         }
         return ret;
