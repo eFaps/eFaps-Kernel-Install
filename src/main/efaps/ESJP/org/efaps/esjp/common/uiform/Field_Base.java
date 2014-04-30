@@ -630,8 +630,9 @@ public abstract class Field_Base
         throws EFapsException
     {
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        Field_Base.LOG.warn("Command: '{}' uses deprecated API defintion for Field.",
-                        fieldValue.getField().getCollection().getName());
+        Field_Base.LOG.warn("Form: '{}' uses deprecated API definition in Field. {} ",
+                        fieldValue.getField().getCollection().getName(),
+                        fieldValue.getField().getName());
 
         final StringBuilder html = new StringBuilder();
 
