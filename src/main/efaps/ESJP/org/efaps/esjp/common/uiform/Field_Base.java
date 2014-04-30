@@ -225,7 +225,8 @@ public abstract class Field_Base
             if ((!comments.isEmpty() && !values.isEmpty() && !checkeds.isEmpty())
                             && values.size() == comments.size()) {
                 for (final Entry<Integer, String> value : values.entrySet()) {
-                    html.append("<input type=\"checkbox\" name=\"").append(fieldValue.getField().getName()).append("\" ")
+                    html.append("<input type=\"checkbox\" name=\"").append(fieldValue.getField().getName())
+                        .append("\" ")
                         .append(UIInterface.EFAPSTMPTAG).append(" value=\"").append(value.getValue()).append("\" ");
                     if ("true".equals(checkeds.get(value.getKey()))) {
                         html.append(" checked=\"checked\" ");
@@ -320,6 +321,7 @@ public abstract class Field_Base
 
     /**
      * @param _parameter    Parameter as passed from the eFaps API
+     * @param _type         list type to be rendered
      * @return Return containing Html Snipplet
      * @throws EFapsException on error
      */
@@ -373,6 +375,10 @@ public abstract class Field_Base
                                 case RADIO:
                                     ret.put(ReturnValues.SNIPLETT, getInputField(_parameter, values, _type));
                                     break;
+                                default:
+                                    ret.put(ReturnValues.SNIPLETT, "");
+                                    Field_Base.LOG.warn("Wrong config");
+                                    break;
                             }
 
                         } else {
@@ -391,12 +397,22 @@ public abstract class Field_Base
         return ret;
     }
 
+    /**
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @return Return containing Html Snipplet
+     * @throws EFapsException on error
+     */
     public Return getDropDown4Enum(final Parameter _parameter)
         throws EFapsException
     {
         return getList4Enum(_parameter, ListType.DROPDOWN);
     }
 
+    /**
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @return Return containing Html Snipplet
+     * @throws EFapsException on error
+     */
     public Return getRadioList4Enum(final Parameter _parameter)
         throws EFapsException
     {
@@ -559,6 +575,11 @@ public abstract class Field_Base
         return ret;
     }
 
+    /**
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @return html snipplet
+     * @throws EFapsException on error
+     */
     public Return getTypeDropDownFieldValue(final Parameter _parameter)
         throws EFapsException
     {
@@ -621,6 +642,7 @@ public abstract class Field_Base
     }
 
     /**
+     * @deprecated will be removed
      * @param _parameter Parameter as passed from the eFaps API
      * @return Return containing Html Snipplet
      * @throws EFapsException on error
@@ -806,7 +828,7 @@ public abstract class Field_Base
         final String typeStr = getProperty(_parameter, "Type");
         final Type type = Type.get(typeStr);
         if (type != null) {
-            final boolean includeChildTypes = !"false".equalsIgnoreCase(getProperty(_parameter,"ExpandChildTypes"));
+            final boolean includeChildTypes = !"false".equalsIgnoreCase(getProperty(_parameter, "ExpandChildTypes"));
 
             final QueryBuilder queryBldr = new QueryBuilder(type);
             final String linkfrom = getProperty(_parameter, "LinkFrom");
@@ -824,33 +846,26 @@ public abstract class Field_Base
                 queryBldr.addWhereAttrEqValue(parts[0], parts[1]);
             }
 
-            if (containsProperty(_parameter,"StatusGroup")) {
+            if (containsProperty(_parameter, "Stati")) {
+                // TODO remove old stuff
+                final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+                final String statiStr = String.valueOf(getProperty(_parameter, "Stati"));
+                final String[] statiAr = statiStr.split(";");
+                Field_Base.LOG.warn("Form: '{}' uses deprecated API definition in Field. {} ",
+                                fieldValue.getField().getCollection().getName(),
+                                fieldValue.getField().getName());
                 final List<Object> statusList = new ArrayList<Object>();
-
-                final Map<Integer, String> statusMap = analyseProperty(_parameter, "Status");
-
-                if (statusMap.isEmpty()) {
-                    // to be removed
-                    final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-                    final String statiStr = String.valueOf(getProperty(_parameter, "Stati"));
-                    final String[] statiAr = statiStr.split(";");
-                    Field_Base.LOG.warn("Command: '{}' uses deprecated API defintion for Field.",
-                                    fieldValue.getField().getCollection().getName());
-                    for (final String stati : statiAr) {
-                        final Status status = Status.find(getProperty(_parameter, "StatusGroup"), stati);
-                        if (status != null) {
-                            statusList.add(status.getId());
-                        }
-                    }
-                } else {
-                    for (final String astatus : statusMap.values()) {
-                        final Status status = Status.find(getProperty(_parameter, "StatusGroup"), astatus);
-                        if (status != null) {
-                            statusList.add(status.getId());
-                        }
+                for (final String stati : statiAr) {
+                    final Status status = Status.find(getProperty(_parameter, "StatusGroup"), stati);
+                    if (status != null) {
+                        statusList.add(status.getId());
                     }
                 }
-                queryBldr.addWhereAttrEqValue(type.getStatusAttribute().getName(), statusList.toArray());
+            } else {
+                final List<Status> statusList = getStatusListFromProperties(_parameter);
+                if (!statusList.isEmpty()) {
+                    queryBldr.addWhereAttrEqValue(type.getStatusAttribute().getName(), statusList.toArray());
+                }
             }
 
             add2QueryBuilder4List(_parameter, queryBldr);
@@ -919,7 +934,8 @@ public abstract class Field_Base
                 }
             }
             if (containsProperty(_parameter, "emptyValue")) {
-                values.add(0, new DropDownPosition("", DBProperties.getProperty(getProperty(_parameter,"emptyValue"))));
+                values.add(0, new DropDownPosition("",
+                                DBProperties.getProperty(getProperty(_parameter, "emptyValue"))));
             }
 
             if (orderSel != null) {
