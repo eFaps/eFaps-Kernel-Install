@@ -26,6 +26,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.user.Role;
 import org.efaps.db.Context;
+import org.efaps.esjp.common.AbstractCommon_Base;
 import org.efaps.util.EFapsException;
 
 
@@ -38,6 +39,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("8de7e7ff-d1ae-4326-a577-a0379465676d")
 @EFapsRevision("$Rev$")
 public abstract class AbstractUtil
+    extends AbstractCommon_Base
 {
 
     /**
