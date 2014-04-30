@@ -37,10 +37,13 @@
         <!-- fields -->
         <field name="key">
             <property name="Attribute">Key</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="HRef">TREE</property>
             <property name="Label">Admin_Common_DBProperties/Key.Label</property>
             <property name="ShowTypeIcon">true</property>
             <property name="Width">3</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterType">FREETEXT</property>
+            <property name="FilterRequired">true</property>
         </field>
         <field name="defaultvalue">
             <property name="Attribute">Default</property>
