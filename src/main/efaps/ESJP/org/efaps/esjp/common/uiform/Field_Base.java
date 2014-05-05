@@ -720,7 +720,7 @@ public abstract class Field_Base
         if (Display.EDITABLE.equals(fieldvalue.getDisplay())) {
             final Map<Integer, String> rootClasses = analyseProperty(_parameter, "Classification");
             final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
-            final List<Classification> clazzList = new ArrayList<Classification>();
+            final Set<Classification> clazzList = new HashSet<Classification>();
             for (final String clazzName : rootClasses.values()) {
                 final Classification clazz;
                 if (isUUID(clazzName)) {
@@ -731,6 +731,25 @@ public abstract class Field_Base
                 clazzList.add(clazz);
                 clazzList.addAll(getChildClassifications(clazz));
             }
+
+            final Map<Integer, String> types = analyseProperty(_parameter, "Type");
+            for (final String typeName : types.values()) {
+                final Type tmpType;
+                if (isUUID(typeName)) {
+                    tmpType = Type.get(UUID.fromString(typeName));
+                } else {
+                    tmpType = Type.get(typeName);
+                }
+                final Set<Type> typelist = getTypeList(_parameter, tmpType);
+                for (final Type tmp : typelist) {
+                    final Set<Classification> clazzes = tmp.getClassifiedByTypes();
+                    for (final Classification clazz  : clazzes) {
+                        clazzList.add(clazz);
+                        clazzList.addAll(getChildClassifications(clazz));
+                    }
+                }
+            }
+
             for (final Classification clazz : clazzList) {
                 Classification tmp = clazz;
                 String label = tmp.getLabel();
