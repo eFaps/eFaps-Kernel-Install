@@ -30,16 +30,23 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.RandomStringUtils;
+import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.AbstractUserInterfaceObject;
 import org.efaps.db.Context;
+import org.efaps.db.Instance;
+import org.efaps.db.QueryBuilder;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -65,6 +72,11 @@ public abstract class AbstractCommon_Base
      * the Context.
      */
     public static final String REQUESTKEY4CACHING = AbstractCommon.class.getName() + ".UniqueKey4Request";
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractCommon.class);
 
     /**
      * Search for the given Property and returns a tree map with the found values.<br/>
@@ -235,9 +247,116 @@ public abstract class AbstractCommon_Base
                 }
                 if (status != null) {
                     ret.add(status);
+                } else {
+                    final AbstractUserInterfaceObject command = (AbstractUserInterfaceObject) _parameter
+                                    .get(ParameterValues.UIOBJECT);
+                    AbstractCommon_Base.LOG.error("Status Definition invalid. Command: {}, Index: {}",
+                                    command == null ? "UNKNOWN" : command.getName(), entry.getKey());
+                    throw new EFapsException(getClass(), "Status", entry);
                 }
             }
         }
         return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return QueryBuilder
+     * @throws EFapsException on error
+     */
+    protected QueryBuilder getQueryBldrFromProperties(final Parameter _parameter)
+        throws EFapsException
+    {
+        QueryBuilder ret = null;
+        final Map<Integer, String> types = analyseProperty(_parameter, "Type");
+        final Map<Integer, String> linkFroms = analyseProperty(_parameter, "LinkFrom");
+        final Map<Integer, String> expands = analyseProperty(_parameter, "ExpandChildTypes");
+        boolean first = true;
+        boolean multiple = false;
+        for (final Entry<Integer, String> typeEntry : types.entrySet()) {
+            Type type;
+            if (isUUID(typeEntry.getValue())) {
+                type = Type.get(UUID.fromString(typeEntry.getValue()));
+            } else {
+                type = Type.get(typeEntry.getValue());
+            }
+            if (type == null) {
+                final AbstractUserInterfaceObject command = (AbstractUserInterfaceObject) _parameter
+                                .get(ParameterValues.UIOBJECT);
+                AbstractCommon_Base.LOG.error("Type Definition invalid. Object: {}, Index: {}",
+                                command == null ? "UNKNOWN" : command.getName(), typeEntry.getKey());
+            } else {
+                if (first) {
+                    ret = new QueryBuilder(type);
+                    if (linkFroms.size() == 1 && linkFroms.containsKey(typeEntry.getKey())) {
+                        ret.addWhereAttrEqValue(linkFroms.get(typeEntry.getKey()),
+                                        getInstance4LinkFrom(_parameter));
+                    }
+                    // in case of a simple query set the includechilds here
+                    if (types.size() == 1 && expands.size() == 1) {
+                        ret.setIncludeChildTypes(!"false".equalsIgnoreCase(expands.get(typeEntry.getKey())));
+                    } else if (expands.size() > 1 && "true".equalsIgnoreCase(expands.get(typeEntry.getKey()))) {
+                        final Set<Type> typeList = getTypeList(_parameter, type);
+                        ret.addType(typeList.toArray(new Type[typeList.size()]));
+                    }
+                    first = false;
+                } else {
+                    ret.addType(type);
+                    if (expands.size() > 1 && "true".equalsIgnoreCase(expands.get(typeEntry.getKey()))) {
+                        final Set<Type> typeList = getTypeList(_parameter, type);
+                        ret.addType(typeList.toArray(new Type[typeList.size()]));
+                    }
+                    multiple = true;
+                }
+            }
+        }
+        final List<Status> statusList = getStatusListFromProperties(_parameter);
+        if (!statusList.isEmpty()) {
+            Type tempType = ret.getType();
+            while (!tempType.isCheckStatus() && tempType.getParentType() != null) {
+                tempType = tempType.getParentType();
+            }
+            ret.addWhereAttrEqValue(tempType.getStatusAttribute(), statusList.toArray());
+        }
+        // in case of multiple, the linkfrom must be evaluated
+        if (multiple && linkFroms.size() > 1) {
+            boolean added = false;
+            for (final Entry<Integer, String> entry : linkFroms.entrySet()) {
+                if (types.containsKey(entry.getKey())) {
+                    final String typeStr = types.get(entry.getKey());
+                    Type type;
+                    if (isUUID(typeStr)) {
+                        type = Type.get(UUID.fromString(typeStr));
+                    } else {
+                        type = Type.get(typeStr);
+                    }
+                    if (type != null) {
+                        final ArrayList<String> colNames = type.getAttribute(entry.getValue()).getSqlColNames();
+                        for (final Attribute attr : ret.getType().getAttributes().values()) {
+                            if (CollectionUtils.isEqualCollection(colNames, attr.getSqlColNames())) {
+                                ret.addWhereAttrEqValue(attr, getInstance4LinkFrom(_parameter));
+                                added = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (added) {
+                    break;
+                }
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Instance use for the whre on Linkfroms
+     * @throws EFapsException on error
+     */
+    protected Instance getInstance4LinkFrom(final Parameter _parameter)
+        throws EFapsException
+    {
+        return _parameter.getInstance();
     }
 }
