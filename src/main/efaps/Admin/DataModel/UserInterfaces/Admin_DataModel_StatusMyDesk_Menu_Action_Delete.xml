@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2013 The eFaps Team
 
@@ -21,21 +20,18 @@
  Last Changed By: $Author$
 
 -->
-
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>9cebf60b-541c-4656-9ed0-6bcca06cc0a3</uuid>
+    <uuid>730a342c-1d75-430f-a510-9292e9695657</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_DataModel_AbstractMyDesk</name>
-        <childs>
-            <child>Admin_DataModel_SQLTableMyDesk</child>
-            <child>Admin_DataModel_TypeMyDesk</child>
-            <child>Admin_DataModel_AttributeTypeMyDesk</child>
-            <child>Admin_DataModel_DimensionMyDesk</child>
-            <child>Admin_DataModel_StatusMyDesk</child>
-        </childs>
+        <name>Admin_DataModel_StatusMyDesk_Menu_Action_Delete</name>
+        <target>
+            <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
+        </target>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
     </definition>
-</ui-menu>
+</ui-command>

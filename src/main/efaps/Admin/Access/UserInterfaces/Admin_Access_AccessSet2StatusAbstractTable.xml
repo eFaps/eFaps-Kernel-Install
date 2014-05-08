@@ -33,29 +33,20 @@
             <property name="SelectAlternateOID">linkto[SatusLink].oid</property>
             <property name="Select">linkto[SatusLink].attribute[Key]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Admin_DataModel_Key.label</property>
+            <property name="Label">Admin_DataModel_StatusAbstract/Key.Label</property>
             <property name="ShowTypeIcon">true</property>
             <property name="ModeSearch">READONLY</property>
         </field>
         <field name="type">
-            <!-- <property name="Select">linkto[SatusLink].type.label</property> -->
             <property name="Select">linkto[SatusLink].attribute[Type]</property>
-            <property name="Label">Admin_DataModel_Type/Type.Label</property>
+            <property name="Label">Admin_DataModel_StatusAbstract/Type.Label</property>
             <property name="ModeSearch">READONLY</property>
         </field>
         <field name="description">
             <property name="Select">linkto[SatusLink].attribute[Description]</property>
-            <property name="Label">Admin_DataModel_Dimension/Description.Label</property>
+            <property name="Label">Admin_DataModel_StatusAbstract/Description.Label</property>
             <property name="FilterType">PickList</property>
             <property name="ModeSearch">READONLY</property>
-        </field>
-        <field name="buttonOpenInNewWindow">
-            <icon>eFapsActionNewWindow</icon>
-            <property name="SelectAlternateOID">linkto[SatusLink].oid</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Target">popup</property>
-            <property name="SortAble">false</property>
-            <property name="Width">15px</property>
         </field>
     </definition>
 </ui-table>
