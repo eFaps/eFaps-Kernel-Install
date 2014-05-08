@@ -188,11 +188,24 @@ public abstract class Edit_Base
                     }
                 }
             }
+            add2MainUpdate(_parameter, update);
             update.execute();
         }
         updateFieldSets(_parameter, _instance, fieldsets);
         updateFieldTable(_parameter, _instance, fieldTables);
         return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _update Update
+     * @param _update Update
+     */
+    protected void add2MainUpdate(final Parameter _parameter,
+                                  final Update _update)
+        throws EFapsException
+    {
+        // to be used form implementations
     }
 
     /**
