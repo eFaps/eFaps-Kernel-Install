@@ -224,6 +224,10 @@ public abstract class AbstractCommon_Base
      * &lt;property name=&quot;Status02&quot;&gt;Open&lt;/property&gt;<br/>
      * &lt;property name=&quot;StatusNN&quot;&gt;Open&lt;/property&gt;
      * </li></ul>
+     * <b>Negate a Status:</b><br/>
+     * To work with exclusion the value for the property StatusNN must be prefixed with a "!" e.g.<br>
+     * &lt;property name=&quot;StatusNN&quot;&gt;!Open&lt;/property&gt;<br/><br/>
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @return List of Status, empty List if not found
      * @throws EFapsException on error
@@ -231,7 +235,8 @@ public abstract class AbstractCommon_Base
     protected List<Status> getStatusListFromProperties(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Status> ret = new ArrayList<Status>();
+        final Set<Status> ret = new HashSet<Status>();
+        final Set<Status> negateList = new HashSet<Status>();
         final Map<Integer, String> statusGroupMap = analyseProperty(_parameter, "StatusGroup");
         if (!statusGroupMap.isEmpty()) {
             final String defaultStaturGrp = statusGroupMap.values().iterator().next();
@@ -239,14 +244,26 @@ public abstract class AbstractCommon_Base
             for (final Entry<Integer, String> entry : statusMap.entrySet()) {
                 final String stGrpStr = statusGroupMap.containsKey(entry.getKey()) ? statusGroupMap.get(entry.getKey())
                                 : defaultStaturGrp;
+
+                String statusStr = entry.getValue();
+                boolean negate = false;
+                if (statusStr.startsWith("!")) {
+                    statusStr = statusStr.substring(1);
+                    negate = true;
+                }
                 final Status status;
                 if (isUUID(stGrpStr)) {
-                    status = Status.find(UUID.fromString(stGrpStr), entry.getValue());
+                    status = Status.find(UUID.fromString(stGrpStr), statusStr);
                 } else {
-                    status = Status.find(stGrpStr, entry.getValue());
+                    status = Status.find(stGrpStr, statusStr);
                 }
                 if (status != null) {
-                    ret.add(status);
+                    if (negate) {
+                        negateList.add(status);
+                        ret.addAll(status.getStatusGroup().values());
+                    } else {
+                        ret.add(status);
+                    }
                 } else {
                     final AbstractUserInterfaceObject command = (AbstractUserInterfaceObject) _parameter
                                     .get(ParameterValues.UIOBJECT);
@@ -256,7 +273,8 @@ public abstract class AbstractCommon_Base
                 }
             }
         }
-        return ret;
+        ret.removeAll(negateList);
+        return new ArrayList<Status>(ret);
     }
 
     /**
