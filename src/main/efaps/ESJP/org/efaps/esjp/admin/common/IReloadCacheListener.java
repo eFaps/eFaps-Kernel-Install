@@ -18,33 +18,38 @@
  * Last Changed By: $Author$
  */
 
-
 package org.efaps.esjp.admin.common;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-
+import org.efaps.admin.program.esjp.IEsjpListener;
+import org.efaps.util.EFapsException;
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: IReloadCacheListener.java 12201 2014-03-04 21:03:29Z
+ *          jan@moxter.net $
  */
 @EFapsUUID("fc1fa2c3-d5c4-4e85-8486-173e808da5f6")
 @EFapsRevision("$Rev$")
 public interface IReloadCacheListener
+    extends IEsjpListener
 {
 
     /**
-     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @throws EFapsException on error
      */
-    void onReloadSystemConfig(Parameter _parameter);
+    void onReloadSystemConfig(final Parameter _parameter)
+        throws EFapsException;
 
     /**
-     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @throws EFapsException on error
      */
-    void onReloadCache(Parameter _parameter);
-
+    void onReloadCache(final Parameter _parameter)
+        throws EFapsException;
 }

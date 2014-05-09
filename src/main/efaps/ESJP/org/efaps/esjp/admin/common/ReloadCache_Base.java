@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2014 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,15 +20,13 @@
 
 package org.efaps.esjp.admin.common;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.program.esjp.Listener;
 import org.efaps.admin.runlevel.RunLevel;
 import org.efaps.db.Context;
 import org.efaps.util.EFapsException;
@@ -55,8 +53,6 @@ public abstract class ReloadCache_Base
      */
     private static final Logger LOG = LoggerFactory.getLogger(ReloadCache.class);
 
-    private static Set<IReloadCacheListener> LISTENER = new HashSet<IReloadCacheListener>();
-
     /**
      * Reload the whole Cache for eFaps.
      *
@@ -71,7 +67,8 @@ public abstract class ReloadCache_Base
         ReloadCache_Base.LOG.info("reload Cache by: " + Context.getThreadContext().getPerson().getName());
         RunLevel.init("webapp");
         RunLevel.execute();
-        for (final IReloadCacheListener listener : ReloadCache_Base.LISTENER) {
+        for (final IReloadCacheListener listener : Listener.get().<IReloadCacheListener>invoke(
+                        IReloadCacheListener.class)) {
             listener.onReloadCache(_parameter);
         }
         ReloadCache_Base.LOG.info("reload Cache finished successfully");
@@ -92,15 +89,11 @@ public abstract class ReloadCache_Base
         ReloadCache_Base.LOG.info("reload SystemConfigurations by: "
                         + Context.getThreadContext().getPerson().getName());
         SystemConfiguration.initialize();
-        for (final IReloadCacheListener listener : ReloadCache_Base.LISTENER) {
+        for (final IReloadCacheListener listener : Listener.get().<IReloadCacheListener>invoke(
+                        IReloadCacheListener.class)) {
             listener.onReloadSystemConfig(_parameter);
         }
         ReloadCache_Base.LOG.info("reload SystemConfigurations finished successfully");
         return new Return();
-    }
-
-    public static void addListener(final IReloadCacheListener _listener)
-    {
-        ReloadCache_Base.LISTENER.add(_listener);
     }
 }
