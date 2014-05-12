@@ -338,7 +338,9 @@ public abstract class AbstractCommon_Base
         }
         // in case of multiple, the linkfrom must be evaluated
         if (multiple && linkFroms.size() > 1) {
-            boolean added = false;
+            final QueryBuilder attrQueryBldr = new QueryBuilder(ret.getType());
+            attrQueryBldr.setOr(true);
+            final Set<List<String>> added = new HashSet<List<String>>();
             for (final Entry<Integer, String> entry : linkFroms.entrySet()) {
                 if (types.containsKey(entry.getKey())) {
                     final String typeStr = types.get(entry.getKey());
@@ -349,19 +351,21 @@ public abstract class AbstractCommon_Base
                         type = Type.get(typeStr);
                     }
                     if (type != null) {
-                        final ArrayList<String> colNames = type.getAttribute(entry.getValue()).getSqlColNames();
+                        final List<String> colNames = type.getAttribute(entry.getValue()).getSqlColNames();
                         for (final Attribute attr : ret.getType().getAttributes().values()) {
                             if (CollectionUtils.isEqualCollection(colNames, attr.getSqlColNames())) {
-                                ret.addWhereAttrEqValue(attr, getInstance4LinkFrom(_parameter));
-                                added = true;
+                                if (!added.contains(colNames)) {
+                                    attrQueryBldr.addWhereAttrEqValue(attr, getInstance4LinkFrom(_parameter));
+                                    added.add(colNames);
+                                }
                                 break;
                             }
                         }
                     }
                 }
-                if (added) {
-                    break;
-                }
+            }
+            if (!added.isEmpty()) {
+                ret.addWhereAttrInQuery("ID", attrQueryBldr.getAttributeQuery("ID"));
             }
         }
         return ret;
