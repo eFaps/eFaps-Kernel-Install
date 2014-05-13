@@ -355,8 +355,7 @@ public abstract class AccessCheck4UI_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String sysConfstr = (String) props.get("SystemConfig");
+        final String sysConfstr = getProperty(_parameter, "SystemConfig");
         final SystemConfiguration config;
         if (isUUID(sysConfstr)) {
             config = SystemConfiguration.get(UUID.fromString(sysConfstr));
@@ -364,8 +363,15 @@ public abstract class AccessCheck4UI_Base
             config = SystemConfiguration.get(sysConfstr);
         }
         if (config != null) {
-            final Boolean access = config.getAttributeValueAsBoolean((String) props.get("Attribute"));
-            final boolean inverse = "true".equalsIgnoreCase((String) props.get("Inverse"));
+            boolean access = false;
+            for (final String attribute : analyseProperty(_parameter, "Attribute").values()) {
+                access = config.getAttributeValueAsBoolean(attribute);
+                if (access) {
+                    break;
+                }
+            }
+
+            final boolean inverse = "true".equalsIgnoreCase(getProperty(_parameter, "Inverse"));
             if ((!inverse && access) || (inverse && !access)) {
                 ret.put(ReturnValues.TRUE, true);
             }
