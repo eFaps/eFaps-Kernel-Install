@@ -880,6 +880,9 @@ public abstract class Field_Base
                         statusList.add(status.getId());
                     }
                 }
+                if (!statusList.isEmpty()) {
+                    queryBldr.addWhereAttrEqValue(type.getStatusAttribute().getName(), statusList.toArray());
+                }
             } else {
                 final List<Status> statusList = getStatusListFromProperties(_parameter);
                 if (!statusList.isEmpty()) {
