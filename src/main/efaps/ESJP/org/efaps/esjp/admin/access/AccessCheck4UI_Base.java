@@ -22,6 +22,7 @@
 package org.efaps.esjp.admin.access;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -49,6 +50,7 @@ import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
 import org.efaps.esjp.common.AbstractCommon;
+import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,19 +100,19 @@ public abstract class AccessCheck4UI_Base
         throws EFapsException
     {
         Return ret = new Return();
-        final Map<Integer, String> status = analyseProperty(_parameter, "Status");
-        if (status.isEmpty()) {
+        final boolean createStatus = containsProperty(_parameter, "Check4CreateStatus");
+        if (!containsProperty(_parameter, "Status") && !createStatus) {
             ret = toBeRemoved(_parameter);
         } else {
             final Instance orgInstance = _parameter.getInstance();
             if (orgInstance != null) {
                 Instance instance = null;
 
-                UUID statusGrpUUID = null;
                 final String select4Instance = getProperty(_parameter, "Select4Instance");
+                boolean clone = false;
                 if (select4Instance != null) {
                     final PrintQuery print = new CachedPrintQuery(orgInstance, getRequestKey())
-                                                            .setLifespanUnit(TimeUnit.SECONDS).setLifespan(30);
+                                    .setLifespanUnit(TimeUnit.SECONDS).setLifespan(30);
                     print.addSelect(select4Instance);
                     print.executeWithoutAccessCheck();
                     final Object obj = print.getSelect(select4Instance);
@@ -120,6 +122,7 @@ public abstract class AccessCheck4UI_Base
                         AccessCheck4UI_Base.LOG.error("UI_ACCESSCHECK Event for Cmd '{}' is not "
                                         + "returning an instance for 'Select4Instance'", getCmd(_parameter).getName());
                     }
+                    clone  = true;
                 } else {
                     instance = orgInstance;
                 }
@@ -127,9 +130,8 @@ public abstract class AccessCheck4UI_Base
                 final Long statusID;
                 if (instance != null && instance.isValid() && instance.getType().isCheckStatus()) {
                     final Attribute statusAttr = instance.getType().getStatusAttribute();
-                    statusGrpUUID = statusAttr.getLink().getUUID();
                     final PrintQuery print = new CachedPrintQuery(instance, getRequestKey())
-                                                    .setLifespanUnit(TimeUnit.SECONDS).setLifespan(30);
+                                    .setLifespanUnit(TimeUnit.SECONDS).setLifespan(30);
                     print.addAttribute(statusAttr);
                     print.executeWithoutAccessCheck();
                     statusID = print.<Long>getAttribute(statusAttr);
@@ -140,19 +142,30 @@ public abstract class AccessCheck4UI_Base
                 }
 
                 if (statusID != null) {
-                    final Map<Integer, String> statusGroup = analyseProperty(_parameter, "StatusGroup");
-                    if (!statusGroup.isEmpty() && statusGroup.size() != status.size()) {
-                        AccessCheck4UI_Base.LOG.error("UI_ACCESSCHECK Event for Cmd '{}' is defined wrong",
-                                        getCmd(_parameter).getName());
-                    }
-                    for (final Entry<Integer, String> entry : status.entrySet()) {
-                        Status stat;
-                        if (statusGroup.containsKey(entry.getKey())) {
-                            stat = Status.find(statusGroup.get(entry.getKey()), entry.getValue());
-                        } else {
-                            stat = Status.find(statusGrpUUID, entry.getValue());
+                    final Parameter para = clone
+                                    ? ParameterUtil.clone(_parameter, ParameterValues.INSTANCE, instance) : _parameter;
+                    final List<Status> statusList = getStatusListFromProperties(para);
+                    if (createStatus) {
+                        // Commons-Configuration
+                        final SystemConfiguration config = SystemConfiguration.get(UUID
+                                        .fromString("9ac2673a-18f9-41ba-b9be-5b0980bdf6f3"));
+                        if (config != null) {
+                            final Properties properties = config.getAttributeValueAsProperties(
+                                            "org.efaps.commons.DocumentStatus4Create", true);
+                            final String key = properties.getProperty(instance.getType().getName() + ".Status");
+                            if (key != null) {
+                                final Status status = Status.find(
+                                                instance.getType().getStatusAttribute().getLink().getUUID(), key);
+                                if (status != null) {
+                                    statusList.clear();
+                                    statusList.add(status);
+                                }
+                            }
                         }
-                        if (stat != null && statusID.equals(stat.getId())) {
+                    }
+
+                    for (final Status status : statusList) {
+                        if (status != null && statusID.equals(status.getId())) {
                             ret.put(ReturnValues.TRUE, true);
                             break;
                         }

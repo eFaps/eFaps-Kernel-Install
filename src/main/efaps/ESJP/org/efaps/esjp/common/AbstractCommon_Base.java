@@ -238,6 +238,14 @@ public abstract class AbstractCommon_Base
         final Set<Status> ret = new HashSet<Status>();
         final Set<Status> negateList = new HashSet<Status>();
         final Map<Integer, String> statusGroupMap = analyseProperty(_parameter, "StatusGroup");
+        // no statusGroup was set, try to get it from the instance
+        if (statusGroupMap.isEmpty()) {
+            final Instance inst = _parameter.getInstance();
+            if (inst != null && inst.isValid() &&  inst.getType().isCheckStatus()) {
+                statusGroupMap.put(0, inst.getType().getStatusAttribute().getLink().getUUID().toString());
+            }
+        }
+
         if (!statusGroupMap.isEmpty()) {
             final String defaultStaturGrp = statusGroupMap.values().iterator().next();
             final Map<Integer, String> statusMap = analyseProperty(_parameter, "Status");
