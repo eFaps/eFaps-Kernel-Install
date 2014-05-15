@@ -21,14 +21,29 @@
 package org.efaps.esjp.common.file;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.util.EFapsException;
+
+import com.lowagie.text.Document;
+import com.lowagie.text.pdf.BaseFont;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfImportedPage;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * Utility class used to create empty files in a user depended temporarily
@@ -87,6 +102,101 @@ public abstract class FileUtil_Base
             ret = new File(userFolder,  name.replaceAll("[^a-zA-Z0-9.-]", "_"));
         } catch (final IOException e) {
             throw new EFapsException(FileUtil_Base.class, "IOException", e);
+        }
+        return ret;
+    }
+
+    public File combinePdfs(final List<File> _files,
+                            final String _fileName,
+                            final boolean _paginate)
+        throws EFapsException
+    {
+        File ret = null;
+        if (_files.size() == 1) {
+            ret = _files.get(0);
+        } else {
+            try {
+                final List<InputStream> pdfs = new ArrayList<InputStream>();
+                for (final File file : _files) {
+                    pdfs.add(new FileInputStream(file));
+                }
+                ret = getFile(_fileName, "pdf");
+                final OutputStream outputStream = new FileOutputStream(ret);
+                final Document document = new Document();
+                try {
+                    final List<PdfReader> readers = new ArrayList<PdfReader>();
+                    int totalPages = 0;
+                    final Iterator<InputStream> iteratorPDFs = pdfs.iterator();
+
+                    // Create Readers for the pdfs.
+                    while (iteratorPDFs.hasNext()) {
+                        final InputStream pdf = iteratorPDFs.next();
+                        final PdfReader pdfReader = new PdfReader(pdf);
+                        readers.add(pdfReader);
+                        totalPages += pdfReader.getNumberOfPages();
+                    }
+                    // Create a writer for the outputstream
+                    final PdfWriter writer = PdfWriter.getInstance(document, outputStream);
+
+                    document.open();
+                    final BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA,
+                                    BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+                    final PdfContentByte cb = writer.getDirectContent(); // Holds the
+                                                                   // PDF
+                    // data
+
+                    PdfImportedPage page;
+                    int currentPageNumber = 0;
+                    int pageOfCurrentReaderPDF = 0;
+                    final Iterator<PdfReader> iteratorPDFReader = readers.iterator();
+
+                    // Loop through the PDF files and add to the output.
+                    while (iteratorPDFReader.hasNext()) {
+                        final PdfReader pdfReader = iteratorPDFReader.next();
+
+                        // Create a new page in the target for each source page.
+                        while (pageOfCurrentReaderPDF < pdfReader.getNumberOfPages()) {
+                            document.newPage();
+                            pageOfCurrentReaderPDF++;
+                            currentPageNumber++;
+                            page = writer.getImportedPage(pdfReader,
+                                            pageOfCurrentReaderPDF);
+                            cb.addTemplate(page, 0, 0);
+
+                            // Code for pagination.
+                            if (_paginate) {
+                                cb.beginText();
+                                cb.setFontAndSize(bf, 9);
+                                cb.showTextAligned(PdfContentByte.ALIGN_CENTER, ""
+                                                + currentPageNumber + " of " + totalPages, 520,
+                                                5, 0);
+                                cb.endText();
+                            }
+                        }
+                        pageOfCurrentReaderPDF = 0;
+                    }
+                    outputStream.flush();
+                    document.close();
+                    outputStream.close();
+                } catch (final Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (document.isOpen()) {
+                        document.close();
+                    }
+                    try {
+                        if (outputStream != null) {
+                            outputStream.close();
+                        }
+                    } catch (final IOException ioe) {
+                        ioe.printStackTrace();
+                    }
+                }
+
+            } catch (final FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
         return ret;
     }
