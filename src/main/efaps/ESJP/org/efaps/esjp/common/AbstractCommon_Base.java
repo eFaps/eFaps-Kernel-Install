@@ -299,12 +299,20 @@ public abstract class AbstractCommon_Base
         final Map<Integer, String> expands = analyseProperty(_parameter, "ExpandChildTypes");
         boolean first = true;
         boolean multiple = false;
+        final List<Type> excludes = new ArrayList<Type>();
         for (final Entry<Integer, String> typeEntry : types.entrySet()) {
             Type type;
+            String typeStr = typeEntry.getValue();
+            boolean negate = false;
+            if (typeStr.startsWith("!")) {
+                typeStr = typeStr.substring(1);
+                negate = true;
+            }
+
             if (isUUID(typeEntry.getValue())) {
-                type = Type.get(UUID.fromString(typeEntry.getValue()));
+                type = Type.get(UUID.fromString(typeStr));
             } else {
-                type = Type.get(typeEntry.getValue());
+                type = Type.get(typeStr);
             }
             if (type == null) {
                 final AbstractUserInterfaceObject command = (AbstractUserInterfaceObject) _parameter
@@ -312,30 +320,44 @@ public abstract class AbstractCommon_Base
                 AbstractCommon_Base.LOG.error("Type Definition invalid. Object: {}, Index: {}",
                                 command == null ? "UNKNOWN" : command.getName(), typeEntry.getKey());
             } else {
-                if (first) {
-                    ret = new QueryBuilder(type);
-                    if (linkFroms.size() == 1 && linkFroms.containsKey(typeEntry.getKey())) {
-                        ret.addWhereAttrEqValue(linkFroms.get(typeEntry.getKey()),
-                                        getInstance4LinkFrom(_parameter));
-                    }
-                    // in case of a simple query set the includechilds here
-                    if (types.size() == 1 && expands.size() == 1) {
-                        ret.setIncludeChildTypes(!"false".equalsIgnoreCase(expands.get(typeEntry.getKey())));
-                    } else if (expands.size() > 1 && "true".equalsIgnoreCase(expands.get(typeEntry.getKey()))) {
-                        final Set<Type> typeList = getTypeList(_parameter, type);
-                        ret.addType(typeList.toArray(new Type[typeList.size()]));
-                    }
-                    first = false;
+                if (negate) {
+                    excludes.add(type);
                 } else {
-                    ret.addType(type);
-                    if (expands.size() > 1 && "true".equalsIgnoreCase(expands.get(typeEntry.getKey()))) {
-                        final Set<Type> typeList = getTypeList(_parameter, type);
-                        ret.addType(typeList.toArray(new Type[typeList.size()]));
+                    if (first) {
+                        ret = new QueryBuilder(type);
+                        if (linkFroms.size() == 1 && linkFroms.containsKey(typeEntry.getKey())) {
+                            ret.addWhereAttrEqValue(linkFroms.get(typeEntry.getKey()),
+                                            getInstance4LinkFrom(_parameter));
+                        }
+                        // in case of a simple query set the includechilds here
+                        if (types.size() == 1 && expands.size() == 1) {
+                            ret.setIncludeChildTypes(!"false".equalsIgnoreCase(expands.get(typeEntry.getKey())));
+                        } else if (expands.size() > 1 && "true".equalsIgnoreCase(expands.get(typeEntry.getKey()))) {
+                            final Set<Type> typeList = getTypeList(_parameter, type);
+                            ret.addType(typeList.toArray(new Type[typeList.size()]));
+                        }
+                        first = false;
+                    } else {
+                        ret.addType(type);
+                        if (expands.size() > 1 && "true".equalsIgnoreCase(expands.get(typeEntry.getKey()))) {
+                            final Set<Type> typeList = getTypeList(_parameter, type);
+                            ret.addType(typeList.toArray(new Type[typeList.size()]));
+                        }
+                        multiple = true;
                     }
-                    multiple = true;
                 }
             }
         }
+        if (!excludes.isEmpty()) {
+            final List<Long> typeIds = new ArrayList<Long>();
+            for (final Type type : excludes) {
+                for (final Type exType :  getTypeList(_parameter, type)) {
+                    typeIds.add(exType.getId());
+                }
+            }
+            ret.addWhereAttrNotEqValue(ret.getType().getTypeAttribute(), typeIds.toArray());
+        }
+
         final List<Status> statusList = getStatusListFromProperties(_parameter);
         if (!statusList.isEmpty()) {
             Type tempType = ret.getType();
