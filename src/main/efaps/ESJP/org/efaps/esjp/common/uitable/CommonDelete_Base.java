@@ -28,17 +28,18 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Delete;
 import org.efaps.db.Instance;
+import org.efaps.db.PrintQuery;
+import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.util.EFapsException;
 
 /**
  * The ESJP is used to delete selected objects in a row of a web table.<br/>
  * <b>Example:</b><br/> <code>
  *   &lt;execute program="org.efaps.esjp.common.uitable.CommonDelete"&gt;
- *     &lt;property name="DeleteIndex"&gt;1&lt;/property&gt;
+ *     &lt;property name="Select4Delete"&gt;SLEECT&lt;/property&gt;
  *   &lt;/execute&gt;
  * </code>
- * Because an expand is made to show the web table, the oid with the index 1 in
- * the list of oids is used to delete.
+ *
  *
  * @author The eFaps Team
  * @version $Id$
@@ -46,13 +47,10 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("c0972b10-33c2-46e0-ba81-53a0341aaa35")
 @EFapsRevision("$Rev$")
 public abstract class CommonDelete_Base
+    extends AbstractCommon
     implements EventExecution
 {
     /**
-     * All selected oids are split by the pipe (<code>|</code> - meaning the
-     * oids on the way to the row oid, like an expand) and deletes - depending
-     * on the delete index - this oid.
-     *
      * @param _parameter parameters from the submitted web table
      * @throws EFapsException if a delete of the selected oids is not possible
      * @return new Return()
@@ -61,14 +59,14 @@ public abstract class CommonDelete_Base
     public Return execute(final Parameter _parameter)
         throws EFapsException
     {
-        final String[] allOids = (String[]) _parameter.get(ParameterValues.OTHERS);
+        final String[] oids = (String[]) _parameter.get(ParameterValues.OTHERS);
 
-        if (allOids != null) {
-            for (final String rowOids : allOids) {
-                final Instance delete = Instance.get(rowOids);
-                if (delete.isValid()) {
-                    if (getValidate4Instance(_parameter, delete)) {
-                        new Delete(rowOids).execute();
+        if (oids != null) {
+            for (final String oid : oids) {
+                final Instance instance = getInstance(_parameter, oid);
+                if (instance.isValid()) {
+                    if (getValidate4Instance(_parameter, instance)) {
+                        new Delete(oid).execute();
                     }
                 }
             }
@@ -77,14 +75,43 @@ public abstract class CommonDelete_Base
     }
 
     /**
+     * Method to get the instance to be deleted.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _oid of the  instance that will be deleted
+     * @return Instance for the oid
+     * @throws EFapsException on error.
+     */
+    protected Instance getInstance(final Parameter _parameter,
+                                   final String _oid) throws EFapsException
+    {
+        Instance ret = Instance.get(_oid);
+        if (ret.isValid() && containsProperty(_parameter, "Select4Delete")) {
+            final String select = getProperty(_parameter, "Select4Delete");
+            final PrintQuery print = new PrintQuery(ret);
+            print.addSelect(select);
+            print.execute();
+            final Object selObj = print.getSelect(select);
+            if (selObj instanceof Instance) {
+                ret = (Instance) selObj;
+            } else if (selObj instanceof String) {
+                ret = Instance.get((String) selObj);
+            }
+        }
+        return ret;
+    }
+
+
+    /**
      * Method to validate instance a delete.
      *
      * @param _parameter Parameter as passed from the eFaps API.
+     * @param _instance instance that will be deleted
      * @return boolean.
      * @throws EFapsException on error.
      */
     protected boolean getValidate4Instance(final Parameter _parameter,
-                                           final Instance _delete)
+                                           final Instance _instance)
         throws EFapsException
     {
         return true;
