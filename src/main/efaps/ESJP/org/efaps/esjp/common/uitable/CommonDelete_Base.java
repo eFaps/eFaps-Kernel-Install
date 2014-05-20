@@ -66,7 +66,7 @@ public abstract class CommonDelete_Base
                 final Instance instance = getInstance(_parameter, oid);
                 if (instance.isValid()) {
                     if (getValidate4Instance(_parameter, instance)) {
-                        new Delete(oid).execute();
+                        new Delete(instance).execute();
                     }
                 }
             }
