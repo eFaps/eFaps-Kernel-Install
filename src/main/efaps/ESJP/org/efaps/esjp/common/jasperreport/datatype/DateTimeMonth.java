@@ -33,15 +33,15 @@ import org.joda.time.format.DateTimeFormatter;
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("9bce3015-6c4c-4aba-b581-73eb726f4c71")
+@EFapsUUID("cdc45ed6-b73c-4dc6-9870-f338997d474c")
 @EFapsRevision("$Rev$")
-public class DateTimeDate
+public class DateTimeMonth
     extends AbstractDateTime
 {
     /**
      * for static access.
      */
-    private static final DateTimeDate DATATYPE = new DateTimeDate();
+    private static final DateTimeMonth DATATYPE = new DateTimeMonth();
 
     /**
      * Needed for serialization.
@@ -54,14 +54,14 @@ public class DateTimeDate
     @Override
     protected DateTimeFormatter getFormatter(final Locale _locale)
     {
-        return DateTimeFormat.mediumDate().withLocale(_locale);
+        return DateTimeFormat.forPattern("MMM").withLocale(_locale);
     }
 
     /**
      * @return the datatype instance
      */
-    public static DateTimeDate get()
+    public static DateTimeMonth get()
     {
-        return DateTimeDate.DATATYPE;
+        return DateTimeMonth.DATATYPE;
     }
 }

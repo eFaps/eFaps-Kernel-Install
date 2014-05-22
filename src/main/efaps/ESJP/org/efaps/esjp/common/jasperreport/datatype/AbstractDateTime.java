@@ -23,6 +23,9 @@ package org.efaps.esjp.common.jasperreport.datatype;
 import java.util.Locale;
 
 import net.sf.dynamicreports.report.base.datatype.AbstractDataType;
+import net.sf.dynamicreports.report.base.expression.AbstractValueFormatter;
+import net.sf.dynamicreports.report.definition.ReportParameters;
+import net.sf.dynamicreports.report.definition.expression.DRIValueFormatter;
 import net.sf.dynamicreports.report.exception.DRException;
 
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -34,7 +37,8 @@ import org.joda.time.format.DateTimeFormatter;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: AbstractDateTime.java 12838 2014-05-22 18:05:51Z jan@moxter.net
+ *          $
  */
 @EFapsUUID("fc139d09-0fc7-435f-bf96-843784930a47")
 @EFapsRevision("$Rev$")
@@ -43,7 +47,7 @@ public abstract class AbstractDateTime
 {
 
     /**
-     *Needed for serialization.
+     * Needed for serialization.
      */
     private static final long serialVersionUID = 1L;
 
@@ -75,4 +79,43 @@ public abstract class AbstractDateTime
      * @return the formatter to be applied
      */
     protected abstract DateTimeFormatter getFormatter(final Locale _locale);
+
+    @Override
+    public DRIValueFormatter<?, ? extends DateTime> getValueFormatter()
+    {
+        return new DateTimeValueFormatter(this);
+    }
+
+    /**
+     * Formats the values.
+     */
+    public static class DateTimeValueFormatter
+        extends AbstractValueFormatter<String, DateTime>
+    {
+
+        /**
+         * Needed for serialization.
+         */
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * datatype.
+         */
+        private final AbstractDateTime datatype;
+
+        /**
+         * @param _datatype datatype used to format
+         */
+        public DateTimeValueFormatter(final AbstractDateTime _datatype)
+        {
+            this.datatype = _datatype;
+        }
+
+        @Override
+        public String format(final DateTime _value,
+                             final ReportParameters _reportParameters)
+        {
+            return this.datatype.valueToString(_value, _reportParameters.getLocale());
+        }
+    }
 }

@@ -33,15 +33,15 @@ import org.joda.time.format.DateTimeFormatter;
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("9bce3015-6c4c-4aba-b581-73eb726f4c71")
+@EFapsUUID("03f24c0e-9c00-4ffe-b2c3-f85cb55de276")
 @EFapsRevision("$Rev$")
-public class DateTimeDate
+public class DateTimeYear
     extends AbstractDateTime
 {
     /**
      * for static access.
      */
-    private static final DateTimeDate DATATYPE = new DateTimeDate();
+    private static final DateTimeYear DATATYPE = new DateTimeYear();
 
     /**
      * Needed for serialization.
@@ -54,14 +54,14 @@ public class DateTimeDate
     @Override
     protected DateTimeFormatter getFormatter(final Locale _locale)
     {
-        return DateTimeFormat.mediumDate().withLocale(_locale);
+        return DateTimeFormat.forPattern("yyyy").withLocale(_locale);
     }
 
     /**
      * @return the datatype instance
      */
-    public static DateTimeDate get()
+    public static DateTimeYear get()
     {
-        return DateTimeDate.DATATYPE;
+        return DateTimeYear.DATATYPE;
     }
 }

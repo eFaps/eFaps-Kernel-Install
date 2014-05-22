@@ -37,6 +37,7 @@ import net.sf.dynamicreports.jasper.builder.export.JasperXlsExporterBuilder;
 import net.sf.dynamicreports.jasper.constant.SizeUnit;
 import net.sf.dynamicreports.report.builder.DynamicReports;
 import net.sf.dynamicreports.report.builder.ReportTemplateBuilder;
+import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
 import net.sf.dynamicreports.report.builder.component.HorizontalListBuilder;
 import net.sf.dynamicreports.report.builder.component.SubreportBuilder;
@@ -47,6 +48,7 @@ import net.sf.dynamicreports.report.constant.HorizontalAlignment;
 import net.sf.dynamicreports.report.constant.PageOrientation;
 import net.sf.dynamicreports.report.constant.PageType;
 import net.sf.dynamicreports.report.constant.VerticalAlignment;
+import net.sf.dynamicreports.report.definition.datatype.DRIDataType;
 import net.sf.dynamicreports.report.exception.DRException;
 import net.sf.jasperreports.engine.JRDataSource;
 
@@ -1077,4 +1079,12 @@ public abstract class AbstractDynamicReport_Base
     {
         this.includeFooter = _includeFooter;
     }
+
+    public static <T> TextColumnBuilder<T> column(final String _title,
+                                                  final String _fieldName,
+                                                  final DRIDataType<? super T, T> _dataType)
+    {
+        return DynamicReports.col.column(_title, DynamicReports.field(_fieldName, _dataType));
+    }
+
 }
