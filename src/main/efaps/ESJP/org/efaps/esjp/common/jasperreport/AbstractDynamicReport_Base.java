@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2014 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Map;
+import java.util.UUID;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.jasper.builder.export.Exporters;
@@ -36,14 +37,21 @@ import net.sf.dynamicreports.jasper.builder.export.JasperXlsExporterBuilder;
 import net.sf.dynamicreports.jasper.constant.SizeUnit;
 import net.sf.dynamicreports.report.builder.DynamicReports;
 import net.sf.dynamicreports.report.builder.ReportTemplateBuilder;
+import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
+import net.sf.dynamicreports.report.builder.component.HorizontalListBuilder;
 import net.sf.dynamicreports.report.builder.component.SubreportBuilder;
+import net.sf.dynamicreports.report.builder.component.TextFieldBuilder;
 import net.sf.dynamicreports.report.builder.style.ReportStyleBuilder;
 import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import net.sf.dynamicreports.report.constant.HorizontalAlignment;
+import net.sf.dynamicreports.report.constant.PageOrientation;
+import net.sf.dynamicreports.report.constant.PageType;
 import net.sf.dynamicreports.report.constant.VerticalAlignment;
 import net.sf.dynamicreports.report.exception.DRException;
 import net.sf.jasperreports.engine.JRDataSource;
 
+import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -55,7 +63,10 @@ import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.file.FileUtil;
+import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
+import org.efaps.esjp.common.jasperreport.datatype.DateTimeExpression;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,7 +101,7 @@ public abstract class AbstractDynamicReport_Base
     /**
      * Reportbuilder this class is based on.
      */
-    private final JasperReportBuilder report = DynamicReports.report();
+    private JasperReportBuilder report;
 
     /**
      * Reportbuilder this class is based on.
@@ -106,6 +117,36 @@ public abstract class AbstractDynamicReport_Base
      * Current ExportType.
      */
     private ExportType exType;
+
+    /**
+     * Name of the template to be used. (PDF)
+     */
+    private String templateName;
+
+    /**
+     * Name of the template used as design. (PDF)
+     */
+    private String templateDesign;
+
+    /**
+     * PageOrientation.
+     */
+    private PageOrientation pageOrientation = PageOrientation.PORTRAIT;
+
+    /**
+     * PageType.
+     */
+    private PageType pageType = PageType.A4;
+
+    /**
+     * Include the default header.
+     */
+    private boolean includeHeader = false;
+
+    /**
+     * Include the default footer.
+     */
+    private boolean includeFooter = false;
 
     /**
      * Get the style for the columns in case of a html document.
@@ -552,6 +593,78 @@ public abstract class AbstractDynamicReport_Base
     }
 
     /**
+     * Configure the page. Will only be called if no template is given.
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _report report to configure
+     * @throws EFapsException on error
+     */
+    protected void configurePage(final Parameter _parameter,
+                                 final JasperReportBuilder _report)
+        throws EFapsException
+    {
+        _report.setPageFormat(getPageType(), getPageOrientation());
+        _report.pageHeader(getPageHeader(_parameter, _report));
+        _report.pageFooter(getPageFooter(_parameter, _report));
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _report Report builder
+     * @return the component to add
+     * @throws EFapsException on error
+     */
+    protected ComponentBuilder<?, ?> getPageFooter(final Parameter _parameter,
+                                                  final JasperReportBuilder _report)
+        throws EFapsException
+    {
+        final StyleBuilder boldCenteredStyle = DynamicReports.stl.style().bold()
+                        .setHorizontalAlignment(HorizontalAlignment.CENTER);
+        return DynamicReports.cmp.pageXslashY().setStyle(boldCenteredStyle);
+    }
+
+    /**
+     * @param _parameter        Parameter as passed by the eFaps API
+     * @param _report           Report builder
+     * @return the component to add
+     * @throws EFapsException on error
+     */
+    protected ComponentBuilder<?, ?> getPageHeader(final Parameter _parameter,
+                                                   final JasperReportBuilder _report)
+        throws EFapsException
+    {
+        final StyleBuilder style = DynamicReports.stl.style().bold()
+                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .setFontSize(10);
+
+        final HorizontalListBuilder ret = DynamicReports.cmp.horizontalList();
+        // Commons-Configuration
+        final SystemConfiguration config = SystemConfiguration.get(UUID
+                        .fromString("9ac2673a-18f9-41ba-b9be-5b0980bdf6f3"));
+        if (config != null) {
+            final String companyName = config.getAttributeValue("org.efaps.commons.CompanyName");
+            if (companyName != null) {
+                ret.add(DynamicReports.cmp.text(companyName).setStyle(style)
+                                .setHorizontalAlignment(HorizontalAlignment.LEFT));
+            }
+            final String companyTax = config.getAttributeValue("org.efaps.commons.CompanyTaxNumber");
+            if (companyName != null) {
+                ret.add(DynamicReports.cmp.text(companyTax).setStyle(style)
+                                .setHorizontalAlignment(HorizontalAlignment.LEFT));
+            }
+        }
+
+        final TextFieldBuilder<String> dateField = DynamicReports.cmp.text(new DateTimeExpression(new DateTime(),
+                        new DateTimeDate()));
+
+        ret.add(dateField.setHorizontalAlignment(HorizontalAlignment.RIGHT));
+        ret.newRow();
+        ret.add(DynamicReports.cmp.text(DBProperties.getProperty(getClass().getName() + ".Title"))
+                        .setStyle(DynamicReports.stl.style(style).setFontSize(12))
+                        .setHorizontalAlignment(HorizontalAlignment.CENTER));
+        return ret;
+    }
+
+    /**
      * @param _parameter Parameter as passed by the eFaps API
      * @return a JRDataSource
      * @throws EFapsException on error
@@ -572,9 +685,14 @@ public abstract class AbstractDynamicReport_Base
      * Getter method for the instance variable {@link #report}.
      *
      * @return value of instance variable {@link #report}
+     * @throws EFapsException on error
      */
     public JasperReportBuilder getReport()
+        throws EFapsException
     {
+        if (this.report == null) {
+            this.report = DynamicReports.report().setLocale(Context.getThreadContext().getLocale());
+        }
         return this.report;
     }
 
@@ -593,7 +711,8 @@ public abstract class AbstractDynamicReport_Base
      * @return html document as String
      * @throws EFapsException on error
      */
-    public String getHtml(final Parameter _parameter) throws EFapsException
+    public String getHtml(final Parameter _parameter)
+        throws EFapsException
     {
         return getHtml(_parameter, false);
     }
@@ -606,13 +725,11 @@ public abstract class AbstractDynamicReport_Base
     public File getPDF(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        init(_parameter);
         File file = null;
         this.exType = ExportType.PDF;
         try {
-            if (properties.containsKey("Template")) {
-                final String template = String.valueOf(properties.get("Template"));
-
+            if (getTemplateName() != null) {
                 final JasperReportBuilder subreport = DynamicReports.report();
                 configure4Pdf(_parameter);
                 subreport.setTemplate(getStyleTemplate());
@@ -623,16 +740,15 @@ public abstract class AbstractDynamicReport_Base
 
                 getReport().detail(sub);
 
-                final InputStream in = getTemplate(_parameter, template);
+                final InputStream in = getTemplate(_parameter, getTemplateName());
                 getReport().setTemplateDesign(in);
 
                 final EFapsDataSource ds = new EFapsDataSource();
                 ds.init(getReport().toJasperReport(), _parameter, null, getReport().getJasperParameters());
 
                 getReport().setLocale(Context.getThreadContext().getLocale()).setDataSource(ds);
-            } else if (properties.containsKey("TemplateDesign4PDF")) {
-                final String template = String.valueOf(properties.get("TemplateDesign4PDF"));
-                final InputStream in = getTemplate(_parameter, template);
+            } else if (getTemplateDesign() != null) {
+                final InputStream in = getTemplate(_parameter, getTemplateDesign());
                 getReport().setTemplateDesign(in);
                 addColumnDefintion(_parameter, getReport());
                 getReport().setLocale(Context.getThreadContext().getLocale())
@@ -641,6 +757,7 @@ public abstract class AbstractDynamicReport_Base
                 addColumnDefintion(_parameter, getReport());
                 getReport().setLocale(Context.getThreadContext().getLocale())
                                 .setDataSource(createDataSource(_parameter));
+                configurePage(_parameter, getReport());
             }
 
             file = new FileUtil().getFile(getFileName() == null ? "PDF" : getFileName(), "pdf");
@@ -818,5 +935,146 @@ public abstract class AbstractDynamicReport_Base
     protected void setExType(final ExportType _exType)
     {
         this.exType = _exType;
+    }
+
+    /**
+     * @param _parameter Paramter as passed by the eFaps API
+     * @throws EFapsException on error
+     */
+    protected void init(final Parameter _parameter)
+        throws EFapsException
+    {
+        setTemplateName(getProperty(_parameter, "Template"));
+        setTemplateDesign(getProperty(_parameter, "TemplateDesign"));
+
+        if (containsProperty(_parameter, "PageType")) {
+            setPageType(PageType.valueOf(getProperty(_parameter, "PageType")));
+        }
+        if (containsProperty(_parameter, "PageOrientation")) {
+            setPageOrientation(PageOrientation.valueOf(getProperty(_parameter, "PageOrientation")));
+        }
+        setIncludeHeader("true".equalsIgnoreCase(getProperty(_parameter, "IncludeHeader")));
+        setIncludeFooter("true".equalsIgnoreCase(getProperty(_parameter, "IncludeFooter")));
+    }
+
+    /**
+     * Getter method for the instance variable {@link #templateName}.
+     *
+     * @return value of instance variable {@link #templateName}
+     */
+    protected String getTemplateName()
+    {
+        return this.templateName;
+    }
+
+    /**
+     * Setter method for instance variable {@link #templateName}.
+     *
+     * @param _templateName value for instance variable {@link #templateName}
+     */
+    protected void setTemplateName(final String _templateName)
+    {
+        this.templateName = _templateName;
+    }
+
+
+    /**
+     * Getter method for the instance variable {@link #templateDesign}.
+     *
+     * @return value of instance variable {@link #templateDesign}
+     */
+    protected String getTemplateDesign()
+    {
+        return this.templateDesign;
+    }
+
+    /**
+     * Setter method for instance variable {@link #templateDesign}.
+     *
+     * @param _templateDesign value for instance variable {@link #templateDesign}
+     */
+    protected void setTemplateDesign(final String _templateDesign)
+    {
+        this.templateDesign = _templateDesign;
+    }
+
+    /**
+     * Getter method for the instance variable {@link #pageOrientation}.
+     *
+     * @return value of instance variable {@link #pageOrientation}
+     */
+    protected PageOrientation getPageOrientation()
+    {
+        return this.pageOrientation;
+    }
+
+    /**
+     * Setter method for instance variable {@link #pageOrientation}.
+     *
+     * @param _pageOrientation value for instance variable {@link #pageOrientation}
+     */
+    protected void setPageOrientation(final PageOrientation _pageOrientation)
+    {
+        this.pageOrientation = _pageOrientation;
+    }
+
+    /**
+     * Getter method for the instance variable {@link #pageType}.
+     *
+     * @return value of instance variable {@link #pageType}
+     */
+    protected PageType getPageType()
+    {
+        return this.pageType;
+    }
+
+    /**
+     * Setter method for instance variable {@link #pageType}.
+     *
+     * @param _pageType value for instance variable {@link #pageType}
+     */
+    protected void setPageType(final PageType _pageType)
+    {
+        this.pageType = _pageType;
+    }
+
+    /**
+     * Getter method for the instance variable {@link #includeHeader}.
+     *
+     * @return value of instance variable {@link #includeHeader}
+     */
+    protected boolean isIncludeHeader()
+    {
+        return this.includeHeader;
+    }
+
+    /**
+     * Setter method for instance variable {@link #includeHeader}.
+     *
+     * @param _includeHeader value for instance variable {@link #includeHeader}
+     */
+    protected void setIncludeHeader(final boolean _includeHeader)
+    {
+        this.includeHeader = _includeHeader;
+    }
+
+    /**
+     * Getter method for the instance variable {@link #includeFooter}.
+     *
+     * @return value of instance variable {@link #includeFooter}
+     */
+    protected boolean isIncludeFooter()
+    {
+        return this.includeFooter;
+    }
+
+    /**
+     * Setter method for instance variable {@link #includeFooter}.
+     *
+     * @param _includeFooter value for instance variable {@link #includeFooter}
+     */
+    protected void setIncludeFooter(final boolean _includeFooter)
+    {
+        this.includeFooter = _includeFooter;
     }
 }
