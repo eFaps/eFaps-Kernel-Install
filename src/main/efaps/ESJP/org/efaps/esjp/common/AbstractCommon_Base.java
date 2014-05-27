@@ -98,14 +98,44 @@ public abstract class AbstractCommon_Base
                                                    final String _key)
         throws EFapsException
     {
+        return analyseProperty(_parameter, _key, 0);
+    }
+
+    /**
+     * Search for the given Property and returns a tree map with the found values.<br/>
+     * Properties like:<br/>
+     * Name<br/>
+     * Name01<br/>
+     * Name02<br/>
+     * Will return a map with:<br/>
+     * 0 - Value for Name<br/>
+     * 1 - Value for Name01<br/>
+     * 2 - Value for Name02
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _key key of the Property
+     * @param _offset offset to start to search for
+     * @return map with properties
+     * @throws EFapsException on error
+     */
+    protected Map<Integer, String> analyseProperty(final Parameter _parameter,
+                                                   final String _key,
+                                                   final int _offset)
+        throws EFapsException
+    {
         final Map<Integer, String> ret = new TreeMap<Integer, String>();
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         // test for basic
-        if (properties.containsKey(_key)) {
+        final int start = _offset == 0 ? 1 : _offset;
+        if (_offset == 0 && properties.containsKey(_key)) {
             ret.put(0, String.valueOf(properties.get(_key)));
         }
-        for (int i = 1; i < 100; i++) {
-            final String nameTmp = _key + String.format("%02d", i);
+        String formatStr = "%02d";
+        if (start > 99) {
+            formatStr = "%03d";
+        }
+        for (int i = start; i < start + 100; i++) {
+            final String nameTmp = _key + String.format(formatStr, i);
             if (properties.containsKey(nameTmp)) {
                 ret.put(i, String.valueOf(properties.get(nameTmp)));
             } else {
@@ -198,8 +228,6 @@ public abstract class AbstractCommon_Base
         }
         return ret;
     }
-
-
     /**
      * To have always the same form of defining Status in esjp properties use this method.<br/>
      * Example for config: (StatusGrp can be the name or the UUID of a StatusGroup)<br/>
@@ -235,20 +263,60 @@ public abstract class AbstractCommon_Base
     protected List<Status> getStatusListFromProperties(final Parameter _parameter)
         throws EFapsException
     {
+        return getStatusListFromProperties(_parameter, 0);
+    }
+
+    /**
+     * To have always the same form of defining Status in esjp properties use this method.<br/>
+     * Example for config: (StatusGrp can be the name or the UUID of a StatusGroup)<br/>
+     * <ul><li>
+     * <b>Only one:</b><br/>
+     * &lt;property name=&quot;StatusGroup&quot;&gt;Accounting_PurchaseRecordStatus&lt;/property&gt;<br/>
+     * &lt;property name=&quot;Status&quot;&gt;Open&lt;/property&gt;
+     * </li><li>
+     * <b>Various in different StatusGroups:</b><br/>
+     * &lt;property name=&quot;StatusGroup01&quot;&gt;StatusGrp1&lt;/property&gt;<br/>
+     * &lt;property name=&quot;Status01&quot;&gt;Open&lt;/property&gt;<br/>
+     * &lt;property name=&quot;StatusGroup02&quot;&gt;StatusGrp2&lt;/property&gt;<br/>
+     * &lt;property name=&quot;Status02&quot;&gt;Closed&lt;/property&gt;<br/>
+     * &lt;property name=&quot;StatusGroup03&quot;&gt;StatusGrp3&lt;/property&gt;<br/>
+     * &lt;property name=&quot;Status03&quot;&gt;Open&lt;/property&gt;<br/>
+     * &lt;property name=&quot;StatusGroupNN&quot;&gt;StatusGrpNN&lt;/property&gt;<br/>
+     * &lt;property name=&quot;StatusNN&quot;&gt;Open&lt;/property&gt;
+     * </li><li>
+     * <b>Various in the same StatusGroups:</b><br/>
+     * &lt;property name=&quot;StatusGroup&quot;&gt;StatusGrp&lt;/property&gt;<br/>
+     * &lt;property name=&quot;Status01&quot;&gt;Closed&lt;/property&gt;<br/>
+     * &lt;property name=&quot;Status02&quot;&gt;Open&lt;/property&gt;<br/>
+     * &lt;property name=&quot;StatusNN&quot;&gt;Open&lt;/property&gt;
+     * </li></ul>
+     * <b>Negate a Status:</b><br/>
+     * To work with exclusion the value for the property StatusNN must be prefixed with a "!" e.g.<br>
+     * &lt;property name=&quot;StatusNN&quot;&gt;!Open&lt;/property&gt;<br/><br/>
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return List of Status, empty List if not found
+     * @param _offset offset to start to search for
+     * @throws EFapsException on error
+     */
+    protected List<Status> getStatusListFromProperties(final Parameter _parameter,
+                                                       final int _offset)
+        throws EFapsException
+    {
         final Set<Status> ret = new HashSet<Status>();
         final Set<Status> negateList = new HashSet<Status>();
-        final Map<Integer, String> statusGroupMap = analyseProperty(_parameter, "StatusGroup");
+        final Map<Integer, String> statusGroupMap = analyseProperty(_parameter, "StatusGroup", _offset);
         // no statusGroup was set, try to get it from the instance
         if (statusGroupMap.isEmpty()) {
             final Instance inst = _parameter.getInstance();
             if (inst != null && inst.isValid() &&  inst.getType().isCheckStatus()) {
-                statusGroupMap.put(0, inst.getType().getStatusAttribute().getLink().getUUID().toString());
+                statusGroupMap.put(_offset, inst.getType().getStatusAttribute().getLink().getUUID().toString());
             }
         }
 
         if (!statusGroupMap.isEmpty()) {
             final String defaultStaturGrp = statusGroupMap.values().iterator().next();
-            final Map<Integer, String> statusMap = analyseProperty(_parameter, "Status");
+            final Map<Integer, String> statusMap = analyseProperty(_parameter, "Status", _offset);
             for (final Entry<Integer, String> entry : statusMap.entrySet()) {
                 final String stGrpStr = statusGroupMap.containsKey(entry.getKey()) ? statusGroupMap.get(entry.getKey())
                                 : defaultStaturGrp;
@@ -293,10 +361,23 @@ public abstract class AbstractCommon_Base
     protected QueryBuilder getQueryBldrFromProperties(final Parameter _parameter)
         throws EFapsException
     {
+        return getQueryBldrFromProperties(_parameter, 0);
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _offset offset to start to search for
+     * @return QueryBuilder
+     * @throws EFapsException on error
+     */
+    protected QueryBuilder getQueryBldrFromProperties(final Parameter _parameter,
+                                                      final int _offset)
+        throws EFapsException
+    {
         QueryBuilder ret = null;
-        final Map<Integer, String> types = analyseProperty(_parameter, "Type");
-        final Map<Integer, String> linkFroms = analyseProperty(_parameter, "LinkFrom");
-        final Map<Integer, String> expands = analyseProperty(_parameter, "ExpandChildTypes");
+        final Map<Integer, String> types = analyseProperty(_parameter, "Type", _offset);
+        final Map<Integer, String> linkFroms = analyseProperty(_parameter, "LinkFrom", _offset);
+        final Map<Integer, String> expands = analyseProperty(_parameter, "ExpandChildTypes", _offset);
         boolean first = true;
         boolean multiple = false;
         final List<Type> excludes = new ArrayList<Type>();
@@ -358,7 +439,7 @@ public abstract class AbstractCommon_Base
             ret.addWhereAttrNotEqValue(ret.getType().getTypeAttribute(), typeIds.toArray());
         }
 
-        final List<Status> statusList = getStatusListFromProperties(_parameter);
+        final List<Status> statusList = getStatusListFromProperties(_parameter, _offset);
         if (!statusList.isEmpty()) {
             Type tempType = ret.getType();
             while (!tempType.isCheckStatus() && tempType.getParentType() != null) {
