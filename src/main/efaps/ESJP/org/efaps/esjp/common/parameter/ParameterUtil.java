@@ -44,4 +44,15 @@ public class ParameterUtil
     {
         return ParameterUtil_Base.clone(_parameter, _tuplets);
     }
+
+    /**
+     * @param _string
+     * @param _string2
+     */
+    public static void setProperty(final Parameter _parameter,
+                                   final String _key,
+                                   final String _value)
+    {
+        ParameterUtil_Base.setProperty(_parameter, _key, _value);
+    }
 }

@@ -1032,7 +1032,15 @@ public abstract class Field_Base
     {
         final StringBuilder html = new StringBuilder();
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        html.append("<select name=\"").append(fieldValue != null ? fieldValue.getField().getName() : "eFapsDropDown")
+        final String fieldName;
+        if (containsProperty(_parameter, "FieldName")) {
+            fieldName = getProperty(_parameter, "FieldName");
+        } else if (fieldValue != null) {
+            fieldName =  fieldValue.getField().getName();
+        } else {
+            fieldName = "eFapsDropDown";
+        }
+        html.append("<select name=\"").append(fieldName)
             .append("\" size=\"1\"").append(UIInterface.EFAPSTMPTAG).append(">");
         for (final DropDownPosition value : _values) {
             html.append("<option value=\"").append(value.getValue()).append("\"");
@@ -1097,8 +1105,8 @@ public abstract class Field_Base
      * @throws EFapsException on error
      */
     public DropDownPosition getDropDownPosition(final Parameter _parameter,
-                                                   final Object _value,
-                                                   final Object _option)
+                                                final Object _value,
+                                                final Object _option)
         throws EFapsException
     {
         return new DropDownPosition(_value, _option);

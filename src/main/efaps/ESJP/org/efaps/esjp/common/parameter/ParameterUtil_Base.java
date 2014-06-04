@@ -21,6 +21,9 @@
 
 package org.efaps.esjp.common.parameter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -62,5 +65,22 @@ public abstract class ParameterUtil_Base
             }
         }
         return ret;
+    }
+
+    /**
+     * @param _string
+     * @param _string2
+     */
+    public static void setProperty(final Parameter _parameter,
+                                   final String _key,
+                                   final String _value)
+    {
+        @SuppressWarnings("unchecked")
+        Map<Object, Object> properties = (Map<Object, Object>) _parameter.get(ParameterValues.PROPERTIES);
+        if (properties == null) {
+            properties = new HashMap<Object, Object>();
+        }
+        properties.put(_key, _value);
+        _parameter.put(ParameterValues.PROPERTIES, properties);
     }
 }
