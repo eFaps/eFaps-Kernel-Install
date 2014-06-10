@@ -37,6 +37,7 @@ import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.Status.StatusGroup;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.datamodel.ui.UIInterface;
@@ -572,6 +573,47 @@ public abstract class Field_Base
 
         final Return ret = new Return();
         ret.put(ReturnValues.VALUES, html.toString());
+        return ret;
+    }
+
+    /**
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @return html snipplet
+     * @throws EFapsException on error
+     */
+    public Return getStatusDropDownFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final StringBuilder html = new StringBuilder();
+        final String statusGroupStr = getProperty(_parameter, "StatusGroup");
+        StatusGroup statusGroup;
+        if (isUUID(statusGroupStr)) {
+            statusGroup = Status.get(UUID.fromString(statusGroupStr));
+        } else {
+            statusGroup = Status.get(statusGroupStr);
+        }
+        final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
+        if ("true".equalsIgnoreCase(getProperty(_parameter, "AddWildcard4Search"))) {
+            positions.add(getDropDownPosition(_parameter, "*", "*"));
+        }
+
+        for (final Status status : statusGroup.values()) {
+            positions.add(getDropDownPosition(_parameter, status.getId(), status.getLabel()));
+        }
+
+        Collections.sort(positions, new Comparator<DropDownPosition>() {
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public int compare(final DropDownPosition _o1,
+                               final DropDownPosition _o2)
+            {
+                return _o1.getOrderValue().compareTo(_o2.getOrderValue());
+            }
+        });
+        final Return ret = new Return();
+        html.append(getDropDownField(_parameter, positions));
+        ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
     }
 
