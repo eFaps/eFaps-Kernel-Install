@@ -62,6 +62,7 @@ public abstract class Search_Base
     extends AbstractCommon
     implements EventExecution
 {
+
     /**
      * Logger for this class.
      */
@@ -77,12 +78,30 @@ public abstract class Search_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final List<Instance> instances = new ArrayList<Instance>();
-        for (final QueryBuilder bldr : getQueryBuilder(_parameter)) {
-            add2QueryBuilder(_parameter, bldr);
-            instances.addAll(executeQuery(_parameter, bldr));
+        ret.put(ReturnValues.VALUES, getInstances(_parameter));
+        return ret;
+    }
+
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API.
+     * @return list of instances
+     * @throws EFapsException  on error
+     */
+    protected List<Instance> getInstances(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Instance> ret = new ArrayList<Instance>();
+        // to be removed
+        if (containsProperty(_parameter, "Types") || containsProperty(_parameter, "IgnoreCase4Fields")) {
+            for (final QueryBuilder bldr : getQueryBuilder(_parameter)) {
+                add2QueryBuilder(_parameter, bldr);
+                ret.addAll(executeQuery(_parameter, bldr));
+            }
+        } else {
+            final QueryBuilder queryBldr = getQueryBldr(_parameter);
+            add2QueryBuilder(_parameter, queryBldr);
+            ret.addAll(queryBldr.getQuery().execute());
         }
-        ret.put(ReturnValues.VALUES, instances);
         return ret;
     }
 
@@ -101,13 +120,51 @@ public abstract class Search_Base
     }
 
     /**
+     * Method for obtains a QueryBuilder.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return queryBldr QueryBuilder with values for search.
+     * @throws EFapsException on error.
+     */
+    protected QueryBuilder getQueryBldr(final Parameter _parameter)
+        throws EFapsException
+    {
+        final AbstractCommand command = (AbstractCommand) _parameter.get(ParameterValues.UIOBJECT);
+        final QueryBuilder ret = getQueryBldrFromProperties(_parameter);
+
+        final Collection<String> ignFields = analyseProperty(_parameter, "IgnoreCase4Field").values();
+        for (final Field field : command.getTargetForm().getFields()) {
+            final String value = _parameter.getParameterValue(field.getName());
+            if ((value != null) && (value.length() > 0) && (!value.equals("*"))) {
+                if (ret.getType().getAttribute(field.getAttribute()) != null) {
+                    final Attribute attribute = ret.getType().getAttribute(field.getAttribute());
+                    if (attribute.getAttributeType().getDbAttrType() instanceof StringType) {
+                        ret.addWhereAttrMatchValue(field.getAttribute(), value + "*")
+                                        .setIgnoreCase(ignFields.contains(field.getName()));
+                    } else {
+                        ret.addWhereAttrEqValue(field.getAttribute(), value);
+                    }
+                } else {
+                    if (field.getAttribute() != null) {
+                        ret.addWhereAttrMatchValue(field.getAttribute(), value)
+                                        .setIgnoreCase(ignFields.contains(field.getName()));
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+
+    /**
      * Method for obtains a List of the query.
      *
      * @param _parameter Parameter as passed from the eFaps API.
      * @param _queryBldr QueryBuilder
      * @return instances List of instances.
      * @throws EFapsException on error.
+     * @deprecated will be removed
      */
+    @Deprecated
     protected List<Instance> executeQuery(final Parameter _parameter,
                                           final QueryBuilder _queryBldr)
         throws EFapsException
@@ -134,7 +191,9 @@ public abstract class Search_Base
      * @param _parameter Parameter as passed from the eFaps API.
      * @return queryBldr QueryBuilder with values for search.
      * @throws EFapsException on error.
+     * @deprecated will be removed
      */
+    @Deprecated
     protected List<QueryBuilder> getQueryBuilder(final Parameter _parameter)
         throws EFapsException
     {
@@ -142,10 +201,9 @@ public abstract class Search_Base
         final Context context = Context.getThreadContext();
         final AbstractCommand command = (AbstractCommand) _parameter.get(ParameterValues.UIOBJECT);
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-
-        Collection<String> typesList  = analyseProperty(_parameter, "Type").values();
+        Search_Base.LOG.warn("Command '{}' uses deprecated API for search.", command.getName());
+        Collection<String> typesList = analyseProperty(_parameter, "Type").values();
         if (typesList.isEmpty() && getProperty(_parameter, "Types") != null) {
-            Search_Base.LOG.warn("Command '{}' uses deprecated API for type.", command.getName());
             final String[] typesChar = getProperty(_parameter, "Types").split(";");
             typesList = Arrays.asList(typesChar);
         }
@@ -169,7 +227,7 @@ public abstract class Search_Base
             boolean add = false;
             for (final Field field : command.getTargetForm().getFields()) {
                 final String value = context.getParameter(field.getName());
-                if (value!= null) {
+                if (value != null) {
                     add = true;
                 }
                 if ((value != null) && (value.length() > 0) && (!value.equals("*"))) {
@@ -184,7 +242,7 @@ public abstract class Search_Base
                     } else {
                         if (field.getAttribute() != null) {
                             queryBldr.addWhereAttrMatchValue(field.getAttribute(), value)
-                                                                .setIgnoreCase(ignoreFields.contains(field.getName()));
+                                            .setIgnoreCase(ignoreFields.contains(field.getName()));
                         }
                     }
                 }
@@ -198,9 +256,10 @@ public abstract class Search_Base
 
     /**
      * Render a dropdown with the types.
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return Return containing HTML snipplet
-     *  @throws EFapsException on error
+     * @throws EFapsException on error
      */
     public Return typeFieldValue(final Parameter _parameter)
         throws EFapsException
@@ -228,7 +287,7 @@ public abstract class Search_Base
         html.append("<option value=\"*\">*</option>");
         for (final Entry<String, Long> value : values.entrySet()) {
             html.append("<option value=\"").append(value.getValue()).append("\">").append(value.getKey())
-                .append("</option>");
+                            .append("</option>");
         }
         html.append("</select>");
         ret.put(ReturnValues.SNIPLETT, html.toString());
