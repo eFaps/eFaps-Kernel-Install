@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2013 The eFaps Team
 
@@ -22,30 +20,22 @@
  Last Changed By: $Author$
 
 -->
-
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>056cac24-9819-4919-aa7b-745c321e1335</uuid>
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>e479b310-7967-4525-9a3c-5693921d289e</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_DataModel_DimensionTree_UoMs</name>
-        <!-- target definitions -->
+        <name>Admin_DataModel_TypeTree_ChildClass</name>
         <target>
-            <menu>Admin_DataModel_DimensionTree_UoMs_Menu</menu>
-            <table>Admin_DataModel_UoMTable</table>
+            <table>Admin_DataModel_TypeTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Admin_DataModel_UoM</property>
-                <property name="LinkFrom">Dimension</property>
+                <property name="Type">Admin_DataModel_Type</property>
+                <property name="LinkFrom">ParentClassType</property>
             </evaluate>
         </target>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>
-
 </ui-command>

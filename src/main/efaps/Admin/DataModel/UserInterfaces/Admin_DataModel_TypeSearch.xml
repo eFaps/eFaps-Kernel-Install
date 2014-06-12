@@ -40,7 +40,7 @@
             <form>Admin_DataModel_TypeForm</form>
             <table>Admin_DataModel_TypeTable</table>
             <evaluate program="org.efaps.esjp.common.uisearch.Search">
-                <property name="Types">Admin_DataModel_Type</property>
+                <property name="Type">Admin_DataModel_Type</property>
             </evaluate>
         </target>
         <!-- properties -->

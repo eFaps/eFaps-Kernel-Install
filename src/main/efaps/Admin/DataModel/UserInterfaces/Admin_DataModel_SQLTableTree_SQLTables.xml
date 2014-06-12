@@ -38,8 +38,8 @@
         <target>
             <table>Admin_DataModel_SQLTableTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_DataModel_SQLTable</property>
-                <property name="LinkFroms">DMTableMain</property>
+                <property name="Type">Admin_DataModel_SQLTable</property>
+                <property name="LinkFrom">DMTableMain</property>
             </evaluate>
         </target>
         <!-- properties -->

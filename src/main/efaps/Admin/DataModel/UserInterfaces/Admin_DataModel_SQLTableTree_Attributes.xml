@@ -38,8 +38,8 @@
         <target>
             <table>Admin_DataModel_AttributeTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_DataModel_Attribute</property>
-                <property name="LinkFroms">Table</property>
+                <property name="Type">Admin_DataModel_Attribute</property>
+                <property name="LinkFrom">Table</property>
             </evaluate>
         </target>
         <!-- properties -->

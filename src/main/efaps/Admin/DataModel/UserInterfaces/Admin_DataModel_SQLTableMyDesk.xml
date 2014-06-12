@@ -43,7 +43,7 @@
         <target>
             <table>Admin_DataModel_SQLTableTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_DataModel_SQLTable</property>
+                <property name="Type">Admin_DataModel_SQLTable</property>
             </evaluate>
         </target>
         <!-- properties -->

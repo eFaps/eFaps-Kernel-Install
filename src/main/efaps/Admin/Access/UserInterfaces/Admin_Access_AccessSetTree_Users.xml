@@ -40,8 +40,8 @@
             <menu>Admin_Access_AccessSetTree_Users_Menu</menu>
             <table>Admin_Access_AccessSet2UserAbstractTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Access_AccessSet2UserAbstract</property>
-                <property name="LinkFroms">AccessSetLink</property>
+                <property name="Type">Admin_Access_AccessSet2UserAbstract</property>
+                <property name="LinkFrom">AccessSetLink</property>
             </evaluate>
         </target>
         <!-- properties -->

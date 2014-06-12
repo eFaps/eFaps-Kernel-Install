@@ -40,8 +40,8 @@
             <menu>Admin_Access_AccessSetTree_AccessTypes_Menu</menu>
             <table>Admin_Access_AccessSet2TypeTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Access_AccessSet2Type</property>
-                <property name="LinkFroms">AccessSetLink</property>
+                <property name="Type">Admin_Access_AccessSet2Type</property>
+                <property name="LinkFrom">AccessSetLink</property>
             </evaluate>
         </target>
         <!-- properties -->

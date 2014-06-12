@@ -40,7 +40,7 @@
             <form>Admin_Access_AccessTypeForm</form>
             <table>Admin_Access_AccessTypeTable</table>
             <evaluate program="org.efaps.esjp.common.uisearch.Search">
-                <property name="Types">Admin_Access_AccessType</property>
+                <property name="Type">Admin_Access_AccessType</property>
             </evaluate>
         </target>
         <!-- properties -->

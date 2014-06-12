@@ -42,8 +42,8 @@
         <target>
             <table>Admin_DataModel_TypeTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_DataModel_TypeEventIsAllowedFor</property>
-                <property name="LinkFroms">From</property>
+                <property name="Type">Admin_DataModel_TypeEventIsAllowedFor</property>
+                <property name="LinkFrom">From</property>
                 <property name="Selects">linkto[To].oid</property>
             </evaluate>
         </target>

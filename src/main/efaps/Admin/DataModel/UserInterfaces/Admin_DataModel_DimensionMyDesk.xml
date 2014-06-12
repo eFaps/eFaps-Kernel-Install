@@ -44,7 +44,7 @@
             <menu>Admin_DataModel_DimensionMyDesk_Menu</menu>
             <table>Admin_DataModel_DimensionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_DataModel_Dimension</property>
+                <property name="Type">Admin_DataModel_Dimension</property>
             </evaluate>
         </target>
         <!-- properties -->

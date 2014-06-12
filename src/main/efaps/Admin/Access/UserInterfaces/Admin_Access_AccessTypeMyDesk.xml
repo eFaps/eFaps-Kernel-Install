@@ -43,7 +43,7 @@
         <target>
             <table>Admin_Access_AccessTypeTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Access_AccessType</property>
+                <property name="Type">Admin_Access_AccessType</property>
             </evaluate>
         </target>
         <!-- properties -->

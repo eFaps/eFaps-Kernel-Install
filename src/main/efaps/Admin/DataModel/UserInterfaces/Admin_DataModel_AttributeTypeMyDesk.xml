@@ -43,7 +43,7 @@
         <target>
             <table>Admin_DataModel_AttributeTypeTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_DataModel_AttributeType</property>
+                <property name="Type">Admin_DataModel_AttributeType</property>
             </evaluate>
         </target>
         <!-- properties -->
