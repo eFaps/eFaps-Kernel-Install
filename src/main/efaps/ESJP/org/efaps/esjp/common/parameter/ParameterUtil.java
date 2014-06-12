@@ -39,6 +39,13 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 public class ParameterUtil
     extends ParameterUtil_Base
 {
+    /**
+     * Clone the Parameter by making a new Parameter. This does not clone
+     * all the values. It makes a clone for the map for PARAMETERS, PROPERTIES
+     * @param _parameter Paramter as passed by the eFaps API
+     * @param _tuplets tuplets of ParameterValues, Value
+     * @return new Parameter instance with a copy
+     */
     public static Parameter clone(final Parameter _parameter,
                                   final Object... _tuplets)
     {
@@ -46,8 +53,9 @@ public class ParameterUtil
     }
 
     /**
-     * @param _string
-     * @param _string2
+     * @param _parameter    Paramter as passed by the eFaps API
+     * @param _key          Key of the property
+     * @param _value        value of the property
      */
     public static void setProperty(final Parameter _parameter,
                                    final String _key,

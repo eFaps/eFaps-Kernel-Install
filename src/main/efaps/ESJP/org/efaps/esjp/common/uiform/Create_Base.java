@@ -58,6 +58,7 @@ import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.util.EFapsException;
 import org.kie.api.runtime.process.ProcessInstance;
 
@@ -71,6 +72,7 @@ import org.kie.api.runtime.process.ProcessInstance;
 @EFapsUUID("a76c48e2-79e4-4083-93b8-f4bc192eaa02")
 @EFapsRevision("$Rev$")
 public abstract class Create_Base
+    extends AbstractCommon
     implements EventExecution
 {
     /**
@@ -81,6 +83,7 @@ public abstract class Create_Base
      * @return new empty Return
      * @throws EFapsException on error
      */
+    @Override
     public Return execute(final Parameter _parameter)
         throws EFapsException
     {
@@ -88,7 +91,7 @@ public abstract class Create_Base
         final Instance instance = basicInsert(_parameter);
         // connect the basic object to a middle object
         connect(_parameter, instance);
-        // check if we have a fileupload field
+        // check if we have a file-upload field
         fileUpload(_parameter, instance);
         // create classifications
         insertClassification(_parameter, instance);
@@ -110,18 +113,17 @@ public abstract class Create_Base
         throws EFapsException
     {
         if (EFapsSystemConfiguration.get().getAttributeValueAsBoolean(KernelSettings.ACTIVATE_BPM)) {
-            final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-            if (properties.containsKey("ProcessID")) {
-                if ("true".equalsIgnoreCase((String) properties.get("SaveContextBeforeProcessStart"))) {
+            if (getProperty(_parameter, "ProcessID") != null) {
+                if ("true".equalsIgnoreCase(getProperty(_parameter, "SaveContextBeforeProcessStart"))) {
                     Context.save();
                 }
                 final Map<String, Object> params = new HashMap<String, Object>();
                 params.put("OID", _instance.getOid());
                 add2ProcessMap(_parameter, _instance, params);
                 final ProcessInstance processInstance = BPM
-                                .startProcess(properties.get("ProcessID").toString(), params);
-                if ("true".equalsIgnoreCase((String) properties.get("RegisterProcess"))) {
-                    //BPM_GeneralInstance2ProcessId -- use of UUID because installed from different module
+                                .startProcess(getProperty(_parameter, "ProcessID"), params);
+                if ("true".equalsIgnoreCase(getProperty(_parameter, "RegisterProcess"))) {
+                    // BPM_GeneralInstance2ProcessId -- use of UUID because installed from different module
                     final Insert insert = new Insert(UUID.fromString("f6731331-e3a7-4a98-be35-ad1bb8e88497"));
                     insert.add("ProcessId", processInstance.getId());
                     insert.add("GeneralInstanceLink", _instance.getGeneralId());
@@ -162,10 +164,9 @@ public abstract class Create_Base
         final Instance parent = _parameter.getInstance();
         final List<FieldSet> fieldsets = new ArrayList<FieldSet>();
 
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         Status status = null;
-        if (props.containsKey("StatusGroup")) {
-            status = Status.find((String) props.get("StatusGroup"), (String) props.get("Status"));
+        if (getProperty(_parameter, "StatusGroup") != null && getProperty(_parameter, "Status") != null) {
+            status = Status.find(getProperty(_parameter, "StatusGroup"), getProperty(_parameter, "Status"));
         }
         final Insert insert = new Insert(command.getTargetCreateType());
         if (status != null) {
@@ -181,7 +182,7 @@ public abstract class Create_Base
                 } else {
 
                     final Attribute attr = command.getTargetCreateType().getAttribute(attrName);
-                    // check if not a fileupload field
+                    // check if not a file-upload field
                     if (attr != null
                                   && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType().getClassRepr())) {
                         if (_parameter.getParameters().containsKey(field.getName())) {
@@ -264,7 +265,7 @@ public abstract class Create_Base
     {
         for (final FieldSet fieldset : _fieldsets) {
             if (_parameter.getParameters().containsKey(fieldset.getName() + "eFapsRemove")) {
-                // to mantain backward compatibility
+                // to mountain backward compatibility
                 insertFieldSetsOld(_parameter, _instance, _fieldsets);
                 break;
             } else {
@@ -303,7 +304,7 @@ public abstract class Create_Base
     }
 
 
-    // OLD VERSION! WILL BE REMOVED (only bakportabbility
+    // OLD VERSION! WILL BE REMOVED (only back portability)
     private void insertFieldSetsOld(final Parameter _parameter,
                                     final Instance _instance,
                                     final List<FieldSet> _fieldsets)
@@ -353,19 +354,19 @@ public abstract class Create_Base
      * @throws EFapsException on error
      */
     public void connect(final Parameter _parameter,
-                        final Instance _instance) throws EFapsException
+                        final Instance _instance)
+        throws EFapsException
     {
         final Instance parent = _parameter.getInstance();
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
 
-        if (properties.containsKey("ConnectType")) {
-            final String type = (String) properties.get("ConnectType");
-            final String childAttr = (String) properties.get("ConnectChildAttribute");
-            final String parentAttr = (String) properties.get("ConnectParentAttribute");
+        if (getProperty(_parameter, "ConnectType") != null) {
+            final String type = getProperty(_parameter, "ConnectType");
+            final String childAttr = getProperty(_parameter, "ConnectChildAttribute");
+            final String parentAttr = getProperty(_parameter, "ConnectParentAttribute");
 
             final Insert insert = new Insert(type);
-            insert.add(parentAttr, ((Long) parent.getId()).toString());
-            insert.add(childAttr, ((Long) _instance.getId()).toString());
+            insert.add(parentAttr, parent.getId());
+            insert.add(childAttr, _instance.getId());
             insert.execute();
         }
     }
@@ -378,7 +379,8 @@ public abstract class Create_Base
      * @throws EFapsException on error
      */
     public void fileUpload(final Parameter _parameter,
-                           final Instance _instance) throws EFapsException
+                           final Instance _instance)
+        throws EFapsException
     {
         final Context context = Context.getThreadContext();
 

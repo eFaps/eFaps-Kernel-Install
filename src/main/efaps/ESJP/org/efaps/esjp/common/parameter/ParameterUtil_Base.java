@@ -42,18 +42,25 @@ public abstract class ParameterUtil_Base
 {
 
     /**
+     * Clone the Parameter by making a new Parameter. This does not clone
+     * all the values. It makes a clone for the map for PARAMETERS, PROPERTIES
      * @param _parameter Paramter as passed by the eFaps API
      * @param _tuplets tuplets of ParameterValues, Value
      * @return new Parameter instance with a copy
      */
-    public static Parameter clone(final Parameter _parameter,
-                                  final Object... _tuplets)
+    protected static Parameter clone(final Parameter _parameter,
+                                     final Object... _tuplets)
     {
         final Parameter ret = new Parameter();
         for (final Parameter.ParameterValues parVal : Parameter.ParameterValues.values()) {
             final Object val = _parameter.get(parVal);
             if (val != null) {
-                ret.put(parVal, val);
+                if (parVal.equals(ParameterValues.PROPERTIES)
+                                || parVal.equals(ParameterValues.PARAMETERS)) {
+                    ret.put(parVal, new HashMap<Object, Object>((Map<?, ?>) val));
+                } else {
+                    ret.put(parVal, val);
+                }
             }
         }
         // check if some are set, the tuples must be an even number
@@ -68,12 +75,13 @@ public abstract class ParameterUtil_Base
     }
 
     /**
-     * @param _string
-     * @param _string2
+     * @param _parameter Paramter as passed by the eFaps API
+     * @param _key  Key of the property
+     * @param _value    value of the property
      */
-    public static void setProperty(final Parameter _parameter,
-                                   final String _key,
-                                   final String _value)
+    protected static void setProperty(final Parameter _parameter,
+                                      final String _key,
+                                      final String _value)
     {
         @SuppressWarnings("unchecked")
         Map<Object, Object> properties = (Map<Object, Object>) _parameter.get(ParameterValues.PROPERTIES);

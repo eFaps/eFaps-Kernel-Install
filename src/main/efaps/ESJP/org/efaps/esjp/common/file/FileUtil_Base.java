@@ -33,6 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.efaps.admin.AppConfigHandler;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
@@ -47,7 +48,8 @@ import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * Utility class used to create empty files in a user depended temporarily
- * file-folder architecture.
+ * file-folder architecture. In the standard implementation this folder
+ * is synchronized to be accessed by a servlet serving the actual file.
  *
  * @author The eFaps Team
  * @version $Id$
@@ -57,7 +59,7 @@ import com.lowagie.text.pdf.PdfWriter;
 public abstract class FileUtil_Base
 {
     /**
-     * Name of the temp folder.
+     * Name of the folder inside the "official" temporary folder.
      */
     public static final String TMPFOLDERNAME = "eFapsUserDepTemp";
 
@@ -87,9 +89,12 @@ public abstract class FileUtil_Base
     {
         File ret = null;
         try {
-            final File temp = File.createTempFile("eFaps", ".tmp");
-            final File tmpfld = temp.getParentFile();
-            temp.delete();
+            File tmpfld = AppConfigHandler.get().getTempFolder();
+            if (tmpfld == null) {
+                final File temp = File.createTempFile("eFaps", ".tmp");
+                tmpfld = temp.getParentFile();
+                temp.delete();
+            }
             final File storeFolder = new File(tmpfld, FileUtil_Base.TMPFOLDERNAME);
             final NumberFormat formater = NumberFormat.getInstance();
             formater.setMinimumIntegerDigits(8);
@@ -106,6 +111,13 @@ public abstract class FileUtil_Base
         return ret;
     }
 
+    /**
+     * @param _files pdfs to be combined into one file
+     * @param _fileName name of the file to be generated
+     * @param _paginate paginat or not
+     * @return file
+     * @throws EFapsException on error
+     */
     public File combinePdfs(final List<File> _files,
                             final String _fileName,
                             final boolean _paginate)
