@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -23,48 +23,50 @@
 
 -->
 
-<datamodel-type xmlns="http://www.efaps.org/xsd"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>03c51ba4-00a6-47ac-b987-270308fe68d8</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
-
-  <definition>
-    <version-expression>(version==3) || (version==latest)</version-expression>
-    <name>Admin_Common_DBPropertiesBundle</name>
-    <purpose GeneralInstance="false"/>
-    <attribute>
-      <name>OID</name>
-      <type>OID</type>
-      <sqltable>Admin_Common_DBPropertiesBundleSQLTable</sqltable>
-      <sqlcolumn>ID</sqlcolumn>
-   </attribute>
-    <attribute>
-      <name>ID</name>
-      <type>Long</type>
-      <sqltable>Admin_Common_DBPropertiesBundleSQLTable</sqltable>
-      <sqlcolumn>ID</sqlcolumn>
-    </attribute>
-    <attribute>
-      <name>Name</name>
-      <type>String</type>
-      <sqltable>Admin_Common_DBPropertiesBundleSQLTable</sqltable>
-      <sqlcolumn>NAME</sqlcolumn>
-    </attribute>
-    <attribute>
-      <name>UUID</name>
-      <type>String</type>
-      <sqltable>Admin_Common_DBPropertiesBundleSQLTable</sqltable>
-      <sqlcolumn>UUID</sqlcolumn>
-    </attribute>
-    <attribute>
-      <name>Sequence</name>
-      <type>Integer</type>
-      <sqltable>Admin_Common_DBPropertiesBundleSQLTable</sqltable>
-      <sqlcolumn>SEQUENCE</sqlcolumn>
-    </attribute>
-  </definition>
-
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>03c51ba4-00a6-47ac-b987-270308fe68d8</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==3) || (version==latest)</version-expression>
+        <name>Admin_Common_DBPropertiesBundle</name>
+        <purpose GeneralInstance="false" />
+        <attribute>
+            <name>OID</name>
+            <type>OID</type>
+            <sqltable>Admin_Common_DBPropertiesBundleSQLTable</sqltable>
+            <sqlcolumn>ID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ID</name>
+            <type>Long</type>
+            <sqltable>Admin_Common_DBPropertiesBundleSQLTable</sqltable>
+            <sqlcolumn>ID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Name</name>
+            <type>String</type>
+            <sqltable>Admin_Common_DBPropertiesBundleSQLTable</sqltable>
+            <sqlcolumn>NAME</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>UUID</name>
+            <type>String</type>
+            <sqltable>Admin_Common_DBPropertiesBundleSQLTable</sqltable>
+            <sqlcolumn>UUID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Sequence</name>
+            <type>Integer</type>
+            <sqltable>Admin_Common_DBPropertiesBundleSQLTable</sqltable>
+            <sqlcolumn>SEQUENCE</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>CacheOnStart</name>
+            <type>Boolean</type>
+            <sqltable>Admin_Common_DBPropertiesBundleSQLTable</sqltable>
+            <sqlcolumn>CACHEONSTART</sqlcolumn>
+        </attribute>
+    </definition>
 </datamodel-type>

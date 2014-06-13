@@ -59,5 +59,11 @@
             <property name="Required">true</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
+        <field name="cacheOnStart">
+            <property name="Attribute">CacheOnStart</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Required">true</property>
+        </field>
     </definition>
 </ui-form>
