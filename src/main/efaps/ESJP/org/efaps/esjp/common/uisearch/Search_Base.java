@@ -134,7 +134,7 @@ public abstract class Search_Base
 
         final Collection<String> ignFields = analyseProperty(_parameter, "IgnoreCase4Field").values();
         for (final Field field : command.getTargetForm().getFields()) {
-            final String value = _parameter.getParameterValue(field.getName());
+            final String value = Context.getThreadContext().getParameter(field.getName());
             if ((value != null) && (value.length() > 0) && (!value.equals("*"))) {
                 if (ret.getType().getAttribute(field.getAttribute()) != null) {
                     final Attribute attribute = ret.getType().getAttribute(field.getAttribute());
