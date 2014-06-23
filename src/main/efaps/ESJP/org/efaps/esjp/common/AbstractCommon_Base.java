@@ -150,6 +150,7 @@ public abstract class AbstractCommon_Base
      *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _key key of the Property
+     * @param _defaultValue defaultvalue
      * @return value for the Property, if not found the defaultvalue
      * @throws EFapsException on error
      */
