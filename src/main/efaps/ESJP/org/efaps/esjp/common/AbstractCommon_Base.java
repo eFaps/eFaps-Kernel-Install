@@ -150,6 +150,28 @@ public abstract class AbstractCommon_Base
      *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _key key of the Property
+     * @return value for the Property, if not found the defaultvalue
+     * @throws EFapsException on error
+     */
+    protected String getProperty(final Parameter _parameter,
+                                 final String _key,
+                                 final String _defaultValue)
+        throws EFapsException
+    {
+        final String ret;
+        if (containsProperty(_parameter, _key)) {
+            ret = getProperty(_parameter, _key);
+        } else {
+            ret  = _defaultValue;
+        }
+        return ret;
+    }
+
+    /**
+     * Get a Property form the ParameterValues.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _key key of the Property
      * @return value for the Property, null if not found
      * @throws EFapsException on error
      */
