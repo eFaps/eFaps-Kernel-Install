@@ -988,6 +988,10 @@ public abstract class Field_Base
                         if (dbValue.equals(val.value)) {
                             val.setSelected(true);
                             selected = true;
+                        } else if (val.value instanceof String && Instance.get((String) val.value).isValid()
+                                        && dbValue.equals(Instance.get((String) val.value).getId())) {
+                            val.setSelected(true);
+                            selected = true;
                         }
                     } else if (containsProperty(_parameter, "Regex4DefaultValue")) {
                         if (String.valueOf(val.getOption()).matches(getProperty(_parameter, "Regex4DefaultValue"))) {
