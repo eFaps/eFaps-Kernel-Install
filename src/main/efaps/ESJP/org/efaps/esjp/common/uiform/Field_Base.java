@@ -1200,12 +1200,14 @@ public abstract class Field_Base
         throws EFapsException
     {
         final Return ret = new Return();
+        _parameter.get(ParameterValues.ACCESSMODE);
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         final TargetMode mode = (TargetMode) _parameter.get(ParameterValues.ACCESSMODE);
         final StringBuilder html = new StringBuilder();
 
         if ((TargetMode.EDIT.equals(mode) || TargetMode.CREATE.equals(mode))
-                        && fieldValue.getField().isEditableDisplay(mode)) {
+                        && fieldValue.getField().isEditableDisplay(mode)
+                        && !fieldValue.getDisplay().equals(Display.NONE)) {
             final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
             if (fieldValue.getValue() != null) {
                 final UoM uomValue = Dimension.getUoM((Long) fieldValue.getValue());

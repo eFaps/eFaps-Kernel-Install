@@ -99,7 +99,6 @@ public abstract class Edit_Base
     public Return execute(final Parameter _parameter)
         throws EFapsException
     {
-
         final Instance instance = _parameter.getInstance();
         final AbstractCommand command = (AbstractCommand) _parameter.get(ParameterValues.UIOBJECT);
 
@@ -145,9 +144,36 @@ public abstract class Edit_Base
                                      final Instance _instance)
         throws EFapsException
     {
+        return updateMainElements(_parameter, _form, _instance, new HashMap<String, Object>(), null);
+    }
+
+    /**
+     * Method updates the main elements from the form.
+     *
+     * @param _parameter _parameter Parameter as provided by eFaps for a esjp
+     * @param _form from used for the update
+     * @param _instance instance that must be updated
+     * @param _valueMap map of values
+     * @param _fieldTables list of tables
+     * @return the name of a classification if found in the form, else null
+     * @throws EFapsException on error
+     */
+    public String updateMainElements(final Parameter _parameter,
+                                     final Form _form,
+                                     final Instance _instance,
+                                     final Map<String,Object> _valueMap,
+                                     final List<FieldTable> _fieldTables)
+        throws EFapsException
+    {
         String ret = null;
         final List<FieldSet> fieldsets = new ArrayList<FieldSet>();
-        final List<FieldTable> fieldTables = new ArrayList<FieldTable>();
+        final List<FieldTable> fieldTables;
+        if (_fieldTables == null) {
+            fieldTables = new ArrayList<FieldTable>();
+        } else {
+            fieldTables = _fieldTables;
+        }
+
         final List<Field> fields = new ArrayList<Field>();
 
         final PrintQuery print = new PrintQuery(_instance);
@@ -184,7 +210,7 @@ public abstract class Edit_Base
                     final String oldValue = object != null ? object.toString() : null;
                     if ((newValue == null && oldValue != null)
                                     || (newValue != null && !newValue.equals(oldValue))) {
-                        add2Update(_parameter, update, attr, field.getName());
+                        _valueMap.put(attrName, add2Update(_parameter, update, attr, field.getName()));
                     }
                 }
             }
@@ -192,14 +218,16 @@ public abstract class Edit_Base
             update.execute();
         }
         updateFieldSets(_parameter, _instance, fieldsets);
-        updateFieldTable(_parameter, _instance, fieldTables);
+        if (_fieldTables == null) {
+            updateFieldTable(_parameter, _instance, fieldTables);
+        }
         return ret;
     }
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
      * @param _update Update
-     * @param _update Update
+     * @throws EFapsException on error
      */
     protected void add2MainUpdate(final Parameter _parameter,
                                   final Update _update)
@@ -216,26 +244,28 @@ public abstract class Edit_Base
      * @param _fieldName name of the Field
      * @throws EFapsException on error
      */
-    protected void add2Update(final Parameter _parameter,
-                              final Update _update,
-                              final Attribute _attr,
-                              final String _fieldName)
+    protected Object add2Update(final Parameter _parameter,
+                                final Update _update,
+                                final Attribute _attr,
+                                final String _fieldName)
         throws EFapsException
     {
         final Context context = Context.getThreadContext();
+        Object ret = null;
         if (_attr.hasUoM()) {
-            _update.add(_attr, new Object[] { _parameter.getParameterValue(_fieldName),
-                            _parameter.getParameterValue(_fieldName + "UoM") });
+            ret = new Object[] { _parameter.getParameterValue(_fieldName),
+                            _parameter.getParameterValue(_fieldName + "UoM") };
         } else if (_attr.getAttributeType().getDbAttrType() instanceof RateType) {
-            final String value =  _parameter.getParameterValue(_fieldName);
-            final boolean inverted = "true".equalsIgnoreCase(context.getParameter(_fieldName
-                            + RateUI.INVERTEDSUFFIX));
-            _update.add(_attr, new Object[] { inverted ? 1 : value, inverted ? value : 1 });
+            final String value = _parameter.getParameterValue(_fieldName);
+            final boolean inverted = "true".equalsIgnoreCase(context.getParameter(_fieldName + RateUI.INVERTEDSUFFIX));
+            ret = new Object[] { inverted ? 1 : value, inverted ? value : 1 };
         } else if (_attr.getAttributeType().getUIProvider() instanceof BitEnumUI) {
-            _update.add(_attr, (Object[]) _parameter.getParameterValues(_fieldName));
+            ret = _parameter.getParameterValues(_fieldName);
         } else {
-            _update.add(_attr,  _parameter.getParameterValue(_fieldName));
+            ret = _parameter.getParameterValue(_fieldName);
         }
+        _update.add(_attr, ret);
+        return ret;
     }
 
     /**
@@ -658,8 +688,8 @@ public abstract class Edit_Base
                     update = new Insert(row.getType());
                     update.add(row.getLinkAttrName(), _parameter.getInstance().getId());
                 }
-                for (final String[] value : row.getValues()) {
-                    update.add(value[0], value[1]);
+                for (final Entry<String, Object> entry : row.getValues().entrySet()) {
+                    update.add(entry.getKey(), entry.getValue());
                 }
                 add2Update4FieldTable(_parameter, update, row);
                 update.execute();
@@ -763,7 +793,7 @@ public abstract class Edit_Base
                                             row.setLinkAttrName(conattr);
                                             first = false;
                                         }
-                                        row.addValue(attrName, values[i]);
+                                        row.addValue(_parameter, attrName, field.getName(), i);
                                     } else {
                                         more = false;
                                         break;
@@ -782,7 +812,7 @@ public abstract class Edit_Base
     /**
      * Class for update of a row.
      */
-    public class RowUpdate
+    public static class RowUpdate
     {
 
         /**
@@ -803,7 +833,7 @@ public abstract class Edit_Base
         /**
          * Values in this row.
          */
-        private final Set<String[]> values = new HashSet<String[]>();
+        private final Map<String, Object> values = new HashMap<String, Object>();
 
         /**
          * Name of the link attribute.
@@ -853,7 +883,7 @@ public abstract class Edit_Base
          *
          * @return value of instance variable {@link #values}
          */
-        public Set<String[]> getValues()
+        public Map<String, Object> getValues()
         {
             return this.values;
         }
@@ -862,10 +892,35 @@ public abstract class Edit_Base
          * @param _attrName name of the attribute
          * @param _value value
          */
-        public void addValue(final String _attrName,
-                             final String _value)
+        public void addValue(final Parameter _parameter,
+                             final String _attrName,
+                             final String _fieldName,
+                             final int _idx)
         {
-            this.values.add(new String[] { _attrName, _value });
+            final Attribute attribute = getType().getAttribute(_attrName);
+            if (attribute != null) {
+                final Object value;
+                if (attribute.hasUoM()) {
+                    value =  new Object[] { _parameter.getParameterValues(_fieldName)[_idx],
+                                    _parameter.getParameterValues(_fieldName + "UoM")[_idx] };
+                } else if (attribute.getAttributeType().getDbAttrType() instanceof RateType) {
+                    final String valueTmp = _parameter.getParameterValues(_fieldName)[_idx];
+                    final boolean inverted = "true".equalsIgnoreCase(_parameter.getParameterValues(_fieldName
+                                    + RateUI.INVERTEDSUFFIX)[_idx]);
+                    value = new Object[] { inverted ? 1 : valueTmp, inverted ? valueTmp : 1 };
+                } else if (attribute.hasLink()) {
+                    final String valueTmp = _parameter.getParameterValues(_fieldName)[_idx];
+                    final Instance inst = Instance.get(valueTmp);
+                    if (inst.isValid()) {
+                        value = inst;
+                    } else {
+                        value = valueTmp;
+                    }
+                } else {
+                    value = _parameter.getParameterValues(_fieldName)[_idx];
+                }
+                this.values.put(_attrName, value);
+            }
         }
 
         /**
