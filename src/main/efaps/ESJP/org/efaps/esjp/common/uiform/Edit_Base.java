@@ -23,6 +23,7 @@ package org.efaps.esjp.common.uiform;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -243,6 +244,7 @@ public abstract class Edit_Base
      * @param _attr Attribute
      * @param _fieldName name of the Field
      * @throws EFapsException on error
+     * @return the object addeded
      */
     protected Object add2Update(final Parameter _parameter,
                                 final Update _update,
@@ -253,18 +255,26 @@ public abstract class Edit_Base
         final Context context = Context.getThreadContext();
         Object ret = null;
         if (_attr.hasUoM()) {
-            ret = new Object[] { _parameter.getParameterValue(_fieldName),
+            final Object[] tmp = new Object[] { _parameter.getParameterValue(_fieldName),
                             _parameter.getParameterValue(_fieldName + "UoM") };
+            _update.add(_attr, tmp);
+            ret = tmp;
         } else if (_attr.getAttributeType().getDbAttrType() instanceof RateType) {
             final String value = _parameter.getParameterValue(_fieldName);
             final boolean inverted = "true".equalsIgnoreCase(context.getParameter(_fieldName + RateUI.INVERTEDSUFFIX));
-            ret = new Object[] { inverted ? 1 : value, inverted ? value : 1 };
+            final Object[] tmp = new Object[] { inverted ? 1 : value, inverted ? value : 1 };
+            _update.add(_attr, tmp);
+            ret = tmp;
         } else if (_attr.getAttributeType().getUIProvider() instanceof BitEnumUI) {
-            ret = _parameter.getParameterValues(_fieldName);
+            final String[] tmp = _parameter.getParameterValues(_fieldName);
+            if (tmp != null) {
+                _update.add(_attr, Arrays.copyOf(tmp, tmp.length, Object[].class));
+            }
+            ret = tmp;
         } else {
             ret = _parameter.getParameterValue(_fieldName);
+            _update.add(_attr, ret);
         }
-        _update.add(_attr, ret);
         return ret;
     }
 
