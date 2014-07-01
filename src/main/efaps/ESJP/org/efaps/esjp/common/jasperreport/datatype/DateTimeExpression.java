@@ -42,6 +42,11 @@ public class DateTimeExpression
 {
 
     /**
+     * Needed for serialization.
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
      * The value of this expression.
      */
     private DateTime value;
@@ -52,13 +57,8 @@ public class DateTimeExpression
     private AbstractDateTime dataType;
 
     /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * @param _dateTime
-     * @param _dateTimeDate
+     * @param _value value
+     * @param _dataType datatype
      */
     public DateTimeExpression(final DateTime _value,
                               final DateTimeDate _dataType)
@@ -91,6 +91,7 @@ public class DateTimeExpression
      * Setter method for instance variable {@link #value}.
      *
      * @param _value value for instance variable {@link #value}
+     * @return this for chaining
      */
     public DateTimeExpression setValue(final DateTime _value)
     {
@@ -112,6 +113,7 @@ public class DateTimeExpression
      * Setter method for instance variable {@link #dataType}.
      *
      * @param _dataType value for instance variable {@link #dataType}
+     * @return this for chaining
      */
     public DateTimeExpression setDataType(final AbstractDateTime _dataType)
     {
