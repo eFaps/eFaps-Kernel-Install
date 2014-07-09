@@ -267,7 +267,9 @@ public abstract class Edit_Base
             ret = tmp;
         } else if (_attr.getAttributeType().getUIProvider() instanceof BitEnumUI) {
             final String[] tmp = _parameter.getParameterValues(_fieldName);
-            if (tmp != null) {
+            if (tmp == null) {
+                _update.add(_attr, (Object[]) null);
+            } else {
                 _update.add(_attr, Arrays.copyOf(tmp, tmp.length, Object[].class));
             }
             ret = tmp;
