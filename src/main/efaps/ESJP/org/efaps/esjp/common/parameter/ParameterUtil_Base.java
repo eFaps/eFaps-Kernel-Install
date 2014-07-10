@@ -91,4 +91,40 @@ public abstract class ParameterUtil_Base
         properties.put(_key, _value);
         _parameter.put(ParameterValues.PROPERTIES, properties);
     }
+
+    /**
+     * @param _parameter Paramter as passed by the eFaps API
+     * @param _key  list of keys the value will be searched for sequential
+     * @return value if found else null
+     */
+    protected static String getParameterValue(final Parameter _parameter,
+                                              final String... _keys)
+    {
+        String ret = null;
+        for (final String key : _keys) {
+            ret = _parameter.getParameterValue(key);
+            if (ret != null) {
+                break;
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Paramter as passed by the eFaps API
+     * @param _key  list of keys the value will be searched for sequential
+     * @return value if found else null
+     */
+    protected static String[] getParameterValues(final Parameter _parameter,
+                                                 final String... _keys)
+    {
+        String[] ret = null;
+        for (final String key : _keys) {
+            ret = _parameter.getParameterValues(key);
+            if (ret != null) {
+                break;
+            }
+        }
+        return ret;
+    }
 }
