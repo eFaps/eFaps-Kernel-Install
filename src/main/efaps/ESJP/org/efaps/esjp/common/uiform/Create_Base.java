@@ -29,12 +29,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.efaps.admin.EFapsSystemConfiguration;
 import org.efaps.admin.KernelSettings;
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.AttributeSet;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.attributetype.AbstractFileType;
 import org.efaps.admin.datamodel.attributetype.RateType;
 import org.efaps.admin.datamodel.ui.RateUI;
@@ -168,7 +170,25 @@ public abstract class Create_Base
         if (getProperty(_parameter, "StatusGroup") != null && getProperty(_parameter, "Status") != null) {
             status = Status.find(getProperty(_parameter, "StatusGroup"), getProperty(_parameter, "Status"));
         }
-        final Insert insert = new Insert(command.getTargetCreateType());
+
+        Type createType = command.getTargetCreateType();
+        if (createType.isAbstract()) {
+            final String typeStr = _parameter.getParameterValue(getProperty(_parameter, "TypeFieldName"));
+            if (typeStr != null && !typeStr.isEmpty()) {
+                if (isUUID(typeStr)) {
+                    createType = Type.get(UUID.fromString(typeStr));
+                } else if (Instance.get(typeStr).isValid()) {
+                    createType = Type.get(Instance.get(typeStr).getId());
+                } else if (NumberUtils.isDigits(typeStr)) {
+                    createType = Type.get(Long.parseLong(typeStr));
+                } else {
+                    createType = Type.get(typeStr);
+                }
+            } else {
+                createType = null;
+            }
+        }
+        final Insert insert = new Insert(createType);
         if (status != null) {
             insert.add(command.getTargetCreateType().getStatusAttribute(), status.getId());
         }
