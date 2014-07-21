@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
+import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
@@ -48,11 +49,11 @@ import net.sf.jasperreports.engine.export.oasis.JROdsExporter;
 import net.sf.jasperreports.engine.export.oasis.JROdtExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
 import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.engine.util.LocalJasperReportsContext;
 
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -63,12 +64,11 @@ import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.file.FileUtil;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
 
 
 /**
@@ -81,9 +81,13 @@ import org.slf4j.LoggerFactory;
 @EFapsUUID("c3a1f5f8-b263-4ad4-b144-db68437074cc")
 @EFapsRevision("$Rev$")
 public abstract class StandartReport_Base
+    extends AbstractCommon
     implements EventExecution
 {
-    protected static final Logger LOG = LoggerFactory.getLogger(StandartReport_Base.class);
+    /**
+     * Logger used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(StandartReport.class);
 
     /**
      * Parameter map that will be passed to the jasper FillManager.
@@ -101,6 +105,7 @@ public abstract class StandartReport_Base
      * @return Return
      * @throws EFapsException on error
      */
+    @Override
     public Return execute(final Parameter _parameter)
         throws EFapsException
     {
@@ -110,18 +115,23 @@ public abstract class StandartReport_Base
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return file created
+     * @throws EFapsException on error
+     */
     public File getFile(final Parameter _parameter)
         throws EFapsException
     {
         File ret = null;
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-
-        String name = (String) properties.get("JasperReport");
-        if (name == null) {
+        String name = null;
+        if (containsProperty(_parameter, "JasperReport")) {
+            name = getProperty(_parameter, "JasperReport");
+        } else {
             // Commons-Configuration
             final SystemConfiguration sysConf = SystemConfiguration.get(UUID
                             .fromString("9ac2673a-18f9-41ba-b9be-5b0980bdf6f3"));
-            final String key = (String) properties.get("JasperKey");
+            final String key = getProperty(_parameter, "JasperKey");
             if (sysConf != null && key != null) {
                 final Properties props = sysConf.getAttributeValueAsProperties("org.efaps.commons.JasperKey", true);
                 name = props.getProperty(key);
@@ -132,9 +142,8 @@ public abstract class StandartReport_Base
             StandartReport_Base.LOG.error("Neither JasperReport nor JasperKey lead to valid Report Name");
         }
 
-        final String dataSourceClass = (String) properties.get("DataSourceClass");
+        final String dataSourceClass = getProperty(_parameter, "DataSourceClass");
 
-        this.jrParameters.put(JRParameter.REPORT_FILE_RESOLVER, new JasperFileResolver());
         this.jrParameters.put(JRParameter.REPORT_LOCALE, Context.getThreadContext().getLocale());
         this.jrParameters.put(JRParameter.REPORT_RESOURCE_BUNDLE, new EFapsResourceBundle());
 
@@ -151,6 +160,10 @@ public abstract class StandartReport_Base
         final Checkout checkout = new Checkout(instance);
         final InputStream iin = checkout.execute();
         try {
+            final LocalJasperReportsContext ctx = new LocalJasperReportsContext(
+                            DefaultJasperReportsContext.getInstance());
+            ctx.setFileResolver(new JasperFileResolver());
+
             final JasperReport jasperReport = (JasperReport) JRLoader.loadObject(iin);
             iin.close();
             IeFapsDataSource dataSource;
@@ -165,16 +178,16 @@ public abstract class StandartReport_Base
                 dataSource.init(jasperReport, _parameter, null, this.jrParameters);
             }
             this.jrParameters.put("EFAPS_SUBREPORT", new SubReportContainer(_parameter, dataSource, this.jrParameters));
+            final JasperFillManager fillmgr = JasperFillManager.getInstance(ctx);
+            final JasperPrint jasperPrint = fillmgr.fill(jasperReport, this.jrParameters, dataSource);
 
-            final JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, this.jrParameters, dataSource);
-
-            String mime = (String) properties.get("Mime");
+            String mime = getProperty(_parameter, "Mime");
             if (mime == null) {
                 mime = _parameter.getParameterValue("mime");
             }
             // check for a file name, if null search in the properties
             if (getFileName() == null) {
-                setFileName((String) properties.get("FileName"));
+                setFileName(getProperty(_parameter, "FileName"));
                 // last chance search in the jasper Parameters
                 if (getFileName() == null) {
                     setFileName((String) this.jrParameters.get("FileName"));
