@@ -45,6 +45,7 @@ import org.efaps.beans.valueparser.ValueParser;
 import org.efaps.db.Context;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.util.EFapsException;
 
 /**
@@ -66,6 +67,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("17503d60-c2d2-4856-9d94-87333b45f739")
 @EFapsRevision("$Rev$")
 public abstract class RangesValue_Base
+    extends AbstractCommon
     implements EventExecution
 {
     /**
@@ -79,6 +81,7 @@ public abstract class RangesValue_Base
      * @return map with value and keys
      * @throws EFapsException on error
      */
+    @Override
     @SuppressWarnings("unchecked")
     public Return execute(final Parameter _parameter)
         throws EFapsException
@@ -95,7 +98,6 @@ public abstract class RangesValue_Base
             attribute = fieldValue.getAttribute();
         }
 
-
         Map<Attribute, Map<Object, Object>> values;
         if (Context.getThreadContext().containsRequestAttribute(RangesValue_Base.REQUESTCACHEKEY)) {
             values = (Map<Attribute, Map<Object, Object>>)
@@ -108,9 +110,8 @@ public abstract class RangesValue_Base
         if (values.containsKey(attribute)) {
             ret.put(ReturnValues.VALUES, values.get(attribute));
         } else {
-            final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-            final String type = (String) properties.get("Type");
-            final String value = (String) properties.get("Value");
+            final String type = getProperty(_parameter, "Type");
+            final String value = getProperty(_parameter, "Value");
 
             final QueryBuilder queryBldr = new QueryBuilder(Type.get(type));
             add2QueryBldr(_parameter, queryBldr);
@@ -145,6 +146,14 @@ public abstract class RangesValue_Base
                 order.put(strVal,  multi.getCurrentInstance().getId());
             }
             Map retmap;
+
+            if (!attribute.isRequired() && "true".equalsIgnoreCase(getProperty(_parameter, "EmptyValue"))) {
+                if (!tmpMap.isEmpty() && !order.isEmpty()) {
+                    tmpMap.put("-", "");
+                    order.put("-", new Long(0));
+                }
+            }
+
             if (_parameter.get(ParameterValues.UIOBJECT) instanceof FieldValue) {
                 retmap = tmpMap;
                 setSelectedValue(_parameter, retmap);
@@ -179,14 +188,13 @@ public abstract class RangesValue_Base
      * @throws EFapsException on error
      */
     protected void setSelectedValue(final Parameter _parameter,
-                                    final Map<?,?> _map)
+                                    final Map<?, ?> _map)
         throws EFapsException
     {
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         if (_parameter.get(ParameterValues.ACCESSMODE).equals(TargetMode.CREATE)
-                        && properties.containsKey("Default")) {
-            fieldValue.setValue(properties.get("Default"));
+                        && getProperty(_parameter, "Default") != null) {
+            fieldValue.setValue(getProperty(_parameter, "Default"));
         }
     }
 }
