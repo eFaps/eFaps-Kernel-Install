@@ -399,13 +399,13 @@ public abstract class AccessCheck4UI_Base
             } else {
                 config = SystemConfiguration.get(sysConfstr);
             }
-            if (config != null && instance.isValid()) {
+            if (config != null && instance != null && instance.isValid()) {
                 final Properties objProps = config.getObjectAttributeValueAsProperties(instance);
                 final Boolean access;
-                if ("true".equals(getProperty(_parameter,"CheckOnContains"))) {
-                    access = Boolean.valueOf((String) objProps.get(getProperty(_parameter,"Key")));
+                if ("true".equals(getProperty(_parameter, "CheckOnContains"))) {
+                    access = Boolean.valueOf((String) objProps.get(getProperty(_parameter, "Key")));
                 } else {
-                    access = objProps.containsKey(getProperty(_parameter,"Key"));
+                    access = objProps.containsKey(getProperty(_parameter, "Key"));
                 }
                 final boolean inverse = "true".equalsIgnoreCase(getProperty(_parameter, "Inverse"));
                 if (!inverse && access || inverse && !access) {
