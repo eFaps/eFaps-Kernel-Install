@@ -283,7 +283,7 @@ public abstract class AccessCheck4UI_Base
                 }
             }
 
-            if ((!inverse && access) || (inverse && !access)) {
+            if (!inverse && access || inverse && !access) {
                 ret.put(ReturnValues.TRUE, true);
             }
         } else {
@@ -337,7 +337,7 @@ public abstract class AccessCheck4UI_Base
             access = "true".equalsIgnoreCase(getProperty(_parameter, "UIAccessCheck"));
             AccessCheck4UI_Base.LOG.error("Could not get Calling Command for: {}", field);
         }
-        if ((!inverse && access) || (inverse && !access)) {
+        if (!inverse && access || inverse && !access) {
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
@@ -372,7 +372,7 @@ public abstract class AccessCheck4UI_Base
             }
 
             final boolean inverse = "true".equalsIgnoreCase(getProperty(_parameter, "Inverse"));
-            if ((!inverse && access) || (inverse && !access)) {
+            if (!inverse && access || inverse && !access) {
                 ret.put(ReturnValues.TRUE, true);
             }
         }
@@ -391,21 +391,29 @@ public abstract class AccessCheck4UI_Base
     {
         final Return ret = new Return();
         final Instance instance = _parameter.getInstance();
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String sysConfstr = (String) props.get("SystemConfig");
-        final SystemConfiguration config;
-        if (isUUID(sysConfstr)) {
-            config = SystemConfiguration.get(UUID.fromString(sysConfstr));
-        } else {
-            config = SystemConfiguration.get(sysConfstr);
-        }
-        if (config != null && instance.isValid()) {
-            final Properties properties = config.getObjectAttributeValueAsProperties(instance);
-            final Boolean access = Boolean.valueOf((String) properties.get(props.get("Key")));
-            final boolean inverse = "true".equalsIgnoreCase((String) props.get("Inverse"));
-            if ((!inverse && access) || (inverse && !access)) {
-                ret.put(ReturnValues.TRUE, true);
+        if (containsProperty(_parameter, "SystemConfig")) {
+            final String sysConfstr = getProperty(_parameter, "SystemConfig");
+            final SystemConfiguration config;
+            if (isUUID(sysConfstr)) {
+                config = SystemConfiguration.get(UUID.fromString(sysConfstr));
+            } else {
+                config = SystemConfiguration.get(sysConfstr);
             }
+            if (config != null && instance.isValid()) {
+                final Properties objProps = config.getObjectAttributeValueAsProperties(instance);
+                final Boolean access;
+                if ("true".equals(getProperty(_parameter,"CheckOnContains"))) {
+                    access = Boolean.valueOf((String) objProps.get(getProperty(_parameter,"Key")));
+                } else {
+                    access = objProps.containsKey(getProperty(_parameter,"Key"));
+                }
+                final boolean inverse = "true".equalsIgnoreCase(getProperty(_parameter, "Inverse"));
+                if (!inverse && access || inverse && !access) {
+                    ret.put(ReturnValues.TRUE, true);
+                }
+            }
+        } else {
+            LOG.error("Wrong configuration");
         }
         return ret;
     }
@@ -497,7 +505,7 @@ public abstract class AccessCheck4UI_Base
                         }
                     }
                 }
-                if ((access == null && inverse) || (access && !inverse)) {
+                if (access == null && inverse || access && !inverse) {
                     ret.put(ReturnValues.TRUE, true);
                 }
             }
