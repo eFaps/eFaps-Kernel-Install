@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Dimension;
@@ -143,6 +144,20 @@ public abstract class Field_Base
     }
 
     /**
+     *
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @return Boolean value
+     * @throws EFapsException on error
+     */
+    public Return getDefault4BooleanValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        ret.put(ReturnValues.VALUES, BooleanUtils.toBoolean(getProperty(_parameter, "DefaultValue")));
+        return ret;
+    }
+
+    /**
      * Render a single checkbox.<br>
      * Properties:
      * <table>
@@ -223,7 +238,7 @@ public abstract class Field_Base
         final boolean jS = "true".equals(getProperty(_parameter, "JavaScript"));
 
         if (Display.EDITABLE.equals(fieldValue.getDisplay())) {
-            if ((!comments.isEmpty() && !values.isEmpty() && !checkeds.isEmpty())
+            if (!comments.isEmpty() && !values.isEmpty() && !checkeds.isEmpty()
                             && values.size() == comments.size()) {
                 for (final Entry<Integer, String> value : values.entrySet()) {
                     html.append("<input type=\"checkbox\" name=\"").append(fieldValue.getField().getName())
