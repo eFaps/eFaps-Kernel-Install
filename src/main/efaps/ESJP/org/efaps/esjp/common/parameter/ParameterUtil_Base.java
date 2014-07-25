@@ -64,7 +64,7 @@ public abstract class ParameterUtil_Base
             }
         }
         // check if some are set, the tuples must be an even number
-        if (_tuplets != null && ((_tuplets.length & 1) == 0)) {
+        if (_tuplets != null && (_tuplets.length & 1) == 0) {
             int i = 0;
             while (i < _tuplets.length) {
                 ret.put((ParameterValues) _tuplets[i], _tuplets[i + 1]);
@@ -94,7 +94,24 @@ public abstract class ParameterUtil_Base
 
     /**
      * @param _parameter Paramter as passed by the eFaps API
-     * @param _key  list of keys the value will be searched for sequential
+     * @param _key      Key of the property
+     * @param _values    value of the property
+     */
+    protected static void setParmeterValue(final Parameter _parameter,
+                                           final String _key,
+                                           final String... _values)
+    {
+        Map<String, String[]> map = _parameter.getParameters();
+        if (map == null) {
+            map = new HashMap<String, String[]>();
+            _parameter.put(ParameterValues.PARAMETERS, map);
+        }
+        map.put(_key, _values);
+    }
+
+    /**
+     * @param _parameter Paramter as passed by the eFaps API
+     * @param _keys  list of keys the value will be searched for sequential
      * @return value if found else null
      */
     protected static String getParameterValue(final Parameter _parameter,
@@ -112,7 +129,7 @@ public abstract class ParameterUtil_Base
 
     /**
      * @param _parameter Paramter as passed by the eFaps API
-     * @param _key  list of keys the value will be searched for sequential
+     * @param _keys  list of keys the value will be searched for sequential
      * @return value if found else null
      */
     protected static String[] getParameterValues(final Parameter _parameter,

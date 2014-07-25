@@ -66,7 +66,19 @@ public class ParameterUtil
 
     /**
      * @param _parameter Paramter as passed by the eFaps API
-     * @param _key  list of keys the value will be searched for sequential
+     * @param _key      Key of the property
+     * @param _values    value of the property
+     */
+    public static void setParmeterValue(final Parameter _parameter,
+                                        final String _key,
+                                        final String... _values)
+    {
+        ParameterUtil_Base.setParmeterValue(_parameter, _key, _values);
+    }
+
+    /**
+     * @param _parameter Paramter as passed by the eFaps API
+     * @param _keys  list of keys the value will be searched for sequential
      * @return value if found else null
      */
     public static String[] getParameterValues(final Parameter _parameter,
@@ -77,7 +89,7 @@ public class ParameterUtil
 
     /**
      * @param _parameter Paramter as passed by the eFaps API
-     * @param _key  list of keys the value will be searched for sequential
+     * @param _keys  list of keys the value will be searched for sequential
      * @return value if found else null
      */
     public static String getParameterValue(final Parameter _parameter,
