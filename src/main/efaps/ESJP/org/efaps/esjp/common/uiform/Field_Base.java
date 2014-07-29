@@ -482,19 +482,21 @@ public abstract class Field_Base
             if (config != null) {
                 final FieldValue fieldvalue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
                 final Properties confProps = config.getObjectAttributeValueAsProperties(_parameter.getInstance());
+                final List<String> keys = new ArrayList<>(confProps.stringPropertyNames());
+                Collections.sort(keys);
                 if (Display.EDITABLE.equals(fieldvalue.getDisplay())) {
                     final StringBuilder propStr = new StringBuilder();
-                    for (final Entry<Object, Object> entry : confProps.entrySet()) {
-                        propStr.append(entry.getKey()).append("=").append(entry.getValue()).append("\n");
+                    for (final String key : keys) {
+                        propStr.append(key).append("=").append(confProps.getProperty(key)).append("\n");
                     }
                     ret.put(ReturnValues.VALUES, propStr.toString());
                 } else {
                     final StringBuilder html = new StringBuilder();
                     html.append("<table>");
-                    for (final Entry<Object, Object> entry : confProps.entrySet()) {
+                    for (final String key : keys) {
                         html.append("<tr>")
-                             .append("<td>").append(entry.getKey()).append("</td>")
-                             .append("<td>").append(entry.getValue()).append("</td>")
+                             .append("<td>").append(key).append("</td>")
+                             .append("<td>").append(confProps.getProperty(key)).append("</td>")
                              .append("</tr>");
                     }
                     html.append("</table>");
