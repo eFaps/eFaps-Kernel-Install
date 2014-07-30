@@ -26,28 +26,22 @@
 <ui-command xmlns="http://www.efaps.org/xsd"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>99eeaf1b-ff06-467d-8a39-66b4aaafb660</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_User_CompanyTree_Persons</name>
-        <!-- target definitions -->
         <target>
             <menu>Admin_User_CompanyTree_Persons_Menu</menu>
-            <table>Admin_User_PersonTable</table>
+            <table>Admin_User_Person2CompanyTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_User_Person2Company</property>
-                <property name="LinkFroms">CompanyLink</property>
-                <property name="Selects">linkto[UserLink].oid</property>
+                <property name="Type">Admin_User_Person2Company</property>
+                <property name="LinkFrom">CompanyLink</property>
             </evaluate>
         </target>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
         <property name="TargetShowCheckBoxes">true</property>
     </definition>
-
 </ui-command>
