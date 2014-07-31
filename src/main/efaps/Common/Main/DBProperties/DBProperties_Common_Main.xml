@@ -38,4 +38,9 @@
         <language>de</language>
         <file>Main_de.properties</file>
     </resource>
+    <resource>
+        <type>Properties</type>
+        <language>es</language>
+        <file>Main_es.properties</file>
+    </resource>
 </dbproperties>

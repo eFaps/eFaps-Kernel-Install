@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -32,5 +32,10 @@
         <type>Properties</type>
         <language></language>
         <file>Admin_Common.properties</file>
+    </resource>
+    <resource>
+        <type>Properties</type>
+        <language>es</language>
+        <file>Admin_Common_es.properties</file>
     </resource>
 </dbproperties>
