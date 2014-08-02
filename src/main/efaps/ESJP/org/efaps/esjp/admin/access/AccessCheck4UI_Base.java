@@ -364,8 +364,17 @@ public abstract class AccessCheck4UI_Base
         }
         if (config != null) {
             boolean access = false;
+            final String defaultValue = getProperty(_parameter, "Default");
             for (final String attribute : analyseProperty(_parameter, "Attribute").values()) {
-                access = config.getAttributeValueAsBoolean(attribute);
+                if (defaultValue == null) {
+                    access = config.getAttributeValueAsBoolean(attribute);
+                } else {
+                    String attrValue = config.getAttributeValue(attribute);
+                    if (attrValue == null) {
+                        attrValue = defaultValue;
+                    }
+                    access = Boolean.parseBoolean(attrValue);
+                }
                 if (access) {
                     break;
                 }
