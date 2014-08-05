@@ -46,6 +46,10 @@
             <property name="Label">Admin_User_Person/FirstName.Label</property>
             <property name="ModeSearch">READONLY</property>
         </field>
+        <field name="note">
+            <property name="Attribute">linkto[UserLink].attribute[Note]</property>
+            <property name="Label">Admin_User_Abstract/Note.Label</property>
+        </field>
         <field name="status">
             <property name="Select">linkto[UserLink].attribute[Status]</property>
             <property name="Label">Admin_User_Person/Status.Label</property>

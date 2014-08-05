@@ -16,26 +16,22 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          tmo
+ Author:          The eFaps Team
  Revision:        $Rev$
  Last Changed:    $Date$
  Last Changed By: $Author$
 
 -->
 
-<datamodel-type xmlns="http://www.efaps.org/xsd"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>4c3e33a2-a024-4bb7-b857-69886bce7132</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==3) || (version==latest)</version-expression>
         <name>Admin_User_Abstract</name>
         <purpose abstract="true" />
-        <!-- attributes -->
         <attribute>
             <name>Type</name>
             <type>Type</type>
@@ -71,6 +67,12 @@
             <type>String</type>
             <sqltable>Admin_User_AbstractSQLTable</sqltable>
             <sqlcolumn>REVISION</sqlcolumn>
+        </attribute>
+         <attribute>
+            <name>Note</name>
+            <type>String</type>
+            <sqltable>Admin_User_AbstractSQLTable</sqltable>
+            <sqlcolumn>NOTE</sqlcolumn>
         </attribute>
         <attribute>
             <name>Status</name>

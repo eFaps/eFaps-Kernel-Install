@@ -115,6 +115,12 @@
             <property name="Required">true</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
+        <field name="note">
+            <property name="Columns">120</property>
+            <property name="Attribute">Note</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+        </field>
         <field name="status">
             <property name="Columns">20</property>
             <property name="ModeCreate">EDITABLE</property>
@@ -190,7 +196,7 @@
             <trigger program="org.efaps.esjp.admin.user.ChronologyUI"
                 method="execute" name="Admin_User_PersonForm/Chronology4View.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" />
-            
+
         </field>
         <field name="Chronology4Edit">
             <property name="Columns">40</property>

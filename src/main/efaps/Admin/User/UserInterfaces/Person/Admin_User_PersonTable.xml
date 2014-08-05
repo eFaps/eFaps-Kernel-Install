@@ -56,6 +56,10 @@
             <property name="Select">linkfrom[Admin_User_Person:EmailSet#EmailSet].attribute[Email]</property>
             <property name="Label">Admin_User_Person/Email.Label</property>
         </field>
+        <field name="note">
+            <property name="Attribute">Note</property>
+            <property name="Label">Admin_User_Abstract/Note.Label</property>
+        </field>
         <field name="status">
             <property name="Attribute">Status</property>
             <property name="Label">Admin_User_Person/Status.Label</property>

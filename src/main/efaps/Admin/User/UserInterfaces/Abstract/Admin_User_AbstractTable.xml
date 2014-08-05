@@ -34,7 +34,6 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_User_AbstractTable</name>
-        <!-- fields -->
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="Label">Admin_User_Abstract/Type.Label</property>
@@ -45,6 +44,11 @@
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Admin_User_Abstract/Name.Label</property>
             <property name="ShowTypeIcon">true</property>
+            <property name="ModeSearch">READONLY</property>
+        </field>
+        <field name="note">
+            <property name="Attribute">Note</property>
+            <property name="Label">Admin_User_Abstract/Note.Label</property>
             <property name="ModeSearch">READONLY</property>
         </field>
         <field name="status">
