@@ -284,24 +284,20 @@ public abstract class Field_Base
     {
         final Return ret = new Return();
         final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((FieldValue) uiObject).getDisplay())) {
             final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
-            if (properties.containsKey("values")) {
-                final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-                final String valuesStr = String.valueOf(properties.get("values"));
-                final String[] values = valuesStr.split(";");
-                for (final String value : values) {
-                    final StringBuilder propKey = new StringBuilder()
-                                    .append(fieldValue.getField().getCollection().getName())
-                                    .append(".").append(fieldValue.getField().getName()).append(".")
-                                    .append(value).append(".Label");
-                    final DropDownPosition pos = new DropDownPosition(value, DBProperties.getProperty(propKey
-                                    .toString()));
-                    positions.add(pos);
-                    if (properties.containsKey("selected") && value.equals(properties.get("selected"))) {
-                        pos.setSelected(true);
-                    }
+            final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+            final Map<Integer, String> values = analyseProperty(_parameter, "Value");
+            for (final String value : values.values()) {
+                final StringBuilder propKey = new StringBuilder()
+                                .append(fieldValue.getField().getCollection().getName())
+                                .append(".").append(fieldValue.getField().getName()).append(".")
+                                .append(value).append(".Label");
+                final DropDownPosition pos = new DropDownPosition(value, DBProperties.getProperty(propKey
+                                .toString()));
+                positions.add(pos);
+                if (value.equals(getProperty(_parameter, "Selected"))) {
+                    pos.setSelected(true);
                 }
             }
             ret.put(ReturnValues.SNIPLETT, getInputField(_parameter, positions, Field_Base.ListType.RADIO));
