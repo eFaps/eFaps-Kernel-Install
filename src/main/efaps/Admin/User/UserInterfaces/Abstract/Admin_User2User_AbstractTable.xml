@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,15 +22,11 @@
  Last Changed By: $Author$
 
 -->
-
-<ui-table xmlns="http://www.efaps.org/xsd"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>c41dae5d-82eb-415a-a7d6-44950c58b114</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_User2User_AbstractTable</name>
@@ -47,6 +43,11 @@
             <property name="Select">linkto[UserToAbstractLink].attribute[Status]</property>
             <property name="Label">Admin_User_Abstract/Status.Label</property>
             <property name="FilterType">PickList</property>
+            <property name="ModeSearch">READONLY</property>
+        </field>
+        <field name="note">
+            <property name="Select">linkto[UserToAbstractLink].attribute[Note]</property>
+            <property name="Label">Admin_User_Abstract/Note.Label</property>
             <property name="ModeSearch">READONLY</property>
         </field>
         <field name="buttonOpenInNewWindow">
