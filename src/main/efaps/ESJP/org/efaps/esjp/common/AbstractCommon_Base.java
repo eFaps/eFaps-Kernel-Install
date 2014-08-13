@@ -34,6 +34,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.Status.StatusGroup;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -316,7 +317,10 @@ public abstract class AbstractCommon_Base
      * <b>Negate a Status:</b><br/>
      * To work with exclusion the value for the property StatusNN must be prefixed with a "!" e.g.<br>
      * &lt;property name=&quot;StatusNN&quot;&gt;!Open&lt;/property&gt;<br/><br/>
-     *
+     * <b>Include all Status from a StatusGroup:</b><br/>
+     * To include all Status from a StatusGroup the value for the property StatusNN must be "*" e.g.<br>
+     * &lt;property name=&quot;StatusGroupNN&quot;&gt;StatusGrp&lt;/property&gt;<br/>
+     * &lt;property name=&quot;StatusNN&quot;&gt;*&lt;/property&gt;<br/><br/>
      * @param _parameter Parameter as passed by the eFaps API
      * @return List of Status, empty List if not found
      * @param _offset offset to start to search for
@@ -345,30 +349,40 @@ public abstract class AbstractCommon_Base
                                 : defaultStaturGrp;
 
                 String statusStr = entry.getValue();
-                boolean negate = false;
-                if (statusStr.startsWith("!")) {
-                    statusStr = statusStr.substring(1);
-                    negate = true;
-                }
-                final Status status;
-                if (isUUID(stGrpStr)) {
-                    status = Status.find(UUID.fromString(stGrpStr), statusStr);
-                } else {
-                    status = Status.find(stGrpStr, statusStr);
-                }
-                if (status != null) {
-                    if (negate) {
-                        negateList.add(status);
-                        ret.addAll(status.getStatusGroup().values());
+                if (statusStr.equals("*")) {
+                    StatusGroup stGrp;
+                    if (isUUID(stGrpStr)) {
+                        stGrp = Status.get(UUID.fromString(stGrpStr));
                     } else {
-                        ret.add(status);
+                        stGrp = Status.get(stGrpStr);
                     }
+                    ret.addAll(stGrp.values());
                 } else {
-                    final AbstractUserInterfaceObject command = (AbstractUserInterfaceObject) _parameter
-                                    .get(ParameterValues.UIOBJECT);
-                    AbstractCommon_Base.LOG.error("Status Definition invalid. Command: {}, Index: {}",
-                                    command == null ? "UNKNOWN" : command.getName(), entry.getKey());
-                    throw new EFapsException(getClass(), "Status", entry);
+                    boolean negate = false;
+                    if (statusStr.startsWith("!")) {
+                        statusStr = statusStr.substring(1);
+                        negate = true;
+                    }
+                    final Status status;
+                    if (isUUID(stGrpStr)) {
+                        status = Status.find(UUID.fromString(stGrpStr), statusStr);
+                    } else {
+                        status = Status.find(stGrpStr, statusStr);
+                    }
+                    if (status != null) {
+                        if (negate) {
+                            negateList.add(status);
+                            ret.addAll(status.getStatusGroup().values());
+                        } else {
+                            ret.add(status);
+                        }
+                    } else {
+                        final AbstractUserInterfaceObject command = (AbstractUserInterfaceObject) _parameter
+                                        .get(ParameterValues.UIOBJECT);
+                        AbstractCommon_Base.LOG.error("Status Definition invalid. Command: {}, Index: {}",
+                                        command == null ? "UNKNOWN" : command.getName(), entry.getKey());
+                        throw new EFapsException(getClass(), "Status", entry);
+                    }
                 }
             }
         }
