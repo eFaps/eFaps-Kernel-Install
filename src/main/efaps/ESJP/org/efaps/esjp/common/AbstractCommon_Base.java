@@ -33,6 +33,7 @@ import java.util.UUID;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.efaps.admin.datamodel.Attribute;
+import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Status.StatusGroup;
 import org.efaps.admin.datamodel.Type;
@@ -414,6 +415,7 @@ public abstract class AbstractCommon_Base
         QueryBuilder ret = null;
         final Map<Integer, String> types = analyseProperty(_parameter, "Type", _offset);
         final Map<Integer, String> linkFroms = analyseProperty(_parameter, "LinkFrom", _offset);
+        final Map<Integer, String> classif = analyseProperty(_parameter, "Classification", _offset);
         final Map<Integer, String> expands = analyseProperty(_parameter, "ExpandChildTypes", _offset);
         boolean first = true;
         boolean multiple = false;
@@ -474,6 +476,23 @@ public abstract class AbstractCommon_Base
                 }
             }
             ret.addWhereAttrNotEqValue(ret.getType().getTypeAttribute(), typeIds.toArray());
+        }
+
+        for (final String classStr : classif.values()) {
+            final Classification clazz;
+            if (isUUID(classStr)) {
+                clazz = Classification.get(UUID.fromString(classStr));
+            } else {
+                clazz = Classification.get(classStr);
+            }
+            if (clazz == null) {
+                final AbstractUserInterfaceObject command = (AbstractUserInterfaceObject) _parameter
+                                .get(ParameterValues.UIOBJECT);
+                AbstractCommon_Base.LOG.error("Classification Definition invalid. Object: {}, Value: {}",
+                                command == null ? "UNKNOWN" : command.getName(), classStr);
+            } else {
+                ret.addWhereClassification(clazz);
+            }
         }
 
         final List<Status> statusList = getStatusListFromProperties(_parameter, _offset);
