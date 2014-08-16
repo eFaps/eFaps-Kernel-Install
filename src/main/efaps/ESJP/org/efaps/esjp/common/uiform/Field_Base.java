@@ -33,6 +33,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.efaps.IOption;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Dimension;
@@ -1433,9 +1434,113 @@ public abstract class Field_Base
     }
 
     /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _listType Type of Lit to be rendered
+     * @return Return containing Html Snipplet
+     *
+     * @throws EFapsException on error
+     */
+    public Return getOptionListFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
+        add2QueryBuilder4List(_parameter, queryBldr);
+
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        final String select = getProperty(_parameter, "Select");
+        if (select != null) {
+            multi.addSelect(select);
+        }
+        final String phrase = getProperty(_parameter, "Phrase");
+        if (phrase != null) {
+            multi.addPhrase("Phrase", phrase);
+        }
+        final String valueSel = getProperty(_parameter, "ValueSelect");
+        if (valueSel != null) {
+            multi.addSelect(valueSel);
+        }
+        final String orderSel = getProperty(_parameter, "OrderSelect");
+        if (orderSel != null) {
+            multi.addSelect(orderSel);
+        }
+
+        multi.execute();
+        Object dbValue = null;
+        final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
+        if (uiObject instanceof FieldValue) {
+            dbValue = ((FieldValue) uiObject).getValue();
+        }
+
+        final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
+        boolean selected = false;
+        while (multi.next()) {
+            Object value;
+            if (valueSel == null) {
+                value = multi.getCurrentInstance().getId();
+            } else {
+                value = multi.getSelect(valueSel);
+            }
+            Object option = null;
+            if (select != null) {
+                option = multi.getSelect(select);
+            } else if (phrase != null) {
+                option = multi.getPhrase("Phrase");
+            }
+            final DropDownPosition val = getDropDownPosition(_parameter, value, option);
+            values.add(val);
+            if (orderSel != null) {
+                val.setOrderValue((Comparable<?>) multi.getSelect(orderSel));
+            }
+            // evaluate for selected only until the first is found
+            if (!selected) {
+                if (dbValue != null && "true".equalsIgnoreCase(getProperty(_parameter, "SetSelected"))) {
+                    if (dbValue.equals(val.value)) {
+                        val.setSelected(true);
+                        selected = true;
+                    } else if (val.value instanceof String && Instance.get((String) val.value).isValid()
+                                    && dbValue.equals(Instance.get((String) val.value).getId())) {
+                        val.setSelected(true);
+                        selected = true;
+                    }
+                } else if (containsProperty(_parameter, "Regex4DefaultValue")) {
+                    if (String.valueOf(val.getOption()).matches(getProperty(_parameter, "Regex4DefaultValue"))) {
+                        val.setSelected(true);
+                        selected = true;
+                    }
+                }
+            }
+        }
+        if (containsProperty(_parameter, "emptyValue")) {
+            values.add(0, new DropDownPosition("",
+                            DBProperties.getProperty(getProperty(_parameter, "emptyValue"))));
+        }
+
+        if (orderSel != null) {
+            Collections.sort(values, new Comparator<DropDownPosition>()
+            {
+
+                @SuppressWarnings("unchecked")
+                @Override
+                public int compare(final DropDownPosition _o1,
+                                   final DropDownPosition _o2)
+                {
+                    return _o1.getOrderValue().compareTo(_o2.getOrderValue());
+                }
+            });
+        }
+        updatePositionList(_parameter, values);
+        final Return ret = new Return();
+        ret.put(ReturnValues.VALUES, values);
+        return ret;
+    }
+
+
+
+    /**
      * A position in a dropdown.
      */
     public static class DropDownPosition
+        implements IOption
     {
         /**
          * Value of the dropdown position.
@@ -1485,6 +1590,7 @@ public abstract class Field_Base
          * Is this position selected.
          * @return false
          */
+        @Override
         public boolean isSelected()
         {
             return this.selected;
@@ -1536,6 +1642,7 @@ public abstract class Field_Base
          *
          * @return value of instance variable {@link #value}
          */
+        @Override
         public Object getValue()
         {
             return this.value;
@@ -1561,6 +1668,12 @@ public abstract class Field_Base
         public Comparable getOrderValue()
         {
             return this.orderValue == null ? this.option.toString() : this.orderValue;
+        }
+
+        @Override
+        public String getLabel()
+        {
+            return String.valueOf(getOption());
         }
     }
 }
