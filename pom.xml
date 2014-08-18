@@ -41,7 +41,6 @@
     <packaging>jar</packaging>
     <artifactId>efaps-kernel-install</artifactId>
 
-
     <name>eFaps-Kernel-Install</name>
     <description>
         eFaps-Kernel-Install contains all definitions for the kernel in form
@@ -159,7 +158,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
                 <executions>
                     <execution>
                         <id>default-jar</id>
@@ -177,16 +175,16 @@
             </plugin>
         </plugins>
     </build>
-
-    <!-- ************************************************************************
-    * Dependencies
-    ************************************************************************* -->
     <dependencies>
-        <!-- eFaps kernel (needed for development) -->
         <dependency>
             <groupId>org.efaps</groupId>
             <artifactId>efaps-kernel</artifactId>
-            <version>3.2.0-SNAPSHOT</version>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.efaps</groupId>
+            <artifactId>efaps-api</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>
