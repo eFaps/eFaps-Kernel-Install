@@ -127,8 +127,8 @@ public abstract class Connect_Base
         final Map<Integer, String> childAttrs = analyseProperty(_parameter, "ConnectChildAttribute");
         final Map<Integer, String> types = analyseProperty(_parameter, "ConnectType");
 
-        return parentAttrs.isEmpty() || childAttrs.isEmpty() || parentAttrs.size() != childAttrs.size()
-                        || types.isEmpty();
+        return !(parentAttrs.isEmpty() || childAttrs.isEmpty() || parentAttrs.size() != childAttrs.size()
+                        || types.isEmpty());
     }
 
     protected TypeWA getTypeWithAttribute(final Parameter _parameter,
