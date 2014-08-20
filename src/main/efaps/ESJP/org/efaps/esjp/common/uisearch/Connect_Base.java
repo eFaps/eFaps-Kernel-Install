@@ -74,51 +74,80 @@ public abstract class Connect_Base
         final Map<?, ?> others = (HashMap<?, ?>) _parameter.get(ParameterValues.OTHERS);
         final String[] childOids = (String[]) others.get("selectedRow");
         if (childOids != null) {
-            final Map<Integer, String> parentAttrs = analyseProperty(_parameter, "ConnectParentAttribute");
-            final Map<Integer, String> childAttrs = analyseProperty(_parameter, "ConnectChildAttribute");
-            final Map<Integer, String> childTypes = analyseProperty(_parameter, "ConnectChildType");
-            final Map<Integer, String> parentTypes = analyseProperty(_parameter, "ConnectParentType");
-            final Map<Integer, String> types = analyseProperty(_parameter, "ConnectType");
 
-            final boolean checkMultiple = "false".equals(getProperty(_parameter, "AllowMultiple"));
-            if (parentAttrs.isEmpty() || childAttrs.isEmpty() || parentAttrs.size() != childAttrs.size()
-                            || types.isEmpty()) {
+            if (!validateProperties(_parameter)) {
                 Connect_Base.LOG.error("Must have properties 'ConnectParentAttribute' and 'ConnectChildAttribute' "
                                 + "of same size and at least one 'ConnectType'");
             } else {
                 for (final String childOid : childOids) {
                     final Instance childInst = Instance.get(childOid);
                     if (childInst.isValid()) {
-                        final int idx = getIdx(_parameter, childInst, parentTypes, types, childTypes);
-                        if (idx > -1) {
-                            boolean check = false;
-                            final String typeStr = types.get(idx);
-                            final Type type = isUUID(typeStr) ? Type.get(UUID.fromString(typeStr)) : Type.get(typeStr);
-                            final Attribute parentAttr = getAttr(_parameter, idx, types, parentAttrs);
-                            final Attribute childAttr = getAttr(_parameter, idx, types, childAttrs);
-                            if (checkMultiple) {
-                                final QueryBuilder queryBldr = new QueryBuilder(type);
-                                queryBldr.addWhereAttrEqValue(parentAttr, _parameter.getInstance());
-                                queryBldr.addWhereAttrEqValue(childAttr, childInst);
-                                final InstanceQuery query = queryBldr.getQuery();
-                                query.executeWithoutAccessCheck();
-                                if (query.next()) {
-                                    check = true;
-                                }
-                            }
-                            if (!check) {
-                                final Insert insert = new Insert(type);
-                                addInsertConnect(_parameter, insert);
-                                insert.add(parentAttr, _parameter.getInstance());
-                                insert.add(childAttr, childInst);
-                                insert.execute();
-                            }
+                        final int idx = getIdx(_parameter, childInst);
+                        final TypeWA typeWithAttr = getTypeWithAttribute(_parameter, childInst, idx);
+                        if (typeWithAttr != null && checkMultiple(_parameter, typeWithAttr, childInst)) {
+                            final Insert insert = new Insert(typeWithAttr.getType());
+                            addInsertConnect(_parameter, insert);
+                            insert.add(typeWithAttr.getParentAttr(), _parameter.getInstance());
+                            insert.add(typeWithAttr.getChildAttr(), childInst);
+                            insert.execute();
                         }
                     }
                 }
             }
         }
         return new Return();
+    }
+
+    protected boolean checkMultiple(final Parameter _parameter,
+                                    final TypeWA _typeWA,
+                                    final Instance _childInst)
+        throws EFapsException
+    {
+        final boolean checkMultiple = "false".equals(getProperty(_parameter, "AllowMultiple"));
+        boolean check = false;
+        if (checkMultiple) {
+            final QueryBuilder queryBldr = new QueryBuilder(_typeWA.getType());
+            queryBldr.addWhereAttrEqValue(_typeWA.getParentAttr(), _parameter.getInstance());
+            queryBldr.addWhereAttrEqValue(_typeWA.getChildAttr(), _childInst);
+            final InstanceQuery query = queryBldr.getQuery();
+            query.executeWithoutAccessCheck();
+            if (query.next()) {
+                check = true;
+            }
+        } else {
+            check = true;
+        }
+        return check;
+    }
+
+    protected boolean validateProperties(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Map<Integer, String> parentAttrs = analyseProperty(_parameter, "ConnectParentAttribute");
+        final Map<Integer, String> childAttrs = analyseProperty(_parameter, "ConnectChildAttribute");
+        final Map<Integer, String> types = analyseProperty(_parameter, "ConnectType");
+
+        return parentAttrs.isEmpty() || childAttrs.isEmpty() || parentAttrs.size() != childAttrs.size()
+                        || types.isEmpty();
+    }
+
+    protected TypeWA getTypeWithAttribute(final Parameter _parameter,
+                                          final Instance _childInst,
+                                          final int _idx)
+        throws EFapsException
+    {
+        final Map<Integer, String> parentAttrs = analyseProperty(_parameter, "ConnectParentAttribute");
+        final Map<Integer, String> childAttrs = analyseProperty(_parameter, "ConnectChildAttribute");
+        final Map<Integer, String> types = analyseProperty(_parameter, "ConnectType");
+
+        final String typeStr = types.get(_idx);
+
+        final TypeWA typeWithAttr = new TypeWA();
+        typeWithAttr.setParentAttr(getAttr(_parameter, _idx, types, parentAttrs));
+        typeWithAttr.setChildAttr(getAttr(_parameter, _idx, types, childAttrs));
+        typeWithAttr.setType(isUUID(typeStr) ? Type.get(UUID.fromString(typeStr)) : Type.get(typeStr));
+
+        return typeWithAttr;
     }
 
     /**
@@ -157,20 +186,22 @@ public abstract class Connect_Base
      * @throws EFapsException on error
      */
     protected int getIdx(final Parameter _parameter,
-                             final Instance _childInst,
-                             final Map<Integer, String> _parentTypes,
-                             final Map<Integer, String> _types,
-                             final Map<Integer, String> _childTypes)
+                             final Instance _childInst)
         throws EFapsException
     {
         int ret = -1;
+
+        final Map<Integer, String> childTypes = analyseProperty(_parameter, "ConnectChildType");
+        final Map<Integer, String> parentTypes = analyseProperty(_parameter, "ConnectParentType");
+        final Map<Integer, String> types = analyseProperty(_parameter, "ConnectType");
+
         // simple version without any mapping
-        if (_parentTypes.isEmpty() && _childTypes.isEmpty()) {
-            ret = _types.keySet().iterator().next();
+        if (parentTypes.isEmpty() && childTypes.isEmpty()) {
+            ret = types.keySet().iterator().next();
         } else {
             // only childTypes
-            if (_parentTypes.isEmpty()) {
-                for (final Entry<Integer, String> entry : _childTypes.entrySet()) {
+            if (parentTypes.isEmpty()) {
+                for (final Entry<Integer, String> entry : childTypes.entrySet()) {
                     final String childTypeStr = entry.getValue();
                     final Type childType = isUUID(childTypeStr) ? Type.get(UUID.fromString(childTypeStr)) : Type
                                     .get(childTypeStr);
@@ -180,8 +211,8 @@ public abstract class Connect_Base
                     }
                 }
              // only parentTypes
-            } else if (_childTypes.isEmpty()) {
-                for (final Entry<Integer, String> entry : _parentTypes.entrySet()) {
+            } else if (childTypes.isEmpty()) {
+                for (final Entry<Integer, String> entry : parentTypes.entrySet()) {
                     final String parentTypeStr = entry.getValue();
                     final Type parentType = isUUID(parentTypeStr) ? Type.get(UUID.fromString(parentTypeStr)) : Type
                                     .get(parentTypeStr);
@@ -192,12 +223,12 @@ public abstract class Connect_Base
                 }
             // both
             } else {
-                for (final Entry<Integer, String> entry : _parentTypes.entrySet()) {
+                for (final Entry<Integer, String> entry : parentTypes.entrySet()) {
                     final String parentTypeStr = entry.getValue();
                     final Type parentType = isUUID(parentTypeStr) ? Type.get(UUID.fromString(parentTypeStr)) : Type
                                     .get(parentTypeStr);
                     if (_parameter.getInstance().getType().equals(parentType)) {
-                        final String childTypeStr = _childTypes.get(entry.getKey());
+                        final String childTypeStr = childTypes.get(entry.getKey());
                         final Type childType = isUUID(childTypeStr) ? Type.get(UUID.fromString(childTypeStr)) : Type
                                         .get(childTypeStr);
                         if (_childInst.getType().equals(childType)) {
@@ -222,5 +253,46 @@ public abstract class Connect_Base
         throws EFapsException
     {
         // to implement
+    }
+
+
+    public static class TypeWA
+    {
+
+        private Attribute parentAttr;
+
+        private Attribute childAttr;
+
+        private Type type;
+
+        public void setParentAttr(final Attribute _parentAttr)
+        {
+            this.parentAttr = _parentAttr;
+        }
+
+        public Attribute getParentAttr()
+        {
+            return this.parentAttr;
+        }
+
+        public void setChildAttr(final Attribute _childAttr)
+        {
+            this.childAttr = _childAttr;
+        }
+
+        public Attribute getChildAttr()
+        {
+            return this.childAttr;
+        }
+
+        public void setType(final Type _type)
+        {
+            this.type = _type;
+        }
+
+        public Type getType()
+        {
+            return this.type;
+        }
     }
 }
