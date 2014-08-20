@@ -111,7 +111,7 @@ public abstract class Connect_Base
             queryBldr.addWhereAttrEqValue(_typeWA.getChildAttr(), _childInst);
             final InstanceQuery query = queryBldr.getQuery();
             query.executeWithoutAccessCheck();
-            if (query.next()) {
+            if (!query.next()) {
                 check = true;
             }
         } else {
