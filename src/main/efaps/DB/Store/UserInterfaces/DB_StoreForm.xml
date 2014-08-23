@@ -66,6 +66,7 @@
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
             <property name="Label">DB_StoreForm/resource4create</property>
+             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.db.Store"
                      method="getResourceFieldValueUI"
                      name="DB_StoreForm/resource4create.UI_FIELD_VALUE"

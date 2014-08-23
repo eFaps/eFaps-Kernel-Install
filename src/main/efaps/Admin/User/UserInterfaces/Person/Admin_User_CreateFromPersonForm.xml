@@ -102,15 +102,15 @@
             <property name="Required">true</property>
             <property name="Attribute">FirstName</property>
         </field>
-        
         <field name="copyPerson">
             <property name="Columns">40</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <property name="Label">Admin_User_CreateFromPersonForm.copyPerson.Label</property>
-            <trigger program="org.efaps.esjp.admin.user.Person" 
-                method="autoComplete4Person" 
-                name="Admin_User_CreateFromPersonForm.copyPerson.UI_FIELD_AUTOCOMPLETE" 
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.admin.user.Person"
+                method="autoComplete4Person"
+                name="Admin_User_CreateFromPersonForm.copyPerson.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE"/>
         </field>
     </definition>

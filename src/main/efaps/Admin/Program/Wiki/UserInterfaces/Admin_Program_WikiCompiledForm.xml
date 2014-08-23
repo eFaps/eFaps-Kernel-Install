@@ -85,6 +85,7 @@
             <property name="Label">Admin_Program_WikiCompiledForm.htmlheader.Heading</property>
         </field>
         <field name="wikiHtml">
+             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Admin_Program_WikiCompiledForm.wikiHtml.Label</property>
             <trigger name="Admin_Program_WikiCompiledForm.wikiHtml.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE"

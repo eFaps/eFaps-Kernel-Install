@@ -37,6 +37,7 @@
     <!-- fields -->
     <field name="file">
       <property name="ModeEdit">EDITABLE</property>
+       <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
       <property name="Label">Admin_UI_File/File.Label</property>
       <trigger name="Admin_UI_File/file"
                event="UI_FIELD_VALUE"
