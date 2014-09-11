@@ -1510,9 +1510,9 @@ public abstract class Field_Base
                 }
             }
         }
-        if (containsProperty(_parameter, "emptyValue")) {
+        if (containsProperty(_parameter, "EmptyValue")) {
             values.add(0, new DropDownPosition("",
-                            DBProperties.getProperty(getProperty(_parameter, "emptyValue"))));
+                            DBProperties.getProperty(getProperty(_parameter, "EmptyValue"))));
         }
 
         if (orderSel != null) {
