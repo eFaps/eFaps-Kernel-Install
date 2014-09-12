@@ -177,6 +177,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
+                    <argLine>-Xmx1024m</argLine>
                     <suiteXmlFiles>
                         <suiteXmlFile>${basedir}/src/test/resources/testng.xml</suiteXmlFile>
                     </suiteXmlFiles>
