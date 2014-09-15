@@ -41,7 +41,9 @@ import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Status.StatusGroup;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.datamodel.ui.UIInterface;
+import org.efaps.admin.datamodel.ui.UIValue;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -1434,8 +1436,68 @@ public abstract class Field_Base
     }
 
     /**
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @return Return containing Html Snipplet
+     * @throws EFapsException on error
+     */
+    public Return getOptionList4Enum(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
+        final String enumName = getProperty(_parameter, "Enum");
+        if (enumName != null) {
+            final boolean orderByOrdinal = "true".equalsIgnoreCase(getProperty(_parameter, "OrderByOrdinal"));
+            try {
+                final Class<?> enumClazz = Class.forName(enumName);
+
+                if (enumClazz.isEnum()) {
+                    final Object[] consts = enumClazz.getEnumConstants();
+                    Integer ordinal;
+
+                    final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
+                    if (uiObject instanceof UIValue && ((UIValue) uiObject).getDbValue() != null) {
+                        ordinal = (Integer) ((UIValue) uiObject).getDbValue();
+                    } else if (uiObject instanceof FieldValue && ((FieldValue) uiObject).getValue() != null) {
+                        ordinal = (Integer) ((FieldValue) uiObject).getValue();
+                    } else {
+                        ordinal = -1;
+                    }
+                    if (org.efaps.admin.ui.field.Field.Display.EDITABLE
+                                    .equals(((IUIValue) uiObject).getDisplay())) {
+                        int i = 0;
+                        for (final Object con : consts) {
+                            final String label = DBProperties.getProperty(enumName + "." + con.toString());
+                            final DropDownPosition pos = new DropDownPosition(i, label, orderByOrdinal
+                                            ? new Integer(i) : label);
+                            values.add(pos);
+                            pos.setSelected(i == ordinal);
+                            i++;
+                        }
+                        Collections.sort(values, new Comparator<DropDownPosition>()
+                        {
+                            @SuppressWarnings("unchecked")
+                            @Override
+                            public int compare(final DropDownPosition _o1,
+                                               final DropDownPosition _o2)
+                            {
+                                return _o1.getOrderValue().compareTo(_o2.getOrderValue());
+                            }
+                        });
+                    }
+                }
+            } catch (final ClassNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        final Return ret = new Return();
+        ret.put(ReturnValues.VALUES, values);
+        return ret;
+    }
+
+
+    /**
      * @param _parameter Parameter as passed from the eFaps API
-     * @param _listType Type of Lit to be rendered
      * @return Return containing Html Snipplet
      *
      * @throws EFapsException on error
