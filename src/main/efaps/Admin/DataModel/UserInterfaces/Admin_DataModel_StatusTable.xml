@@ -28,12 +28,15 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_DataModel_StatusTable</name>
-        <!-- fields -->
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="Label">Admin_DataModel_StatusAbstract/Type.Label</property>
             <property name="ShowTypeIcon">true</property>
             <property name="FilterType">PICKLIST</property>
+        </field>
+        <field name="id">
+            <property name="Attribute">ID</property>
+            <property name="Label">Admin_DataModel_StatusAbstract/ID.Label</property>
         </field>
         <field name="key">
             <property name="Attribute">Key</property>
