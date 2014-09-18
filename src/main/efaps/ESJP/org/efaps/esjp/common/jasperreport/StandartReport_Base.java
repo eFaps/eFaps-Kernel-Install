@@ -163,7 +163,6 @@ public abstract class StandartReport_Base
             final LocalJasperReportsContext ctx = new LocalJasperReportsContext(
                             DefaultJasperReportsContext.getInstance());
             ctx.setFileResolver(new JasperFileResolver());
-
             final JasperReport jasperReport = (JasperReport) JRLoader.loadObject(iin);
             iin.close();
             IeFapsDataSource dataSource;
