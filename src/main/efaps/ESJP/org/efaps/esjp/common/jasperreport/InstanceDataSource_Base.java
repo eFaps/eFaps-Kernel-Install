@@ -69,11 +69,11 @@ public class InstanceDataSource_Base
                 queryBldr.addWhereAttrEqValue("Name", _name);
                 final InstanceQuery query = queryBldr.getQuery();
                 query.execute();
-                Instance instance = null;
+                Instance repInstance = null;
                 if (query.next()) {
-                    instance = query.getCurrentValue();
+                    repInstance = query.getCurrentValue();
                 }
-                final Checkout checkout = new Checkout(instance);
+                final Checkout checkout = new Checkout(repInstance);
                 final InputStream iin = checkout.execute();
                 final JasperReport jasperReport = (JasperReport) JRLoader.loadObject(iin);
                 iin.close();
