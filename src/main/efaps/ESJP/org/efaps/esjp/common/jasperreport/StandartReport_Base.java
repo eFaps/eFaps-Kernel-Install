@@ -37,7 +37,6 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.export.JRRtfExporter;
@@ -56,6 +55,7 @@ import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
+import org.efaps.admin.program.esjp.EFapsClassLoader;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIAdminProgram;
@@ -163,6 +163,10 @@ public abstract class StandartReport_Base
             final LocalJasperReportsContext ctx = new LocalJasperReportsContext(
                             DefaultJasperReportsContext.getInstance());
             ctx.setFileResolver(new JasperFileResolver());
+            ctx.setClassLoader(EFapsClassLoader.getInstance());
+
+            ctx.setProperty("net.sf.jasperreports.subreport.runner.factory",
+                            "org.efaps.esjp.common.jasperreport.SubReportRunnerFactory");
             final JasperReport jasperReport = (JasperReport) JRLoader.loadObject(iin);
             iin.close();
             IeFapsDataSource dataSource;
@@ -177,9 +181,13 @@ public abstract class StandartReport_Base
                 dataSource.init(jasperReport, _parameter, null, this.jrParameters);
             }
             this.jrParameters.put("EFAPS_SUBREPORT", new SubReportContainer(_parameter, dataSource, this.jrParameters));
-            final JasperFillManager fillmgr = JasperFillManager.getInstance(ctx);
-            final JasperPrint jasperPrint = fillmgr.fill(jasperReport, this.jrParameters, dataSource);
+            final ReportRunner runner = new ReportRunner(ctx, jasperReport, this.jrParameters, dataSource);
+            final Thread t = new Thread(runner);
+            t.setContextClassLoader(EFapsClassLoader.getInstance());
+            t.start();
 
+            while (t.isAlive()) {
+            }
             String mime = getProperty(_parameter, "Mime");
             if (mime == null) {
                 mime = _parameter.getParameterValue("mime");
@@ -192,7 +200,7 @@ public abstract class StandartReport_Base
                     setFileName((String) this.jrParameters.get("FileName"));
                 }
             }
-            ret = getFile(jasperPrint, mime);
+            ret = getFile(runner.getJasperPrint(), mime);
         } catch (final ClassNotFoundException e) {
             throw new EFapsException(StandartReport_Base.class, "execute.ClassNotFoundException", e);
         } catch (final SecurityException e) {
