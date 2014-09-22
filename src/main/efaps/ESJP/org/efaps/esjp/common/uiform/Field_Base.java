@@ -1185,7 +1185,7 @@ public abstract class Field_Base
     public Return getStoreOIDsFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         Context.getThreadContext().setSessionAttribute(fieldValue.getField().getName(),
                         _parameter.getParameterValues("selectedRow"));
         return new Return();
