@@ -22,10 +22,12 @@
 package org.efaps.esjp.common;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -45,6 +47,7 @@ import org.efaps.admin.ui.AbstractUserInterfaceObject;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
 import org.slf4j.Logger;
@@ -389,6 +392,44 @@ public abstract class AbstractCommon_Base
         }
         ret.removeAll(negateList);
         return new ArrayList<Status>(ret);
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return QueryBuilder
+     * @throws EFapsException on error
+     */
+    protected QueryBuilder getQueryBldrFromProperties(final Parameter _parameter,
+                                                      final Properties _props)
+        throws EFapsException
+    {
+        return getQueryBldrFromProperties(_parameter, _props, null);
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return QueryBuilder
+     * @throws EFapsException on error
+     */
+    protected QueryBuilder getQueryBldrFromProperties(final Parameter _parameter,
+                                                      final Properties _props,
+                                                      final String _key)
+        throws EFapsException
+    {
+        final Map<Object,Object> properties = new HashMap<>();
+        final String key = _key == null ? null : _key + ".";
+        for (final Entry<Object,Object> entry : _props.entrySet()) {
+            if (_key != null) {
+                if (entry.getKey().toString().startsWith(key)) {
+                    properties.put(entry.getKey().toString().replace(key, ""), entry.getValue());
+                }
+            } else {
+                properties.put(entry.getKey(), entry.getValue());
+            }
+        }
+
+        final Parameter parameter = ParameterUtil.clone(_parameter, ParameterValues.PROPERTIES, properties);
+        return getQueryBldrFromProperties(parameter, 0);
     }
 
     /**
