@@ -27,7 +27,7 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_UI_FieldInstanceEvent</name>
+        <name>Admin_UI_FieldAlternateInstanceEvent</name>
         <parent>Admin_Event_Definition</parent>
         <purpose GeneralInstance="false" />
         <trigger event="DELETE_PRE"
@@ -38,7 +38,7 @@
     </definition>
     <definition>
         <version-expression>(version==3)</version-expression>
-        <name>Admin_UI_FieldInstanceEvent</name>
+        <name>Admin_UI_FieldAlternateInstanceEvent</name>
         <parent>Admin_Event_Definition</parent>
         <purpose GeneralInstance="false" />
     </definition>
