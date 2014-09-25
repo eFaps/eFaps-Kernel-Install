@@ -1596,14 +1596,17 @@ public abstract class Field_Base
         return ret;
     }
 
-
-
     /**
      * A position in a dropdown.
      */
     public static class DropDownPosition
         implements IOption
     {
+        /**
+         * Needed for serialization.
+         */
+        private static final long serialVersionUID = 1L;
+
         /**
          * Value of the dropdown position.
          */
