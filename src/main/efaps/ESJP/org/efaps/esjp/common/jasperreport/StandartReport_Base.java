@@ -63,9 +63,11 @@ import org.efaps.db.Checkout;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.file.FileUtil;
+import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,6 +116,26 @@ public abstract class StandartReport_Base
         ret.put(ReturnValues.TRUE, true);
         return ret;
     }
+
+    /**
+     * @see org.efaps.admin.event.EventExecution#execute(org.efaps.admin.event.Parameter)
+     * @param _parameter parameter as passed fom the eFaps esjp API
+     * @return Return
+     * @throws EFapsException on error
+     */
+    public Return create4Jasper(final Parameter _parameter)
+        throws EFapsException
+    {
+        final PrintQuery print = new PrintQuery(_parameter.getInstance());
+        print.addAttribute(CIAdminProgram.JasperReport.Name);
+        print.execute();
+
+        ParameterUtil.setProperty(_parameter, "JasperReport",
+                        print.<String>getAttribute(CIAdminProgram.JasperReport.Name));
+        ParameterUtil.setProperty(_parameter, "NoDataSource", "true");
+        return execute(_parameter);
+    }
+
 
     /**
      * @param _parameter Parameter as passed by the eFasp API

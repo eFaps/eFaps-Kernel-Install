@@ -30,6 +30,7 @@
         <name>Admin_Program_JasperReportTree_Menu_Action</name>
         <childs>
             <child>Admin_Program_JasperReportTree_Menu_Action_Compile</child>
+            <child>Admin_Program_JasperReportTree_Menu_Action_CreateReport</child>
         </childs>
     </definition>
 </ui-menu>

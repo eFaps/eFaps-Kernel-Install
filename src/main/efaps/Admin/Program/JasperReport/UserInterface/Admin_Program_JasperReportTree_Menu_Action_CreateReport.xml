@@ -22,15 +22,19 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>03df3128-006a-4c77-9b11-f49a897768e8</uuid>
+    <uuid>f8aabdde-bead-47d2-88bd-6c8e322689bc</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Program_JasperReportTree_Menu_Action_Compile</name>
+        <name>Admin_Program_JasperReportTree_Menu_Action_CreateReport</name>
         <target>
-            <execute program="org.efaps.esjp.admin.program.Compile" method="compileJasperReport" />
+            <form>Admin_Program_JasperReportCreateReportForm</form>
+            <execute method="create4Jasper"
+                program="org.efaps.esjp.common.jasperreport.StandartReport"/>
         </target>
-        <property name="AskUser">true</property>
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
+        <property name="TargetShowFile">true</property>
     </definition>
 </ui-command>
