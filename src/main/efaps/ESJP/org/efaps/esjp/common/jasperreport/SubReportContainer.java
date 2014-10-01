@@ -56,6 +56,6 @@ public class SubReportContainer
                               final JRDataSource _dataSource,
                               final Map<String, Object> _jrParameters)
     {
-        super(_parameter, _dataSource,_jrParameters);
+        super(_parameter, _dataSource, _jrParameters);
     }
 }

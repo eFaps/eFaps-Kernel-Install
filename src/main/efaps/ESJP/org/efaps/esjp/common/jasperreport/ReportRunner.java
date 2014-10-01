@@ -30,6 +30,8 @@ import net.sf.jasperreports.engine.util.LocalJasperReportsContext;
 
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO comment!
@@ -42,18 +44,41 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 public class ReportRunner
     implements Runnable
 {
+    /**
+     * Logger used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(ReportRunner.class);
 
+    /**
+     * Jasperreport to be run.
+     */
     private final JasperReport jasperReport;
+
+    /**
+     * Parameters map fro jasper.
+     */
     private final Map<String, Object> jrParameters;
+
+    /**
+     * DataSource for the report.
+     */
     private final IeFapsDataSource dataSource;
+
+    /**
+     * Context to be used.
+     */
     private final LocalJasperReportsContext ctx;
+
+    /**
+     * Print to be filled.
+     */
     private JasperPrint jasperPrint;
 
     /**
-     * @param _ctx
-     * @param _jasperReport
-     * @param _jrParameters
-     * @param _dataSource
+     * @param _ctx              Context for the report
+     * @param _jasperReport     jasperreport to be run
+     * @param _jrParameters     parameters
+     * @param _dataSource       datasource
      */
     public ReportRunner(final LocalJasperReportsContext _ctx,
                         final JasperReport _jasperReport,
@@ -71,10 +96,13 @@ public class ReportRunner
     {
         final JasperFillManager fillmgr = JasperFillManager.getInstance(this.ctx);
         try {
-            this.jasperPrint = fillmgr.fill(this.jasperReport, this.jrParameters, this.dataSource);
+            if (this.dataSource == null) {
+                this.jasperPrint = fillmgr.fill(this.jasperReport, this.jrParameters);
+            } else {
+                this.jasperPrint = fillmgr.fill(this.jasperReport, this.jrParameters, this.dataSource);
+            }
         } catch (final JRException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error("Catched error from runner", e);
         }
     }
 

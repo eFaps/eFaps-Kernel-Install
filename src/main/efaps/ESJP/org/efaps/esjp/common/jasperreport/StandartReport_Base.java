@@ -143,6 +143,7 @@ public abstract class StandartReport_Base
         }
 
         final String dataSourceClass = getProperty(_parameter, "DataSourceClass");
+        final boolean noDataSource = "true".equalsIgnoreCase(getProperty(_parameter, "NoDataSource"));
 
         this.jrParameters.put(JRParameter.REPORT_LOCALE, Context.getThreadContext().getLocale());
         this.jrParameters.put(JRParameter.REPORT_RESOURCE_BUNDLE, new EFapsResourceBundle());
@@ -160,27 +161,35 @@ public abstract class StandartReport_Base
         final Checkout checkout = new Checkout(instance);
         final InputStream iin = checkout.execute();
         try {
+            DefaultJasperReportsContext.getInstance().setProperty("net.sf.jasperreports.query.executer.factory.eFaps",
+                            EQLQueryExecuterFactory.class.getName());
             final LocalJasperReportsContext ctx = new LocalJasperReportsContext(
                             DefaultJasperReportsContext.getInstance());
             ctx.setFileResolver(new JasperFileResolver());
             ctx.setClassLoader(EFapsClassLoader.getInstance());
 
-            ctx.setProperty("net.sf.jasperreports.subreport.runner.factory",
-                            "org.efaps.esjp.common.jasperreport.SubReportRunnerFactory");
+            ctx.setProperty("net.sf.jasperreports.subreport.runner.factory", SubReportRunnerFactory.class.getName());
+            ctx.setProperty("net.sf.jasperreports.query.executer.factory.eFaps",
+                            EQLQueryExecuterFactory.class.getName());
+
             final JasperReport jasperReport = (JasperReport) JRLoader.loadObject(iin);
             iin.close();
-            IeFapsDataSource dataSource;
+
+            IeFapsDataSource dataSource = null;
             if (dataSourceClass != null) {
                 final Class<?> clazz = Class.forName(dataSourceClass);
                 final Method method = clazz.getMethod("init",
                                 new Class[] { JasperReport.class, Parameter.class, JRDataSource.class, Map.class });
                 dataSource = (IeFapsDataSource) clazz.newInstance();
                 method.invoke(dataSource, jasperReport, _parameter, null, this.jrParameters);
-            } else {
+            } else if (!noDataSource) {
                 dataSource = new EFapsDataSource();
                 dataSource.init(jasperReport, _parameter, null, this.jrParameters);
             }
-            this.jrParameters.put("EFAPS_SUBREPORT", new SubReportContainer(_parameter, dataSource, this.jrParameters));
+            if (dataSource != null) {
+                this.jrParameters.put("EFAPS_SUBREPORT", new SubReportContainer(_parameter, dataSource,
+                                this.jrParameters));
+            }
             final ReportRunner runner = new ReportRunner(ctx, jasperReport, this.jrParameters, dataSource);
             final Thread t = new Thread(runner);
             t.setContextClassLoader(EFapsClassLoader.getInstance());
