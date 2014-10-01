@@ -19,17 +19,10 @@
  */
 
 
-package org.efaps.esjp.common.jasperreport;
-
-import java.util.Map;
-
-import net.sf.jasperreports.engine.JRDataset;
-import net.sf.jasperreports.engine.JRValueParameter;
-import net.sf.jasperreports.engine.JasperReportsContext;
+package org.efaps.esjp.admin.program;
 
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-
 
 
 /**
@@ -40,21 +33,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("5af4d48f-f0ca-48f8-a510-37b7d928a48e")
+@EFapsUUID("5536af60-b7b6-4dd2-9f33-de30c33f6e6a")
 @EFapsRevision("$Rev$")
-public class EQLQueryExecuter
-    extends EQLQueryExecuter_Base
+public class Compile
+    extends Compile_Base
 {
-    /**
-     * @param _jasperReportsContext the JasperReportsContext
-     * @param _dataset the dataset containing the query, fields, etc
-     * @param _parameters map of value parameters (instances of {@link JRValueParameter JRValueParameter})
-     *  indexed by name
-     */
-    public EQLQueryExecuter(final JasperReportsContext _jasperReportsContext,
-                            final JRDataset _dataset,
-                            final Map<String, ? extends JRValueParameter> _parameters)
-    {
-        super(_jasperReportsContext, _dataset, _parameters);
-    }
+
 }

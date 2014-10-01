@@ -22,28 +22,20 @@
   Last Changed By: $Author$
 
 -->
-
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>72c03f36-4f43-4f29-80b5-9a020eadf7bd</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
-
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_Program_JasperReportTree</name>
-    <!-- targets -->
-    <target>
-      <form>Admin_Program_JasperReportForm</form>
-      <!--menu>TeamWork_CollectionTree_Menu</menu-->
-    </target>
-    <!-- type tree for -->
-    <type>Admin_Program_JasperReport</type>
-    <!-- properties -->
-    <property name="Target">content</property>
-    <property name="TargetMode">view</property>
-  </definition>
-
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>72c03f36-4f43-4f29-80b5-9a020eadf7bd</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_Program_JasperReportTree</name>
+        <target>
+            <menu>Admin_Program_JasperReportTree_Menu</menu>
+            <form>Admin_Program_JasperReportForm</form>
+        </target>
+        <type>Admin_Program_JasperReport</type>
+        <property name="Target">content</property>
+        <property name="TargetMode">view</property>
+    </definition>
 </ui-menu>

@@ -21,14 +21,22 @@
 
 package org.efaps.esjp.common.jasperreport;
 
+import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsUUID;
+
 
 
 /**
- * TODO comment!
+ * This class must be replaced for customization, therefore it is left empty.
+ * Functional description can be found in the related "<code>_Base</code>"
+ * class.
  *
  * @author The eFaps Team
  * @version $Id$
  */
+//CHECKSTYLE:OFF
+@EFapsUUID("1676d361-853c-4fcc-94b0-61b1a7d127e8")
+@EFapsRevision("$Rev$")
 public class EQLQueryExecuterFactory
     extends EQLQueryExecuterFactory_Base
 {

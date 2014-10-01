@@ -30,6 +30,9 @@ import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.query.JRQueryExecuter;
 import net.sf.jasperreports.engine.query.QueryExecuterFactory;
 
+import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsUUID;
+
 
 /**
  * TODO comment!
@@ -37,6 +40,8 @@ import net.sf.jasperreports.engine.query.QueryExecuterFactory;
  * @author The eFaps Team
  * @version $Id$
  */
+@EFapsUUID("3c343e41-5abc-4682-862f-d0ee15756663")
+@EFapsRevision("$Rev$")
 public abstract class EQLQueryExecuterFactory_Base
     implements QueryExecuterFactory
 {

@@ -35,6 +35,8 @@ import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 import net.sf.jasperreports.engine.query.JRQueryExecuter;
 
+import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.eql.Statement;
 import org.efaps.util.EFapsException;
@@ -46,6 +48,8 @@ import org.efaps.util.EFapsException;
  * @author The eFaps Team
  * @version $Id$
  */
+@EFapsUUID("547e75b2-b76b-4cc6-83d7-516554fadf22")
+@EFapsRevision("$Rev$")
 public abstract class EQLQueryExecuter_Base
     implements JRQueryExecuter
 {
