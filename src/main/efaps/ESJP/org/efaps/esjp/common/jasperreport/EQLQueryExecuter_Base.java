@@ -39,6 +39,7 @@ import net.sf.jasperreports.engine.query.JRQueryExecuter;
 
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.eql.Statement;
 import org.efaps.util.EFapsException;
@@ -227,7 +228,9 @@ public abstract class EQLQueryExecuter_Base
             final JRValueParameter parameter = getParameters().get(_key);
             if (parameter != null) {
                 final Object object = parameter.getValue();
-                if (object != null) {
+                if (object instanceof Instance) {
+                    ret = ((Instance) object).getOid();
+                } else if (object != null) {
                     ret = object.toString();
                 }
             }

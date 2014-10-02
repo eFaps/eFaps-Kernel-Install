@@ -53,6 +53,7 @@ import net.sf.jasperreports.engine.util.LocalJasperReportsContext;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsClassLoader;
@@ -136,6 +137,26 @@ public abstract class StandartReport_Base
         return execute(_parameter);
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
+     * @throws EFapsException on error
+     */
+    protected void add2ReportParameter(final Parameter _parameter)
+        throws EFapsException
+    {
+        this.jrParameters.put(JRParameter.REPORT_LOCALE, Context.getThreadContext().getLocale());
+        this.jrParameters.put(JRParameter.REPORT_RESOURCE_BUNDLE, new EFapsResourceBundle());
+
+        final Instance inst = _parameter.getInstance();
+        if (inst != null && inst.isValid()) {
+            getJrParameters().put(ParameterValues.INSTANCE.name(), inst);
+        }
+
+        final Instance callInst = (Instance) _parameter.get(ParameterValues.CALL_INSTANCE);
+        if (callInst != null && callInst.isValid()) {
+            getJrParameters().put(ParameterValues.CALL_INSTANCE.name(), callInst);
+        }
+    }
 
     /**
      * @param _parameter Parameter as passed by the eFasp API
@@ -167,8 +188,7 @@ public abstract class StandartReport_Base
         final String dataSourceClass = getProperty(_parameter, "DataSourceClass");
         final boolean noDataSource = "true".equalsIgnoreCase(getProperty(_parameter, "NoDataSource"));
 
-        this.jrParameters.put(JRParameter.REPORT_LOCALE, Context.getThreadContext().getLocale());
-        this.jrParameters.put(JRParameter.REPORT_RESOURCE_BUNDLE, new EFapsResourceBundle());
+        add2ReportParameter(_parameter);
 
         final QueryBuilder queryBldr = new QueryBuilder(CIAdminProgram.JasperReportCompiled);
         queryBldr.addWhereAttrEqValue(CIAdminProgram.JasperReportCompiled.Name, name);
