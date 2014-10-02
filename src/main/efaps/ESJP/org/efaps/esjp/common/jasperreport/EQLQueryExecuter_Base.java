@@ -208,7 +208,7 @@ public abstract class EQLQueryExecuter_Base
             final String mainStr = matcher.group();
             final Matcher subMatcher = subPattern.matcher(mainStr);
             subMatcher.find();
-            replaceMap.put(mainStr, getStringValue(subMatcher.group()));
+            replaceMap.put(mainStr, getStringValue(_stmtStr, subMatcher.group()));
         }
         String ret = _stmtStr;
         for (final Entry<String, String> entry  :replaceMap.entrySet()) {
@@ -218,10 +218,12 @@ public abstract class EQLQueryExecuter_Base
     }
 
     /**
+     * @param _stmtStr stamentStr the parameters will be replace for
      * @param _key key the value will bee searched for
      * @return String representation of the object
      */
-    protected String getStringValue(final String _key)
+    protected String getStringValue(final String _stmtStr,
+                                    final String _key)
     {
         String ret = "";
         if (_key != null) {
@@ -229,7 +231,11 @@ public abstract class EQLQueryExecuter_Base
             if (parameter != null) {
                 final Object object = parameter.getValue();
                 if (object instanceof Instance) {
-                    ret = ((Instance) object).getOid();
+                    if (_stmtStr.trim().startsWith("print")) {
+                        ret = ((Instance) object).getOid();
+                    } else {
+                        ret = Long.valueOf(((Instance) object).getId()).toString();
+                    }
                 } else if (object != null) {
                     ret = object.toString();
                 }
