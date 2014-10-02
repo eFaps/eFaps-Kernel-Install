@@ -31,11 +31,18 @@
          <field name="mime">
             <property name="ModeEdit">EDITABLE</property>
             <property name="Label">Admin_Program_JasperReportCreateReportForm.mime.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.ui.print.UserInterface"
-                method="getMimeFieldValueUI"
-                name="Common_Main_PrintForm.mime.UI_FIELD_VALUE"
+            <property name="UIType">DROPDOWN</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getOptionList4Properties"
+                name="Admin_Program_JasperReportCreateReportForm.mime.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
+                <property name="Selected">0</property>
+                <property name="Value">xls</property>
+                <property name="DBProperty">Admin_Program_JasperReportCreateReportForm.mime.xls</property>
+                <property name="Value01">pdf</property>
+                <property name="DBProperty01">Admin_Program_JasperReportCreateReportForm.mime.pdf</property>
+                <property name="Value02">csv</property>
+                <property name="DBProperty02">Admin_Program_JasperReportCreateReportForm.mime.csv</property>
             </trigger>
         </field>
     </definition>

@@ -1440,6 +1440,46 @@ public abstract class Field_Base
      * @return Return containing Html Snipplet
      * @throws EFapsException on error
      */
+    public Return getOptionList4Properties(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
+        int selected;
+        if (containsProperty(_parameter, "Selected")) {
+            selected = Integer.parseInt(getProperty(_parameter, "Selected"));
+        } else {
+            selected = -1;
+        }
+        final Map<Integer, String> dbProps = analyseProperty(_parameter, "DBProperty");
+        final Map<Integer, String> values = analyseProperty(_parameter, "Value");
+        for (final Entry<Integer, String> entry : dbProps.entrySet()) {
+            final DropDownPosition pos = getDropDownPosition(_parameter, values.get(entry.getKey()),
+                            DBProperties.getProperty(entry.getValue()));
+            pos.setSelected(entry.getKey() == selected);
+            positions.add(pos);
+        }
+        Collections.sort(positions, new Comparator<DropDownPosition>()
+        {
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public int compare(final DropDownPosition _o1,
+                               final DropDownPosition _o2)
+            {
+                return _o1.getOrderValue().compareTo(_o2.getOrderValue());
+            }
+        });
+
+        final Return ret = new Return();
+        ret.put(ReturnValues.VALUES, positions);
+        return ret;
+    }
+
+    /**
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @return Return containing Html Snipplet
+     * @throws EFapsException on error
+     */
     public Return getOptionList4Enum(final Parameter _parameter)
         throws EFapsException
     {
