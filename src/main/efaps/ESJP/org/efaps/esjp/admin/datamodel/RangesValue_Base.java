@@ -145,6 +145,7 @@ public abstract class RangesValue_Base
                 tmpMap.put(strVal, ((Long) multi.getCurrentInstance().getId()).toString());
                 order.put(strVal,  multi.getCurrentInstance().getId());
             }
+            @SuppressWarnings("rawtypes")
             Map retmap;
 
             if (!attribute.isRequired() && "true".equalsIgnoreCase(getProperty(_parameter, "EmptyValue"))) {
@@ -185,6 +186,7 @@ public abstract class RangesValue_Base
      * Set the default value.
      *
      * @param _parameter Parameter as passed from the eFaps API
+     * @param _map map with the values
      * @throws EFapsException on error
      */
     protected void setSelectedValue(final Parameter _parameter,
@@ -193,8 +195,19 @@ public abstract class RangesValue_Base
     {
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         if (_parameter.get(ParameterValues.ACCESSMODE).equals(TargetMode.CREATE)
-                        && getProperty(_parameter, "Default") != null) {
+                        && containsProperty(_parameter, "Default")) {
             fieldValue.setValue(getProperty(_parameter, "Default"));
+        } else if (_parameter.get(ParameterValues.ACCESSMODE).equals(TargetMode.CREATE)
+                        && containsProperty(_parameter, "DefaultRegex")) {
+            final String regex = getProperty(_parameter, "DefaultRegex");
+            for (final Entry<?, ?> entry : _map.entrySet()) {
+                if (entry.getKey() instanceof String) {
+                    if (((String) entry.getKey()).matches(regex)) {
+                        fieldValue.setValue(entry.getKey());
+                        break;
+                    }
+                }
+            }
         }
     }
 }
