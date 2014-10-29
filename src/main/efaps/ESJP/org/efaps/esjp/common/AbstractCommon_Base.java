@@ -106,6 +106,25 @@ public abstract class AbstractCommon_Base
         return analyseProperty(_parameter, _key, 0);
     }
 
+    protected Map<Integer, String> analyseProperty(final Parameter _parameter,
+                                                   final Properties _properties,
+                                                   final String _key)
+        throws EFapsException
+    {
+        return analyseProperty(_parameter, _properties, _key, 0);
+    }
+
+    protected Map<Integer, String> analyseProperty(final Parameter _parameter,
+                                                   final Properties _properties,
+                                                   final String _key,
+                                                   final int _offset)
+        throws EFapsException
+    {
+        final Parameter parameter = ParameterUtil.clone(_parameter, ParameterValues.PROPERTIES, _properties);
+        return analyseProperty(parameter, _key, _offset);
+    }
+
+
     /**
      * Search for the given Property and returns a tree map with the found values.<br/>
      * Properties like:<br/>
@@ -396,6 +415,7 @@ public abstract class AbstractCommon_Base
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
+     * @param _props properties the QueryBuilder is wanted form
      * @return QueryBuilder
      * @throws EFapsException on error
      */
@@ -408,6 +428,8 @@ public abstract class AbstractCommon_Base
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
+     * @param _props properties the QueryBuilder is wanted form
+     * @param _key  key to be used
      * @return QueryBuilder
      * @throws EFapsException on error
      */
@@ -416,9 +438,9 @@ public abstract class AbstractCommon_Base
                                                       final String _key)
         throws EFapsException
     {
-        final Map<Object,Object> properties = new HashMap<>();
+        final Map<Object, Object> properties = new HashMap<>();
         final String key = _key == null ? null : _key + ".";
-        for (final Entry<Object,Object> entry : _props.entrySet()) {
+        for (final Entry<Object, Object> entry : _props.entrySet()) {
             if (_key != null) {
                 if (entry.getKey().toString().startsWith(key)) {
                     properties.put(entry.getKey().toString().replace(key, ""), entry.getValue());
