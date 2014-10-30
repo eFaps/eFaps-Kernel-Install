@@ -31,7 +31,8 @@ import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.SelectBuilder;
 import org.efaps.util.EFapsException;
-import org.efaps.util.cache.CacheReloadException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO comment!
@@ -46,6 +47,11 @@ public abstract class ClassSelect_Base
 {
 
     /**
+     * Logging instance used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(ClassSelect.class);
+
+    /**
      * SelectBuilder for this select.
      */
     private SelectBuilder selectBuilder = SelectBuilder.get().clazz().type();
@@ -58,7 +64,7 @@ public abstract class ClassSelect_Base
     /**
      * Initialize this IEsjpSelect.
      *
-     * @param _instanceList list of instances]
+     * @param _instances list of instances]
      * @throws EFapsException on error
      */
     @Override
@@ -71,7 +77,7 @@ public abstract class ClassSelect_Base
         multi.execute();
         while (multi.next()) {
             final List<Classification> clazzes = multi.getSelect(sel);
-            if (clazzes.isEmpty()) {
+            if (clazzes == null || clazzes.isEmpty()) {
                 getValues().put(multi.getCurrentInstance(), "");
             } else {
                 getValues().put(multi.getCurrentInstance(), evalValue(clazzes));
@@ -85,7 +91,7 @@ public abstract class ClassSelect_Base
      * @throws EFapsException on error
      */
     protected Object evalValue(final List<Classification> _clazzes)
-        throws CacheReloadException
+        throws EFapsException
     {
         final StringBuilder ret = new StringBuilder();
         for (final Classification clazz : _clazzes) {
@@ -109,6 +115,7 @@ public abstract class ClassSelect_Base
                 ret.append(labels.size() > getLevel() ? labels.get(getLevel()) : labels.get(labels.size()));
             }
         }
+        LOG.debug("Evaluated value: '{}", ret);
         return ret.toString();
     }
 
@@ -132,7 +139,6 @@ public abstract class ClassSelect_Base
         this.selectBuilder = _selectBuilder;
     }
 
-
     /**
      * Getter method for the instance variable {@link #level}.
      *
@@ -142,7 +148,6 @@ public abstract class ClassSelect_Base
     {
         return this.level;
     }
-
 
     /**
      * Setter method for instance variable {@link #level}.

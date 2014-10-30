@@ -24,10 +24,13 @@ package org.efaps.esjp.common.eql;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.eql.IEsjpSelect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -41,6 +44,11 @@ import org.efaps.eql.IEsjpSelect;
 public abstract class AbstractSelect_Base
     implements IEsjpSelect
 {
+
+    /**
+     * Logging instance used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractSelect.class);
 
     /**
      * Key of this select.
@@ -58,6 +66,7 @@ public abstract class AbstractSelect_Base
     @Override
     public void setKey(final String _key)
     {
+        LOG.debug("Assigned key: '{}", _key);
         this.key = _key;
     }
 
@@ -88,5 +97,11 @@ public abstract class AbstractSelect_Base
     public Map<Instance, Object> getValues()
     {
         return this.values;
+    }
+
+    @Override
+    public String toString()
+    {
+        return ToStringBuilder.reflectionToString(this);
     }
 }
