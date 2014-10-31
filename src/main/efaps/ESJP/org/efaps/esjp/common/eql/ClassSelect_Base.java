@@ -64,11 +64,13 @@ public abstract class ClassSelect_Base
     /**
      * Initialize this IEsjpSelect.
      *
-     * @param _instances list of instances]
+     * @param _instances list of instances
+     * @param _parameters parameters
      * @throws EFapsException on error
      */
     @Override
-    public void initialize(final List<Instance> _instances)
+    public void initialize(final List<Instance> _instances,
+                           final String... _parameters)
         throws EFapsException
     {
         final MultiPrintQuery multi = new MultiPrintQuery(_instances);

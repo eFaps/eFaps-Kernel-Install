@@ -29,8 +29,6 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.eql.IEsjpSelect;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -46,38 +44,9 @@ public abstract class AbstractSelect_Base
 {
 
     /**
-     * Logging instance used in this class.
-     */
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractSelect.class);
-
-    /**
-     * Key of this select.
-     */
-    private String key;
-
-    /**
      * Mapping for the values.
      */
     private final Map<Instance, Object> values = new HashMap<>();
-
-    /**
-     * @param _key key for this IEsjpSelect
-     */
-    @Override
-    public void setKey(final String _key)
-    {
-        LOG.debug("Assigned key: '{}", _key);
-        this.key = _key;
-    }
-
-    /**
-     * @return the key for this IEsjpSelect
-     */
-    @Override
-    public String getKey()
-    {
-        return this.key;
-    }
 
     /**
      * @param _instance Instance of the current object
