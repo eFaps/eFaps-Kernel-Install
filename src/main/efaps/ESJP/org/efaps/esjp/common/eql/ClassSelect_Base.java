@@ -92,7 +92,7 @@ public abstract class ClassSelect_Base
      * @return object for the select
      * @throws EFapsException on error
      */
-    protected Object evalValue(final List<Classification> _clazzes)
+    public Object evalValue(final List<Classification> _clazzes)
         throws EFapsException
     {
         final StringBuilder ret = new StringBuilder();
