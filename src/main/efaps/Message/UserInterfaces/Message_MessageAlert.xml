@@ -40,7 +40,7 @@
             <menu>Message_MessageAlert_Menu</menu>
             <table>Message_MessageAlertTable</table>
             <evaluate program="org.efaps.esjp.message.Message" method="showAlertMessage">
-                <property name="Types">Message_Message2User</property>
+                <property name="Type">Message_Message2User</property>
                 <property name="ExpandChildTypes">true</property>
             </evaluate>
         </target>

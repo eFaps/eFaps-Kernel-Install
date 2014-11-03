@@ -45,7 +45,7 @@
             <table>Admin_Event_DefinitionTable</table>
             <!--menu>TeamWork_RootCollectionMyDesk_Menu</menu-->
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Event_Definition</property>
+                <property name="Type">Admin_Event_Definition</property>
                 <property name="ExpandChildTypes">true</property>
             </evaluate>
         </target>

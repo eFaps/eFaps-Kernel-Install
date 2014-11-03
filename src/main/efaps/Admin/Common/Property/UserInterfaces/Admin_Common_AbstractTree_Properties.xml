@@ -40,7 +40,7 @@
             <table>Admin_Common_PropertyTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Types">Admin_Common_Property</property>
-                <property name="LinkFroms">Abstract</property>
+                <property name="LinkFrom">Abstract</property>
             </evaluate>
         </target>
         <!-- properties -->

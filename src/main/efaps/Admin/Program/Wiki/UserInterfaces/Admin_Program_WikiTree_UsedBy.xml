@@ -36,8 +36,8 @@
         <target>
             <table>Admin_Program_Wiki2HelpMenuTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Help_Menu2Wiki</property>
-                <property name="LinkFroms">ToLink</property>
+                <property name="Type">Admin_Help_Menu2Wiki</property>
+                <property name="LinkFrom">ToLink</property>
             </evaluate>
         </target>
         <!-- properties -->

@@ -38,7 +38,7 @@
         <target>
             <table>Admin_Program_AbstractTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Program_BPM</property>
+                <property name="Type">Admin_Program_BPM</property>
             </evaluate>
         </target>
         <!-- properties -->

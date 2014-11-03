@@ -109,8 +109,8 @@
             <property name="ModeEdit">NONE</property>
             <table>DB_ResourceTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">DB_Store2Resource</property>
-                <property name="LinkFroms">From</property>
+                <property name="Type">DB_Store2Resource</property>
+                <property name="LinkFrom">From</property>
                 <property name="Selects">linkto[To].id</property>
             </evaluate>
         </field>

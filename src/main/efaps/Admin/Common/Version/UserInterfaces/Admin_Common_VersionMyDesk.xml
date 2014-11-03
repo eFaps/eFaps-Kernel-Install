@@ -43,7 +43,7 @@
         <target>
             <table>Admin_Common_VersionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Common_Version</property>
+                <property name="Type">Admin_Common_Version</property>
             </evaluate>
         </target>
         <!-- properties -->

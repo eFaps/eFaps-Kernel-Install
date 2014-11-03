@@ -45,7 +45,7 @@
             <menu>Admin_User_AttributeMyDesk_Menu</menu>
             <table>Admin_User_AttributeTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_User_AttributeAbstract</property>
+                <property name="Type">Admin_User_AttributeAbstract</property>
                 <property name="ExpandChildTypes">true</property>
             </evaluate>
         </target>

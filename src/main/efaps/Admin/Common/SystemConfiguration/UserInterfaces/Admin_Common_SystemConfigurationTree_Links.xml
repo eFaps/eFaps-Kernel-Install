@@ -39,8 +39,8 @@
             <menu>Admin_Common_SystemConfigurationTree_Links_Menu</menu>
             <table>Admin_Common_SystemConfigurationLinkTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Common_SystemConfigurationLink</property>
-                <property name="LinkFroms">Link</property>
+                <property name="Type">Admin_Common_SystemConfigurationLink</property>
+                <property name="LinkFrom">Link</property>
             </evaluate>
         </target>
         <!-- properties -->

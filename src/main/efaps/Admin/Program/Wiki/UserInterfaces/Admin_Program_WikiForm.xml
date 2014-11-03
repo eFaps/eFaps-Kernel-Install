@@ -111,8 +111,8 @@
             <property name="ModeEdit">NONE</property>
             <table>Admin_Program_AbstractTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Program_Wiki2Wiki</property>
-                <property name="LinkFroms">From</property>
+                <property name="Type">Admin_Program_Wiki2Wiki</property>
+                <property name="LinkFrom">From</property>
                 <property name="Selects">linkto[To].oid</property>
             </evaluate>
         </field>

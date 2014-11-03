@@ -43,7 +43,7 @@
         <target>
             <table>Admin_Program_AbstractTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Program_JasperReport</property>
+                <property name="Type">Admin_Program_JasperReport</property>
             </evaluate>
         </target>
         <!-- properties -->

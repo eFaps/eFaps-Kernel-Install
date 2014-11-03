@@ -36,7 +36,7 @@
             <menu>Admin_Common_JmsMyDesk_Menu</menu>
             <table>Admin_Common_JmsTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Common_JmsAbstract</property>
+                <property name="Type">Admin_Common_JmsAbstract</property>
             </evaluate>
         </target>
         <!-- properties -->

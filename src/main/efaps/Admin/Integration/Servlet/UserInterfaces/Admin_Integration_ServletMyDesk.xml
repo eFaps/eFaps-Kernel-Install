@@ -44,7 +44,7 @@
             <menu>Admin_Integration_ServletMyDesk_Menu</menu>
             <table>Admin_Integration_ServletTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Integration_Servlet</property>
+                <property name="Type">Admin_Integration_Servlet</property>
             </evaluate>
         </target>
         <!-- properties -->

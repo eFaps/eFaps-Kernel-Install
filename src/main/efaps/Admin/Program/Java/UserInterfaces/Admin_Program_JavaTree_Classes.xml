@@ -38,8 +38,8 @@
         <target>
             <table>Admin_Program_JavaClassTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Program_JavaClass</property>
-                <property name="LinkFroms">ProgramLink</property>
+                <property name="Type">Admin_Program_JavaClass</property>
+                <property name="LinkFrom">ProgramLink</property>
             </evaluate>
         </target>
         <!-- properties -->

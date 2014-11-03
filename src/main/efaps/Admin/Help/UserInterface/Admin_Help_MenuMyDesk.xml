@@ -42,7 +42,7 @@
             <menu>Admin_Help_MenuMyDesk_Menu</menu>
             <table>Admin_Help_MenuTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Help_Menu</property>
+                <property name="Type">Admin_Help_Menu</property>
             </evaluate>
         </target>
         <!-- properties -->

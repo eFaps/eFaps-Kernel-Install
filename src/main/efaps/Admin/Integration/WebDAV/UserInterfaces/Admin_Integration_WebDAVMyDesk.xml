@@ -44,7 +44,7 @@
             <menu>Admin_Integration_WebDAVMyDesk_Menu</menu>
             <table>Admin_Integration_WebDAVTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Integration_WebDAV</property>
+                <property name="Type">Admin_Integration_WebDAV</property>
             </evaluate>
         </target>
         <!-- properties -->

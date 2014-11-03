@@ -41,7 +41,7 @@
             <form>Admin_Help_MenuForm</form>
             <table>Admin_Help_MenuTable</table>
             <evaluate program="org.efaps.esjp.common.uisearch.Search">
-                <property name="Types">Admin_Help_Menu</property>
+                <property name="Type">Admin_Help_Menu</property>
             </evaluate>
         </target>
         <!-- properties -->

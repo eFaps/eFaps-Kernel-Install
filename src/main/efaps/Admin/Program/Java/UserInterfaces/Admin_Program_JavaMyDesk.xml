@@ -44,7 +44,7 @@
             <table>Admin_Program_AbstractTable</table>
             <!--menu>TeamWork_RootCollectionMyDesk_Menu</menu-->
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Program_Java</property>
+                <property name="Type">Admin_Program_Java</property>
             </evaluate>
         </target>
         <!-- properties -->

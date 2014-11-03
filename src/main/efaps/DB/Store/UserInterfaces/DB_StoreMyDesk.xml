@@ -44,7 +44,7 @@
             <menu>DB_StoreMyDesk_Menu</menu>
             <table>DB_StoreTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">DB_Store</property>
+                <property name="Type">DB_Store</property>
             </evaluate>
         </target>
         <!-- properties -->

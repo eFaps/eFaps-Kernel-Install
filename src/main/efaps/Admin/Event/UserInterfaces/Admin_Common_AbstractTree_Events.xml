@@ -37,8 +37,8 @@
             <menu>Admin_Common_AbstractTree_Events_Menu</menu>
             <table>Admin_Event_DefinitionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Event_Definition</property>
-                <property name="LinkFroms">Abstract</property>
+                <property name="Type">Admin_Event_Definition</property>
+                <property name="LinkFrom">Abstract</property>
             </evaluate>
         </target>
         <!-- properties -->

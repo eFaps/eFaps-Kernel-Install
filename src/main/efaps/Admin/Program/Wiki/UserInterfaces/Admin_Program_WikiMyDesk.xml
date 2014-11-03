@@ -41,7 +41,7 @@
         <target>
             <table>Admin_Program_AbstractTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Program_Wiki</property>
+                <property name="Type">Admin_Program_Wiki</property>
             </evaluate>
         </target>
         <!-- properties -->

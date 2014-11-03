@@ -38,8 +38,8 @@
         <target>
             <table>Admin_User_JAASKeyTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_User_JAASKey</property>
-                <property name="LinkFroms">JAASSystemLink</property>
+                <property name="Type">Admin_User_JAASKey</property>
+                <property name="LinkFrom">JAASSystemLink</property>
             </evaluate>
         </target>
         <!-- properties -->

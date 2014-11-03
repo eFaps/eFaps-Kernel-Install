@@ -39,8 +39,8 @@
             <menu>Admin_UI_MenuTree_Childs_Menu</menu>
             <table>Admin_UI_Menu_Childs</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_UI_Menu2Command</property>
-                <property name="LinkFroms">FromMenu</property>
+                <property name="Type">Admin_UI_Menu2Command</property>
+                <property name="LinkFrom">FromMenu</property>
             </evaluate>
         </target>
         <!-- properties -->

@@ -44,7 +44,7 @@
             <menu>Admin_UI_SearchMyDesk_Menu</menu>
             <table>Admin_UI_AbstractList</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_UI_Search</property>
+                <property name="Type">Admin_UI_Search</property>
             </evaluate>
         </target>
         <!-- properties -->

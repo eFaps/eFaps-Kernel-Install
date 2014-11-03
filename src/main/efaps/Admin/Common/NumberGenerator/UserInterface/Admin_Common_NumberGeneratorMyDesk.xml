@@ -41,7 +41,7 @@
         <target>
             <table>Admin_Common_NumberGeneratorTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Common_NumGen</property>
+                <property name="Type">Admin_Common_NumGen</property>
             </evaluate>
         </target>
         <!-- properties -->

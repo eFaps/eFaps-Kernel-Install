@@ -43,7 +43,7 @@
             <menu>Message_MessageMyDesk_Menu</menu>
             <table>Message_MessageTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Message_MessageAbstract</property>
+                <property name="Type">Message_MessageAbstract</property>
                 <property name="ExpandChildTypes">true</property>
             </evaluate>
         </target>

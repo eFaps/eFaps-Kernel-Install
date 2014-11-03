@@ -44,7 +44,7 @@
             <menu>Admin_User_JAASSystemMyDesk_Menu</menu>
             <table>Admin_User_JAASSystemTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_User_JAASSystem</property>
+                <property name="Type">Admin_User_JAASSystem</property>
             </evaluate>
         </target>
         <!-- properties -->

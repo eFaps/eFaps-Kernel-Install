@@ -106,8 +106,8 @@
         <field name="extendtable" character="Target">
             <table>Admin_Program_AbstractTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Program_CSS2CSS</property>
-                <property name="LinkFroms">From</property>
+                <property name="Type">Admin_Program_CSS2CSS</property>
+                <property name="LinkFrom">From</property>
                 <property name="Selects">linkto[To].oid</property>
             </evaluate>
         </field>
