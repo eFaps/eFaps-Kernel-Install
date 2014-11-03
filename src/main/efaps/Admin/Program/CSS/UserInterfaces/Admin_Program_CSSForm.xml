@@ -95,8 +95,8 @@
         <field name="compiledtable" character="Target">
             <table>Admin_Program_JavaClassTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Admin_Program_CSSCompiled</property>
-                <property name="LinkFroms">ProgramLink</property>
+                <property name="Type">Admin_Program_CSSCompiled</property>
+                <property name="LinkFrom">ProgramLink</property>
             </evaluate>
         </field>
         <field name="extendheader" character="Heading">
