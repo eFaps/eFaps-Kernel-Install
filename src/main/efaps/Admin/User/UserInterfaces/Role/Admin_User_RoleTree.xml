@@ -22,34 +22,26 @@
   Last Changed By: $Author$
 
 -->
-
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>e0437357-cf53-4a39-a5eb-0f1c67690cdf</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
-
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_User_RoleTree</name>
-    <!-- targets -->
-    <target>
-      <menu>Admin_User_RoleTree_Menu</menu>
-      <form>Admin_User_AbstractForm</form>
-    </target>
-    <!-- type tree for -->
-    <type>Admin_User_RoleAbstract</type>
-    <!-- childs -->
-    <childs>
-      <child>Admin_User_RoleTree_Persons</child>
-      <child>Admin_User_AbstractTree_JAASKeys</child>
-      <child>Admin_User_AbstractTree_Access</child>
-    </childs>
-    <!-- properties -->
-    <property name="Target">content</property>
-    <property name="TargetMode">view</property>
-  </definition>
-
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>e0437357-cf53-4a39-a5eb-0f1c67690cdf</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_User_RoleTree</name>
+        <target>
+            <menu>Admin_User_RoleTree_Menu</menu>
+            <form>Admin_User_AbstractForm</form>
+        </target>
+        <type>Admin_User_RoleAbstract</type>
+        <childs>
+            <child>Admin_User_RoleTree_Persons</child>
+            <child>Admin_User_AbstractTree_JAASKeys</child>
+            <child>Admin_User_AbstractTree_Access</child>
+            <child>Admin_User_AbstractTree_AccessSet</child>
+        </childs>
+        <property name="Target">content</property>
+        <property name="TargetMode">view</property>
+    </definition>
 </ui-menu>
