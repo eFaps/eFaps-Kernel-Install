@@ -22,31 +22,23 @@
  Last Changed By: $Author$
 
 -->
-
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>228a2aac-3ebc-42c1-b81d-38b4146495f5</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
-
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_User_CompanyTree_Persons_Menu_Action_AddExistingPerson</name>
-    <icon>Admin_User_Person+Add+Image</icon>
-    <!-- target definition -->
-    <target>
-      <search>Admin_User_CompanyTree_Persons_Menu_Action_AddExistingPerson_Search</search>
-      <execute program="org.efaps.esjp.admin.user.Person" method="connectUser2UserUI">
-        <property name="ConnectParentAttribute">CompanyLink</property>
-        <property name="ConnectChildAttribute">UserLink</property>
-        <property name="ConnectType">Admin_User_Person2Company</property>
-      </execute>
-    </target>
-    <!-- properties -->
-    <property name="Target">popup</property>
-
-  </definition>
-
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>228a2aac-3ebc-42c1-b81d-38b4146495f5</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_User_CompanyTree_Persons_Menu_Action_AddExistingPerson</name>
+        <icon>Admin_User_Person+Add+Image</icon>
+        <target>
+            <search>Admin_User_CompanyTree_Persons_Menu_Action_AddExistingPerson_Search</search>
+            <execute program="org.efaps.esjp.admin.user.Person" method="connectUser2UserUI">
+                <property name="ConnectParentAttribute">CompanyLink</property>
+                <property name="ConnectChildAttribute">UserLink</property>
+                <property name="ConnectType">Admin_User_Person2Company</property>
+            </execute>
+        </target>
+        <property name="Target">modal</property>
+    </definition>
 </ui-command>

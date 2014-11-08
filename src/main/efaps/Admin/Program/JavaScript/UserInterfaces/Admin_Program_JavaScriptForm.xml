@@ -108,7 +108,7 @@
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Admin_Program_JavaScript2JavaScript</property>
                 <property name="LinkFrom">From</property>
-                <property name="Selects">linkto[To].oid</property>
+                <property name="InstanceSelect">linkto[To].instance</property>
             </evaluate>
         </field>
     </definition>

@@ -40,7 +40,7 @@
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Admin_UI_Menu2Command</property>
                 <property name="LinkFrom">ToCommand</property>
-                <property name="Selects">linkto[FromMenu].oid</property>
+                <property name="InstanceSelect">linkto[FromMenu].instance</property>
             </evaluate>
         </target>
         <!-- properties -->

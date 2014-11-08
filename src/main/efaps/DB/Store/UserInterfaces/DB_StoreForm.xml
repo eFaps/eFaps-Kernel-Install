@@ -111,7 +111,7 @@
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">DB_Store2Resource</property>
                 <property name="LinkFrom">From</property>
-                <property name="Selects">linkto[To].id</property>
+                <property name="InstanceSelect">>linkto[To].instance</property>
             </evaluate>
         </field>
     </definition>

@@ -44,7 +44,7 @@
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
             <property name="Type">Admin_DataModel_Type2Store</property>
                 <property name="LinkFrom">To</property>
-                <property name="Selects">linkto[From].id</property>
+                <property name="InstanceSelect">linkto[From].instance</property>
             </evaluate>
         </target>
         <!-- properties -->
