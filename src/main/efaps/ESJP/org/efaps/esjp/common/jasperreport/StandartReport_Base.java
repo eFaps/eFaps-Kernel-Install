@@ -251,7 +251,11 @@ public abstract class StandartReport_Base
                     setFileName((String) this.jrParameters.get("FileName"));
                 }
             }
-            ret = getFile(runner.getJasperPrint(), mime);
+            final JasperPrint print = runner.getJasperPrint();
+            LOG.debug("print created: '{}'", print);
+            if (print != null) {
+                ret = getFile(print, mime);
+            }
         } catch (final ClassNotFoundException e) {
             throw new EFapsException(StandartReport_Base.class, "execute.ClassNotFoundException", e);
         } catch (final SecurityException e) {

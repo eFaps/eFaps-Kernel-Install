@@ -22,7 +22,6 @@ package org.efaps.esjp.common.jasperreport;
 
 import java.util.Map;
 
-import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
@@ -94,14 +93,16 @@ public class ReportRunner
     @Override
     public void run()
     {
-        final JasperFillManager fillmgr = JasperFillManager.getInstance(this.ctx);
         try {
+            final JasperFillManager fillmgr = JasperFillManager.getInstance(this.ctx);
             if (this.dataSource == null) {
                 this.jasperPrint = fillmgr.fill(this.jasperReport, this.jrParameters);
             } else {
                 this.jasperPrint = fillmgr.fill(this.jasperReport, this.jrParameters, this.dataSource);
             }
-        } catch (final JRException e) {
+        //CHECKSTYLE:OFF
+        } catch (final Exception e) {
+        //CHECKSTYLE:ON
             LOG.error("Catched error from runner", e);
         }
     }
