@@ -1571,6 +1571,14 @@ public abstract class Field_Base
         if (phrase != null) {
             multi.addPhrase("Phrase", phrase);
         }
+        final String msgPhrase = getProperty(_parameter, "MsgPhrase");
+        if (msgPhrase != null) {
+            if (isUUID(msgPhrase)) {
+                multi.addMsgPhrase(UUID.fromString(msgPhrase));
+            } else {
+                multi.addMsgPhrase(msgPhrase);
+            }
+        }
         final String valueSel = getProperty(_parameter, "ValueSelect");
         if (valueSel != null) {
             multi.addSelect(valueSel);
@@ -1601,6 +1609,12 @@ public abstract class Field_Base
                 option = multi.getSelect(select);
             } else if (phrase != null) {
                 option = multi.getPhrase("Phrase");
+            } else if (msgPhrase != null) {
+                if (isUUID(msgPhrase)) {
+                    option = multi.getMsgPhrase(UUID.fromString(msgPhrase));
+                } else {
+                    option = multi.getMsgPhrase(msgPhrase);
+                }
             }
             final DropDownPosition val = getDropDownPosition(_parameter, value, option);
             values.add(val);
