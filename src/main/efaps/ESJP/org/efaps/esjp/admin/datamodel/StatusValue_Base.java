@@ -36,6 +36,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.program.esjp.Listener;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
@@ -57,11 +58,13 @@ public abstract class StatusValue_Base
 
     /**
      * @see org.efaps.admin.event.EventExecution#execute(org.efaps.admin.event.Parameter)
-     * @param _parameter    parameter as defined by the efaps api
+     * @param _parameter parameter as defined by the efaps api
      * @return map with value and keys
      * @throws EFapsException on error
      */
-    public Return execute(final Parameter _parameter) throws EFapsException
+    @Override
+    public Return execute(final Parameter _parameter)
+        throws EFapsException
     {
         final Return ret = new Return();
 
@@ -70,7 +73,7 @@ public abstract class StatusValue_Base
         final Map<String, String> map = new TreeMap<String, String>();
 
         if (fieldValue.getTargetMode().equals(TargetMode.VIEW) || fieldValue.getTargetMode().equals(TargetMode.PRINT)
-                         || fieldValue.getTargetMode().equals(TargetMode.UNKNOWN)) {
+                        || fieldValue.getTargetMode().equals(TargetMode.UNKNOWN)) {
             final Object object = fieldValue.getValue();
             if (object instanceof Long) {
                 final Status status = Status.get((Long) object);
@@ -106,6 +109,7 @@ public abstract class StatusValue_Base
      *  <br>
      * </code>
      * </pre>
+     *
      * @param _parameter parameter as defined by the eFaps API
      * @return empty Return
      * @throws EFapsException on error
@@ -152,8 +156,9 @@ public abstract class StatusValue_Base
                     }
                 }
                 if (doUpdate) {
-                    // the instance must be updated first, because after changing the status the
-                    //user might not have the right to update any more
+                    // the instance must be updated first, because after
+                    // changing the status the
+                    // user might not have the right to update any more
                     if (updateInstance) {
                         _parameter.put(ParameterValues.INSTANCE, inst);
                         updateInstance(_parameter);
@@ -161,6 +166,11 @@ public abstract class StatusValue_Base
                     final Update update = new Update(inst);
                     update.add(inst.getType().getStatusAttribute(), ((Long) status.getId()).toString());
                     update.execute();
+                }
+                // let others participate
+                for (final ISetStatusListener listener : Listener.get().<ISetStatusListener>invoke(
+                                ISetStatusListener.class)) {
+                    listener.afterSetStatus(_parameter, inst, status);
                 }
             }
         }
