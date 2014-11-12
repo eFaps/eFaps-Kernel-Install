@@ -62,17 +62,31 @@
         </attribute>
         <attribute>
             <name>CompanyLink</name>
-            <type>Link</type>
+            <type>LinkWithRanges</type>
             <typelink>Admin_User_Company</typelink>
             <sqltable>Admin_Common_MsgPhraseConfigSQLTable</sqltable>
             <sqlcolumn>COMPANYID</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
+                name="Admin_Common_MsgPhraseConfigAbstract.CompanyLink.RANGE_VALUE"
+                event="RANGE_VALUE">
+                <property name="Type">Admin_User_Company</property>
+                <property name="Value">Name</property>
+                <property name="EmptyValue">true</property>
+            </trigger>
         </attribute>
         <attribute>
             <name>LanguageLink</name>
-            <type>Link</type>
+            <type>LinkWithRanges</type>
             <typelink>Admin_Language</typelink>
             <sqltable>Admin_Common_MsgPhraseConfigSQLTable</sqltable>
             <sqlcolumn>LANGID</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
+                name="Admin_Common_MsgPhraseConfigAbstract.CompanyLink.RANGE_VALUE"
+                event="RANGE_VALUE">
+                <property name="Type">Admin_Language</property>
+                <property name="Value">Language</property>
+                <property name="EmptyValue">true</property>
+            </trigger>
         </attribute>
         <attribute>
             <name>Description</name>
