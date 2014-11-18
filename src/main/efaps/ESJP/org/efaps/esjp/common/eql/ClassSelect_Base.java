@@ -73,6 +73,9 @@ public abstract class ClassSelect_Base
                            final String... _parameters)
         throws EFapsException
     {
+        if (_parameters != null) {
+            setLevel(Integer.parseInt(_parameters[0]));
+        }
         final MultiPrintQuery multi = new MultiPrintQuery(_instances);
         final SelectBuilder sel = getSelectBuilder();
         multi.addSelect(sel);
@@ -114,7 +117,7 @@ public abstract class ClassSelect_Base
                 if (ret.length() > 0) {
                     ret.append(" - ");
                 }
-                ret.append(labels.size() > getLevel() ? labels.get(getLevel()) : labels.get(labels.size()));
+                ret.append(labels.size() > getLevel() ? labels.get(getLevel()) : labels.get(labels.size() - 1));
             }
         }
         LOG.debug("Evaluated value: '{}", ret);
