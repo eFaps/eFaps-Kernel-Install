@@ -45,5 +45,16 @@
                 <property name="DBProperty02">Admin_Program_JasperReportCreateReportForm.mime.csv</property>
             </trigger>
         </field>
+        <field name="paras">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Label">Admin_Program_JasperReportCreateReportForm.paras.Label</property>
+            <property name="UIType">SNIPPLET</property>
+            <trigger program="org.efaps.esjp.common.jasperreport.StandartReport"
+                method="getPromptParametersFieldValue"
+                name="Admin_Program_JasperReportCreateReportForm.paras.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+            </trigger>
+        </field>
+
     </definition>
 </ui-form>

@@ -28,17 +28,22 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.UUID;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JRExpression;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRRtfExporter;
 import net.sf.jasperreports.engine.export.JRTextExporter;
 import net.sf.jasperreports.engine.export.JRTextExporterParameter;
@@ -49,6 +54,8 @@ import net.sf.jasperreports.engine.export.oasis.JROdtExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.engine.util.LocalJasperReportsContext;
+import net.sf.jasperreports.engine.xml.JRXmlDigesterFactory;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.EventExecution;
@@ -69,17 +76,19 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.file.FileUtil;
 import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.update.schema.program.jasperreport.JasperReportImporter.FakeQueryExecuterFactory;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.xml.sax.SAXException;
 
 /**
- * "Mime" as property in the calling command, or "mime" as parameter from a form.
- * Command overrules!
+ * "Mime" as property in the calling command, or "mime" as parameter from a
+ * form. Command overrules!
  *
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: StandartReport_Base.java 14418 2014-11-11 18:05:19Z
+ *          jan@moxter.net $
  */
 @EFapsUUID("c3a1f5f8-b263-4ad4-b144-db68437074cc")
 @EFapsRevision("$Rev$")
@@ -87,6 +96,7 @@ public abstract class StandartReport_Base
     extends AbstractCommon
     implements EventExecution
 {
+
     /**
      * Logger used in this class.
      */
@@ -124,6 +134,48 @@ public abstract class StandartReport_Base
      * @return Return
      * @throws EFapsException on error
      */
+    public Return getPromptParametersFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final StringBuilder html = new StringBuilder();
+        final Checkout checkout = new Checkout(_parameter.getInstance());
+        final InputStream is = checkout.execute();
+
+        DefaultJasperReportsContext.getInstance().setProperty("net.sf.jasperreports.query.executer.factory.eFaps",
+                        FakeQueryExecuterFactory.class.getName());
+        try {
+             final JasperDesign jasperDesign = new JRXmlLoader(DefaultJasperReportsContext.getInstance(),
+                            JRXmlDigesterFactory.createDigester()).loadXML(is);
+             for (final JRParameter parameter  : jasperDesign.getParameters()) {
+                 if (parameter.isForPrompting() && !parameter.isSystemDefined()) {
+                     final String name = parameter.getName();
+                     final String descr = parameter.getDescription();
+                     final JRExpression expr = parameter.getDefaultValueExpression();
+                     String defaultValue;
+                     if (expr != null) {
+                         defaultValue = expr.getText();
+                     } else {
+                         defaultValue = "";
+                     }
+                     html.append("<div><span>").append(name).append(": ").append(descr).append("</span>")
+                         .append("<input type=\"text\" name=\"para_").append(name).append("\" value=\"")
+                         .append(defaultValue == null ? "" : defaultValue).append("\"></div>");
+                 }
+             }
+        } catch (JRException | ParserConfigurationException | SAXException e) {
+            LOG.error("Catched Error: ", e);
+        }
+        ret.put(ReturnValues.SNIPLETT, html.toString());
+        return ret;
+    }
+
+    /**
+     * @see org.efaps.admin.event.EventExecution#execute(org.efaps.admin.event.Parameter)
+     * @param _parameter parameter as passed fom the eFaps esjp API
+     * @return Return
+     * @throws EFapsException on error
+     */
     public Return create4Jasper(final Parameter _parameter)
         throws EFapsException
     {
@@ -134,6 +186,12 @@ public abstract class StandartReport_Base
         ParameterUtil.setProperty(_parameter, "JasperReport",
                         print.<String>getAttribute(CIAdminProgram.JasperReport.Name));
         ParameterUtil.setProperty(_parameter, "NoDataSource", "true");
+
+        for (final Entry<String, String[]> entry:  _parameter.getParameters().entrySet()) {
+           if (entry.getKey().startsWith("para_")) {
+               this.jrParameters.put(entry.getKey().replaceFirst("para_", ""), entry.getValue()[0]);
+           }
+        }
         return execute(_parameter);
     }
 
@@ -238,6 +296,7 @@ public abstract class StandartReport_Base
             t.start();
 
             while (t.isAlive()) {
+                // add an abort criteria
             }
             String mime = getProperty(_parameter, "Mime");
             if (mime == null) {
@@ -277,7 +336,6 @@ public abstract class StandartReport_Base
         }
         return ret;
     }
-
 
     /**
      * Method to get the File.
@@ -353,8 +411,8 @@ public abstract class StandartReport_Base
             final JRTextExporter exporter = new JRTextExporter();
             exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
             exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, os);
-            exporter.setParameter(JRTextExporterParameter.CHARACTER_HEIGHT , new Float(10));
-            exporter.setParameter(JRTextExporterParameter.CHARACTER_WIDTH , new Float(6));
+            exporter.setParameter(JRTextExporterParameter.CHARACTER_HEIGHT, new Float(10));
+            exporter.setParameter(JRTextExporterParameter.CHARACTER_WIDTH, new Float(6));
             exporter.exportReport();
             os.close();
         }
@@ -391,4 +449,3 @@ public abstract class StandartReport_Base
         this.fileName = _fileName;
     }
 }
-
