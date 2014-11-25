@@ -151,6 +151,11 @@ public abstract class AbstractDynamicReport_Base
     private boolean includeFooter = false;
 
     /**
+     * Parameters.
+     */
+    private Map<String, Object> parameters;
+
+    /**
      * Get the style for the columns in case of a html document.
      *
      * @param _parameter Parameter as passed by the eFaps API
@@ -766,7 +771,7 @@ public abstract class AbstractDynamicReport_Base
             final JasperPdfExporterBuilder exporter = Exporters.pdfExporter(file);
             configure4Pdf(_parameter);
             getReport().setTemplate(getStyleTemplate());
-
+            getReport().setParameters(getParameters());
             getReport().toPdf(exporter);
         } catch (final DRException e) {
             AbstractDynamicReport_Base.LOG.error("catched DRException", e);
@@ -828,7 +833,7 @@ public abstract class AbstractDynamicReport_Base
                     .setRemoveEmptySpaceBetweenColumns(true);
             configure4Excel(_parameter);
             getReport().setTemplate(getStyleTemplate());
-
+            getReport().setParameters(getParameters());
             getReport().toXls(exporter);
         } catch (final DRException e) {
             AbstractDynamicReport_Base.LOG.error("catched DRException", e);
@@ -1038,6 +1043,25 @@ public abstract class AbstractDynamicReport_Base
     protected void setPageType(final PageType _pageType)
     {
         this.pageType = _pageType;
+    }
+
+    /**
+     * Setter method to adding parameter to report.
+     *
+     * @param _key Key to parameter.
+     * @param _value Value to parameter.
+     */
+    public void setParameters(final Map<String, Object> _parameters)
+    {
+        this.parameters = _parameters;
+    }
+
+    /**
+     * @return Parameters.
+     */
+    protected Map<String, Object> getParameters()
+    {
+        return this.parameters;
     }
 
     /**
