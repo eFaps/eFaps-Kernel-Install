@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -51,6 +52,7 @@ import net.sf.dynamicreports.report.constant.VerticalAlignment;
 import net.sf.dynamicreports.report.definition.datatype.DRIDataType;
 import net.sf.dynamicreports.report.exception.DRException;
 import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRParameter;
 
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -61,6 +63,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIAdminProgram;
 import org.efaps.db.Checkout;
 import org.efaps.db.Context;
+import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.common.AbstractCommon;
@@ -153,7 +156,7 @@ public abstract class AbstractDynamicReport_Base
     /**
      * Parameters.
      */
-    private Map<String, Object> parameters;
+    private Map<String, Object> parameters = new HashMap<>();;
 
     /**
      * Get the style for the columns in case of a html document.
@@ -771,6 +774,7 @@ public abstract class AbstractDynamicReport_Base
             final JasperPdfExporterBuilder exporter = Exporters.pdfExporter(file);
             configure4Pdf(_parameter);
             getReport().setTemplate(getStyleTemplate());
+            add2ReportParameter(_parameter);
             getReport().setParameters(getParameters());
             getReport().toPdf(exporter);
         } catch (final DRException e) {
@@ -833,6 +837,7 @@ public abstract class AbstractDynamicReport_Base
                     .setRemoveEmptySpaceBetweenColumns(true);
             configure4Excel(_parameter);
             getReport().setTemplate(getStyleTemplate());
+            add2ReportParameter(_parameter);
             getReport().setParameters(getParameters());
             getReport().toXls(exporter);
         } catch (final DRException e) {
@@ -1047,9 +1052,7 @@ public abstract class AbstractDynamicReport_Base
 
     /**
      * Setter method to adding parameter to report.
-     *
-     * @param _key Key to parameter.
-     * @param _value Value to parameter.
+     * @param _parameters Parameter to set
      */
     public void setParameters(final Map<String, Object> _parameters)
     {
@@ -1062,6 +1065,26 @@ public abstract class AbstractDynamicReport_Base
     protected Map<String, Object> getParameters()
     {
         return this.parameters;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
+     * @throws EFapsException on error
+     */
+    protected void add2ReportParameter(final Parameter _parameter)
+        throws EFapsException
+    {
+        getParameters().put(JRParameter.REPORT_LOCALE, Context.getThreadContext().getLocale());
+
+        final Instance inst = _parameter.getInstance();
+        if (inst != null && inst.isValid()) {
+            getParameters().put(ParameterValues.INSTANCE.name(), inst);
+        }
+
+        final Instance callInst = (Instance) _parameter.get(ParameterValues.CALL_INSTANCE);
+        if (callInst != null && callInst.isValid()) {
+            getParameters().put(ParameterValues.CALL_INSTANCE.name(), callInst);
+        }
     }
 
     /**

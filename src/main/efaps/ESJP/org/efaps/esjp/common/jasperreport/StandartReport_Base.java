@@ -145,25 +145,25 @@ public abstract class StandartReport_Base
         DefaultJasperReportsContext.getInstance().setProperty("net.sf.jasperreports.query.executer.factory.eFaps",
                         FakeQueryExecuterFactory.class.getName());
         try {
-             final JasperDesign jasperDesign = new JRXmlLoader(DefaultJasperReportsContext.getInstance(),
+            final JasperDesign jasperDesign = new JRXmlLoader(DefaultJasperReportsContext.getInstance(),
                             JRXmlDigesterFactory.createDigester()).loadXML(is);
-             for (final JRParameter parameter  : jasperDesign.getParameters()) {
-                 if (parameter.isForPrompting() && !parameter.isSystemDefined()) {
-                     final String name = parameter.getName();
-                     final String descr = parameter.getDescription();
-                     final JRExpression expr = parameter.getDefaultValueExpression();
-                     String defaultValue;
-                     if (expr != null) {
-                         defaultValue = expr.getText();
-                     } else {
-                         defaultValue = "";
-                     }
-                     html.append("<div><span>").append(name).append(": ").append(descr).append("</span>")
-                         .append("<input type=\"text\" name=\"para_").append(name).append("\" value=\"")
-                         .append(defaultValue == null ? "" : defaultValue).append("\"></div>");
-                 }
-             }
-        } catch (JRException | ParserConfigurationException | SAXException e) {
+            for (final JRParameter parameter : jasperDesign.getParameters()) {
+                if (parameter.isForPrompting() && !parameter.isSystemDefined()) {
+                    final String name = parameter.getName();
+                    final String descr = parameter.getDescription();
+                    final JRExpression expr = parameter.getDefaultValueExpression();
+                    String defaultValue;
+                    if (expr != null) {
+                        defaultValue = expr.getText();
+                    } else {
+                        defaultValue = "";
+                    }
+                    html.append("<div><span>").append(name).append(": ").append(descr).append("</span>")
+                                    .append("<input type=\"text\" name=\"para_").append(name).append("\" value=\"")
+                                    .append(defaultValue == null ? "" : defaultValue).append("\"></div>");
+                }
+            }
+        } catch (final JRException | ParserConfigurationException | SAXException e) {
             LOG.error("Catched Error: ", e);
         }
         ret.put(ReturnValues.SNIPLETT, html.toString());
