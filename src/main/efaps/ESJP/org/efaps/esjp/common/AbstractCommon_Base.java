@@ -626,4 +626,25 @@ public abstract class AbstractCommon_Base
     {
         return _parameter.getInstance();
     }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return List of instances, if not found empty list
+     * @throws EFapsException on error
+     */
+    protected List<Instance> getSelectedInstances(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Instance> ret = new ArrayList<>();
+        final String[] oids = _parameter.getParameterValues("selectedRow");
+        if (oids != null) {
+            for (final String oid : oids) {
+                final Instance instance = Instance.get(oid);
+                if (instance.isValid()) {
+                    ret.add(instance);
+                }
+            }
+        }
+        return ret;
+    }
 }
