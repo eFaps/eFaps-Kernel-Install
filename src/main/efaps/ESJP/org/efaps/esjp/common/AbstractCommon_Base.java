@@ -275,6 +275,21 @@ public abstract class AbstractCommon_Base
         }
         return ret;
     }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _props properties the QueryBuilder is wanted form
+     * @return QueryBuilder
+     * @throws EFapsException on error
+     */
+    protected List<Status> getStatusListFromProperties(final Parameter _parameter,
+                                                       final Properties _props)
+        throws EFapsException
+    {
+        final Parameter parameter = ParameterUtil.clone(_parameter, ParameterValues.PROPERTIES, _props);
+        return getStatusListFromProperties(parameter, 0);
+    }
+
     /**
      * To have always the same form of defining Status in esjp properties use this method.<br/>
      * Example for config: (StatusGrp can be the name or the UUID of a StatusGroup)<br/>
