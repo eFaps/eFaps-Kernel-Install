@@ -161,6 +161,30 @@ public abstract class Field_Base
     }
 
     /**
+    *
+    * @param _parameter    Parameter as passed from the eFaps API
+    * @return Boolean value
+    * @throws EFapsException on error
+    */
+   public Return getDefault4BooleanSysConfigFieldValue(final Parameter _parameter)
+       throws EFapsException
+   {
+       final Return ret = new Return();
+
+       final String config = getProperty(_parameter, "SystemConfiguration");
+       final String attribute = getProperty(_parameter, "AttributeConfiguration");
+       final String keyValue = getProperty(_parameter, "Key");
+
+       final SystemConfiguration sysConf = SystemConfiguration.get(config);
+       final Properties properties = sysConf.getAttributeValueAsProperties(attribute, true);
+       final String key = properties.getProperty(keyValue);
+       if (key != null) {
+           ret.put(ReturnValues.VALUES, BooleanUtils.toBoolean(key));
+       }
+       return ret;
+   }
+
+    /**
      * Render a single checkbox.<br>
      * Properties:
      * <table>
