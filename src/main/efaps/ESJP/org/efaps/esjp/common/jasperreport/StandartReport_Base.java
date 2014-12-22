@@ -27,9 +27,10 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -57,6 +58,7 @@ import net.sf.jasperreports.engine.util.LocalJasperReportsContext;
 import net.sf.jasperreports.engine.xml.JRXmlDigesterFactory;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
+import org.apache.commons.collections4.SetUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
@@ -98,6 +100,11 @@ public abstract class StandartReport_Base
 {
 
     /**
+     * Key used to store a map in the Session.
+     */
+    protected static String SESSIONKEY = StandartReport.class.getName() + ".SessionKey";
+
+    /**
      * Logger used in this class.
      */
     private static final Logger LOG = LoggerFactory.getLogger(StandartReport.class);
@@ -111,6 +118,8 @@ public abstract class StandartReport_Base
      * The name for the returned file.
      */
     private String fileName = null;
+
+
 
     /**
      * @see org.efaps.admin.event.EventExecution#execute(org.efaps.admin.event.Parameter)
@@ -147,8 +156,10 @@ public abstract class StandartReport_Base
         try {
             final JasperDesign jasperDesign = new JRXmlLoader(DefaultJasperReportsContext.getInstance(),
                             JRXmlDigesterFactory.createDigester()).loadXML(is);
+            final Set<JRParameter> paras = new HashSet<>();
             for (final JRParameter parameter : jasperDesign.getParameters()) {
                 if (parameter.isForPrompting() && !parameter.isSystemDefined()) {
+                    paras.add(parameter);
                     final String name = parameter.getName();
                     final String descr = parameter.getDescription();
                     final JRExpression expr = parameter.getDefaultValueExpression();
@@ -158,11 +169,22 @@ public abstract class StandartReport_Base
                     } else {
                         defaultValue = "";
                     }
+                    String inputType;
+                    switch (parameter.getValueClassName()) {
+                        case "java.lang.Integer":
+                            inputType = "number";
+                            break;
+                        default:
+                            inputType = "text";
+                            break;
+                    }
                     html.append("<div><span>").append(name).append(": ").append(descr).append("</span>")
-                                    .append("<input type=\"text\" name=\"para_").append(name).append("\" value=\"")
-                                    .append(defaultValue == null ? "" : defaultValue).append("\"></div>");
+                            .append("<input type=\"").append(inputType).append("\" name=\"para_")
+                            .append(name).append("\" value=\"")
+                            .append(defaultValue == null ? "" : defaultValue).append("\"></div>");
                 }
             }
+            Context.getThreadContext().setSessionAttribute(SESSIONKEY, paras);
         } catch (final JRException | ParserConfigurationException | SAXException e) {
             LOG.error("Catched Error: ", e);
         }
@@ -176,6 +198,7 @@ public abstract class StandartReport_Base
      * @return Return
      * @throws EFapsException on error
      */
+    @SuppressWarnings("unchecked")
     public Return create4Jasper(final Parameter _parameter)
         throws EFapsException
     {
@@ -186,11 +209,29 @@ public abstract class StandartReport_Base
         ParameterUtil.setProperty(_parameter, "JasperReport",
                         print.<String>getAttribute(CIAdminProgram.JasperReport.Name));
         ParameterUtil.setProperty(_parameter, "NoDataSource", "true");
+        final Set<JRParameter> paras;
+        if (Context.getThreadContext().containsSessionAttribute(SESSIONKEY)) {
+            paras =  (Set<JRParameter>) Context.getThreadContext().getSessionAttribute(SESSIONKEY);
+        } else {
+            paras = SetUtils.emptySet();
+        }
 
-        for (final Entry<String, String[]> entry:  _parameter.getParameters().entrySet()) {
-           if (entry.getKey().startsWith("para_")) {
-               this.jrParameters.put(entry.getKey().replaceFirst("para_", ""), entry.getValue()[0]);
-           }
+        for (final JRParameter jrParameter : paras) {
+            final String value = _parameter.getParameterValue("para_" + jrParameter.getName());
+            Object obj = null;
+            switch (jrParameter.getValueClassName()) {
+                case "java.lang.Integer":
+                    obj = Integer.valueOf(value);
+                    break;
+                case "java.lang.Long":
+                    obj = Long.valueOf(value);
+                    break;
+                default:
+                    obj = value;
+                    break;
+            }
+            this.jrParameters.put(jrParameter.getName(),obj);
+
         }
         return execute(_parameter);
     }
