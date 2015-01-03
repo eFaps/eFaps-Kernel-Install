@@ -27,6 +27,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.efaps.admin.datamodel.Attribute;
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
@@ -252,7 +253,13 @@ public abstract class Connect_Base
                                     final Insert _insert)
         throws EFapsException
     {
-        // to implement
+        if (getProperty(_parameter, "StatusGroup") != null && getProperty(_parameter, "Status") != null) {
+            final Status status = Status
+                            .find(getProperty(_parameter, "StatusGroup"), getProperty(_parameter, "Status"));
+            if (status != null) {
+                _insert.add(_insert.getInstance().getType().getStatusAttribute(), status);
+            }
+        }
     }
 
 
