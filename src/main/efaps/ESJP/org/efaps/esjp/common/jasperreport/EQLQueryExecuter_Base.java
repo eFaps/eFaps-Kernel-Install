@@ -125,37 +125,38 @@ public abstract class EQLQueryExecuter_Base
             final Map<String, String> mapping = stmt.getAlias2Selects();
             if (stmt.isEsjp()) {
                 try {
-                      final Class<?> clazz = Class.forName(stmt.getEsjp(), false, EFapsClassLoader.getInstance());
-                      final IEsjpExecute esjp = (IEsjpExecute) clazz.newInstance();
-                      LOG.debug("Instantiated class: {}", esjp);
-                      final List<String> parameters = stmt.getParameters();
-                      DataList dataList;
-                      if (parameters.isEmpty()) {
-                          dataList = esjp.execute(mapping);
-                      } else {
-                          dataList = esjp.execute(mapping, parameters.toArray(new String[parameters.size()]));
-                      }
-                      for (final ObjectData data : dataList) {
-                          final Map<String, Object> map = new HashMap<>();
-                          for (final AbstractValue<?> value :data.getValues()) {
-                              map.put(value.getKey(), value.getValue());
-                          }
-                          list.add(map);
-                      }
-                } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+                    final Class<?> clazz = Class.forName(stmt.getEsjp(), false, EFapsClassLoader.getInstance());
+                    final IEsjpExecute esjp = (IEsjpExecute) clazz.newInstance();
+                    LOG.debug("Instantiated class: {}", esjp);
+                    final List<String> parametersTmp = stmt.getParameters();
+                    DataList dataList;
+                    if (parametersTmp.isEmpty()) {
+                        dataList = esjp.execute(mapping);
+                    } else {
+                        dataList = esjp.execute(mapping, parametersTmp.toArray(new String[parametersTmp.size()]));
+                    }
+                    for (final ObjectData data : dataList) {
+                        final Map<String, Object> map = new HashMap<>();
+                        for (final AbstractValue<?> value : data.getValues()) {
+                            map.put(value.getKey(), value.getValue());
+                        }
+                        list.add(map);
+                    }
+                } catch (final ClassNotFoundException | InstantiationException | IllegalAccessException e) {
                     LOG.error("Could not invoke IEsjpQuery.", e);
                     throw new EFapsException("Could not invoke IEsjpQuery.", e);
                 }
             } else {
-            final MultiPrintQuery multi = stmt.getMultiPrint();
-            multi.execute();
-            while (multi.next()) {
-                final Map<String, Object> map = new HashMap<>();
-                for (final Entry<String, String> entry : mapping.entrySet()) {
-                    map.put(entry.getKey(), multi.getSelect(entry.getValue()));
+                final MultiPrintQuery multi = stmt.getMultiPrint();
+                multi.execute();
+                while (multi.next()) {
+                    final Map<String, Object> map = new HashMap<>();
+                    for (final Entry<String, String> entry : mapping.entrySet()) {
+                        map.put(entry.getKey(), multi.getSelect(entry.getValue()));
+                    }
+                    list.add(map);
                 }
-                list.add(map);
-            }}
+            }
         } catch (final EFapsException e) {
             LOG.error("Catched Exception", e);
         }

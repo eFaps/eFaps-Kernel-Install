@@ -119,8 +119,6 @@ public abstract class StandartReport_Base
      */
     private String fileName = null;
 
-
-
     /**
      * @see org.efaps.admin.event.EventExecution#execute(org.efaps.admin.event.Parameter)
      * @param _parameter parameter as passed fom the eFaps esjp API
@@ -148,7 +146,20 @@ public abstract class StandartReport_Base
     {
         final Return ret = new Return();
         final StringBuilder html = new StringBuilder();
-        final Checkout checkout = new Checkout(_parameter.getInstance());
+        Instance reportInst;
+        if (_parameter.getInstance() != null
+                        && _parameter.getInstance().getType().isKindOf(CIAdminProgram.JasperReport)) {
+            reportInst = _parameter.getInstance();
+        } else {
+            final QueryBuilder queryBldr = new QueryBuilder(CIAdminProgram.JasperReport);
+            queryBldr.addWhereAttrEqValue(CIAdminProgram.JasperReport.Name,
+                            getProperty(_parameter, "JasperReport"));
+            final InstanceQuery query = queryBldr.getQuery();
+            query.execute();
+            query.next();
+            reportInst = query.getCurrentValue();
+        }
+        final Checkout checkout = new Checkout(reportInst);
         final InputStream is = checkout.execute();
 
         DefaultJasperReportsContext.getInstance().setProperty("net.sf.jasperreports.query.executer.factory.eFaps",
@@ -202,12 +213,15 @@ public abstract class StandartReport_Base
     public Return create4Jasper(final Parameter _parameter)
         throws EFapsException
     {
-        final PrintQuery print = new PrintQuery(_parameter.getInstance());
-        print.addAttribute(CIAdminProgram.JasperReport.Name);
-        print.execute();
+        final Instance instance = _parameter.getInstance();
+        if (instance != null && instance.getType().isKindOf(CIAdminProgram.JasperReport)) {
+            final PrintQuery print = new PrintQuery(instance);
+            print.addAttribute(CIAdminProgram.JasperReport.Name);
+            print.execute();
+            ParameterUtil.setProperty(_parameter, "JasperReport",
+                            print.<String>getAttribute(CIAdminProgram.JasperReport.Name));
+        }
 
-        ParameterUtil.setProperty(_parameter, "JasperReport",
-                        print.<String>getAttribute(CIAdminProgram.JasperReport.Name));
         ParameterUtil.setProperty(_parameter, "NoDataSource", "true");
         final Set<JRParameter> paras;
         if (Context.getThreadContext().containsSessionAttribute(SESSIONKEY)) {
@@ -230,8 +244,7 @@ public abstract class StandartReport_Base
                     obj = value;
                     break;
             }
-            this.jrParameters.put(jrParameter.getName(),obj);
-
+            this.jrParameters.put(jrParameter.getName(), obj);
         }
         return execute(_parameter);
     }
