@@ -635,8 +635,21 @@ public abstract class AbstractCommon_Base
     protected List<Instance> getSelectedInstances(final Parameter _parameter)
         throws EFapsException
     {
+        return getInstances(_parameter, "selectedRow");
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _key key the values are
+     * @return List of instances, if not found empty list
+     * @throws EFapsException on error
+     */
+    protected List<Instance> getInstances(final Parameter _parameter,
+                                          final String _key)
+        throws EFapsException
+    {
         final List<Instance> ret = new ArrayList<>();
-        final String[] oids = _parameter.getParameterValues("selectedRow");
+        final String[] oids = _parameter.getParameterValues(_key);
         if (oids != null) {
             for (final String oid : oids) {
                 final Instance instance = Instance.get(oid);
