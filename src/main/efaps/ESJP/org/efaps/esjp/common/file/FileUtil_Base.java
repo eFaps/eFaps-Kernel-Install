@@ -32,14 +32,22 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.AppConfigHandler;
+import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
+import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.util.EFapsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfImportedPage;
@@ -48,8 +56,8 @@ import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * Utility class used to create empty files in a user depended temporarily
- * file-folder architecture. In the standard implementation this folder
- * is synchronized to be accessed by a servlet serving the actual file.
+ * file-folder architecture. In the standard implementation this folder is
+ * synchronized to be accessed by a servlet serving the actual file.
  *
  * @author The eFaps Team
  * @version $Id$
@@ -57,17 +65,25 @@ import com.lowagie.text.pdf.PdfWriter;
 @EFapsUUID("b3bae05a-8db6-4a89-9f84-37564945049d")
 @EFapsRevision("$Rev$")
 public abstract class FileUtil_Base
+    extends AbstractCommon
 {
+
     /**
      * Name of the folder inside the "official" temporary folder.
      */
     public static final String TMPFOLDERNAME = "eFapsUserDepTemp";
 
     /**
-     * Method to get a file with given name and ending.
-     * Spaces will be replaced by underscores.
-     * @param _name     name for the file
-     * @param _ending   ending for the file
+     * Logger for this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(FileUtil.class);
+
+    /**
+     * Method to get a file with given name and ending. Spaces will be replaced
+     * by underscores.
+     *
+     * @param _name name for the file
+     * @param _ending ending for the file
      * @return file
      * @throws EFapsException on error
      */
@@ -80,7 +96,8 @@ public abstract class FileUtil_Base
 
     /**
      * Method to get a file with given name and ending.
-     * @param _name     name for the file
+     *
+     * @param _name name for the file
      * @return file
      * @throws EFapsException on error
      */
@@ -104,7 +121,7 @@ public abstract class FileUtil_Base
                 userFolder.mkdirs();
             }
             final String name = StringUtils.stripAccents(_name);
-            ret = new File(userFolder,  name.replaceAll("[^a-zA-Z0-9.-]", "_"));
+            ret = new File(userFolder, name.replaceAll("[^a-zA-Z0-9.-]", "_"));
         } catch (final IOException e) {
             throw new EFapsException(FileUtil_Base.class, "IOException", e);
         }
@@ -153,8 +170,9 @@ public abstract class FileUtil_Base
                     document.open();
                     final BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA,
                                     BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
-                    final PdfContentByte cb = writer.getDirectContent(); // Holds the
-                                                                   // PDF
+                    final PdfContentByte cb = writer.getDirectContent(); // Holds
+                                                                         // the
+                    // PDF
                     // data
 
                     PdfImportedPage page;
@@ -204,12 +222,161 @@ public abstract class FileUtil_Base
                         ioe.printStackTrace();
                     }
                 }
-
             } catch (final FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                LOG.error("FileNotFoundException", e);
             }
         }
         return ret;
     }
+
+    public File convert(final Parameter _parameter,
+                        final File _file,
+                        final String _fileName)
+        throws EFapsException
+    {
+        File ret = _file;
+        if (containsProperty(_parameter, "PageSize")) {
+            ret = resize(_parameter, ret, _fileName, getProperty(_parameter, "PageSize"));
+        }
+        if (containsProperty(_parameter, "NUpPow")) {
+            ret = nUp(_parameter, ret, _fileName);
+        }
+        return ret;
+    }
+
+
+    public File resize(final Parameter _parameter,
+                       final File _file,
+                       final String _fileName,
+                       final String _pageSize)
+        throws EFapsException
+    {
+        final Document document = new Document();
+
+        final File ret = getFile(_fileName, "pdf");
+        try {
+            final File destFile = new File(_file.getPath() + ".tmp");
+            FileUtils.copyFile(_file, destFile);
+            final OutputStream outputStream = new FileOutputStream(ret);
+            final PdfReader pdfReader = new PdfReader(new FileInputStream(destFile));
+
+            // Create a writer for the outputstream
+            final PdfWriter writer = PdfWriter.getInstance(document, outputStream);
+            document.open();
+            PdfImportedPage page;
+            final PdfContentByte cb = writer.getDirectContent();
+            int pageOfCurrentReaderPDF = 0;
+            // Create a new page in the target for each source page.
+            while (pageOfCurrentReaderPDF < pdfReader.getNumberOfPages()) {
+                document.newPage();
+                pageOfCurrentReaderPDF++;
+                page = writer.getImportedPage(pdfReader, pageOfCurrentReaderPDF);
+                document.setPageSize(page.getWidth() <= page.getHeight() ?
+                                PageSize.getRectangle(_pageSize) : PageSize.getRectangle(_pageSize).rotate());
+                final float widthFactor = document.getPageSize().getWidth() / page.getWidth();
+                final float heightFactor = document.getPageSize().getHeight() / page.getHeight();
+                final float factor = Math.min(widthFactor, heightFactor);
+                final float offsetX = (document.getPageSize().getWidth() - page.getWidth() * factor) / 2;
+                final float offsetY = (document.getPageSize().getHeight() - page.getHeight() * factor) / 2;
+                cb.addTemplate(page, factor, 0, 0, factor, offsetX, offsetY);
+            }
+            pageOfCurrentReaderPDF = 0;
+            outputStream.flush();
+            document.close();
+            outputStream.close();
+        } catch (final FileNotFoundException e) {
+            LOG.error("FileNotFoundException", e);
+        } catch (final IOException e) {
+            LOG.error("IOException", e);
+        } catch (final DocumentException e) {
+            LOG.error("DocumentException", e);
+        }
+        return ret;
+    }
+
+    public File nUp(final Parameter _parameter,
+                    final File _file,
+                    final String _fileName)
+        throws EFapsException
+    {
+        final File ret = getFile(_fileName, "pdf");
+        try {
+            final int pow = Integer.parseInt(getProperty(_parameter, "NUpPow", "1"));
+            final boolean duplicate = "true".equalsIgnoreCase(getProperty(_parameter, "NUpDuplicate", "true"));
+            final File destFile = new File(_file.getPath() + ".tmp");
+            FileUtils.copyFile(_file, destFile);
+            final OutputStream outputStream = new FileOutputStream(ret);
+            final PdfReader pdfReader = new PdfReader(new FileInputStream(destFile));
+
+            final Rectangle pageSize = pdfReader.getPageSize(1);
+
+            final Rectangle newSize = pow % 2 == 0 ? new Rectangle(pageSize.getWidth(), pageSize.getHeight())
+                            : new Rectangle(pageSize.getHeight(), pageSize.getWidth());
+
+            Rectangle unitSize = new Rectangle(pageSize.getWidth(), pageSize.getHeight());
+
+            for (int i = 0; i < pow; i++) {
+                unitSize = new Rectangle(unitSize.getHeight() / 2, unitSize.getWidth());
+            }
+
+            final int n = (int) Math.pow(2, pow);
+            final int r = (int) Math.pow(2, pow / 2);
+            final int c = n / r;
+
+            final Document document = new Document(newSize, 0, 0, 0, 0);
+
+            // Create a writer for the outputstream
+            final PdfWriter writer = PdfWriter.getInstance(document, outputStream);
+            document.open();
+            PdfImportedPage page;
+            final PdfContentByte cb = writer.getDirectContent();
+            // Create a new page in the target for each source page.
+            Rectangle currentSize;
+            float offsetX;
+            float offsetY;
+            float factor;
+
+            final int total = pdfReader.getNumberOfPages();
+            for (int i = 0; i < total;) {
+                if (i % n == 0) {
+                    document.newPage();
+                }
+                currentSize = pdfReader.getPageSize(++i);
+
+                factor = Math.min(unitSize.getWidth() / currentSize.getWidth(),
+                                unitSize.getHeight() / currentSize.getHeight());
+                offsetX = unitSize.getWidth() * (i % n % c) + (unitSize.getWidth() - currentSize.getWidth() * factor)
+                                / 2f;
+                offsetY = newSize.getHeight() - (unitSize.getHeight() * (i % n % c) + 1)
+                                + (unitSize.getHeight() - currentSize.getHeight() * factor) / 2f;
+
+                page = writer.getImportedPage(pdfReader, i);
+
+                cb.addTemplate(page, factor, 0, 0, factor, offsetX, offsetY);
+
+                if (duplicate) {
+                    for (int y = i + 1; y <= pow + 1; y++) {
+                        factor = Math.min(unitSize.getWidth() / currentSize.getWidth(),
+                                        unitSize.getHeight() / currentSize.getHeight());
+                        offsetX = unitSize.getWidth() * (y % n % c)
+                                        + (unitSize.getWidth() - currentSize.getWidth() * factor) / 2f;
+                        offsetY = newSize.getHeight() - unitSize.getHeight() * (y % n / c + 1)
+                                        + (unitSize.getHeight() - currentSize.getHeight() * factor) / 2f;
+                        cb.addTemplate(page, factor, 0, 0, factor, offsetX, offsetY);
+                    }
+                }
+            }
+            outputStream.flush();
+            document.close();
+            outputStream.close();
+        } catch (final FileNotFoundException e) {
+            LOG.error("FileNotFoundException", e);
+        } catch (final IOException e) {
+            LOG.error("IOException", e);
+        } catch (final DocumentException e) {
+            LOG.error("DocumentException", e);
+        }
+        return ret;
+    }
+
 }
