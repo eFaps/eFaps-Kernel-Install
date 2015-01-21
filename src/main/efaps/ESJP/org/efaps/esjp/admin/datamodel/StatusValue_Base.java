@@ -20,6 +20,7 @@
 
 package org.efaps.esjp.admin.datamodel;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +42,7 @@ import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.Update;
+import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.uiform.Edit;
 import org.efaps.util.EFapsException;
 
@@ -53,6 +55,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("c0e0547a-a39f-4741-ae3d-c196e8cb2f60")
 @EFapsRevision("$Rev$")
 public abstract class StatusValue_Base
+    extends AbstractCommon
     implements EventExecution
 {
 
@@ -121,7 +124,7 @@ public abstract class StatusValue_Base
         final String statusName = (String) props.get("Status");
         final boolean updateInstance = "true".equalsIgnoreCase((String) props.get("UpdateInstance"));
         final boolean evalOID = "true".equalsIgnoreCase((String) props.get("EvalOID"));
-        final String noUpdateStatiStr = (String) props.get("NoUpdateStatus");
+        final Collection<String> noUpdateStatus = analyseProperty(_parameter, "NoUpdateStatus").values();
 
         final Set<Instance> instances = new HashSet<Instance>();
         if (evalOID) {
@@ -140,15 +143,14 @@ public abstract class StatusValue_Base
             final Status status = Status.find(inst.getType().getStatusAttribute().getLink().getName(), statusName);
             if (status != null) {
                 boolean doUpdate = true;
-                if (noUpdateStatiStr != null && !noUpdateStatiStr.isEmpty()) {
+                if (!noUpdateStatus.isEmpty()) {
                     final PrintQuery print = new PrintQuery(inst);
                     print.addAttribute(inst.getType().getStatusAttribute());
                     print.execute();
                     final Long currStatusId = print.<Long>getAttribute(inst.getType().getStatusAttribute());
-                    final String[] noUpdateStati = noUpdateStatiStr.split(";");
-                    for (final String noUpdateStatus : noUpdateStati) {
+                    for (final String noUpdate : noUpdateStatus) {
                         final Status noUp = Status.find(inst.getType().getStatusAttribute().getLink().getName(),
-                                        noUpdateStatus);
+                                        noUpdate);
                         if (noUp != null && currStatusId == noUp.getId()) {
                             doUpdate = false;
                             break;
