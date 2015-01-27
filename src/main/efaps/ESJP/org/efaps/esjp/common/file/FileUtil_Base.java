@@ -187,11 +187,11 @@ public abstract class FileUtil_Base
 
                         // Create a new page in the target for each source page.
                         while (pageOfCurrentReaderPDF < pdfReader.getNumberOfPages()) {
-                            document.newPage();
                             pageOfCurrentReaderPDF++;
                             currentPageNumber++;
-                            page = writer.getImportedPage(pdfReader,
-                                            pageOfCurrentReaderPDF);
+                            page = writer.getImportedPage(pdfReader, pageOfCurrentReaderPDF);
+                            document.setPageSize(new Rectangle(page.getWidth(), page.getHeight()));
+                            document.newPage();
                             cb.addTemplate(page, 0, 0);
 
                             // Code for pagination.
@@ -209,7 +209,9 @@ public abstract class FileUtil_Base
                     outputStream.flush();
                     document.close();
                     outputStream.close();
+                    // CHECKSTYLE:OFF
                 } catch (final Exception e) {
+                    // CHECKSTYLE:ON
                     e.printStackTrace();
                 } finally {
                     if (document.isOpen()) {
