@@ -33,6 +33,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Dimension;
@@ -1173,8 +1174,8 @@ public abstract class Field_Base
         final String horizontal = getProperty(_parameter, "Horizontal");
         if (fieldName != null) {
             name = fieldName;
-        } else if (uiObject instanceof FieldValue) {
-            name = ((FieldValue) uiObject).getField().getName();
+        } else if (uiObject instanceof IUIValue) {
+            name = ((IUIValue) uiObject).getField().getName();
         } else if (uiObject instanceof org.efaps.admin.ui.field.Field) {
             name = ((org.efaps.admin.ui.field.Field) uiObject).getName();
         } else {
@@ -1182,13 +1183,15 @@ public abstract class Field_Base
         }
 
         for (final DropDownPosition value : _values) {
-            html.append("<input type=\"").append(_listType.equals(Field_Base.ListType.CHECKBOX) ? "checkbox" : "radio")
+            final String id = RandomStringUtils.random(4, true, true);
+            html.append("<input id=\"").append(id).append("\" type=\"")
+                .append(_listType.equals(Field_Base.ListType.CHECKBOX) ? "checkbox" : "radio")
                 .append("\" value=\"").append(value.getValue()).append("\" name=\"")
                 .append(name).append("\"");
             if (value.isSelected()) {
                 html.append(" checked=\"checked\"");
             }
-            html.append(" />").append(value.getOption());
+            html.append(" /><label for=\"").append(id).append("\">").append(value.getOption()).append("</label>");
             if (horizontal == null) {
                 html.append("<br/>");
             }
