@@ -1761,9 +1761,10 @@ public abstract class Field_Base
          *
          * @param _selected value for instance variable {@link #selected}
          */
-        public void setSelected(final boolean _selected)
+        public DropDownPosition setSelected(final boolean _selected)
         {
             this.selected = _selected;
+            return this;
         }
 
         /**
