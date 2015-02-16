@@ -20,9 +20,19 @@
 
 package org.efaps.esjp.common.datetime;
 
+import java.util.Properties;
+
+import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.api.ui.DateDefaultValues;
+import org.efaps.db.Context;
+import org.efaps.esjp.common.AbstractCommon;
+import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.util.EFapsException;
 import org.joda.time.Chronology;
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeField;
 import org.joda.time.DateTimeFieldType;
 import org.joda.time.DurationField;
@@ -41,6 +51,7 @@ import org.joda.time.field.ScaledDurationField;
 @EFapsUUID("1c2c5f34-9ac3-486b-9b6e-0d762ec06459")
 @EFapsRevision("$Rev$")
 public final class JodaTimeUtils
+    extends AbstractCommon
 {
 
     private static final DurationFieldType QUARTERS = new DurationFieldType("quarters")
@@ -388,4 +399,61 @@ public final class JodaTimeUtils
         return YEAROFDECADE;
     }
 
+    /**
+     * @param _parameter parameter as passed by the eFaps API
+     * @param _props porerties with the defitintion
+     * @return new DateTime
+     * @throws EFapsException on error
+     *
+     */
+    public static DateTime getDefaultvalue(final Parameter _parameter,
+                                           final Properties _props)
+        throws EFapsException
+    {
+        final Parameter parameter = ParameterUtil.clone(_parameter, ParameterValues.PROPERTIES, _props);
+        return getDefaultvalue(parameter);
+    }
+
+    /**
+     * @param _parameter parameter as passed by the eFaps API
+     * @return new DateTime
+     * @throws EFapsException on error
+     */
+    public static DateTime getDefaultvalue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final JodaTimeUtils utils = new JodaTimeUtils();
+        DateTime ret = new DateTime().withTimeAtStartOfDay().withChronology(Context.getThreadContext().getChronology());
+        for (final DateDefaultValues value : DateDefaultValues.values()) {
+            if (utils.containsProperty(_parameter, value.toString())) {
+                final String strValue = utils.getProperty(_parameter, value.toString());
+                switch (value) {
+                    case TODAY:
+                        ret = new DateTime().withChronology(Context.getThreadContext().getChronology());
+                        break;
+                    case WEEKS:
+                        ret = ret.plusWeeks(Integer.valueOf(strValue));
+                        break;
+                    case MONTHS:
+                        ret = ret.plusMonths(Integer.valueOf(strValue));
+                        break;
+                    case YEARS:
+                        ret = ret.plusYears(Integer.valueOf(strValue));
+                        break;
+                    case WITHDAYOFMONTH:
+                        ret = ret.withDayOfMonth(Integer.valueOf(strValue));
+                        break;
+                    case WITHDAYOFWEEK:
+                        ret = ret.withDayOfWeek(Integer.valueOf(strValue));
+                        break;
+                    case LASTDAYOFMONTH:
+                        ret = ret.dayOfMonth().withMaximumValue();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        return ret;
+    }
 }
