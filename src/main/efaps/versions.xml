@@ -232,7 +232,7 @@
 
                     insert2 = new Insert(UUID.fromString("f9958e29-79ab-40f8-a947-0e22ce6c3fa3"));
                     insert2.add("RunLevelID", insert.getInstance());
-                    insert2.add("Priority", 6);
+                    insert2.add("Priority", 7);
                     insert2.add("Class", "org.efaps.admin.common.MsgPhrase");
                     insert2.add("Method", "initialize");
                     insert2.executeWithoutTrigger();
