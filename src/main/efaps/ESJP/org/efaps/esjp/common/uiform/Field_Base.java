@@ -1620,6 +1620,8 @@ public abstract class Field_Base
         final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
         if (uiObject instanceof FieldValue) {
             dbValue = ((FieldValue) uiObject).getValue();
+        } else if (uiObject instanceof UIValue) {
+            dbValue = ((UIValue) uiObject).getDbValue();
         }
 
         final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
