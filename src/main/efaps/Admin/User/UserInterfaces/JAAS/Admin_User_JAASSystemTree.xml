@@ -23,31 +23,26 @@
 
 -->
 
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>beabae59-7086-4f6c-b1a4-0c129461c98f</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
-
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_User_JAASSystemTree</name>
-    <!-- targets -->
-    <target>
-      <menu>Admin_User_JAASSystemTree_Menu</menu>
-      <form>Admin_User_JAASSystemForm</form>
-    </target>
-    <!-- type tree for -->
-    <type>Admin_User_JAASSystem</type>
-    <!-- childs -->
-    <childs>
-      <child>Admin_User_JAASSystemTree_Keys</child>
-    </childs>
-    <!-- properties -->
-    <property name="Target">content</property>
-    <property name="TargetMode">view</property>
-  </definition>
-
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>beabae59-7086-4f6c-b1a4-0c129461c98f</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_User_JAASSystemTree</name>
+        <access>
+            <role>Administration</role>
+        </access>
+        <target>
+            <menu>Admin_User_JAASSystemTree_Menu</menu>
+            <form>Admin_User_JAASSystemForm</form>
+        </target>
+        <type>Admin_User_JAASSystem</type>
+        <childs>
+            <child>Admin_User_JAASSystemTree_Keys</child>
+        </childs>
+        <property name="Target">content</property>
+        <property name="TargetMode">view</property>
+    </definition>
 </ui-menu>
