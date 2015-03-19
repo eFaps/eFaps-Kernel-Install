@@ -75,6 +75,7 @@ public abstract class PersonRangeValue_Base
                 final PrintQuery print = new PrintQuery(CIAdminUser.Person.getType(),
                                 Context.getThreadContext().getPersonId());
                 list.makeSelect(print);
+                print.execute();
                 value = list.makeString(null, print, TargetMode.CREATE);
             } else {
                 value = Context.getThreadContext().getPerson().getName();
