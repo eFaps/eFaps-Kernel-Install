@@ -116,38 +116,12 @@ public abstract class EQLQueryExecuter_Base
         final List<Map<String, ?>> list = new ArrayList<>();
         try {
             final String stmtStr = this.dataset.getQuery().getText();
-            final ISelectStmt stmt = InvokerUtil.getInvoker().invoke(stmtStr);
-            stmt.getAlias2Selects();
-           /* if (stmt.isEsjp()) {
-                try {
-                    final Class<?> clazz = Class.forName(stmt.getEsjp(), false, EFapsClassLoader.getInstance());
-                    final IEsjpExecute esjp = (IEsjpExecute) clazz.newInstance();
-                    LOG.debug("Instantiated class: {}", esjp);
-                    final List<String> parametersTmp = stmt.getParameters();
-                    DataList dataList;
-                    if (parametersTmp.isEmpty()) {
-                        dataList = esjp.execute(mapping);
-                    } else {
-                        dataList = esjp.execute(mapping, parametersTmp.toArray(new String[parametersTmp.size()]));
-                    }
-                    for (final ObjectData data : dataList) {
-                        final Map<String, Object> map = new HashMap<>();
-                        for (final AbstractValue<?> value : data.getValues()) {
-                            map.put(value.getKey(), value.getValue());
-                        }
-                        list.add(map);
-                    }
-                } catch (final ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-                    LOG.error("Could not invoke IEsjpQuery.", e);
-                    throw new EFapsException("Could not invoke IEsjpQuery.", e);
-                }
-            } else {*/
+            final ISelectStmt stmt = InvokerUtil.getInvoker().invoke(replaceParameters(stmtStr));
             list.addAll(stmt.getData());
         } catch (final EFapsException e) {
             LOG.error("Catched Exception", e);
         } catch (final Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error("Catched Exception", e);
         }
         final JRMapCollectionDataSource ret = new JRMapCollectionDataSource(list);
         return ret;
