@@ -91,10 +91,11 @@
     </issueManagement>
 
     <!-- SubVersion Repository -->
-    <scm>
-        <connection>scm:svn:http://efaps.googlecode.com/svn/eFaps-Kernel-Install</connection>
-        <developerConnection>scm:svn:https://efaps.googlecode.com/svn/eFaps-Kernel-Install</developerConnection>
-        <url>http://efaps.googlecode.com/svn/eFaps-Kernel-Install</url>
+     <scm>
+        <connection>scm:git:git://github.com/eFaps/eFaps-Kernel-Install.git</connection>
+        <developerConnection>scm:git:git@github.com:eFaps/eFaps-Kernel-Install.git</developerConnection>
+        <url>https://github.com/eFaps/eFaps-Kernel-Install/</url>
+        <tag>HEAD</tag>
     </scm>
 
     <!-- Distribution Repository -->
