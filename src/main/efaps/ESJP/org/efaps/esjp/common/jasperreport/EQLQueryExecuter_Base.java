@@ -40,6 +40,7 @@ import net.sf.jasperreports.engine.query.JRQueryExecuter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
+import org.efaps.eql.IEQLStmt;
 import org.efaps.eql.ISelectStmt;
 import org.efaps.eql.InvokerUtil;
 import org.efaps.util.EFapsException;
@@ -116,8 +117,10 @@ public abstract class EQLQueryExecuter_Base
         final List<Map<String, ?>> list = new ArrayList<>();
         try {
             final String stmtStr = this.dataset.getQuery().getText();
-            final ISelectStmt stmt = InvokerUtil.getInvoker().invoke(replaceParameters(stmtStr));
-            list.addAll(stmt.getData());
+            final IEQLStmt stmt = InvokerUtil.getInvoker().invoke(replaceParameters(stmtStr));
+            if (stmt instanceof ISelectStmt) {
+                list.addAll(((ISelectStmt) stmt).getData());
+            }
         } catch (final EFapsException e) {
             LOG.error("Catched Exception", e);
         } catch (final Exception e) {
