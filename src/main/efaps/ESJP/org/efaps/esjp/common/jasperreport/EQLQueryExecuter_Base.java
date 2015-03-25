@@ -37,16 +37,11 @@ import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 import net.sf.jasperreports.engine.query.JRQueryExecuter;
 
-import org.efaps.admin.program.esjp.EFapsClassLoader;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
-import org.efaps.db.MultiPrintQuery;
-import org.efaps.eql.IEsjpExecute;
-import org.efaps.eql.Statement;
-import org.efaps.json.data.AbstractValue;
-import org.efaps.json.data.DataList;
-import org.efaps.json.data.ObjectData;
+import org.efaps.eql.ISelectStmt;
+import org.efaps.eql.InvokerUtil;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,43 +116,11 @@ public abstract class EQLQueryExecuter_Base
         final List<Map<String, ?>> list = new ArrayList<>();
         try {
             final String stmtStr = this.dataset.getQuery().getText();
-            final Statement stmt = Statement.getStatement(replaceParameters(stmtStr));
-            final Map<String, String> mapping = stmt.getAlias2Selects();
-            if (stmt.isEsjp()) {
-                try {
-                    final Class<?> clazz = Class.forName(stmt.getEsjp(), false, EFapsClassLoader.getInstance());
-                    final IEsjpExecute esjp = (IEsjpExecute) clazz.newInstance();
-                    LOG.debug("Instantiated class: {}", esjp);
-                    final List<String> parametersTmp = stmt.getParameters();
-                    DataList dataList;
-                    if (parametersTmp.isEmpty()) {
-                        dataList = esjp.execute(mapping);
-                    } else {
-                        dataList = esjp.execute(mapping, parametersTmp.toArray(new String[parametersTmp.size()]));
-                    }
-                    for (final ObjectData data : dataList) {
-                        final Map<String, Object> map = new HashMap<>();
-                        for (final AbstractValue<?> value : data.getValues()) {
-                            map.put(value.getKey(), value.getValue());
-                        }
-                        list.add(map);
-                    }
-                } catch (final ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-                    LOG.error("Could not invoke IEsjpQuery.", e);
-                    throw new EFapsException("Could not invoke IEsjpQuery.", e);
-                }
-            } else {
-                final MultiPrintQuery multi = stmt.getMultiPrint();
-                multi.execute();
-                while (multi.next()) {
-                    final Map<String, Object> map = new HashMap<>();
-                    for (final Entry<String, String> entry : mapping.entrySet()) {
-                        map.put(entry.getKey(), multi.getSelect(entry.getValue()));
-                    }
-                    list.add(map);
-                }
-            }
+            final ISelectStmt stmt = InvokerUtil.getInvoker().invoke(replaceParameters(stmtStr));
+            list.addAll(stmt.getData());
         } catch (final EFapsException e) {
+            LOG.error("Catched Exception", e);
+        } catch (final Exception e) {
             LOG.error("Catched Exception", e);
         }
         final JRMapCollectionDataSource ret = new JRMapCollectionDataSource(list);
