@@ -1053,6 +1053,27 @@ public abstract class Field_Base
                             val.setSelected(true);
                             selected = true;
                         }
+                    } else if (containsProperty(_parameter, "DefaultSysConf")) {
+                        final String sysconf = getProperty(_parameter, "DefaultSysConf");
+                        SystemConfiguration conf;
+                        if (isUUID(sysconf)) {
+                            conf = SystemConfiguration.get(UUID.fromString(sysconf));
+                        } else {
+                            conf = SystemConfiguration.get(sysconf);
+                        }
+                        if (containsProperty(_parameter, "DefaultLink")) {
+                            final Instance inst = conf.getLink(getProperty(_parameter, "DefaultLink"));
+                            if (inst != null && inst.isValid()) {
+                                if (val.value instanceof String && Instance.get((String) val.value).isValid()
+                                                && Instance.get((String) val.value).getOid().equals(inst.getOid())) {
+                                    val.setSelected(true);
+                                    selected = true;
+                                } else if (val.value instanceof Long && ((Long) val.value).equals(inst.getId())) {
+                                    val.setSelected(true);
+                                    selected = true;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1667,6 +1688,27 @@ public abstract class Field_Base
                     if (String.valueOf(val.getOption()).matches(getProperty(_parameter, "Regex4DefaultValue"))) {
                         val.setSelected(true);
                         selected = true;
+                    }
+                }  else if (containsProperty(_parameter, "DefaultSysConf")) {
+                    final String sysconf = getProperty(_parameter, "DefaultSysConf");
+                    SystemConfiguration conf;
+                    if (isUUID(sysconf)) {
+                        conf = SystemConfiguration.get(UUID.fromString(sysconf));
+                    } else {
+                        conf = SystemConfiguration.get(sysconf);
+                    }
+                    if (containsProperty(_parameter, "DefaultLink")) {
+                        final Instance inst = conf.getLink(getProperty(_parameter, "DefaultLink"));
+                        if (inst != null && inst.isValid()) {
+                            if (val.value instanceof String && Instance.get((String) val.value).isValid()
+                                            && Instance.get((String) val.value).getOid().equals(inst.getOid())) {
+                                val.setSelected(true);
+                                selected = true;
+                            } else if (val.value instanceof Long && ((Long) val.value).equals(inst.getId())) {
+                                val.setSelected(true);
+                                selected = true;
+                            }
+                        }
                     }
                 }
             }
