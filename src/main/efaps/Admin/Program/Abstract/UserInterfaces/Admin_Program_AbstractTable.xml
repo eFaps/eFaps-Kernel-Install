@@ -49,9 +49,9 @@
             <property name="Label">Admin_Program_Abstract/Name.Label</property>
             <property name="Width">2</property>
         </field>
-        <field name="revision">
+        <field name="revisionLink">
             <property name="ModeSearch">READONLY</property>
-            <property name="Attribute">Revision</property>
+            <property name="Select">linkto[RevisionLink].attribute[Date]</property>
             <property name="Label">Admin_Program_Abstract/Revision.Label</property>
         </field>
         <field name="checkout">
