@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-<!--
-
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2015 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,65 +20,55 @@
  Last Changed By: $Author$
 
 -->
-
-<datamodel-type xmlns="http://www.efaps.org/xsd"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>1bb051f3-b664-43db-b409-c0c4009f5972</uuid>
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>a50c9f3f-2987-4196-b74a-bb5861259c67</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==3) || (version==latest)</version-expression>
-        <name>Admin_Common_Version</name>
+        <name>Admin_Common_Application</name>
         <purpose GeneralInstance="false" />
         <attribute>
             <name>OID</name>
             <type>OID</type>
-            <sqltable>Admin_Common_VersionSQLTable</sqltable>
+            <sqltable>Admin_Common_ApplicationSQLTable</sqltable>
             <sqlcolumn>ID</sqlcolumn>
         </attribute>
         <attribute>
             <name>ID</name>
             <type>Long</type>
-            <sqltable>Admin_Common_VersionSQLTable</sqltable>
+            <sqltable>Admin_Common_ApplicationSQLTable</sqltable>
             <sqlcolumn>ID</sqlcolumn>
         </attribute>
         <attribute>
             <name>Name</name>
             <type>String</type>
-            <sqltable>Admin_Common_VersionSQLTable</sqltable>
+            <sqltable>Admin_Common_ApplicationSQLTable</sqltable>
             <sqlcolumn>NAME</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>Revision</name>
-            <type>Integer</type>
-            <sqltable>Admin_Common_VersionSQLTable</sqltable>
-            <sqlcolumn>REVISION</sqlcolumn>
         </attribute>
         <attribute>
             <name>Creator</name>
             <type>CreatorLink</type>
-            <sqltable>Admin_Common_VersionSQLTable</sqltable>
+            <sqltable>Admin_Common_ApplicationSQLTable</sqltable>
             <sqlcolumn>CREATOR</sqlcolumn>
         </attribute>
         <attribute>
             <name>Created</name>
             <type>Created</type>
-            <sqltable>Admin_Common_VersionSQLTable</sqltable>
+            <sqltable>Admin_Common_ApplicationSQLTable</sqltable>
             <sqlcolumn>CREATED</sqlcolumn>
         </attribute>
         <attribute>
             <name>Modifier</name>
             <type>ModifierLink</type>
-            <sqltable>Admin_Common_VersionSQLTable</sqltable>
+            <sqltable>Admin_Common_ApplicationSQLTable</sqltable>
             <sqlcolumn>MODIFIER</sqlcolumn>
         </attribute>
         <attribute>
             <name>Modified</name>
             <type>Modified</type>
-            <sqltable>Admin_Common_VersionSQLTable</sqltable>
+            <sqltable>Admin_Common_ApplicationSQLTable</sqltable>
             <sqlcolumn>MODIFIED</sqlcolumn>
         </attribute>
     </definition>
