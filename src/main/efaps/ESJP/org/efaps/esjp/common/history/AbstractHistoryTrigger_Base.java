@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  */
 @EFapsUUID("2e099cd6-eafe-49df-84f1-0a4a18235d6e")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class AbstractHistoryTrigger_Base
     extends AbstractHistory
 {

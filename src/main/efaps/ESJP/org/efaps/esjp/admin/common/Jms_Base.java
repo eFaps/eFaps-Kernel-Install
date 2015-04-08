@@ -40,7 +40,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("30a8dff1-e0e3-43ff-bf7b-3ee23a580ee1")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class Jms_Base
 {
 

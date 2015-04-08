@@ -32,7 +32,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("bdf98a2e-37f9-44a3-8ba5-54d6ecf3785e")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class AbstractAccessCheck
     extends  AbstractAccessCheck_Base
 {

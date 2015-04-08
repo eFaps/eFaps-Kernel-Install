@@ -41,7 +41,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("d24a6606-95ac-427d-9689-31182dd71cd8")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class ChronologyUI
     implements EventExecution
 {

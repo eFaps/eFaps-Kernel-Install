@@ -35,7 +35,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("93fceec4-07bd-4227-b187-ccc334abc903")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class List2StringConvert_Base
     implements IConverter
 {

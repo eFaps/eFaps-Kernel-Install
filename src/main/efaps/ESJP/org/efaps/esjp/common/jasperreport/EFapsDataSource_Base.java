@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  */
 @EFapsUUID("4675dffe-6551-477b-b069-8968901aeff4")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class EFapsDataSource_Base
     implements IeFapsDataSource, JRRewindableDataSource
 {

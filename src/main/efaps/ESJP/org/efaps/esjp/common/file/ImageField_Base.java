@@ -109,7 +109,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("62d23b78-76ec-4caf-9484-1e5aa560540e")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class ImageField_Base
 {
     /**

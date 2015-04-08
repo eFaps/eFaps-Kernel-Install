@@ -64,7 +64,7 @@ import com.itextpdf.text.pdf.PdfWriter;
  * @version $Id$
  */
 @EFapsUUID("b3bae05a-8db6-4a89-9f84-37564945049d")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class FileUtil_Base
     extends AbstractCommon
 {

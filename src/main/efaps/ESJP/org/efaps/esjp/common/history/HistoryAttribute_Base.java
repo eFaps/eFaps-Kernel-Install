@@ -46,7 +46,7 @@ import org.efaps.esjp.common.history.xml.UpdateLog;
  * @version $Id$
  */
 @EFapsUUID("8215b397-73b0-4ba8-a0d6-6b33118367b3")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class HistoryAttribute_Base
     implements IJaxb
 {

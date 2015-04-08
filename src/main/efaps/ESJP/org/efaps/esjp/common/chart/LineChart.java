@@ -34,7 +34,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("d3305542-0ecd-4086-af60-a5c217bc2b59")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class LineChart
     extends LineChart_Base
 {

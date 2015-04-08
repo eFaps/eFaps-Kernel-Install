@@ -32,7 +32,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("9993f975-855d-4d19-865a-c509bf410149")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class Connect
     extends Connect_Base
 {

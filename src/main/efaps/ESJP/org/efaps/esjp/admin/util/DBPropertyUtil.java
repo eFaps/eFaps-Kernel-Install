@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  */
 @EFapsUUID("e1d69c77-0498-4c84-914d-b9a6ac4168c5")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class DBPropertyUtil
     extends AbstractUtil
 {

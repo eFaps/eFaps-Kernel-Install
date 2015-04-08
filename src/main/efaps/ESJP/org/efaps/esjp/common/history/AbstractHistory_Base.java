@@ -37,7 +37,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("f3618d8d-b62b-434e-a38a-ea23c928e5ae")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class AbstractHistory_Base
     extends AbstractCommon
 {

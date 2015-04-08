@@ -28,7 +28,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id:QuerySearch.java 1563 2007-10-28 14:07:41Z tmo $
  */
 @EFapsUUID("863f85f6-91aa-4129-a380-07feba477cfc")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class Search
     extends Search_Base
 {

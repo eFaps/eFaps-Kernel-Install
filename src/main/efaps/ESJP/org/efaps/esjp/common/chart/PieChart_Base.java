@@ -41,7 +41,7 @@ import org.jfree.data.general.PieDataset;
  * @version $Id$
  */
 @EFapsUUID("714d4a56-0d24-4c83-9328-1f2286878f4f")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class PieChart_Base
     extends AbstractChart
 {

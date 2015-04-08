@@ -34,7 +34,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("9b47df4d-5504-4af5-ac83-b32b01a40b29")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public interface ITypedClass
 {
     /**

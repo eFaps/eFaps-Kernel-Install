@@ -32,7 +32,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("b39cf982-2e67-4c70-945a-85e314c4dc5a")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class AbstractHistory
     extends AbstractHistory_Base
 {

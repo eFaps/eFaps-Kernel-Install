@@ -46,7 +46,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("27dcb0e6-bd78-4442-a9d6-05f491a2900f")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class FormatOutput
     implements EventExecution
 {

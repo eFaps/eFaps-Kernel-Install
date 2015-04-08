@@ -43,7 +43,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("cd9958cf-f8f4-4013-955e-f426e6139c65")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class PersonLink
 {
 

@@ -44,7 +44,7 @@ import org.joda.time.DateTimeZone;
  * @version $Id$
  */
 @EFapsUUID("122112fd-9bd8-4855-8948-6837272195eb")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class TimeZoneUI
     implements EventExecution
 {

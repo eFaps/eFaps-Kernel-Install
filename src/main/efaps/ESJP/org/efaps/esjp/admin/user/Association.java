@@ -34,7 +34,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("e68898de-4c66-4b59-a8c0-c131af83c540")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class Association
     extends Association_Base
 {

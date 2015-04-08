@@ -34,7 +34,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("12fbca5f-94c4-4fa7-92dc-f82a5a8c330a")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class SystemConf
     extends SystemConf_Base
 {

@@ -42,7 +42,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("5eb52b3e-3384-4675-9a55-396cdb5228be")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class LocaleUI
 {
 

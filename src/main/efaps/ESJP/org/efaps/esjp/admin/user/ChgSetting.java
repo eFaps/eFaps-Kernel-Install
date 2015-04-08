@@ -39,7 +39,7 @@ import org.efaps.util.EFapsException;
  *  TODO description , accesscheck
  */
 @EFapsUUID("55bc2ba5-1797-469d-bb6c-1d3710f246dc")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class ChgSetting
     implements EventExecution
 {

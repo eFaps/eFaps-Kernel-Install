@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  */
 @EFapsUUID("508bc197-d6ee-4a3c-9f93-60a0e52ebe93")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class Password_Base
 {
     /**

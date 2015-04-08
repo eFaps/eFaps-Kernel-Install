@@ -20,7 +20,7 @@
 
 package org.efaps.esjp.common.quartz;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -30,7 +30,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id: EventDefinitionJob.java 10208 2013-09-16 21:16:22Z jan@moxter.net $
  */
 @EFapsUUID("65e41ea6-f147-49a4-9b81-c34d2dd03f31")
-@EFapsRevision("$Rev: 10208 $")
+@EFapsApplication("eFaps-Kernel")
 public class EventDefinitionJob
     extends EventDefinitionJob_Base
 {

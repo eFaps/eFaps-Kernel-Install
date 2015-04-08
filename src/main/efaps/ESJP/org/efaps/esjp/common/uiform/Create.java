@@ -32,7 +32,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("d74132b7-caf1-4f83-866d-8bc83bb26cdf")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class Create
     extends Create_Base
 {

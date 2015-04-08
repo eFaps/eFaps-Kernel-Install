@@ -34,7 +34,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("c5c2d7ea-c509-4eab-8b52-6477cd2407d8")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class CacheUtils
     extends CacheUtils_Base
 {

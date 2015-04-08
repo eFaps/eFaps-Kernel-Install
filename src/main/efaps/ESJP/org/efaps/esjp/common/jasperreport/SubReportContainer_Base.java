@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  */
 @EFapsUUID("ef631aef-45d8-4192-90c9-56898175228d")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 abstract class SubReportContainer_Base
     extends HashMap<String, JRDataSource>
 {

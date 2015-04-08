@@ -43,7 +43,7 @@ import org.efaps.esjp.common.history.xml.UpdateLog;
  * @version $Id$
  */
 @EFapsUUID("e4410ccd-8f31-43ad-a25d-da0183fb4a2f")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class UpdateHistoryTrigger_Base
     extends AbstractUpdateHistoryTrigger
 {

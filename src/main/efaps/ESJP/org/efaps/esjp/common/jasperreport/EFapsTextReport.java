@@ -20,7 +20,7 @@
 
 package org.efaps.esjp.common.jasperreport;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -30,7 +30,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id: AbstractDynamicReport_Base.java 9255 2013-04-23 17:19:39Z jorge.cueva@moxter.net $
  */
 @EFapsUUID("fdbcd5f9-9893-4302-9c67-9596b21d4a1b")
-@EFapsRevision("$Rev: 9255 $")
+@EFapsApplication("eFaps-Kernel")
 public abstract class EFapsTextReport
     extends EFapsTextReport_Base
 {

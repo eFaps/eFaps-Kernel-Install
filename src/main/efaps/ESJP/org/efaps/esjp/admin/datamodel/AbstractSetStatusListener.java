@@ -34,7 +34,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("c3a3a38e-f68c-4773-8531-854f1e071b91")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class AbstractSetStatusListener
     extends AbstractSetStatusListener_Base
 {

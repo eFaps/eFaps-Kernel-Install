@@ -34,7 +34,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("28b8c0d5-0cb5-40bd-8cc9-d795d6e6b7d0")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public interface IConverter
 {
     /**

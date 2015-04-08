@@ -37,7 +37,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("628e963d-33a3-4a0f-ac22-ed71ca76d48a")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class ParameterUtil_Base
 {
 

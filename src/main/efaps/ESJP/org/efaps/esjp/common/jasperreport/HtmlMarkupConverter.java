@@ -32,7 +32,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("a5871800-310e-410b-b4f4-447b2e68deff")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class HtmlMarkupConverter
     extends HtmlMarkupConverter_Base
 {

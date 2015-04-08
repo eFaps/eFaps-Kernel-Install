@@ -34,7 +34,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("d37148fd-96ee-4869-b817-34abee194418")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class Group
     extends Group_Base
 {

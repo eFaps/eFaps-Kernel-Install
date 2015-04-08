@@ -65,7 +65,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("17503d60-c2d2-4856-9d94-87333b45f739")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class RangesValue_Base
     extends AbstractCommon
     implements EventExecution

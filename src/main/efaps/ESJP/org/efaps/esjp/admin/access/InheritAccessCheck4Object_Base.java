@@ -69,7 +69,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("6306017b-af25-4756-b19c-8ba00e51448e")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class InheritAccessCheck4Object_Base
     extends AccessCheck4Object
 {

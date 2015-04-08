@@ -43,7 +43,7 @@ import org.efaps.util.EFapsException;
  *          17:04:43Z jan@moxter.net $
  */
 @EFapsUUID("28b038f6-3577-47d8-b611-b7c6552f218e")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class AbstractConnectHistoryTrigger_Base
     extends AbstractHistoryTrigger
 {

@@ -32,7 +32,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("09afa252-3548-4987-870a-616186351690")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class ImageField
     extends ImageField_Base
 {

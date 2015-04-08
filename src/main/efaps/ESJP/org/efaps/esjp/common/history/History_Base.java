@@ -46,7 +46,7 @@ import org.joda.time.DateTime;
  * @version $Id$
  */
 @EFapsUUID("be48d384-c721-470c-b099-7141874ca537")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class History_Base
     extends AbstractCommon
 {

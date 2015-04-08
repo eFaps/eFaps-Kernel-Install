@@ -32,7 +32,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("7456bc1d-c427-4bc9-a120-4403e784e762")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class PieChart3D
     extends PieChart3D_Base
 {

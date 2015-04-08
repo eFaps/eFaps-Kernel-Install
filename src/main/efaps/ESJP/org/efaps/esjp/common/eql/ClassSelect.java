@@ -35,7 +35,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("5b51cfc1-4d13-46fc-9393-7e76de78e010")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class ClassSelect
     extends ClassSelect_Base
 {

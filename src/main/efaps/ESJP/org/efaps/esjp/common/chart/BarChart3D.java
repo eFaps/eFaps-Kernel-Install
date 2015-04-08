@@ -32,7 +32,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("a94c2f2a-fec0-4ed4-a000-83b821e81705")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class BarChart3D
     extends BarChart3D_Base
 {

@@ -49,7 +49,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("d9ba2b85-8b9a-46b0-929e-8e938e7d5577")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class FileCheckout
     extends AbstractCommon
     implements EventExecution

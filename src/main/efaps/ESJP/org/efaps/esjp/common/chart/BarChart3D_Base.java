@@ -38,7 +38,7 @@ import org.jfree.data.category.CategoryDataset;
  * @version $Id$
  */
 @EFapsUUID("3a5edb8e-2aba-41e6-a1c2-951963977e35")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class BarChart3D_Base
     extends BarChart
 {

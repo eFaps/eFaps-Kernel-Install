@@ -36,7 +36,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("31ac46ef-058a-4eda-9693-08e47838b71a")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 @XmlAccessorType(XmlAccessType.NONE)
 public class AttributeValue
 {

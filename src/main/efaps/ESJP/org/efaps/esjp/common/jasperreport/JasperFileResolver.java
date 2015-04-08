@@ -33,7 +33,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("5e89e2ee-4247-4dab-a9e3-eacaefd9ae02")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class JasperFileResolver
     extends  JasperFileResolver_Base
 {

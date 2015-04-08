@@ -49,7 +49,7 @@ import org.jfree.chart.plot.PlotOrientation;
  * @version $Id$
  */
 @EFapsUUID("87db5f83-fe92-4b41-a6fd-a23655e37bd8")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class AbstractChart_Base
     implements EventExecution
 {

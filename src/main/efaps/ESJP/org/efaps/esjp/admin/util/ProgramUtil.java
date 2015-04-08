@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  */
 @EFapsUUID("5cd048cd-1ee0-47cd-8c8e-1480d18b5dae")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class ProgramUtil
     extends AbstractUtil
 {

@@ -49,7 +49,7 @@ import org.joda.time.field.ScaledDurationField;
  * @version $Id$
  */
 @EFapsUUID("1c2c5f34-9ac3-486b-9b6e-0d762ec06459")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public final class JodaTimeUtils
     extends AbstractCommon
 {

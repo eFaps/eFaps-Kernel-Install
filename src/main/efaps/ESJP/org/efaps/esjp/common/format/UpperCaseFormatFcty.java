@@ -26,8 +26,8 @@ import java.text.ParsePosition;
 import java.util.Locale;
 
 import org.apache.commons.lang3.text.FormatFactory;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsFormatFactory;
-import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -37,7 +37,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id: $
  */
 @EFapsUUID("251b0699-fea9-48c1-9562-5bfeff649c4c")
-@EFapsRevision("$Rev: 14557 $")
+@EFapsApplication("eFaps-Kernel")
 @EFapsFormatFactory(name = "upper")
 public class UpperCaseFormatFcty
     implements FormatFactory

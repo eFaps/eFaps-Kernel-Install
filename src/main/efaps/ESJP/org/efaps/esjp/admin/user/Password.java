@@ -32,7 +32,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("ff1b1140-3da0-491f-8bf4-c42f71ea4343")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class Password
     extends Password_Base
 {

@@ -35,7 +35,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("28fdcb78-4c99-4454-b701-c8e00967936b")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class Linked2ObjectAccessCheck
     extends Linked2ObjectAccessCheck_Base
 {

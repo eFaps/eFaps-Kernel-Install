@@ -34,7 +34,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("7944197f-d27c-4d5d-a691-bbed8afd5c2f")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class EFapsMapDataSource
     extends EFapsMapDataSource_Base
 {

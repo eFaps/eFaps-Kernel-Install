@@ -93,7 +93,7 @@ import org.xml.sax.SAXException;
  *          jan@moxter.net $
  */
 @EFapsUUID("c3a1f5f8-b263-4ad4-b144-db68437074cc")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class StandartReport_Base
     extends AbstractCommon
     implements EventExecution

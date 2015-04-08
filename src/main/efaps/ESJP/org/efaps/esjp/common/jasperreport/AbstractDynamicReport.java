@@ -34,7 +34,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("21e307b0-fbf6-49e9-a1fa-f6c9cc371c74")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class AbstractDynamicReport
     extends AbstractDynamicReport_Base
 {

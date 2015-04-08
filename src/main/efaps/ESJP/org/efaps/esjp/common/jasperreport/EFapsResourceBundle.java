@@ -33,7 +33,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("969800cc-11f2-4b8c-89ee-50dfaa26bbd9")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class EFapsResourceBundle extends EFapsResourceBundle_Base
 {
 }

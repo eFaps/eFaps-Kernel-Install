@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  */
 @EFapsUUID("3b81f1a7-8ec0-4979-859e-0bd64e4d50d7")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class AbstractAccessCheck_Base
     implements EventExecution
 {

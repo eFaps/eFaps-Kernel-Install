@@ -34,7 +34,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("d8c2a262-f697-43b8-a7c7-ab4a08f1f996")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class NumberGen
 {
     /**

@@ -54,7 +54,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("ef7dcf84-99ec-4caf-8422-513bfb7eab39")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class Linked2ObjectAccessCheck_Base
     extends AbstractAccessCheck
 {

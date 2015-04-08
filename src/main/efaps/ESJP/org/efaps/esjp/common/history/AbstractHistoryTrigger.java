@@ -32,7 +32,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("bded0b82-76ff-4605-ac5a-391442094102")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class AbstractHistoryTrigger
     extends AbstractHistoryTrigger_Base
 {

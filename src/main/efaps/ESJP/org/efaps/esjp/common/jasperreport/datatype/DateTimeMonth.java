@@ -34,7 +34,7 @@ import org.joda.time.format.DateTimeFormatter;
  * @version $Id$
  */
 @EFapsUUID("cdc45ed6-b73c-4dc6-9870-f338997d474c")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class DateTimeMonth
     extends AbstractDateTime
 {

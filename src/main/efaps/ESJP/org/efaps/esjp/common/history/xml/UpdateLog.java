@@ -39,7 +39,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("4675c195-793b-4d34-9cc4-6e2164f1031c")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "update")
 public class UpdateLog

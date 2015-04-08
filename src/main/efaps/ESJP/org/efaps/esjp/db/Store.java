@@ -41,7 +41,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("0f824311-3747-4cfc-85ce-a5268a6ba9c9")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class Store implements EventExecution
 {
 

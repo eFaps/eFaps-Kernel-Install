@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  */
 @EFapsUUID("28a90294-bed6-4bfb-8775-be71b568a257")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class Association_Base
 {
 

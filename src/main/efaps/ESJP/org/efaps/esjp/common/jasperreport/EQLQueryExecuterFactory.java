@@ -36,7 +36,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  */
 //CHECKSTYLE:OFF
 @EFapsUUID("1676d361-853c-4fcc-94b0-61b1a7d127e8")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class EQLQueryExecuterFactory
     extends EQLQueryExecuterFactory_Base
 {

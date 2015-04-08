@@ -35,7 +35,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("066cb3f3-5d4b-41c4-bbd3-4b3ebe40cafb")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class LogoutHistory
     extends LogoutHistory_Base
 {

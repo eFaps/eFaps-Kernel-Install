@@ -37,7 +37,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("aeb223a6-912b-4a6d-8cb7-b04d83d2cd66")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class AbstractSetStatusListener_Base
     implements ISetStatusListener
 {

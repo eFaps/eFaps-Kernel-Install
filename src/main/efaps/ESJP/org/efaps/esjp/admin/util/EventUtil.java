@@ -41,7 +41,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("d86499fc-828c-459f-9dd2-8006c39e9da3")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class EventUtil
     extends AbstractUtil
 {

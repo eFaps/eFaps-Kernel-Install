@@ -34,7 +34,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("15cc6edb-0998-498a-a96e-f8d7c2171184")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class InheritAccessCheck4Object
     extends InheritAccessCheck4Object_Base
 {

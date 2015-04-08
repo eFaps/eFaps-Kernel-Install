@@ -77,7 +77,7 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  */
 @EFapsUUID("3a99a177-8b5c-4dd4-b876-dcba28ea3138")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class Edit_Base
     implements EventExecution
 {

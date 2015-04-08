@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
  * @version $Id:QuerySearch.java 1563 2007-10-28 14:07:41Z tmo $
  */
 @EFapsUUID("a036b0e7-20ce-47c7-83a0-f7644af80fd1")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class Search_Base
     extends AbstractCommon
     implements EventExecution

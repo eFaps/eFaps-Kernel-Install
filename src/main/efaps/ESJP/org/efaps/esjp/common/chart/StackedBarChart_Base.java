@@ -22,7 +22,7 @@
 package org.efaps.esjp.common.chart;
 
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.EFapsException;
 import org.jfree.chart.ChartFactory;
@@ -39,7 +39,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
  * @version $Id: BarChart3D_Base.java 7235 2011-11-09 02:21:25Z jan@moxter.net $
  */
 @EFapsUUID("91a15870-dbbf-4adf-90b7-803b5d6c2b0f")
-@EFapsRevision("$Rev: 7235 $")
+@EFapsApplication("eFaps-Kernel")
 public abstract class StackedBarChart_Base
     extends BarChart
 {

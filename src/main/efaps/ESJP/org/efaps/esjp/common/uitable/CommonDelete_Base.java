@@ -45,7 +45,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("c0972b10-33c2-46e0-ba81-53a0341aaa35")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class CommonDelete_Base
     extends AbstractCommon
     implements EventExecution

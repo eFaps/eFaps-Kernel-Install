@@ -34,7 +34,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("66e8e549-ccc1-4e05-ba06-96e1f95c8a9b")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class AbstractLoginOutHistory
     extends AbstractLoginOutHistory_Base
 {

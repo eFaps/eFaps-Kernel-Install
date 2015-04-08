@@ -83,7 +83,7 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  */
 @EFapsUUID("599905c7-373a-4c9c-928f-2cf2714d30b3")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class AbstractDynamicReport_Base
     extends AbstractCommon
 {

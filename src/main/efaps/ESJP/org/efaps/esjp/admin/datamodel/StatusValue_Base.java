@@ -53,7 +53,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("c0e0547a-a39f-4741-ae3d-c196e8cb2f60")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class StatusValue_Base
     extends AbstractCommon
     implements EventExecution

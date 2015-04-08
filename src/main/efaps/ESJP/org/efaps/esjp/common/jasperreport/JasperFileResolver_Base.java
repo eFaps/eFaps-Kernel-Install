@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory;
  *          jan@moxter.net $
  */
 @EFapsUUID("4733dd43-2ef3-4572-a1e9-c820567e9a36")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class JasperFileResolver_Base
     implements FileResolver
 {

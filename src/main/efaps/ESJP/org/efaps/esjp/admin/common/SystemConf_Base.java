@@ -50,7 +50,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("aa441e81-fd9f-4462-99c2-2d27bd37f137")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class SystemConf_Base
     extends AbstractCommon
 {

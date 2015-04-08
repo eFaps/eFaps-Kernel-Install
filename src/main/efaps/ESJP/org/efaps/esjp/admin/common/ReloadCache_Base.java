@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 @EFapsUUID("1d4f1263-9315-4f59-bd5e-bd364f907bac")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class ReloadCache_Base
     implements EventExecution
 {

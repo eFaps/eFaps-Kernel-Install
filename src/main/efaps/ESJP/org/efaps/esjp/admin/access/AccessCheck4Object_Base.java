@@ -106,7 +106,7 @@ import org.efaps.util.EFapsException;
  * @version $Id:SimpleAccessCheckOnType.java 1563 2007-10-28 14:07:41Z tmo $
  */
 @EFapsUUID("fa2720cc-8e76-476e-87cd-eef6eeb8b1e3")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class AccessCheck4Object_Base
     extends AbstractAccessCheck
 {

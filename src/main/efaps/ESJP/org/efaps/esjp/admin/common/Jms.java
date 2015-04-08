@@ -34,7 +34,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("4fcd2761-3ddb-489b-90b0-2122e3608aa4")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class Jms
     extends Jms_Base
 {

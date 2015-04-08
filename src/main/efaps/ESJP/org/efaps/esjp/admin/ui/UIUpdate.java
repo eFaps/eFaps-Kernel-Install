@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  */
 @EFapsUUID("2931694f-8a00-491e-8bee-d641145119f0")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class UIUpdate
 {
 

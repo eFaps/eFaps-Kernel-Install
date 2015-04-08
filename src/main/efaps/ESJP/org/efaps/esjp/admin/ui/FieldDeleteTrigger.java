@@ -41,7 +41,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("801f350c-3cdf-4a60-b4ee-19b8a63ec867")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class FieldDeleteTrigger
     implements EventExecution
 {

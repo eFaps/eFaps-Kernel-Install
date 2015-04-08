@@ -35,7 +35,7 @@ import org.efaps.esjp.common.history.xml.DisconnectLog;
  * @version $Id$
  */
 @EFapsUUID("64d79609-3c97-449b-b6c7-7ff35adb17cd")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class DisconnectHistoryTrigger_Base
     extends AbstractConnectHistoryTrigger
 {

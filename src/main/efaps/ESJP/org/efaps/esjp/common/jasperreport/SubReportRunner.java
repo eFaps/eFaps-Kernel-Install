@@ -34,7 +34,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("fbde8f43-95f0-4d8e-9d5a-b32283fbcddf")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class SubReportRunner
     extends AbstractThreadSubreportRunner
 {

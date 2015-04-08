@@ -36,7 +36,7 @@ import org.efaps.esjp.ci.CICommon;
  * @version $Id$
  */
 @EFapsUUID("5df3ac85-b5c7-48f1-994a-834163e71122")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "disconnect")
 public class DisconnectLog

@@ -34,7 +34,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("f19849d0-6e63-406f-897e-cee7876e6e0d")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class UpdateHistoryTrigger
     extends UpdateHistoryTrigger_Base
 {

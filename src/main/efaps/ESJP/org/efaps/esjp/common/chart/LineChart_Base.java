@@ -47,7 +47,7 @@ import org.jfree.data.xy.XYSeriesCollection;
  * @version $Id$
  */
 @EFapsUUID("2061bb7c-65cf-4db4-b6ba-cb58ad6f8586")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class LineChart_Base
     extends AbstractChart
 {

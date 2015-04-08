@@ -34,7 +34,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("fc097538-3e3a-42a9-8c0c-0f3c8c9d731a")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class List2StringConverter
     extends List2StringConvert_Base
 {

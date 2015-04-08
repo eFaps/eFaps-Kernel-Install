@@ -33,7 +33,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("15e7b8b5-5c0f-4f77-b1ff-323b23797448")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class ConnectHistoryTrigger
     extends ConnectHistoryTrigger_Base
 {

@@ -39,7 +39,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("56ed35ce-5b6f-4ad3-a4f9-1053a6f26dfc")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "login")
 public class LoginLog

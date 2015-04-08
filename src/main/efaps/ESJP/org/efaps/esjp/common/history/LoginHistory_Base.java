@@ -38,7 +38,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("255f8006-27f0-41cb-a377-7912471587a1")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class LoginHistory_Base
     extends AbstractLoginOutHistory
 {

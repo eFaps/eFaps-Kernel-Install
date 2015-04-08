@@ -57,7 +57,7 @@ import org.efaps.util.cache.CacheReloadException;
  * @version $Id$
  */
 @EFapsUUID("3e6ba860-22ff-486b-b424-27a0ee9e72f2")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class ConnectEventToAbstract
 {
     /**

@@ -38,7 +38,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  */
 //CHECKSTYLE:OFF
 @EFapsUUID("f6fbd1f1-dce6-4637-8df7-6a7897b6f535")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class SubReportRunnerFactory
     implements JRSubreportRunnerFactory
 {

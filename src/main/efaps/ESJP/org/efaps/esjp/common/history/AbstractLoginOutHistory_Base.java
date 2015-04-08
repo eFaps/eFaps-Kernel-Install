@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  */
 @EFapsUUID("43bf53c8-83be-49ce-9d67-e68fa7c7f34f")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class AbstractLoginOutHistory_Base
     extends AbstractHistory
 {

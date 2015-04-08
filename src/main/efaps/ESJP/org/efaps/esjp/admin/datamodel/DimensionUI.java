@@ -30,7 +30,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("b9bf985c-1281-4ee8-a62b-a0ea5752ed85")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class DimensionUI
     extends DimensionUI_Base
 {

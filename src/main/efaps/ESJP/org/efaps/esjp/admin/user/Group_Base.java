@@ -49,7 +49,7 @@ import org.efaps.util.EFapsException;
  *          $
  */
 @EFapsUUID("30482e5e-08df-47bc-b683-9993636643b3")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class Group_Base
 {
 

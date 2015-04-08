@@ -31,7 +31,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("ed8d307f-faed-4e4b-9251-1280658d2945")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 @Deprecated
 public abstract class AccessOnField_Base
     extends AccessCheck4UI

@@ -48,7 +48,7 @@ import org.efaps.wikiutil.parser.gwiki.javacc.ParseException;
  * @version $Id$
  */
 @EFapsUUID("3bff1883-e01d-4843-be12-d72bb8e920c7")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class Wiki
 {
 

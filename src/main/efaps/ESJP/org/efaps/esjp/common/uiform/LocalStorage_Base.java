@@ -31,7 +31,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
@@ -46,8 +46,8 @@ import org.efaps.util.cache.CacheReloadException;
  *          luis.estrada@efaps.org $
  *
  */
-@EFapsRevision("$Rev: 1$")
 @EFapsUUID("3fbb0b9c-b671-48c5-a399-424e665ed5c8")
+@EFapsApplication("eFaps-Kernel")
 public abstract class LocalStorage_Base
 {
 

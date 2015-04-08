@@ -41,7 +41,7 @@ import org.joda.time.format.DateTimeFormatter;
  *          $
  */
 @EFapsUUID("fc139d09-0fc7-435f-bf96-843784930a47")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class AbstractDateTime
     extends AbstractDataType<DateTime, DateTime>
 {

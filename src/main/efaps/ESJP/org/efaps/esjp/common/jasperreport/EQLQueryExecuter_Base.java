@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  */
 @EFapsUUID("547e75b2-b76b-4cc6-83d7-516554fadf22")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class EQLQueryExecuter_Base
     implements JRQueryExecuter
 {

@@ -64,7 +64,7 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  */
 @EFapsUUID("8e51edcd-791e-4815-b24b-2b1ded9bd167")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class AccessCheck4UI_Base
     extends AbstractCommon
 {

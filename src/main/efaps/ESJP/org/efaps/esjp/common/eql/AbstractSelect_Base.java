@@ -38,7 +38,7 @@ import org.efaps.eql.IEsjpSelect;
  * @version $Id$
  */
 @EFapsUUID("15ac15cc-f6ef-4768-82b0-1f37bd26b902")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class AbstractSelect_Base
     implements IEsjpSelect
 {

@@ -32,7 +32,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("d29f3323-4d6c-4d28-9ed0-313342f6bfcb")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class History
     extends History_Base
 {

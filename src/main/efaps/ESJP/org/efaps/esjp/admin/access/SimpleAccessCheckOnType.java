@@ -32,7 +32,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("fd1ecee1-a882-4fbe-8b3c-5e5c3ed4d6b7")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class SimpleAccessCheckOnType
     extends SimpleAccessCheckOnType_Base
 {

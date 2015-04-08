@@ -32,7 +32,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("b3bae05a-8db6-4a89-9f84-37564945049d")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class FileUtil
     extends FileUtil_Base
 {

@@ -57,7 +57,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("c3d4e45f-cb46-4abf-9aa3-67703140b74b")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class DimensionUI_Base
     implements EventExecution
 {

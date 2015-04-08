@@ -32,7 +32,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("044d89e6-fa22-4a42-aa90-ab5703aa1ff8")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class DisconnectHistoryTrigger
     extends DisconnectHistoryTrigger_Base
 {

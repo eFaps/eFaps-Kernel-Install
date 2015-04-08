@@ -64,7 +64,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("9688a81e-eaae-4bd2-b6df-a5a8087483d0")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class Person_Base
 {
     /**

@@ -34,7 +34,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("3f830aff-6293-4a78-a3e2-85c962c76f89")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class HistoryAttribute
     extends HistoryAttribute_Base
 {

@@ -75,7 +75,7 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  */
 @EFapsUUID("92337601-c2df-4f78-bb80-9c9b8b81c35c")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class Field_Base
     extends AbstractCommon
 {

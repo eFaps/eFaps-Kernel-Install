@@ -49,7 +49,7 @@ import org.efaps.util.EFapsException;
  *          rosa.ordonez@efaps.org $
  */
 @EFapsUUID("f03932cf-7227-46c9-bb92-546245b1f49b")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class MenuChilds
 {
 

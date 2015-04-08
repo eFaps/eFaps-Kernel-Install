@@ -39,7 +39,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("bdbde7bc-7a28-4b71-a77f-ec70662fa7c5")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public interface IeFapsDataSource
     extends JRDataSource
 {

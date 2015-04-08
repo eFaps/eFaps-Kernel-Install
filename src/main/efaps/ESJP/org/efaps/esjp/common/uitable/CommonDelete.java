@@ -32,7 +32,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("b8d99ead-ceb1-4ee8-bf6f-d1022cc4485f")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class CommonDelete
     extends CommonDelete_Base
 {

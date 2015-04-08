@@ -89,7 +89,7 @@ import org.efaps.admin.ui.field.Field;
  * @version $Id$
  */
 @EFapsUUID("7f08c93d-96fd-474a-a1f0-772d610deaba")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class FileField
 {
     /**

@@ -32,7 +32,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("0af0d01f-2fad-43ae-9239-9214feddbcba")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class ReloadCache
     extends  ReloadCache_Base
 {

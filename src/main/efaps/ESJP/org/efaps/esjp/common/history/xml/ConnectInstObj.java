@@ -35,7 +35,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("f02daf89-5a6a-4542-847c-0d4bd9232d0f")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "connectInstance")
 public class ConnectInstObj

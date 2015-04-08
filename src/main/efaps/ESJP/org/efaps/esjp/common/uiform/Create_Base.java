@@ -72,7 +72,7 @@ import org.kie.api.runtime.process.ProcessInstance;
  * @version $Id$
  */
 @EFapsUUID("a76c48e2-79e4-4083-93b8-f4bc192eaa02")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class Create_Base
     extends AbstractCommon
     implements EventExecution

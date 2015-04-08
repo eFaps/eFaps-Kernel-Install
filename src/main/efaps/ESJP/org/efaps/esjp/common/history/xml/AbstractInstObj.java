@@ -42,7 +42,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("1bff1f0b-888b-4d92-86b9-28fb81eeb150")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 @XmlAccessorType(XmlAccessType.NONE)
 public abstract class AbstractInstObj
 {

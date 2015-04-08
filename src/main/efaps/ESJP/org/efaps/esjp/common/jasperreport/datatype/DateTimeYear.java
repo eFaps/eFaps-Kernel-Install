@@ -34,7 +34,7 @@ import org.joda.time.format.DateTimeFormatter;
  * @version $Id$
  */
 @EFapsUUID("03f24c0e-9c00-4ffe-b2c3-f85cb55de276")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class DateTimeYear
     extends AbstractDateTime
 {

@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  */
 @EFapsUUID("251927a6-d71d-4a7b-b0d2-b6bb5a50b73f")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class Connect_Base
     extends AbstractCommon
     implements EventExecution

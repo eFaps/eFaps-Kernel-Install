@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  */
 @EFapsUUID("34badd85-b416-46fc-89ff-0f1e54c1eb9a")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class RoleUpdate
     extends AbstractCommon
 {

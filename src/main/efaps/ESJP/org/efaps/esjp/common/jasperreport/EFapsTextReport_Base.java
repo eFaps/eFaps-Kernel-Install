@@ -36,7 +36,7 @@ import java.util.List;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.util.EFapsException;
@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
  * @version $Id: AbstractDynamicReport_Base.java 9255 2013-04-23 17:19:39Z jorge.cueva@moxter.net $
  */
 @EFapsUUID("a797b419-5cde-420d-9e6e-7ec0302163cf")
-@EFapsRevision("$Rev: 9255 $")
+@EFapsApplication("eFaps-Kernel")
 public abstract class EFapsTextReport_Base
 {
     protected final static Logger LOG = LoggerFactory.getLogger(EFapsTextReport_Base.class);
@@ -266,7 +266,7 @@ public abstract class EFapsTextReport_Base
          */
         private String getSeparator()
         {
-            return separator;
+            return this.separator;
         }
 
         /**
@@ -274,7 +274,7 @@ public abstract class EFapsTextReport_Base
          */
         private Integer getLength()
         {
-            return length;
+            return this.length;
         }
 
         /**
@@ -282,7 +282,7 @@ public abstract class EFapsTextReport_Base
          */
         private Integer getDecimalLength()
         {
-            return decimalLength;
+            return this.decimalLength;
         }
 
         /**
@@ -290,7 +290,7 @@ public abstract class EFapsTextReport_Base
          */
         private Boolean isWithDecimalSymbol()
         {
-            return withDecimalSymbol;
+            return this.withDecimalSymbol;
         }
 
         /**
@@ -298,7 +298,7 @@ public abstract class EFapsTextReport_Base
          */
         private Type getType()
         {
-            return type;
+            return this.type;
         }
 
         /**
@@ -306,7 +306,7 @@ public abstract class EFapsTextReport_Base
          */
         private String getDefaultValue()
         {
-            return defaultValue;
+            return this.defaultValue;
         }
 
         /**
@@ -314,7 +314,7 @@ public abstract class EFapsTextReport_Base
          */
         private Format getFormatter()
         {
-            return formatter;
+            return this.formatter;
         }
 
         /**
@@ -322,7 +322,7 @@ public abstract class EFapsTextReport_Base
          */
         private String getFormatPattern()
         {
-            return formatPattern;
+            return this.formatPattern;
         }
 
     }
@@ -361,7 +361,7 @@ public abstract class EFapsTextReport_Base
          */
         private String getValue()
         {
-            return value;
+            return this.value;
         }
 
         /**
@@ -369,7 +369,7 @@ public abstract class EFapsTextReport_Base
          */
         private ColumnDefinition getColumnDef()
         {
-            return columnDef;
+            return this.columnDef;
         }
 
         protected String getCharacterValue(final Object _value,

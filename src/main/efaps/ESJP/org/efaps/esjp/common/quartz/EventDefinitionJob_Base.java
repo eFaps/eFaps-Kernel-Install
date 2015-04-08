@@ -23,7 +23,7 @@ package org.efaps.esjp.common.quartz;
 import java.util.UUID;
 
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIAdminCommon;
 import org.efaps.ci.CIAdminProgram;
@@ -44,7 +44,7 @@ import org.quartz.JobExecutionException;
  * @version $Id: EventDefinitionJob_Base.java 10208 2013-09-16 21:16:22Z jan@moxter.net $
  */
 @EFapsUUID("9b423589-e341-45c0-b59f-098d6dd8006c")
-@EFapsRevision("$Rev: 10208 $")
+@EFapsApplication("eFaps-Kernel")
 public abstract class EventDefinitionJob_Base
     implements Job
 {

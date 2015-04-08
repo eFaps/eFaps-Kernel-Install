@@ -36,7 +36,7 @@ import org.efaps.esjp.ci.CICommon;
  * @version $Id$
  */
 @EFapsUUID("013706e5-01ae-47d5-9877-5b5bc6bb55d9")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "connect")
 public class ConnectLog

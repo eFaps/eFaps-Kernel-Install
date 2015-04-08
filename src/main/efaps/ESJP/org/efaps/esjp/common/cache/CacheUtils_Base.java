@@ -38,7 +38,7 @@ import org.efaps.util.EFapsException;
  *          jan@moxter.net $
  */
 @EFapsUUID("50b92f6d-8c95-4016-a1f7-db9f4b770516")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class CacheUtils_Base
     extends AbstractCommon
 {

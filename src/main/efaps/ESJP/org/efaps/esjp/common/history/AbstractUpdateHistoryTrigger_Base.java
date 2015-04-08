@@ -43,7 +43,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("4cb893f9-141c-40dc-beab-c147a4b2096f")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class AbstractUpdateHistoryTrigger_Base
     extends AbstractHistoryTrigger
 {

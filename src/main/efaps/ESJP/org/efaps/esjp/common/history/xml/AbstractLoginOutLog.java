@@ -34,7 +34,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("b76aac71-3387-4d0a-839c-51d94a1b530b")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class AbstractLoginOutLog
     extends AbstractHistoryLog
     implements IHistoryHtml

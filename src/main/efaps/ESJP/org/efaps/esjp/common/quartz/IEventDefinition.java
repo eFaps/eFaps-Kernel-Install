@@ -20,7 +20,7 @@
 
 package org.efaps.esjp.common.quartz;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.util.EFapsException;
@@ -34,7 +34,7 @@ import org.quartz.JobExecutionContext;
  *          jorge.cueva@moxter.net $
  */
 @EFapsUUID("e55a454e-494b-4ef1-95ab-7bdf7a73b390")
-@EFapsRevision("$Rev: 11050 $")
+@EFapsApplication("eFaps-Kernel")
 public interface IEventDefinition
 {
     /**

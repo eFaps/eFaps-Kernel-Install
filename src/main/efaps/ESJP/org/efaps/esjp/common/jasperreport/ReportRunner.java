@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  */
 @EFapsUUID("da0d7ba7-8969-4436-be97-8ab65dfb8e26")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class ReportRunner
     implements Runnable
 {

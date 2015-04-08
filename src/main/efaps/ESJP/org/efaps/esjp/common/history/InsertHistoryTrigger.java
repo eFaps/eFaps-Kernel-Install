@@ -34,7 +34,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("a6ab6571-faaa-409b-923c-45f5a3dea4dc")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class InsertHistoryTrigger
     extends InsertHistoryTrigger_Base
 {

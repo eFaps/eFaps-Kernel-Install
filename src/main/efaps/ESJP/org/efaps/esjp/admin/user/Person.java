@@ -32,7 +32,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("1b777261-6da1-4003-87e4-2937e44ff269")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class Person
     extends Person_Base
 {

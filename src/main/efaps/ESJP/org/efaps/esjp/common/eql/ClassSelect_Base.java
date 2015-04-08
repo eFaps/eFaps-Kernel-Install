@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  */
 @EFapsUUID("c138e2dd-4361-4f7c-8da0-f859ce901c9a")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class ClassSelect_Base
     extends AbstractSelect
 {

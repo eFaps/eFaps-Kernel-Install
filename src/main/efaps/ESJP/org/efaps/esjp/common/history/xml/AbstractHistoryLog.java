@@ -37,7 +37,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("73d21fa8-7c08-49eb-b1b4-306ac8a8723b")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 @XmlAccessorType(XmlAccessType.NONE)
 public abstract class AbstractHistoryLog
 {

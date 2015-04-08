@@ -45,7 +45,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("02c64d22-161b-4e99-9614-c34a23fbea77")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class EFapsMapDataSource_Base
     extends AbstractCommon
     implements IeFapsDataSource

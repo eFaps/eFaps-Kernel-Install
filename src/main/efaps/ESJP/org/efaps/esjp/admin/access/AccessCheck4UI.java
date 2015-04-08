@@ -32,7 +32,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("8e51edcd-791e-4815-b24b-2b1ded9bd167")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class AccessCheck4UI
     extends AccessCheck4UI_Base
 {

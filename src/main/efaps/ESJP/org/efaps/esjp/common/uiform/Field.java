@@ -34,7 +34,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("29194895-4696-4f17-bf7d-ddbaea41a013")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class Field
     extends Field_Base
 {

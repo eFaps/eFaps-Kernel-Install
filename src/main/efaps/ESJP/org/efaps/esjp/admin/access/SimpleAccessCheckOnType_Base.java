@@ -61,7 +61,7 @@ import org.infinispan.Cache;
  * @version $Id:SimpleAccessCheckOnType.java 1563 2007-10-28 14:07:41Z tmo $
  */
 @EFapsUUID("628a19f6-463f-415d-865b-ba72e303a507")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class SimpleAccessCheckOnType_Base
     extends AbstractAccessCheck
 {

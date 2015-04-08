@@ -35,7 +35,7 @@ import org.efaps.esjp.common.history.xml.ConnectLog;
  * @version $Id$
  */
 @EFapsUUID("82fc56d6-2ea0-4a64-87ed-a55b5f9ed1e5")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class ConnectHistoryTrigger_Base
     extends AbstractConnectHistoryTrigger
 {

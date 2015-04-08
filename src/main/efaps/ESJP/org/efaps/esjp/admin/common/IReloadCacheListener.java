@@ -34,7 +34,7 @@ import org.efaps.util.EFapsException;
  *          jan@moxter.net $
  */
 @EFapsUUID("fc1fa2c3-d5c4-4e85-8486-173e808da5f6")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public interface IReloadCacheListener
     extends IEsjpListener
 {

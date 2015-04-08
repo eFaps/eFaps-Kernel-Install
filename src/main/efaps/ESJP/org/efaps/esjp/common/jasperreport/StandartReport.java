@@ -32,7 +32,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("81e78b62-e729-4d40-b379-607270b0c64f")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class StandartReport extends StandartReport_Base
 {
 }

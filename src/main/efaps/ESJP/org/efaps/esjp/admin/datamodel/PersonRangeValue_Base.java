@@ -46,7 +46,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("a4eb532a-6503-4c20-90d5-7279f2633060")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class PersonRangeValue_Base
     extends RangesValue
 {

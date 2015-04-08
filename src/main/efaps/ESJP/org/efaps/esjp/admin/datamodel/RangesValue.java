@@ -34,7 +34,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("6e9283bb-06a7-40a5-8420-becc4cff72f5")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class RangesValue
     extends RangesValue_Base
 {

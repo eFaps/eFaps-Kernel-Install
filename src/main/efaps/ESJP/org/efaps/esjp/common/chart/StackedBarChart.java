@@ -20,7 +20,7 @@
 
 package org.efaps.esjp.common.chart;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -32,7 +32,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id: BarChart3D.java 7235 2011-11-09 02:21:25Z jan@moxter.net $
  */
 @EFapsUUID("8c1b4817-a956-4909-9798-f604ece45234")
-@EFapsRevision("$Rev: 7235 $")
+@EFapsApplication("eFaps-Kernel")
 public class StackedBarChart
     extends StackedBarChart_Base
 {

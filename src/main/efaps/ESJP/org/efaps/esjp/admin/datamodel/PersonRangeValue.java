@@ -34,7 +34,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("045090f9-c2ce-459c-98a8-33090a02efc3")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class PersonRangeValue
     extends PersonRangeValue_Base
 {

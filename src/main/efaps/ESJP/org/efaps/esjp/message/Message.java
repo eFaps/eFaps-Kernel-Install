@@ -48,7 +48,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("6e4c3e39-5a28-4c5e-9485-f4a0028827db")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class Message
     implements EventExecution
 {

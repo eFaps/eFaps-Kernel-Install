@@ -32,7 +32,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("d9ba2b85-8b9a-46b0-929e-8e938e7d5577")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class Edit
     extends Edit_Base
 {

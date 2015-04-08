@@ -32,7 +32,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("83dd620f-94dc-4e45-a765-888144e84277")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public abstract class AbstractBeanCollectionDataSource
     extends AbstractBeanCollectionDataSource_Base
 {

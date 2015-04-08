@@ -39,7 +39,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("fb9bddcb-0f39-4b55-88aa-891b91a2ee5b")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class EventDeleteTrigger
     implements EventExecution
 {

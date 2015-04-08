@@ -36,7 +36,7 @@ import org.joda.time.DateTime;
  * @version $Id$
  */
 @EFapsUUID("b8a6ae9a-31c1-4cbd-ada4-c74f903ea23f")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class DateTimeExpression
     extends AbstractSimpleExpression<String>
 {

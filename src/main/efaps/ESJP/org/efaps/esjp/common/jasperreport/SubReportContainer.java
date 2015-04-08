@@ -37,7 +37,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("18031397-efce-4525-8f07-b39a7e1a86c9")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaps-Kernel")
 public class SubReportContainer
     extends SubReportContainer_Base
 {
