@@ -24,7 +24,7 @@ package org.efaps.esjp.admin.user;
 import java.util.UUID;
 
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.user.Role;
 import org.efaps.ci.CIAdminAccess;

@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.efaps.admin.datamodel.Classification;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;

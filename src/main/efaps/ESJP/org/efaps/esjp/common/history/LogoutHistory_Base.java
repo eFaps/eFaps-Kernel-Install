@@ -22,7 +22,7 @@ package org.efaps.esjp.common.history;
 
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.esjp.ci.CICommon;

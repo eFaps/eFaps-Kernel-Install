@@ -28,7 +28,7 @@ import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.attributetype.PasswordType;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.PrintQuery;
 import org.efaps.esjp.common.history.xml.AbstractHistoryLog;

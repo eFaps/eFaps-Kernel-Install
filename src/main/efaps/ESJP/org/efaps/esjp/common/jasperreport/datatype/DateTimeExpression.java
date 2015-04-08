@@ -24,7 +24,7 @@ package org.efaps.esjp.common.jasperreport.datatype;
 import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
 import net.sf.dynamicreports.report.definition.ReportParameters;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.joda.time.DateTime;
 

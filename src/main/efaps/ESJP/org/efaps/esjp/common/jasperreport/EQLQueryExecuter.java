@@ -27,7 +27,7 @@ import net.sf.jasperreports.engine.JRDataset;
 import net.sf.jasperreports.engine.JRValueParameter;
 import net.sf.jasperreports.engine.JasperReportsContext;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 

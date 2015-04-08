@@ -24,7 +24,7 @@ import net.sf.jasperreports.engine.fill.AbstractThreadSubreportRunner;
 import net.sf.jasperreports.engine.fill.JRBaseFiller;
 import net.sf.jasperreports.engine.fill.JRFillSubreport;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**

@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 import net.sf.jasperreports.engine.util.FileResolver;
 
 import org.apache.commons.io.IOUtils;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIAdminProgram;
 import org.efaps.db.Checkout;

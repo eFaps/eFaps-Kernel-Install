@@ -37,7 +37,7 @@ import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 import net.sf.jasperreports.engine.query.JRQueryExecuter;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.eql.IEQLStmt;

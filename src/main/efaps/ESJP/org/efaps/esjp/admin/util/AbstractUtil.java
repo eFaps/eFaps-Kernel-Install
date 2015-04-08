@@ -22,7 +22,7 @@
 package org.efaps.esjp.admin.util;
 
 import org.efaps.admin.KernelSettings;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.user.Role;
 import org.efaps.db.Context;

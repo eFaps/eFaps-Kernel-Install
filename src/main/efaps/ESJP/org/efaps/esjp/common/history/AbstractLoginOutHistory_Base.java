@@ -23,7 +23,7 @@ package org.efaps.esjp.common.history;
 import java.util.Date;
 
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.user.Person;
 import org.efaps.ci.CIAdminUser;

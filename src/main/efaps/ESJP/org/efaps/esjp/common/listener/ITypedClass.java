@@ -21,7 +21,7 @@
 
 package org.efaps.esjp.common.listener;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
 import org.efaps.util.EFapsException;

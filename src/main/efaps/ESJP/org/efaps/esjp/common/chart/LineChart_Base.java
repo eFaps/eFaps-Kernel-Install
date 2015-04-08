@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.EFapsException;
 import org.jfree.chart.ChartFactory;

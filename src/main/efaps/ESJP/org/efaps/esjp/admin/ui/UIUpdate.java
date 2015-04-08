@@ -28,7 +28,7 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Delete;
 import org.efaps.db.Insert;

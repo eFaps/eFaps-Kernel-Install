@@ -24,7 +24,7 @@ package org.efaps.esjp.admin.util;
 import java.util.UUID;
 
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Delete;
 import org.efaps.db.Instance;

@@ -24,7 +24,7 @@ import java.util.Enumeration;
 import java.util.ResourceBundle;
 
 import org.efaps.admin.dbproperty.DBProperties;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**

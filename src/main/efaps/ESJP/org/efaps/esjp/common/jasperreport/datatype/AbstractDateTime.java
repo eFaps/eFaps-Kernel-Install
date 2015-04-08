@@ -28,7 +28,7 @@ import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.dynamicreports.report.definition.expression.DRIValueFormatter;
 import net.sf.dynamicreports.report.exception.DRException;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;

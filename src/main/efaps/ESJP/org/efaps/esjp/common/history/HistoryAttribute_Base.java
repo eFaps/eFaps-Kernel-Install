@@ -22,7 +22,7 @@ package org.efaps.esjp.common.history;
 
 import org.efaps.admin.datamodel.IJaxb;
 import org.efaps.admin.datamodel.ui.UIValue;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.esjp.common.history.xml.AbstractConnectLog;

@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.eql.IEsjpSelect;

@@ -32,7 +32,7 @@ import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JasperReport;
 
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.util.EFapsException;

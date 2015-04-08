@@ -24,7 +24,7 @@ import java.util.Properties;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.api.ui.DateDefaultValues;
 import org.efaps.db.Context;
