@@ -36,7 +36,7 @@
             <child>Admin_Common_DBPropertiesMyDesk</child>
             <child>Admin_Common_DBPropertiesBundleMyDesk</child>
             <child>Admin_Common_SystemConfigurationMyDesk</child>
-            <child>Admin_Common_VersionMyDesk</child>
+            <child>Admin_Common_ApplicationVersionMyDesk</child>
             <child>DB_StoreMyDesk</child>
             <child>Admin_Common_NumberGeneratorMyDesk</child>
             <child>Admin_Common_QuartzTriggerMyDesk</child>
