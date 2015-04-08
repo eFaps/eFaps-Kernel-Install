@@ -42,6 +42,7 @@
     </definition>
     <definition>
         <version-expression>(version==1)</version-expression>
+        <name>Admin_Common_ApplicationSQLTable</name>
         <database>
             <table-name>T_CMAPP</table-name>
             <column name="NAME"     type="STRING_SHORT" length="128" not-null="true" />

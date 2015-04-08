@@ -45,6 +45,7 @@
     </definition>
     <definition>
         <version-expression>(version==1)</version-expression>
+        <name>Admin_Common_ApplicationRevisionSQLTable</name>
         <database>
             <table-name>T_CMAPPREVISION</table-name>
             <column name="APPID"    type="INTEGER"                   not-null="true" />
