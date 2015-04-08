@@ -146,11 +146,10 @@ function _eFapsCreateInsertSQLTable(_stmt, _text, _uuid, _name, _sqlTable, _sqlC
 
   var ret = _insert(_stmt, _text, null,
                     "T_CMABSTRACT",
-                    "TYPEID,UUID,NAME,REVISION,CREATOR,CREATED,MODIFIER,MODIFIED",
+                    "TYPEID,UUID,NAME,CREATOR,CREATED,MODIFIER,MODIFIED",
                     typeIdSQLTable
                         + ", '" + _uuid + "'"
                         + ",'" + _name + "'"
-                        + ",''"
                         + ", 1"
                         + "," + CURRENT_TIMESTAMP
                         + ",1"
@@ -179,8 +178,8 @@ function _eFapsCreateInsertType(_stmt, _text, _uuid, _name, _parentType, _purpos
 
   var ret = _insert(_stmt, _text, null,
                     "T_CMABSTRACT",
-                    "TYPEID,NAME,UUID,REVISION,CREATOR,CREATED,MODIFIER,MODIFIED,PURPOSE",
-                    typeIdType + ", '" + _name + "','" + _uuid + "','',1," + CURRENT_TIMESTAMP + ",1," + CURRENT_TIMESTAMP + "," + _purpose);
+                    "TYPEID,NAME,UUID,CREATOR,CREATED,MODIFIER,MODIFIED,PURPOSE",
+                    typeIdType + ", '" + _name + "','" + _uuid + "',1," + CURRENT_TIMESTAMP + ",1," + CURRENT_TIMESTAMP + "," + _purpose);
   _exec(_stmt, null, null, "insert into T_DMTYPE values  (" + ret + ", " + parentTypeId + ", null)");
   return ret;
 }
@@ -211,8 +210,8 @@ function _eFapsCreateInsertAttr(_stmt, _tableId, _typeId, _name, _sqlColumn, _at
 
   var ret = _insert(_stmt, null, null,
                     "T_CMABSTRACT",
-                    "TYPEID,NAME,REVISION,CREATOR,CREATED,MODIFIER,MODIFIED",
-                    typeIdAttr + ", '" + _name + "', '', 1," + CURRENT_TIMESTAMP + ",1," + CURRENT_TIMESTAMP);
+                    "TYPEID,NAME,CREATOR,CREATED,MODIFIER,MODIFIED",
+                    typeIdAttr + ", '" + _name + "', 1," + CURRENT_TIMESTAMP + ",1," + CURRENT_TIMESTAMP);
 
   sql = "insert into T_DMATTRIBUTE (ID, DMTABLE, DMTYPE, DMATTRIBUTETYPE, DMTYPELINK, SQLCOLUMN, CLASSNAME) values  (" + ret + ", " + _tableId + ", " + _typeId + ",  " + attrTypeId + ", " + typeLinkId + ", '" + _sqlColumn + "',";
   if (_className != null) {
@@ -475,8 +474,8 @@ function _eFapsCreateAttrType(_stmt, _text, _uuid, _name, _classDM, _classUI, _a
 
   var ret = _insert(_stmt, _text, null,
                     "T_CMABSTRACT",
-                    "TYPEID,NAME,UUID,REVISION,CREATOR,CREATED,MODIFIER,MODIFIED",
-                    typeIdType + ", '" + _name + "','" + _uuid + "','',1," + CURRENT_TIMESTAMP + ",1," + CURRENT_TIMESTAMP);
+                    "TYPEID,NAME,UUID,CREATOR,CREATED,MODIFIER,MODIFIED",
+                    typeIdType + ", '" + _name + "','" + _uuid + "',1," + CURRENT_TIMESTAMP + ",1," + CURRENT_TIMESTAMP);
   _exec(_stmt, null, null, "insert into T_DMATTRIBUTETYPE(ID,CLASSNAME,CLASSNAMEUI,ALWAYSUPDATE,CREATEUPDATE)"
                            + " values  (" + ret + ", '" + _classDM + "', '" + _classUI + "', " + _alUpd + ", " + _crUp + ")");
   return ret;
@@ -646,7 +645,7 @@ function _eFapsCreateCommonTablesStep2()  {
   _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'Modified',         'MODIFIED',         'Modified',     null, null);
   _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'Name',             'NAME',             'String',       null, null);
   _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'UUID',             'UUID',             'String',       null, null);
-  _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'Revision',         'REVISION',         'String',       null, null);
+  _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'RevisionLink',     'REVISIONID',       'Long',       null, null);
   _eFapsCreateInsertAttr(stmt, sqlTableIdAbstract, typeIdAbstract, 'Purpose',          'PURPOSE',          'BitEnum',      null, "org.efaps.admin.datamodel.Type$Purpose");
 
   /////////////////////////////////////////
