@@ -56,11 +56,11 @@
             <property name="Width">4</property>
             <property name="ModeSearch">READONLY</property>
         </field>
-        <field name="revision">
-            <property name="Attribute">Revision</property>
-            <property name="Label">Admin_UI_Abstract/Revision.Label</property>
-            <property name="Width">2</property>
+         <field name="revision">
             <property name="ModeSearch">READONLY</property>
+            <property name="SelectAlternateOID">linkto[RevisionLink].oid</property>
+            <property name="MsgPhrase">Admin_Common_ApplicationRevisionShortMsgPhrase</property>
+            <property name="Label">Admin_Common_ApplicationRevision.Label</property>
         </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
