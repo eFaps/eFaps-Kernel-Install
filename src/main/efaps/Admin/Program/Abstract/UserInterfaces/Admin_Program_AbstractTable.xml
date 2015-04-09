@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2015 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -23,18 +23,14 @@
 
 -->
 
-<ui-table xmlns="http://www.efaps.org/xsd"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>86fb77a3-be63-4d55-8fcb-a6aaf85120a7</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Program_AbstractTable</name>
-        <!-- fields -->
         <field name="type">
             <property name="ModeSearch">READONLY</property>
             <property name="Attribute">Type</property>
@@ -49,10 +45,11 @@
             <property name="Label">Admin_Program_Abstract/Name.Label</property>
             <property name="Width">2</property>
         </field>
-        <field name="revisionLink">
+        <field name="revision">
             <property name="ModeSearch">READONLY</property>
-            <property name="Select">linkto[RevisionLink].attribute[Date]</property>
-            <property name="Label">Admin_Program_Abstract/Revision.Label</property>
+            <property name="SelectAlternateOID">linkto[RevisionLink].oid</property>
+            <property name="MsgPhrase">Admin_Common_ApplicationRevisionShortMsgPhrase</property>
+            <property name="Label">Admin_Common_ApplicationRevision.Label</property>
         </field>
         <field name="checkout">
             <icon>Action_View</icon>
@@ -69,5 +66,4 @@
             <property name="Width">15px</property>
         </field>
     </definition>
-
 </ui-table>
