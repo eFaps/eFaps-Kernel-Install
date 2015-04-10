@@ -61,6 +61,7 @@
             <property name="SelectAlternateOID">linkto[RevisionLink].oid</property>
             <property name="MsgPhrase">Admin_Common_ApplicationRevisionShortMsgPhrase</property>
             <property name="Label">Admin_Common_ApplicationRevision.Label</property>
+            <property name="HRef">true</property>
         </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
