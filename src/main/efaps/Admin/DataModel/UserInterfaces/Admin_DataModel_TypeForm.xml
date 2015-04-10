@@ -48,13 +48,12 @@
             <property name="Attribute">UUID</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
-        <field name="revision">
-            <property name="Columns">20</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="Attribute">Revision</property>
-            <property name="Required">true</property>
-            <property name="ModeSearch">EDITABLE</property>
+         <field name="revision">
+            <property name="SelectAlternateOID">linkto[RevisionLink].oid</property>
+            <property name="MsgPhrase">Admin_Common_ApplicationRevisionMsgPhrase</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Admin_Common_ApplicationRevision.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>
@@ -85,7 +84,7 @@
         </field>
          <field name="purpose">
             <property name="Label">Admin_DataModel_Type/Purpose.Label</property>
-            <property name="Attribute">Purpose</property>                        
+            <property name="Attribute">Purpose</property>
         </field>
         <field name="parentClassType">
             <property name="SelectAlternateOID">linkto[ParentClassType].oid</property>
