@@ -40,9 +40,9 @@ import net.sf.jasperreports.engine.query.JRQueryExecuter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
-import org.efaps.eql.IEQLStmt;
-import org.efaps.eql.ISelectStmt;
 import org.efaps.eql.InvokerUtil;
+import org.efaps.eql.stmt.IEQLStmt;
+import org.efaps.eql.stmt.parts.ISelectStmtPart;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,8 +118,8 @@ public abstract class EQLQueryExecuter_Base
         try {
             final String stmtStr = this.dataset.getQuery().getText();
             final IEQLStmt stmt = InvokerUtil.getInvoker().invoke(replaceParameters(stmtStr));
-            if (stmt instanceof ISelectStmt) {
-                list.addAll(((ISelectStmt) stmt).getData());
+            if (stmt instanceof ISelectStmtPart) {
+                list.addAll(((ISelectStmtPart) stmt).getData());
             }
         } catch (final EFapsException e) {
             LOG.error("Catched Exception", e);
