@@ -154,7 +154,7 @@ public class CICommon
             super(_uuid);
         }
 
-        public final CIAttribute Source = new CIAttribute(this, "Source");
+        public final CIAttribute Origin = new CIAttribute(this, "Origin");
         public final CIAttribute EQLStatement = new CIAttribute(this, "EQLStatement");
         public final CIAttribute Creator = new CIAttribute(this, "Creator");
         public final CIAttribute Created = new CIAttribute(this, "Created");
