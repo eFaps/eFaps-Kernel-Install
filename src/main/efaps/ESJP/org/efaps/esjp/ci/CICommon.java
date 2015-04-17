@@ -61,7 +61,6 @@ public class CICommon
         }
     }
 
-
     public static final _HistoryCreate HistoryCreate = new _HistoryCreate("510ced6e-101a-434c-b891-069861e64fc2");
 
     public static class _HistoryCreate
@@ -142,5 +141,22 @@ public class CICommon
         {
             super(_uuid);
         }
+    }
+
+    public static final _HistoryEQL HistoryEQL = new _HistoryEQL("c96c63b5-2d4c-4bf9-9627-f335fd9c7a84");
+
+    public static class _HistoryEQL
+        extends CIType
+    {
+
+        protected _HistoryEQL(final String _uuid)
+        {
+            super(_uuid);
+        }
+
+        public final CIAttribute Source = new CIAttribute(this, "Source");
+        public final CIAttribute EQLStatement = new CIAttribute(this, "EQLStatement");
+        public final CIAttribute Creator = new CIAttribute(this, "Creator");
+        public final CIAttribute Created = new CIAttribute(this, "Created");
     }
 }

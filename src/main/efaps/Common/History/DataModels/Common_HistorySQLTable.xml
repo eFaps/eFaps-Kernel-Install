@@ -26,25 +26,20 @@
 <datamodel-sqltable xmlns="http://www.efaps.org/xsd"
                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>18bd1cff-c982-47ac-81e5-a4df96ee4b6f</uuid>
     <file-application>eFaps-Kernel</file-application>
     <file-revision>$Rev$</file-revision>
-
-    <!-- History of Events for Objects -->
     <definition>
         <version-expression>(version==3) || (version==latest)</version-expression>
         <name>Common_HistorySQLTable</name>
         <typeid-column>TYPEID</typeid-column>
         <database>
-            <table-name>T_CM_HISTORY</table-name>
-            <!-- columns -->
+            <table-name>T_CMHISTORY</table-name>
             <column name="TYPEID"       type="INTEGER"       not-null="true" />
             <column name="GENINSTID"    type="INTEGER"       not-null="true" />
             <column name="VALUE"        type="CLOB"          not-null="true"/>
             <column name="CREATOR"      type="INTEGER"       not-null="true" />
             <column name="CREATED"      type="DATETIME"      not-null="true" />
-            <!-- constraints -->
             <foreign name="T_CMHISTORY_FK_GENINSTID"    key="GENINSTID" reference="T_CMGENINST(ID)" />
             <foreign name="T_CMHISTORY_FK_CREATOR"      key="CREATOR"   reference="T_USERABSTRACT(ID)" />
         </database>
