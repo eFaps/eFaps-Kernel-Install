@@ -42,6 +42,7 @@
             <child>Admin_Common_QuartzTriggerMyDesk</child>
             <child>Admin_Common_JmsMyDesk</child>
             <child>Admin_Common_MsgPhraseMyDesk</child>
+            <child>Common_HistoryEQLMyDesk</child>
         </childs>
     </definition>
 </ui-menu>
