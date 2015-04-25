@@ -15,9 +15,6 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
 
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -31,6 +28,6 @@
         <purpose GeneralInstance="false" />
         <trigger event="ACCESSCHECK"
             name="Common_HistoryClassificationDelete.ACCESSCHECK"
-            program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType" />
+            program="org.efaps.esjp.admin.access.InsertOnlyAccessCheck" />
     </definition>
 </datamodel-type>

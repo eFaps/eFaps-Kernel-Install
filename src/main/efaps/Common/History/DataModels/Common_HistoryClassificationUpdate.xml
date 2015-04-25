@@ -21,7 +21,6 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>88c2bba1-eb63-458d-a23c-5532513ffdaa</uuid>
     <file-application>eFaps-Kernel</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Common_HistoryClassificationUpdate</name>
@@ -29,6 +28,6 @@
         <purpose GeneralInstance="false" />
         <trigger event="ACCESSCHECK"
             name="Common_HistoryClassificationUpdate.ACCESSCHECK"
-            program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType" />
+            program="org.efaps.esjp.admin.access.InsertOnlyAccessCheck" />
     </definition>
 </datamodel-type>

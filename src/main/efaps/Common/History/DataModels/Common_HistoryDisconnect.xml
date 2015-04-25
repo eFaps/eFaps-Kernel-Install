@@ -15,25 +15,19 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
 
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>5631c300-5814-4ce8-8cee-6119b9ff6ab3</uuid>
     <file-application>eFaps-Kernel</file-application>
-    <file-revision>$Rev$</file-revision>
-
-    <definition>
+     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Common_HistoryDisconnect</name>
         <parent>Common_HistoryAbstractUpdate</parent>
         <purpose GeneralInstance="false" />
         <trigger event="ACCESSCHECK" name="Common_HistoryDisconnect.ACCESSCHECK"
-            program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType" />
+            program="org.efaps.esjp.admin.access.InsertOnlyAccessCheck" />
     </definition>
 </datamodel-type>

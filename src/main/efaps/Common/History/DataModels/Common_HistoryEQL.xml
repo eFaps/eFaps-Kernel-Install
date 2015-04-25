@@ -24,6 +24,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Common_HistoryEQL</name>
+        <purpose GeneralInstance="false"/>
         <attribute>
             <name>Type</name>
             <type>Type</type>
@@ -66,5 +67,8 @@
             <sqltable>Common_HistoryEQLSQLTable</sqltable>
             <sqlcolumn>CREATED</sqlcolumn>
         </attribute>
+         <trigger program="org.efaps.esjp.admin.access.InsertOnlyAccessCheck"
+             name="Common_HistoryEQL.ACCESSCHECK"
+             event="ACCESSCHECK"/>
     </definition>
 </datamodel-type>

@@ -15,16 +15,12 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 9301 $
- Last Changed:    $Date: 2013-04-27 18:41:43 -0500 (Sat, 27 Apr 2013) $
- Last Changed By: $Author: jan@moxter.net $
 
 -->
 <datamodel-sqltable xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>227c632a-d4c6-46dd-b886-bec8e95f1519</uuid>
     <file-application>eFaps-Kernel</file-application>
-    <file-revision>$Rev: 9301 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Common_HistoryEQLSQLTable</name>

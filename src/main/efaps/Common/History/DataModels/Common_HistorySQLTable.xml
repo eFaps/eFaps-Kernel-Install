@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2015 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -17,9 +17,6 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
 
 -->
 
@@ -28,7 +25,6 @@
                     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>18bd1cff-c982-47ac-81e5-a4df96ee4b6f</uuid>
     <file-application>eFaps-Kernel</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==3) || (version==latest)</version-expression>
         <name>Common_HistorySQLTable</name>

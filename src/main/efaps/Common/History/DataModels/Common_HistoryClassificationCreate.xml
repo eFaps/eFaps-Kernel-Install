@@ -28,6 +28,6 @@
         <purpose GeneralInstance="false" />
         <trigger event="ACCESSCHECK"
             name="Common_HistoryClassificationCreate.ACCESSCHECK"
-            program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType" />
+            program="org.efaps.esjp.admin.access.InsertOnlyAccessCheck" />
     </definition>
 </datamodel-type>
