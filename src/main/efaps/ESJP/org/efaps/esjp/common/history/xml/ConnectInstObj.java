@@ -37,7 +37,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 @EFapsUUID("f97b6278-f5a2-4b7b-a157-25581356f726")
 @EFapsApplication("eFaps-Kernel")
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = "classInstance")
+@XmlRootElement(name = "connectInstance")
 public class ConnectInstObj
     extends AbstractInstObj
 {
