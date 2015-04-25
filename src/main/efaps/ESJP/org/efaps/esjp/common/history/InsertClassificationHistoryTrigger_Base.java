@@ -54,11 +54,11 @@ public abstract class InsertClassificationHistoryTrigger_Base
                                  final AbstractHistoryLog _log)
         throws EFapsException
     {
-        super.add2LogObject(_parameter, _log);
         final ClassInstObj instObj = new ClassInstObj();
         instObj.setOid(_parameter.getInstance().getOid());
         instObj.setTypeUUID(_parameter.getInstance().getType().getUUID());
         ((IClassificationLog) _log).setClassInstObj(instObj);
+        instObj.getAttributes().addAll(getAttributes(_parameter, _parameter.getInstance()));
     }
 
     /**

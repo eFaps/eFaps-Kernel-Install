@@ -99,4 +99,10 @@ public class UpdateClassificationLog
     {
         this.classInstObj = _classificationInstance;
     }
+
+    @Override
+    protected AbstractInstObj getInstObj4Description()
+    {
+        return getClassInstObj();
+    }
 }

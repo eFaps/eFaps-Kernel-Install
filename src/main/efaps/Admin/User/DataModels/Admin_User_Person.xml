@@ -216,7 +216,6 @@
             <sqlcolumn>LOGINTRIES</sqlcolumn>
         </attribute>
 
-
         <!-- triggers -->
         <trigger name="Admin_User_Person_ACCESSCHECK"
             event="ACCESSCHECK"
@@ -234,7 +233,8 @@
             index="2"
             name="Admin_User_Person.UPDATE_POST.2"
             event="UPDATE_POST">
-            <property name="Phrase4Attribute_Language">$&lt;linkto[Language].attribute[Language]&gt;</property>
+            <property name="SelectAttribute01">Language</property>
+            <property name="Select01">linkto[Language].attribute[Language]</property>
         </trigger>
         <trigger program="org.efaps.esjp.common.history.InsertHistoryTrigger"
             index="2"

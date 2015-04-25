@@ -18,23 +18,26 @@
  * Last Changed By: $Author$
  */
 
-
 package org.efaps.esjp.common.history;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.collections4.BidiMap;
+import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.attributetype.PasswordType;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
 import org.efaps.esjp.common.history.xml.AbstractHistoryLog;
 import org.efaps.esjp.common.history.xml.AttributeValue;
 import org.efaps.util.EFapsException;
-
 
 /**
  * TODO comment!
@@ -47,7 +50,6 @@ import org.efaps.util.EFapsException;
 public abstract class AbstractUpdateHistoryTrigger_Base
     extends AbstractHistoryTrigger
 {
-
     /**
      * {@inheritDoc}
      */
@@ -56,8 +58,21 @@ public abstract class AbstractUpdateHistoryTrigger_Base
                                  final AbstractHistoryLog _log)
         throws EFapsException
     {
+        _log.getInstance().getAttributes().addAll(getAttributes(_parameter, getHistoryInstance(_parameter)));
+    }
+
+    protected List<AttributeValue> getAttributes(final Parameter _parameter,
+                                                 final Instance _instance)
+        throws EFapsException
+    {
+        final List<AttributeValue> ret = new ArrayList<>();
         final Map<?, ?> values = (Map<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
-        analyseProperty(_parameter, "");
+        final BidiMap<Integer, String> selectAttributes = new DualHashBidiMap<>(analyseProperty(_parameter,
+                        "SelectAttribute"));
+        final Map<Integer, String> selects = analyseProperty(_parameter, "Select");
+        final BidiMap<Integer, String> phraseAttributes = new DualHashBidiMap<>(analyseProperty(_parameter,
+                        "PhraseAttribute"));
+        final Map<Integer, String> phrases = analyseProperty(_parameter, "Phrase");
         for (final Entry<?, ?> entry : values.entrySet()) {
             final Attribute attr = (Attribute) entry.getKey();
             if (!attr.getAttributeType().isAlwaysUpdate() && !attr.getAttributeType().isCreateUpdate()) {
@@ -66,16 +81,19 @@ public abstract class AbstractUpdateHistoryTrigger_Base
                 if (attr.getAttributeType().getDbAttrType() instanceof PasswordType) {
                     attrValue.setValue("****************");
                 } else {
-                    final String phrase = getProperty(_parameter, "Phrase4Attribute_" + attr.getName());
-                    String phraseVal = null;
-                    if (phrase != null) {
-                        final PrintQuery print = new PrintQuery(getHistoryInstance(_parameter));
+                    // check is a select exists
+                    if (selectAttributes.containsValue(attr.getName())) {
+                        final String select = selects.get(selectAttributes.getKey(attr.getName()));
+                        final PrintQuery print = new PrintQuery(_instance);
+                        print.addSelect(select);
+                        print.executeWithoutAccessCheck();
+                        attrValue.setValue(print.getSelect(select));
+                    } else if (phraseAttributes.containsValue(attr.getName())) {
+                        final String phrase = phrases.get(phraseAttributes.getKey(attr.getName()));
+                        final PrintQuery print = new PrintQuery(_instance);
                         print.addPhrase("SelectPhrase", phrase);
                         print.executeWithoutAccessCheck();
-                        phraseVal  = print.getPhrase("SelectPhrase");
-                    }
-                    if (phraseVal != null) {
-                        attrValue.setValue(phraseVal);
+                        attrValue.setValue(print.getPhrase("SelectPhrase"));
                     } else {
                         final Object obj = entry.getValue();
                         if (obj instanceof Object[]) {
@@ -83,8 +101,9 @@ public abstract class AbstractUpdateHistoryTrigger_Base
                         }
                     }
                 }
-                _log.getInstance().getAttributes().add(attrValue);
+                ret.add(attrValue);
             }
         }
+        return ret;
     }
 }

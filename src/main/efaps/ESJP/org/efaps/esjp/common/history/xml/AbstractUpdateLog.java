@@ -18,7 +18,6 @@
  * Last Changed By: $Author$
  */
 
-
 package org.efaps.esjp.common.history.xml;
 
 import org.efaps.admin.datamodel.Attribute;
@@ -28,7 +27,6 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.esjp.common.history.IHistoryHtml;
 import org.efaps.util.EFapsException;
-
 
 /**
  * TODO comment!
@@ -42,6 +40,7 @@ public abstract class AbstractUpdateLog
     extends AbstractHistoryLog
     implements IHistoryHtml
 {
+
     /**
      * {@inheritDoc}
      */
@@ -49,21 +48,28 @@ public abstract class AbstractUpdateLog
     public StringBuilder getDescriptionColumnValue()
         throws EFapsException
     {
-        final AbstractInstObj inst = getInstance();
-        final Type type = Type.get(inst.getTypeUUID());
         final StringBuilder ret = new StringBuilder();
-        boolean first = true;
-        for (final AttributeValue attrVal : inst.getAttributes()) {
-            final Attribute attr = type.getAttribute(attrVal.getName());
-            if (attr != null) {
-                if (first) {
-                    first = false;
-                } else {
-                    ret.append("<br/>");
+        final AbstractInstObj inst = getInstObj4Description();
+        if (inst != null) {
+            final Type type = Type.get(inst.getTypeUUID());
+            boolean first = true;
+            for (final AttributeValue attrVal : inst.getAttributes()) {
+                final Attribute attr = type.getAttribute(attrVal.getName());
+                if (attr != null) {
+                    if (first) {
+                        first = false;
+                    } else {
+                        ret.append("<br/>");
+                    }
+                    ret.append(DBProperties.getProperty(attr.getLabelKey())).append(": ").append(attrVal.getValue());
                 }
-                ret.append(DBProperties.getProperty(attr.getLabelKey())).append(": ").append(attrVal.getValue());
             }
         }
         return ret;
+    }
+
+    protected AbstractInstObj getInstObj4Description()
+    {
+        return getInstance();
     }
 }
