@@ -21,6 +21,7 @@
 package org.efaps.esjp.common.history;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -73,9 +74,12 @@ public abstract class AbstractUpdateHistoryTrigger_Base
         final BidiMap<Integer, String> phraseAttributes = new DualHashBidiMap<>(analyseProperty(_parameter,
                         "PhraseAttribute"));
         final Map<Integer, String> phrases = analyseProperty(_parameter, "Phrase");
+        final Collection<String> ignore = analyseProperty(_parameter, "IgnoreAttribute").values();
+
         for (final Entry<?, ?> entry : values.entrySet()) {
             final Attribute attr = (Attribute) entry.getKey();
-            if (!attr.getAttributeType().isAlwaysUpdate() && !attr.getAttributeType().isCreateUpdate()) {
+            if (!attr.getAttributeType().isAlwaysUpdate() && !attr.getAttributeType().isCreateUpdate()
+                            && !ignore.contains(attr.getName())) {
                 final AttributeValue attrValue = new AttributeValue();
                 attrValue.setName(attr.getName());
                 if (attr.getAttributeType().getDbAttrType() instanceof PasswordType) {
