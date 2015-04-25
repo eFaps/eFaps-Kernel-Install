@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,37 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
-package org.efaps.esjp.common.history.xml;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+package org.efaps.esjp.common.history;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
-@EFapsUUID("f97b6278-f5a2-4b7b-a157-25581356f726")
+@EFapsUUID("8cb50785-aa82-42a9-9008-67af20689b12")
 @EFapsApplication("eFaps-Kernel")
-@XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = "classInstance")
-public class ConnectInstObj
-    extends AbstractInstObj
+public class UpdateClassificationHistoryTrigger
+    extends UpdateClassificationHistoryTrigger_Base
 {
-    @Override
-    public String toString()
-    {
-        return ToStringBuilder.reflectionToString(this);
-    }
+
 }

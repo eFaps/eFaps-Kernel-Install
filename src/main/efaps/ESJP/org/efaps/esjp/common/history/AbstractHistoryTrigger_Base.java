@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,7 +62,7 @@ public abstract class AbstractHistoryTrigger_Base
     {
         final AbstractHistoryLog log = getLogObject(_parameter);
         log.setDate(new Date());
-        final Instance instance = _parameter.getInstance();
+        final Instance instance = getHistoryInstance(_parameter);
 
         final InstObj instObj = new InstObj();
         instObj.setOid(instance.getOid());
@@ -72,7 +72,7 @@ public abstract class AbstractHistoryTrigger_Base
         add2LogObject(_parameter, log);
 
         final Insert insert = new Insert(getHistoryType());
-        insert.add(CICommon.HistoryAbstract.GeneralInstanceLink, getHistoryInstance(_parameter).getGeneralId());
+        insert.add(CICommon.HistoryAbstract.GeneralInstanceLink, instance.getGeneralId());
         insert.add(CICommon.HistoryAbstract.Value, log);
         insert.executeWithoutTrigger();
         AbstractHistoryTrigger_Base.LOG.debug("Registered for History: {}", log);

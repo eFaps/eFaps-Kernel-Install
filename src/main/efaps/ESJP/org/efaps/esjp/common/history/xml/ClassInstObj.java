@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,11 +34,11 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("f97b6278-f5a2-4b7b-a157-25581356f726")
+@EFapsUUID("f02daf89-5a6a-4542-847c-0d4bd9232d0f")
 @EFapsApplication("eFaps-Kernel")
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "classInstance")
-public class ConnectInstObj
+public class ClassInstObj
     extends AbstractInstObj
 {
     @Override

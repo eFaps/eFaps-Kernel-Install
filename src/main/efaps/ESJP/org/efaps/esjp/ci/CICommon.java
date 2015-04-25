@@ -73,6 +73,42 @@ public class CICommon
         }
     }
 
+    public static final _HistoryClassificationCreate HistoryClassificationCreate = new _HistoryClassificationCreate("18a26ed6-3614-4382-9751-d95a9f5cbab9");
+
+    public static class _HistoryClassificationCreate
+        extends _HistoryAbstractUpdate
+    {
+
+        protected _HistoryClassificationCreate(final String _uuid)
+        {
+            super(_uuid);
+        }
+    }
+
+    public static final _HistoryClassificationUpdate HistoryClassificationUpdate = new _HistoryClassificationUpdate("88c2bba1-eb63-458d-a23c-5532513ffdaa");
+
+    public static class _HistoryClassificationUpdate
+        extends _HistoryAbstractUpdate
+    {
+
+        protected _HistoryClassificationUpdate(final String _uuid)
+        {
+            super(_uuid);
+        }
+    }
+
+    public static final _HistoryClassificationDelete HistoryClassificationDelete = new _HistoryClassificationDelete("46e8a07d-44fb-450d-b7ef-524b8c628675");
+
+    public static class _HistoryClassificationDelete
+        extends _HistoryAbstractUpdate
+    {
+
+        protected _HistoryClassificationDelete(final String _uuid)
+        {
+            super(_uuid);
+        }
+    }
+
     public static final _HistoryUpdate HistoryUpdate = new _HistoryUpdate("fdc408a6-c94c-425c-86fa-6d632281010d");
 
     public static class _HistoryUpdate
