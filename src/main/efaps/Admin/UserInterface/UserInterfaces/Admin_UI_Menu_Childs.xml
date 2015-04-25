@@ -58,7 +58,7 @@
             <property name="SortAble">false</property>
         </field>
         <field name="revision">
-            <property name="SelectAlternateOID">linkto[ToCommand].oid</property>
+            <property name="SelectAlternateOID">linkto[ToCommand].linkto[RevisionLink].oid</property>
             <property name="MsgPhrase">Admin_Common_ApplicationRevisionShortMsgPhrase</property>
             <property name="HRef">TREE</property>
             <property name="Label">Admin_Common_ApplicationRevision.Label</property>
