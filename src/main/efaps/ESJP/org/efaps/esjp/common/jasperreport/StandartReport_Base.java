@@ -38,17 +38,13 @@ import javax.xml.parsers.ParserConfigurationException;
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JRExpression;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.export.JRRtfExporter;
 import net.sf.jasperreports.engine.export.JRTextExporter;
-import net.sf.jasperreports.engine.export.JRTextExporterParameter;
-import net.sf.jasperreports.engine.export.JRXlsAbstractExporterParameter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.oasis.JROdsExporter;
 import net.sf.jasperreports.engine.export.oasis.JROdtExporter;
@@ -57,6 +53,12 @@ import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.engine.util.LocalJasperReportsContext;
 import net.sf.jasperreports.engine.xml.JRXmlDigesterFactory;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOdtReportConfiguration;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleTextReportConfiguration;
+import net.sf.jasperreports.export.SimpleWriterExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 
 import org.apache.commons.collections4.SetUtils;
 import org.efaps.admin.common.SystemConfiguration;
@@ -65,8 +67,8 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsClassLoader;
 import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsClassLoader;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIAdminProgram;
 import org.efaps.db.Checkout;
@@ -271,17 +273,32 @@ public abstract class StandartReport_Base
     }
 
     /**
+     * Get the instance of the JasperReport.
+     * <ol>
+     * <li>JasperReport</li>
+     * <li>JasperConfig with JasperConfigAttribute</li>
+     * <li>JasperKey</li>
+     * </ol>
      * @param _parameter Parameter as passed by the eFasp API
-     * @return file created
+     * @return Instance of the jasperreport
      * @throws EFapsException on error
      */
-    public File getFile(final Parameter _parameter)
+    protected Instance getJasperReportInstance(final Parameter _parameter)
         throws EFapsException
     {
-        File ret = null;
+        Instance ret = null;
         String name = null;
         if (containsProperty(_parameter, "JasperReport")) {
             name = getProperty(_parameter, "JasperReport");
+        } else if (containsProperty(_parameter, "JasperConfig")) {
+            final String config = getProperty(_parameter, "JasperConfig");
+            final SystemConfiguration sysConf;
+            if (isUUID(config)) {
+                sysConf = SystemConfiguration.get(UUID.fromString(config));
+            } else {
+                sysConf = SystemConfiguration.get(config);
+            }
+            name = sysConf.getAttributeValue(getProperty(_parameter, "JasperConfigAttribute"));
         } else {
             // Commons-Configuration
             final SystemConfiguration sysConf = SystemConfiguration.get(UUID
@@ -296,97 +313,112 @@ public abstract class StandartReport_Base
         if (name == null) {
             StandartReport_Base.LOG.error("Neither JasperReport nor JasperKey lead to valid Report Name");
         }
+        final QueryBuilder queryBldr = new QueryBuilder(CIAdminProgram.JasperReportCompiled);
+        queryBldr.addWhereAttrEqValue(CIAdminProgram.JasperReportCompiled.Name, name);
+        final InstanceQuery query = queryBldr.getQuery();
+        query.execute();
+        if (query.next()) {
+            ret = query.getCurrentValue();
+        }
+        return ret;
+    }
+
+
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return file created
+     * @throws EFapsException on error
+     */
+    public File getFile(final Parameter _parameter)
+        throws EFapsException
+    {
+        File ret = null;
 
         final String dataSourceClass = getProperty(_parameter, "DataSourceClass");
         final boolean noDataSource = "true".equalsIgnoreCase(getProperty(_parameter, "NoDataSource"));
 
         add2ReportParameter(_parameter);
 
-        final QueryBuilder queryBldr = new QueryBuilder(CIAdminProgram.JasperReportCompiled);
-        queryBldr.addWhereAttrEqValue(CIAdminProgram.JasperReportCompiled.Name, name);
-        final InstanceQuery query = queryBldr.getQuery();
-        query.execute();
-        Instance instance = null;
-        if (query.next()) {
-            instance = query.getCurrentValue();
-        } else {
-            throw new EFapsException(StandartReport_Base.class, "execute.ReportNotFound");
-        }
-        final Checkout checkout = new Checkout(instance);
-        final InputStream iin = checkout.execute();
-        try {
-            DefaultJasperReportsContext.getInstance().setProperty("net.sf.jasperreports.query.executer.factory.eFaps",
-                            EQLQueryExecuterFactory.class.getName());
-            final LocalJasperReportsContext ctx = new LocalJasperReportsContext(
-                            DefaultJasperReportsContext.getInstance());
-            ctx.setFileResolver(new JasperFileResolver());
-            ctx.setClassLoader(EFapsClassLoader.getInstance());
+        final Instance jasperInst = getJasperReportInstance(_parameter);
+        if (jasperInst != null && jasperInst.isValid()) {
+            final Checkout checkout = new Checkout(jasperInst);
+            final InputStream iin = checkout.execute();
+            try {
+                DefaultJasperReportsContext.getInstance().setProperty(
+                                "net.sf.jasperreports.query.executer.factory.eFaps",
+                                EQLQueryExecuterFactory.class.getName());
+                final LocalJasperReportsContext ctx = new LocalJasperReportsContext(
+                                DefaultJasperReportsContext.getInstance());
+                ctx.setFileResolver(new JasperFileResolver());
+                ctx.setClassLoader(EFapsClassLoader.getInstance());
 
-            ctx.setProperty("net.sf.jasperreports.subreport.runner.factory", SubReportRunnerFactory.class.getName());
-            ctx.setProperty("net.sf.jasperreports.query.executer.factory.eFaps",
-                            EQLQueryExecuterFactory.class.getName());
+                ctx.setProperty("net.sf.jasperreports.subreport.runner.factory", SubReportRunnerFactory.class.getName());
+                ctx.setProperty("net.sf.jasperreports.query.executer.factory.eFaps",
+                                EQLQueryExecuterFactory.class.getName());
 
-            final JasperReport jasperReport = (JasperReport) JRLoader.loadObject(iin);
-            iin.close();
+                final JasperReport jasperReport = (JasperReport) JRLoader.loadObject(iin);
+                iin.close();
 
-            IeFapsDataSource dataSource = null;
-            if (dataSourceClass != null) {
-                final Class<?> clazz = Class.forName(dataSourceClass);
-                final Method method = clazz.getMethod("init",
-                                new Class[] { JasperReport.class, Parameter.class, JRDataSource.class, Map.class });
-                dataSource = (IeFapsDataSource) clazz.newInstance();
-                method.invoke(dataSource, jasperReport, _parameter, null, this.jrParameters);
-            } else if (!noDataSource) {
-                dataSource = new EFapsDataSource();
-                dataSource.init(jasperReport, _parameter, null, this.jrParameters);
-            }
-            if (dataSource != null) {
-                this.jrParameters.put("EFAPS_SUBREPORT", new SubReportContainer(_parameter, dataSource,
-                                this.jrParameters));
-            }
-            final ReportRunner runner = new ReportRunner(ctx, jasperReport, this.jrParameters, dataSource);
-            final Thread t = new Thread(runner);
-            t.setContextClassLoader(EFapsClassLoader.getInstance());
-            t.start();
-
-            while (t.isAlive()) {
-                // add an abort criteria
-            }
-            String mime = getProperty(_parameter, "Mime");
-            if (mime == null) {
-                mime = _parameter.getParameterValue("mime");
-            }
-            // check for a file name, if null search in the properties
-            if (getFileName() == null) {
-                setFileName(getProperty(_parameter, "FileName"));
-                // last chance search in the jasper Parameters
-                if (getFileName() == null) {
-                    setFileName((String) this.jrParameters.get("FileName"));
+                IeFapsDataSource dataSource = null;
+                if (dataSourceClass != null) {
+                    final Class<?> clazz = Class.forName(dataSourceClass);
+                    final Method method = clazz.getMethod("init",
+                                    new Class[] { JasperReport.class, Parameter.class, JRDataSource.class, Map.class });
+                    dataSource = (IeFapsDataSource) clazz.newInstance();
+                    method.invoke(dataSource, jasperReport, _parameter, null, this.jrParameters);
+                } else if (!noDataSource) {
+                    dataSource = new EFapsDataSource();
+                    dataSource.init(jasperReport, _parameter, null, this.jrParameters);
                 }
+                if (dataSource != null) {
+                    this.jrParameters.put("EFAPS_SUBREPORT", new SubReportContainer(_parameter, dataSource,
+                                    this.jrParameters));
+                }
+                final ReportRunner runner = new ReportRunner(ctx, jasperReport, this.jrParameters, dataSource);
+                final Thread t = new Thread(runner);
+                t.setContextClassLoader(EFapsClassLoader.getInstance());
+                t.start();
+
+                while (t.isAlive()) {
+                    // add an abort criteria
+                }
+                String mime = getProperty(_parameter, "Mime");
+                if (mime == null) {
+                    mime = _parameter.getParameterValue("mime");
+                }
+                // check for a file name, if null search in the properties
+                if (getFileName() == null) {
+                    setFileName(getProperty(_parameter, "FileName"));
+                    // last chance search in the jasper Parameters
+                    if (getFileName() == null) {
+                        setFileName((String) this.jrParameters.get("FileName"));
+                    }
+                }
+                final JasperPrint print = runner.getJasperPrint();
+                LOG.debug("print created: '{}'", print);
+                if (print != null) {
+                    ret = getFile(print, mime);
+                }
+
+            } catch (final ClassNotFoundException e) {
+                throw new EFapsException(StandartReport_Base.class, "execute.ClassNotFoundException", e);
+            } catch (final SecurityException e) {
+                throw new EFapsException(StandartReport_Base.class, "execute.SecurityException", e);
+            } catch (final NoSuchMethodException e) {
+                throw new EFapsException(StandartReport_Base.class, "execute.NoSuchMethodException", e);
+            } catch (final InstantiationException e) {
+                throw new EFapsException(StandartReport_Base.class, "execute.InstantiationException", e);
+            } catch (final IllegalAccessException e) {
+                throw new EFapsException(StandartReport_Base.class, "execute.IllegalAccessException", e);
+            } catch (final IllegalArgumentException e) {
+                throw new EFapsException(StandartReport_Base.class, "execute.IllegalArgumentException", e);
+            } catch (final InvocationTargetException e) {
+                throw new EFapsException(StandartReport_Base.class, "execute.InvocationTargetException", e);
+            } catch (final JRException e) {
+                throw new EFapsException(StandartReport_Base.class, "execute.JRException", e);
+            } catch (final IOException e) {
+                throw new EFapsException(StandartReport_Base.class, "execute.IOException", e);
             }
-            final JasperPrint print = runner.getJasperPrint();
-            LOG.debug("print created: '{}'", print);
-            if (print != null) {
-                ret = getFile(print, mime);
-            }
-        } catch (final ClassNotFoundException e) {
-            throw new EFapsException(StandartReport_Base.class, "execute.ClassNotFoundException", e);
-        } catch (final SecurityException e) {
-            throw new EFapsException(StandartReport_Base.class, "execute.SecurityException", e);
-        } catch (final NoSuchMethodException e) {
-            throw new EFapsException(StandartReport_Base.class, "execute.NoSuchMethodException", e);
-        } catch (final InstantiationException e) {
-            throw new EFapsException(StandartReport_Base.class, "execute.InstantiationException", e);
-        } catch (final IllegalAccessException e) {
-            throw new EFapsException(StandartReport_Base.class, "execute.IllegalAccessException", e);
-        } catch (final IllegalArgumentException e) {
-            throw new EFapsException(StandartReport_Base.class, "execute.IllegalArgumentException", e);
-        } catch (final InvocationTargetException e) {
-            throw new EFapsException(StandartReport_Base.class, "execute.InvocationTargetException", e);
-        } catch (final JRException e) {
-            throw new EFapsException(StandartReport_Base.class, "execute.JRException", e);
-        } catch (final IOException e) {
-            throw new EFapsException(StandartReport_Base.class, "execute.IOException", e);
         }
         return ret;
     }
@@ -413,62 +445,49 @@ public abstract class StandartReport_Base
             os.close();
         } else if ("odt".equalsIgnoreCase(_mime)) {
             file = new FileUtil().getFile(getFileName() == null ? "ODT" : getFileName(), "odt");
-            final FileOutputStream os = new FileOutputStream(file);
+            final SimpleOdtReportConfiguration config = new SimpleOdtReportConfiguration();
             final JROdtExporter exporter = new JROdtExporter();
-            exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
-            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, os);
+            exporter.setConfiguration(config);
+            exporter.setExporterInput(new SimpleExporterInput(_jasperPrint));
+            exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
             exporter.exportReport();
-            os.close();
         } else if ("ods".equalsIgnoreCase(_mime)) {
             file = new FileUtil().getFile(getFileName() == null ? "ODS" : getFileName(), "ods");
-            final FileOutputStream os = new FileOutputStream(file);
             final JROdsExporter exporter = new JROdsExporter();
-            exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
-            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, os);
+            exporter.setExporterInput(new SimpleExporterInput(_jasperPrint));
+            exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
             exporter.exportReport();
-            os.close();
         } else if ("xls".equalsIgnoreCase(_mime)) {
             file = new FileUtil().getFile(getFileName() == null ? "XLS" : getFileName(), "xls");
-            final FileOutputStream os = new FileOutputStream(file);
             final JRXlsExporter exporter = new JRXlsExporter();
             _jasperPrint.setName(_jasperPrint.getName().replaceAll("[\\\\/:\"*?<>|]+", "-"));
-            exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
-            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, os);
-            exporter.setParameter(JRXlsAbstractExporterParameter.IS_DETECT_CELL_TYPE, Boolean.TRUE);
-            exporter.setParameter(JRXlsAbstractExporterParameter.IS_IGNORE_CELL_BORDER, Boolean.TRUE);
-            exporter.setParameter(JRXlsAbstractExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_COLUMNS, Boolean.TRUE);
-            exporter.setParameter(JRXlsAbstractExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
-            exporter.setParameter(JRXlsAbstractExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
-            exporter.setParameter(JRXlsAbstractExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
-            exporter.setParameter(JRExporterParameter.IGNORE_PAGE_MARGINS, Boolean.TRUE);
+            exporter.setExporterInput(new SimpleExporterInput(_jasperPrint));
+            exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
+            final SimpleXlsReportConfiguration config = new SimpleXlsReportConfiguration();
+            config.setDetectCellType(true);
+            config.setIgnoreCellBorder(true);
+            config.setRemoveEmptySpaceBetweenColumns(true);
+            config.setRemoveEmptySpaceBetweenRows(true);
+            config.setWhitePageBackground(false);
+            config.setOnePagePerSheet(false);
+            config.setIgnorePageMargins(true);
+            exporter.setConfiguration(config);
             exporter.exportReport();
-            os.close();
-        } else if ("rtf".equalsIgnoreCase(_mime)) {
-            file = new FileUtil().getFile(getFileName() == null ? "RTF" : getFileName(), "rtf");
-            final FileOutputStream os = new FileOutputStream(file);
-            final JRRtfExporter exporter = new JRRtfExporter();
-            exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
-            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, os);
-            exporter.exportReport();
-            os.close();
-        } else if ("docx".equalsIgnoreCase(_mime)) {
+        }  else if ("docx".equalsIgnoreCase(_mime)) {
             file = new FileUtil().getFile(getFileName() == null ? "DOCX" : getFileName(), "docx");
-            final FileOutputStream os = new FileOutputStream(file);
             final JRDocxExporter exporter = new JRDocxExporter();
-            exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
-            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, os);
+            exporter.setExporterInput(new SimpleExporterInput(_jasperPrint));
+            exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
             exporter.exportReport();
-            os.close();
         } else if ("txt".equalsIgnoreCase(_mime)) {
             file = new FileUtil().getFile(getFileName() == null ? "TXT" : getFileName(), "txt");
-            final FileOutputStream os = new FileOutputStream(file);
             final JRTextExporter exporter = new JRTextExporter();
-            exporter.setParameter(JRExporterParameter.JASPER_PRINT, _jasperPrint);
-            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, os);
-            exporter.setParameter(JRTextExporterParameter.CHARACTER_HEIGHT, new Float(10));
-            exporter.setParameter(JRTextExporterParameter.CHARACTER_WIDTH, new Float(6));
+            exporter.setExporterInput(new SimpleExporterInput(_jasperPrint));
+            exporter.setExporterOutput(new SimpleWriterExporterOutput(file));
+            final SimpleTextReportConfiguration config = new SimpleTextReportConfiguration();
+            config.setCharHeight(new Float(10));
+            config.setCharWidth(new Float(6));
             exporter.exportReport();
-            os.close();
         }
         return file;
     }
