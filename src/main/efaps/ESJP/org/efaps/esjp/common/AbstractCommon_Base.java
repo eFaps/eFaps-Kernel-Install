@@ -34,6 +34,7 @@ import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.RandomStringUtils;
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
@@ -477,7 +478,26 @@ public abstract class AbstractCommon_Base
     protected QueryBuilder getQueryBldrFromProperties(final Parameter _parameter)
         throws EFapsException
     {
-        return getQueryBldrFromProperties(_parameter, 0);
+        QueryBuilder ret;
+        if (containsProperty(_parameter, "QueryBldrConfig")) {
+            final String config = getProperty(_parameter, "QueryBldrConfig");
+            SystemConfiguration sysConf;
+            if (isUUID(config)) {
+                sysConf = SystemConfiguration.get(UUID.fromString(config));
+            } else {
+                sysConf = SystemConfiguration.get(config);
+            }
+            if (sysConf != null) {
+                final Properties props = sysConf.getAttributeValueAsProperties(getProperty(_parameter,
+                                "QueryBldrConfigAttribute"));
+                ret = getQueryBldrFromProperties(_parameter, props);
+            } else {
+                ret = getQueryBldrFromProperties(_parameter, 0);
+            }
+        } else {
+            ret = getQueryBldrFromProperties(_parameter, 0);
+        }
+        return ret;
     }
 
     /**
