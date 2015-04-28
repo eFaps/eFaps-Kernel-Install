@@ -1153,7 +1153,7 @@ public abstract class Field_Base
         throws EFapsException
     {
         final StringBuilder html = new StringBuilder();
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         final String fieldName;
         if (containsProperty(_parameter, "FieldName")) {
             fieldName = getProperty(_parameter, "FieldName");
