@@ -32,7 +32,6 @@ import org.efaps.esjp.common.history.xml.AbstractConnectLog;
 import org.efaps.esjp.common.history.xml.AbstractHistoryLog;
 import org.efaps.esjp.common.history.xml.AttributeValue;
 import org.efaps.esjp.common.history.xml.ConnectInstObj;
-import org.efaps.esjp.common.history.xml.HistoryInstObj;
 import org.efaps.util.EFapsException;
 
 /**
@@ -76,11 +75,10 @@ public abstract class AbstractConnectHistoryTrigger_Base
         final AbstractConnectLog log = (AbstractConnectLog) _log;
 
         final String selConTypeInst = getProperty(_parameter, AbstractConnectHistoryTrigger_Base.CONTYPEKEY);
-        final String selHistoryInst = getProperty(_parameter, AbstractConnectHistoryTrigger_Base.HISEL);
         final Map<Integer, String> selects = analyseProperty(_parameter, AbstractConnectHistoryTrigger_Base.ATTRSEL);
 
         final PrintQuery print = new PrintQuery(_parameter.getInstance());
-        print.addSelect(selConTypeInst, selHistoryInst);
+        print.addSelect(selConTypeInst);
         for (final String select : selects.values()) {
             print.addSelect(select);
         }
@@ -91,12 +89,6 @@ public abstract class AbstractConnectHistoryTrigger_Base
         conInstObj.setTypeUUID(conInst.getType().getUUID());
         conInstObj.setOid(conInst.getOid());
         log.setConnectInstance(conInstObj);
-
-        this.historyInstance = print.<Instance>getSelect(selHistoryInst);
-        final HistoryInstObj hisInstObj = new HistoryInstObj();
-        hisInstObj.setTypeUUID(this.historyInstance.getType().getUUID());
-        hisInstObj.setOid(this.historyInstance.getOid());
-        log.setHistoryInstance(hisInstObj);
 
         for (final String select : selects.values()) {
             final Object value = print.getSelect(select);
@@ -113,7 +105,15 @@ public abstract class AbstractConnectHistoryTrigger_Base
      */
     @Override
     protected Instance getHistoryInstance(final Parameter _parameter)
+        throws EFapsException
     {
+        if (this.historyInstance == null) {
+            final String selHistoryInst = getProperty(_parameter, AbstractConnectHistoryTrigger_Base.HISEL);
+            final PrintQuery print = new PrintQuery(_parameter.getInstance());
+            print.addSelect(selHistoryInst);
+            print.executeWithoutAccessCheck();
+            this.historyInstance = print.<Instance>getSelect(selHistoryInst);
+        }
         return this.historyInstance;
     }
 }
