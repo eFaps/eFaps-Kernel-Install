@@ -121,6 +121,19 @@ public class CICommon
         }
     }
 
+    public static final _HistoryDelete HistoryDelete = new _HistoryDelete("4c20af22-b272-45b3-9a19-bd03989b12f0");
+
+    public static class _HistoryDelete
+        extends _HistoryAbstractUpdate
+    {
+
+        protected _HistoryDelete(final String _uuid)
+        {
+            super(_uuid);
+        }
+    }
+
+
     public static final _HistoryConnect HistoryConnect = new _HistoryConnect("14514bc0-b251-4df3-9955-473115e6b682");
 
     public static class _HistoryConnect
