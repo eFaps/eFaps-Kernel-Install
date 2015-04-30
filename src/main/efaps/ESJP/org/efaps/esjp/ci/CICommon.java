@@ -73,6 +73,19 @@ public class CICommon
         }
     }
 
+    public static final _HistoryRelatedCreate HistoryRelatedCreate = new _HistoryRelatedCreate("1f01a7a0-eba2-464f-a455-8ddd225e46e5");
+
+    public static class _HistoryRelatedCreate
+        extends _HistoryAbstractUpdate
+    {
+
+        protected _HistoryRelatedCreate(final String _uuid)
+        {
+            super(_uuid);
+        }
+    }
+
+
     public static final _HistoryClassificationCreate HistoryClassificationCreate = new _HistoryClassificationCreate("18a26ed6-3614-4382-9751-d95a9f5cbab9");
 
     public static class _HistoryClassificationCreate
@@ -121,6 +134,18 @@ public class CICommon
         }
     }
 
+    public static final _HistoryRelatedUpdate HistoryRelatedUpdate = new _HistoryRelatedUpdate("8e4d8ac5-0e97-4276-88a9-3105c9416575");
+
+    public static class _HistoryRelatedUpdate
+        extends _HistoryAbstractUpdate
+    {
+
+        protected _HistoryRelatedUpdate(final String _uuid)
+        {
+            super(_uuid);
+        }
+    }
+
     public static final _HistoryDelete HistoryDelete = new _HistoryDelete("4c20af22-b272-45b3-9a19-bd03989b12f0");
 
     public static class _HistoryDelete
@@ -128,6 +153,18 @@ public class CICommon
     {
 
         protected _HistoryDelete(final String _uuid)
+        {
+            super(_uuid);
+        }
+    }
+
+    public static final _HistoryRelatedDelete HistoryRelatedDelete = new _HistoryRelatedDelete("da64b650-5ba8-4c87-b0c7-2802e4b27d40");
+
+    public static class _HistoryRelatedDelete
+        extends _HistoryAbstractUpdate
+    {
+
+        protected _HistoryRelatedDelete(final String _uuid)
         {
             super(_uuid);
         }

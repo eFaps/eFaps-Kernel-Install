@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
+
 
 package org.efaps.esjp.common.history.xml;
 
@@ -31,21 +29,20 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.esjp.ci.CICommon;
 import org.efaps.util.EFapsException;
 
+
 /**
  * TODO comment!
  *
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("e50fb39e-ed6d-47d9-9061-9e2ba82e708e")
+@EFapsUUID("4675c195-793b-4d34-9cc4-6e2164f1031c")
 @EFapsApplication("eFaps-Kernel")
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = "deleteClassification")
-public class DeleteClassificationLog
-    extends AbstractClassificationUpdateLog
-    implements IClassificationLog
+@XmlRootElement(name = "deleteRelated")
+public class DeleteRelatedLog
+    extends AbstractRelatedUpdateLog
 {
-
     @Override
     public String toString()
     {
@@ -60,19 +57,13 @@ public class DeleteClassificationLog
         throws EFapsException
     {
         final StringBuilder ret = new StringBuilder();
-        ret.append( CICommon.HistoryClassificationDelete.getType().getLabel());
-        if (getClassInstObj() != null) {
-            final Type type = Type.get(getClassInstObj().getTypeUUID());
+        ret.append( CICommon.HistoryRelatedDelete.getType().getLabel());
+        if (getRelatedInstObj() != null) {
+            final Type type = Type.get(getRelatedInstObj().getTypeUUID());
             if (type != null) {
                 ret.append(": ").append(type.getLabel());
             }
         }
         return ret.toString();
-    }
-
-    @Override
-    protected AbstractInstObj getInstObj4Description()
-    {
-        return getClassInstObj();
     }
 }

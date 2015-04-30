@@ -25,11 +25,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.esjp.ci.CICommon;
-import org.efaps.util.EFapsException;
 
 /**
  * TODO comment!
@@ -37,42 +34,16 @@ import org.efaps.util.EFapsException;
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("e50fb39e-ed6d-47d9-9061-9e2ba82e708e")
+@EFapsUUID("4cf1b139-b9ab-4bfb-977f-2d71b0051c40")
 @EFapsApplication("eFaps-Kernel")
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = "deleteClassification")
-public class DeleteClassificationLog
-    extends AbstractClassificationUpdateLog
-    implements IClassificationLog
+@XmlRootElement(name = "relatedInstance")
+public class RelatedInstObj
+    extends AbstractInstObj
 {
-
     @Override
     public String toString()
     {
         return ToStringBuilder.reflectionToString(this);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getTypeColumnValue()
-        throws EFapsException
-    {
-        final StringBuilder ret = new StringBuilder();
-        ret.append( CICommon.HistoryClassificationDelete.getType().getLabel());
-        if (getClassInstObj() != null) {
-            final Type type = Type.get(getClassInstObj().getTypeUUID());
-            if (type != null) {
-                ret.append(": ").append(type.getLabel());
-            }
-        }
-        return ret.toString();
-    }
-
-    @Override
-    protected AbstractInstObj getInstObj4Description()
-    {
-        return getClassInstObj();
     }
 }

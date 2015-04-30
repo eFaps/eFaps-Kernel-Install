@@ -22,7 +22,6 @@ package org.efaps.esjp.common.history.xml;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -43,15 +42,9 @@ import org.efaps.util.EFapsException;
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "createClassification")
 public class CreateClassificationLog
-    extends AbstractUpdateLog
+    extends AbstractClassificationUpdateLog
     implements IClassificationLog
 {
-
-    /**
-     * The instance Object.
-     */
-    @XmlElementRef
-    private ClassInstObj classInstObj;
 
     @Override
     public String toString()
@@ -75,29 +68,6 @@ public class CreateClassificationLog
             }
         }
         return ret.toString();
-    }
-
-    /**
-     * Getter method for the instance variable {@link #classificationInstance}.
-     *
-     * @return value of instance variable {@link #classificationInstance}
-     */
-    @Override
-    public ClassInstObj getClassInstObj()
-    {
-        return this.classInstObj;
-    }
-
-    /**
-     * Setter method for instance variable {@link #classificationInstance}.
-     *
-     * @param _classificationInstance value for instance variable
-     *            {@link #classificationInstance}
-     */
-    @Override
-    public void setClassInstObj(final ClassInstObj _classificationInstance)
-    {
-        this.classInstObj = _classificationInstance;
     }
 
     @Override

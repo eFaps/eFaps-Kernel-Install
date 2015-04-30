@@ -31,6 +31,7 @@
 
         <type>Common_HistoryCreate</type>
         <type>Common_HistoryUpdate</type>
+        <type>Common_HistoryDelete</type>
         <type>Common_HistoryConnect</type>
         <type>Common_HistoryDisconnect</type>
         <type>Common_HistoryLogin</type>
@@ -38,7 +39,9 @@
         <type>Common_HistoryClassificationCreate</type>
         <type>Common_HistoryClassificationDelete</type>
         <type>Common_HistoryClassificationUpdate</type>
-
+        <type>Common_HistoryRelatedCreate</type>
+        <type>Common_HistoryRelatedUpdate</type>
+        <type>Common_HistoryRelatedDelete</type>
         <role>History_Reader</role>
     </definition>
 </access-set>
