@@ -94,20 +94,35 @@ public abstract class History_Base
         multi.addAttribute(CICommon.HistoryAbstract.Value, CICommon.HistoryAbstract.Created,
                         CICommon.HistoryAbstract.Creator);
         multi.execute();
+        StringBuilder group = new StringBuilder();
+        String compare = "";
+        int count = 1;
         while (multi.next()) {
-            html.append("<tr>");
+            group.append("<tr>");
             final DateTime created = multi.<DateTime>getAttribute(CICommon.HistoryAbstract.Created);
-            html.append("<td>").append(created).append("</td>");
-
             final Person person = multi.<Person>getAttribute(CICommon.HistoryAbstract.Creator);
-            html.append("<td>").append(person.getLastName()).append(", ").append(person.getFirstName()).append("</td>");
+            final String name =   person.getLastName() + ", " + person.getFirstName();
+            final String compareKey = created + name;
+
+            if (!compare.equals(compareKey)) {
+                final String groupStr = group.toString().replace("ROWSPAN", "rowspan=\"" + count + "\"");
+                html.append(groupStr);
+                compare = compareKey;
+                group = new StringBuilder();
+                count = 1;
+                group.append("<td ROWSPAN>").append(created).append("</td>");
+                group.append("<td ROWSPAN>").append(name).append("</td>");
+            } else {
+                count++;
+            }
 
             final IHistoryHtml hObj = multi.<IHistoryHtml>getAttribute(CICommon.HistoryAbstract.Value);
-            html.append("<td>").append(hObj.getTypeColumnValue()).append("</td>");
-            html.append("<td>").append(hObj.getDescriptionColumnValue()).append("</td>");
-
-            html.append("</tr>");
+            group.append("<td>").append(hObj.getTypeColumnValue()).append("</td>");
+            group.append("<td>").append(hObj.getDescriptionColumnValue()).append("</td>");
+            group.append("</tr>");
         }
+        final String groupStr = group.toString().replace("ROWSPAN", "rowspan=\"" + count + "\"");
+        html.append(groupStr);
         html.append("</table>");
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
