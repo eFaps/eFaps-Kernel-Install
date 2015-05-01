@@ -21,6 +21,7 @@
 package org.efaps.esjp.common.history;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,11 @@ import java.util.Map.Entry;
 import org.apache.commons.collections4.BidiMap;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 import org.efaps.admin.datamodel.Attribute;
+import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.attributetype.BitEnumType;
+import org.efaps.admin.datamodel.attributetype.EnumType;
 import org.efaps.admin.datamodel.attributetype.PasswordType;
+import org.efaps.admin.datamodel.attributetype.StatusType;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
@@ -84,6 +89,54 @@ public abstract class AbstractUpdateHistoryTrigger_Base
                 attrValue.setName(attr.getName());
                 if (attr.getAttributeType().getDbAttrType() instanceof PasswordType) {
                     attrValue.setValue("****************");
+                } else if (attr.getAttributeType().getDbAttrType() instanceof StatusType) {
+                    final Object objArr = entry.getValue();
+                    if (objArr instanceof Object[]) {
+                        final Object obj = ((Object[]) objArr)[0];
+                        final Long id;
+                        if (obj instanceof String) {
+                            id = Long.valueOf((String) obj);
+                        } else {
+                            id = (Long) obj;
+                        }
+                        attrValue.setValue(Status.get(id).getKey());
+                    }
+                } else if (attr.getAttributeType().getDbAttrType() instanceof BitEnumType) {
+                    final Object objArr = entry.getValue();
+                    if (objArr instanceof Object[]) {
+                        final Object val = attr.getAttributeType().getDbAttrType()
+                                        .readValue(attr, Arrays.asList((Object[]) objArr));
+                        if (val == null) {
+                            attrValue.setValue(val);
+                        } else {
+                            final StringBuilder strBldr = new StringBuilder();
+                            boolean first = true;
+                            for (final Object obj : (List<?>) val) {
+                                if (first) {
+                                    first = false;
+                                } else {
+                                    strBldr.append(", ");
+                                }
+                                if (obj instanceof List) {
+                                    strBldr.append(((List<?>) obj).get(0));
+                                } else {
+                                    strBldr.append(obj);
+                                }
+                            }
+                            attrValue.setValue(strBldr.toString());
+                        }
+                    }
+                } else if (attr.getAttributeType().getDbAttrType() instanceof EnumType) {
+                    final Object objArr = entry.getValue();
+                    if (objArr instanceof Object[]) {
+                        final Object val = attr.getAttributeType().getDbAttrType()
+                                        .readValue(attr, Arrays.asList((Object[]) objArr));
+                        if (val == null) {
+                            attrValue.setValue(val);
+                        } else {
+                            attrValue.setValue(val.toString());
+                        }
+                    }
                 } else {
                     // check is a select exists
                     if (selectAttributes.containsValue(attr.getName())) {
