@@ -21,13 +21,18 @@
 
 package org.efaps.esjp.common.history;
 
+import java.util.Map;
+
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.esjp.ci.CICommon;
 import org.efaps.esjp.common.history.xml.AbstractHistoryLog;
 import org.efaps.esjp.common.history.xml.UpdateLog;
+import org.efaps.util.EFapsException;
 
 
 /**
@@ -47,6 +52,24 @@ import org.efaps.esjp.common.history.xml.UpdateLog;
 public abstract class UpdateHistoryTrigger_Base
     extends AbstractUpdateHistoryTrigger
 {
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    @Override
+    public Return execute(final Parameter _parameter)
+        throws EFapsException
+    {
+        Return ret = new Return();
+        final Map<?, ?> values = (Map<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
+        if (!values.isEmpty()) {
+            ret = super.execute(_parameter);
+        }
+        return ret;
+    }
+
     /**
      * {@inheritDoc}
      */
