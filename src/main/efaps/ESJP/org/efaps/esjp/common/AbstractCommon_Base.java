@@ -40,6 +40,7 @@ import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Status.StatusGroup;
 import org.efaps.admin.datamodel.Type;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
@@ -701,5 +702,14 @@ public abstract class AbstractCommon_Base
             }
         }
         return ret;
+    }
+
+    /**
+     * @param _key key the label is wanted for
+     * @return class dependend Property
+     */
+    public String getDBProperty(final String _key)
+    {
+        return DBProperties.getProperty(this.getClass().getName() + "." + _key);
     }
 }

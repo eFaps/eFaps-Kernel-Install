@@ -32,8 +32,8 @@ import java.util.UUID;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.jasper.builder.export.Exporters;
+import net.sf.dynamicreports.jasper.builder.export.JasperHtmlExporterBuilder;
 import net.sf.dynamicreports.jasper.builder.export.JasperPdfExporterBuilder;
-import net.sf.dynamicreports.jasper.builder.export.JasperXhtmlExporterBuilder;
 import net.sf.dynamicreports.jasper.builder.export.JasperXlsExporterBuilder;
 import net.sf.dynamicreports.jasper.constant.SizeUnit;
 import net.sf.dynamicreports.report.builder.DynamicReports;
@@ -878,7 +878,8 @@ public abstract class AbstractDynamicReport_Base
         try {
             this.exType = ExportType.HTML;
             addColumnDefintion(_parameter, getReport());
-            final JasperXhtmlExporterBuilder exporter = Exporters.xhtmlExporter(writer);
+
+            final JasperHtmlExporterBuilder exporter = Exporters.htmlExporter(writer);
             if (_strip) {
                 exporter.setHtmlHeader("").setHtmlFooter("");
             }
@@ -886,7 +887,7 @@ public abstract class AbstractDynamicReport_Base
             configure4Html(_parameter);
             getReport().setTemplate(getStyleTemplate());
             getReport().setLocale(Context.getThreadContext().getLocale())
-                .setDataSource(createDataSource(_parameter)).toXhtml(exporter);
+                .setDataSource(createDataSource(_parameter)).toHtml(exporter);
         } catch (final DRException e) {
             AbstractDynamicReport_Base.LOG.error("catched DRException", e);
         }
