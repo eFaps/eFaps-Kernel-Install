@@ -117,6 +117,7 @@ public abstract class EQLQueryExecuter_Base
         final List<Map<String, ?>> list = new ArrayList<>();
         try {
             final String stmtStr = this.dataset.getQuery().getText();
+            LOG.debug("Stmt: {}", stmtStr);
             final IEQLStmt stmt = InvokerUtil.getInvoker().invoke(replaceParameters(stmtStr));
             if (stmt instanceof ISelectStmtPart) {
                 list.addAll(((ISelectStmtPart) stmt).getData());
@@ -209,6 +210,7 @@ public abstract class EQLQueryExecuter_Base
         for (final Entry<String, String> entry  :replaceMap.entrySet()) {
             ret = ret.replace(entry.getKey(), entry.getValue());
         }
+        LOG.debug("Stmt with replaced Parameters: {}", ret);
         return ret;
     }
 
@@ -225,6 +227,7 @@ public abstract class EQLQueryExecuter_Base
             final JRValueParameter parameter = getParameters().get(_key);
             if (parameter != null) {
                 final Object object = parameter.getValue();
+                LOG.trace("Found object to be replaced: {}", object);
                 if (object instanceof Instance) {
                     if (_stmtStr.trim().startsWith("print")) {
                         ret = ((Instance) object).getOid();
