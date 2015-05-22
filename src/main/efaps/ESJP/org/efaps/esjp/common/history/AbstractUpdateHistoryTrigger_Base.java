@@ -44,6 +44,7 @@ import org.efaps.db.PrintQuery;
 import org.efaps.esjp.common.history.xml.AbstractHistoryLog;
 import org.efaps.esjp.common.history.xml.AttributeValue;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 /**
  * TODO comment!
@@ -154,7 +155,12 @@ public abstract class AbstractUpdateHistoryTrigger_Base
                     } else {
                         final Object obj = entry.getValue();
                         if (obj instanceof Object[]) {
-                            attrValue.setValue(((Object[]) obj)[0]);
+                            final Object tmpObj = ((Object[]) obj)[0];
+                            if (tmpObj instanceof DateTime) {
+                                attrValue.setValue(((DateTime) tmpObj).toString());
+                            } else {
+                                attrValue.setValue(tmpObj);
+                            }
                         }
                     }
                 }
