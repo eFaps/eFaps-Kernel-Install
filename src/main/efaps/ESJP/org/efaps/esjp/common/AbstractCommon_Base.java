@@ -705,6 +705,35 @@ public abstract class AbstractCommon_Base
     }
 
     /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return map with statuses
+     * @throws EFapsException on error
+     */
+    public Map<Status, Status> getStatusMapping(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Map<Status, Status> ret = new HashMap<>();
+        final Instance docInst = _parameter.getInstance();
+        if (docInst != null && docInst.isValid()) {
+            final Map<Integer, String> keys = analyseProperty(_parameter, "StatusMapKey");
+            final Map<Integer, String> values = analyseProperty(_parameter, "StatusMapValue");
+            for (final Entry<Integer, String> entry : keys.entrySet()) {
+                final Status keyStatus = Status.find(docInst.getType().getStatusAttribute().getLink().getUUID(),
+                                entry.getValue());
+                if (keyStatus != null && values.containsKey(entry.getKey())) {
+                    final Status valueStatus = Status.find(docInst.getType().getStatusAttribute().getLink().getUUID(),
+                                    values.get(entry.getKey()));
+                    if (valueStatus != null) {
+                        ret.put(keyStatus, valueStatus);
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+
+
+    /**
      * @param _key key the label is wanted for
      * @return class dependend Property
      */
