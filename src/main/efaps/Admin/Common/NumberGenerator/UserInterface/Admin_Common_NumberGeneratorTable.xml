@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2015 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,11 +15,6 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
-
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
 
 -->
 
@@ -43,13 +38,16 @@
             <property name="Attribute">UUID</property>
             <property name="Label">Admin_Common_NumGen/UUID.Label</property>
         </field>
-        <field name="revision">
-            <property name="Attribute">Revision</property>
-            <property name="Label">Admin_Common_NumGen/Revision.Label</property>
-        </field>
         <field name="format">
             <property name="Attribute">Format</property>
             <property name="Label">Admin_Common_NumGen/Format.Label</property>
+        </field>
+        <field name="revision">
+            <property name="SelectAlternateOID">linkto[RevisionLink].oid</property>
+            <property name="MsgPhrase">Admin_Common_ApplicationRevisionShortMsgPhrase</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Admin_Common_ApplicationRevision.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>
 </ui-table>
