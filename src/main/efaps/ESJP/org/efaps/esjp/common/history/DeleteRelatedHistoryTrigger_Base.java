@@ -22,9 +22,12 @@ import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Instance;
 import org.efaps.esjp.ci.CICommon;
 import org.efaps.esjp.common.history.xml.AbstractHistoryLog;
 import org.efaps.esjp.common.history.xml.DeleteRelatedLog;
+import org.efaps.esjp.common.history.xml.IRelatedLog;
+import org.efaps.esjp.common.history.xml.RelatedInstObj;
 import org.efaps.util.EFapsException;
 
 /**
@@ -42,7 +45,12 @@ public abstract class DeleteRelatedHistoryTrigger_Base
                                  final AbstractHistoryLog _log)
         throws EFapsException
     {
-        // nothing to add it is a delete
+        final Instance relInst = _parameter.getInstance();
+        final RelatedInstObj instObj = new RelatedInstObj();
+        instObj.setOid(relInst.getOid());
+        instObj.setTypeUUID(relInst.getType().getUUID());
+
+        ((IRelatedLog) _log).setRelatedInstObj(instObj);
     }
 
     /**
