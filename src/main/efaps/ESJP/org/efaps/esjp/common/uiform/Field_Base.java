@@ -21,6 +21,7 @@
 package org.efaps.esjp.common.uiform;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -33,6 +34,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
@@ -112,34 +114,39 @@ public abstract class Field_Base
      * @return ReturnValue containing the date
      */
     public Return getDefault4DateFieldValue(final Parameter _parameter)
+        throws EFapsException
     {
         final Return ret = new Return();
-        final TargetMode mode  = (TargetMode) _parameter.get(ParameterValues.ACCESSMODE);
-        if (TargetMode.CREATE.equals(mode) || TargetMode.EDIT.equals(mode)) {
-            final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final TargetMode mode = (TargetMode) _parameter.get(ParameterValues.ACCESSMODE);
+        final Collection<TargetMode> modes = new ArrayList<>();
+        for (final String aMode : analyseProperty(_parameter, "TargetMode").values()) {
+            modes.add(EnumUtils.getEnum(TargetMode.class, aMode.toUpperCase()));
+        }
+        if ((TargetMode.CREATE.equals(mode) || TargetMode.EDIT.equals(mode))
+                        && (modes.isEmpty() || modes.contains(mode))) {
             DateTime date = new DateTime();
-            if (props.containsKey("withDayOfWeek")) {
-                final int dayOfWeek = Integer.parseInt((String) props.get("withDayOfWeek"));
+            if (containsProperty(_parameter, "withDayOfWeek")) {
+                final int dayOfWeek = Integer.parseInt(getProperty(_parameter, "withDayOfWeek"));
                 date = date.withDayOfWeek(dayOfWeek);
             }
-            if (props.containsKey("withDayOfMonth")) {
-                final int dayOfMonth = Integer.parseInt((String) props.get("withDayOfMonth"));
+            if (containsProperty(_parameter, "withDayOfMonth")) {
+                final int dayOfMonth = Integer.parseInt(getProperty(_parameter, "withDayOfMonth"));
                 date = date.withDayOfMonth(dayOfMonth);
             }
-            if (props.containsKey("days")) {
-                final int days = Integer.parseInt((String) props.get("days"));
+            if (containsProperty(_parameter, "days")) {
+                final int days = Integer.parseInt(getProperty(_parameter, "days"));
                 date = date.plusDays(days);
             }
-            if (props.containsKey("weeks")) {
-                final int weeks = Integer.parseInt((String) props.get("weeks"));
+            if (containsProperty(_parameter, "weeks")) {
+                final int weeks = Integer.parseInt(getProperty(_parameter, "weeks"));
                 date = date.plusWeeks(weeks);
             }
-            if (props.containsKey("months")) {
-                final int months = Integer.parseInt((String) props.get("months"));
+            if (containsProperty(_parameter, "months")) {
+                final int months = Integer.parseInt(getProperty(_parameter, "months"));
                 date = date.plusMonths(months);
             }
-            if (props.containsKey("years")) {
-                final int years = Integer.parseInt((String) props.get("years"));
+            if (containsProperty(_parameter, "years")) {
+                final int years = Integer.parseInt(getProperty(_parameter, "years"));
                 date = date.plusYears(years);
             }
             ret.put(ReturnValues.VALUES, date);
