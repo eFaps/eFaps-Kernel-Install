@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.admin.program;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIAdminProgram;
+import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
 import org.efaps.update.schema.program.jasperreport.JasperReportCompiler;
 import org.efaps.update.schema.program.jasperreport.JasperReportCompiler.OneJasperReport;
@@ -48,15 +50,32 @@ public abstract class Compile_Base
     public Return compileJasperReport(final Parameter _parameter)
         throws EFapsException
     {
-        final PrintQuery print = new PrintQuery(_parameter.getInstance());
-        print.addAttribute(CIAdminProgram.JasperReport.Name);
-        print.execute();
+        final List<Instance> instances = new ArrayList<>();
 
-        final JasperReportCompiler compiler = new JasperReportCompiler(org.efaps.rest.Compile.getClassPathElements());
-        final OneJasperReport source = compiler.getNewSource(
-                        print.<String>getAttribute(CIAdminProgram.JasperReport.Name),
-                        _parameter.getInstance());
-        compiler.compile(source);
+        if (_parameter.getInstance() != null && _parameter.getInstance().isValid()) {
+            instances.add(_parameter.getInstance());
+        } else {
+            final String[] oids = (String[])  _parameter.get(ParameterValues.OTHERS);
+            if (oids != null) {
+                for (final String oid : oids) {
+                    final Instance instance = Instance.get(oid);
+                    if (instance.isValid()) {
+                        instances.add(instance);
+                    }
+                }
+            }
+        }
+
+        for (final Instance instance : instances) {
+            final PrintQuery print = new PrintQuery(instance);
+            print.addAttribute(CIAdminProgram.JasperReport.Name);
+            print.execute();
+            final JasperReportCompiler compiler = new JasperReportCompiler(
+                            org.efaps.rest.Compile.getClassPathElements());
+            final OneJasperReport source = compiler.getNewSource(
+                            print.<String>getAttribute(CIAdminProgram.JasperReport.Name), instance);
+            compiler.compile(source);
+        }
         return new Return();
     }
 }
