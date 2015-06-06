@@ -97,6 +97,7 @@ public abstract class Edit_Base
      * @throws EFapsException on error
      * @return empty Return
      */
+    @Override
     public Return execute(final Parameter _parameter)
         throws EFapsException
     {
@@ -209,8 +210,8 @@ public abstract class Edit_Base
                     final String[] newValue = _parameter.getParameterValues(field.getName());
                     final Object object = print.getAttribute(attrName);
                     final String oldValue = object != null ? object.toString() : null;
-                    if ((newValue == null && oldValue != null)
-                                    || (newValue != null && !newValue.equals(oldValue))) {
+                    if (newValue == null && oldValue != null
+                                    || newValue != null && !newValue.equals(oldValue)) {
                         _valueMap.put(attrName, add2Update(_parameter, update, attr, field.getName()));
                     }
                 }
@@ -541,6 +542,7 @@ public abstract class Edit_Base
                     final Insert classInsert = new Insert(classification);
                     classInsert.add(classification.getLinkAttributeName(), ((Long) _instance.getId()).toString());
                     final List<FieldSet> fieldsets = new ArrayList<FieldSet>();
+                    new HashSet<>();
                     for (final Field field : form.getFields()) {
                         if (field instanceof FieldSet) {
                             fieldsets.add((FieldSet) field);
@@ -549,7 +551,8 @@ public abstract class Edit_Base
                             if (attrName != null && (field.isEditableDisplay(TargetMode.EDIT)
                                             || field.isEditableDisplay(TargetMode.CREATE))) {
                                 final Attribute attr = classification.getAttribute(attrName);
-                                if (attr != null && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType()
+                                if (attr != null &&  _parameter.getParameterValue(field.getName()) != null
+                                                && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType()
                                                 .getClassRepr())) {
                                     add2Update(_parameter, classInsert, attr, field.getName());
                                 }
@@ -571,15 +574,16 @@ public abstract class Edit_Base
                             if (attrName != null && (field.isEditableDisplay(TargetMode.EDIT)
                                             || field.isEditableDisplay(TargetMode.CREATE))) {
                                 final Attribute attr = classification.getAttribute(attrName);
-                                if (attr != null && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType()
+                                if (attr != null &&  _parameter.getParameterValue(field.getName()) != null
+                                                && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType()
                                                 .getClassRepr())) {
                                     if (_parameter.getParameters().containsKey(field.getName())
                                                     || attr.getAttributeType().getUIProvider() instanceof BitEnumUI) {
                                         final String newValue = _parameter.getParameterValue(field.getName());
                                         final Object value = values.get(field.getName());
                                         final String oldValue = value != null ? value.toString() : null;
-                                        if ((newValue == null && oldValue != null)
-                                                        || (newValue != null && !newValue.equals(oldValue))) {
+                                        if (newValue == null && oldValue != null
+                                                        || newValue != null && !newValue.equals(oldValue)) {
                                             execUpdate = true;
                                             add2Update(_parameter, update, attr, field.getName());
                                         }
