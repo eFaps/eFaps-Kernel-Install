@@ -52,13 +52,6 @@
       </description>
     </attribute>
     <attribute>
-      <key>PwdLengthMin</key>
-      <value>6</value>
-      <description>
-        This attribute defines the minimum length of a password in eFaps.
-      </description>
-    </attribute>
-    <attribute>
       <key>org.efaps.kernel.PasswordStore</key>
       <value>Algorithm=SHA-1
 Iterations=1000
