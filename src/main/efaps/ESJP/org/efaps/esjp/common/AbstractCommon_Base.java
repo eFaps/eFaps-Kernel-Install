@@ -51,6 +51,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.util.EFapsException;
+import org.efaps.util.UUIDUtil;
 import org.efaps.util.cache.CacheReloadException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,14 +67,6 @@ import org.slf4j.LoggerFactory;
 @EFapsApplication("eFaps-Kernel")
 public abstract class AbstractCommon_Base
 {
-
-    /**
-     * Regex for testing a UUID for valid.
-     */
-    //CHECKSTYLE:OFF
-    public static final String UUID_REGEX = "[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}";
-    //CHECKSTYLE:ON
-
     /**
      * Used to store a Key for caching mechanism in the RequestAttributes from
      * the Context.
@@ -258,7 +251,7 @@ public abstract class AbstractCommon_Base
      */
     protected boolean isUUID(final String _string)
     {
-        return _string.matches(AbstractCommon_Base.UUID_REGEX);
+        return UUIDUtil.isUUID(_string);
     }
 
     /**
