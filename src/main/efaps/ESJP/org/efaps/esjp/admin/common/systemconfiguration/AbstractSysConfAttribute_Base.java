@@ -18,6 +18,8 @@ package org.efaps.esjp.admin.common.systemconfiguration;
 
 import java.util.UUID;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.EFapsException;
@@ -32,6 +34,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("cb109497-8f43-4c14-a5d4-07c57a266d0b")
 @EFapsApplication("eFaps-Kernel")
 public abstract class AbstractSysConfAttribute_Base<T extends AbstractSysConfAttribute<T, V>, V>
+    implements ISysConfAttribute
 {
 
     /** The sys conf uuid. */
@@ -104,10 +107,9 @@ public abstract class AbstractSysConfAttribute_Base<T extends AbstractSysConfAtt
     }
 
     /**
-     * Gets the key.
-     *
-     * @return the key
+     * {@inheritDoc}
      */
+    @Override
     public String getKey()
     {
         return this.key;
@@ -123,5 +125,13 @@ public abstract class AbstractSysConfAttribute_Base<T extends AbstractSysConfAtt
     {
         this.key = _key;
         return getThis();
+    }
+
+    @Override
+    public String toString()
+    {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                        .append("key", getKey())
+                        .toString();
     }
 }

@@ -12,28 +12,22 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
-
-
 package org.efaps.esjp.admin.common.systemconfiguration;
-
-import org.efaps.admin.program.esjp.EFapsApplication;
-import org.efaps.admin.program.esjp.EFapsUUID;
 
 
 /**
- * This class must be replaced for customization, therefore it is left empty.
- * Functional description can be found in the related "<code>_Base</code>"
- * class.
+ * The Interface ISysConfAttribute.
  *
  * @author The eFaps Team
- * @version $Id$
  */
-@EFapsUUID("12fbca5f-94c4-4fa7-92dc-f82a5a8c330a")
-@EFapsApplication("eFaps-Kernel")
-public class SystemConf
-    extends SystemConf_Base
+public interface ISysConfAttribute
 {
-
+    /**
+     * Gets the key.
+     *
+     * @return the key
+     */
+    public String getKey();
 }
-

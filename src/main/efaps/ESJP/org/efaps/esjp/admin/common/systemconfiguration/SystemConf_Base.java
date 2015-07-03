@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
+package org.efaps.esjp.admin.common.systemconfiguration;
 
-package org.efaps.esjp.admin.common;
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.efaps.admin.common.SystemConfiguration;
@@ -29,6 +30,7 @@ import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIAdminCommon;
@@ -36,6 +38,7 @@ import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.common.AbstractCommon;
@@ -43,6 +46,7 @@ import org.efaps.esjp.common.uiform.Field;
 import org.efaps.util.EFapsException;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * Contains some funtionalities related to SystemConfigurations.
  *
@@ -81,6 +85,8 @@ public abstract class SystemConf_Base
     }
 
     /**
+     * Update object attribute.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @return new empty Return
      * @throws EFapsException on error
@@ -132,6 +138,8 @@ public abstract class SystemConf_Base
     }
 
     /**
+     * Drop down field value.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @return Return containing list map for dropdown
      * @throws EFapsException on error
@@ -162,6 +170,52 @@ public abstract class SystemConf_Base
     }
 
     /**
+     * Key auto complete.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return containing list map for dropdown
+     * @throws EFapsException on error
+     */
+    public Return autoComplete4Key(final Parameter _parameter)
+        throws EFapsException
+    {
+        final String input = (String) _parameter.get(ParameterValues.OTHERS);
+        final List<Map<String, String>> list = new ArrayList<>();
+        if (input != null && !input.isEmpty()) {
+            final Map<String, String> map = new HashMap<String, String>();
+            map.put("eFapsAutoCompleteKEY", input);
+            map.put("eFapsAutoCompleteVALUE", input);
+            list.add(map);
+        }
+        final Return ret = new Return();
+        final PrintQuery print = new PrintQuery(_parameter.getInstance());
+        print.addAttribute(CIAdminCommon.SystemConfiguration.UUID);
+        print.execute();
+        final String uuid = print.getAttribute(CIAdminCommon.SystemConfiguration.UUID);
+
+        final List<ISysConfAttribute> attrs = SysConfResourceConfig.getResourceConfig().getAttributes(uuid);
+        Collections.sort(attrs, new Comparator<ISysConfAttribute>()
+        {
+            @Override
+            public int compare(final ISysConfAttribute _arg0,
+                               final ISysConfAttribute _arg1)
+            {
+                return _arg0.getKey().compareTo(_arg1.getKey());
+            }
+        });
+        for (final ISysConfAttribute attr : attrs) {
+            final Map<String, String> map = new HashMap<String, String>();
+            map.put("eFapsAutoCompleteKEY", attr.getKey());
+            map.put("eFapsAutoCompleteVALUE", attr.getKey());
+            list.add(map);
+        }
+        ret.put(ReturnValues.VALUES, list);
+        return ret;
+    }
+
+    /**
+     * Sets the master password.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @return new empty Return
      * @throws EFapsException on error
