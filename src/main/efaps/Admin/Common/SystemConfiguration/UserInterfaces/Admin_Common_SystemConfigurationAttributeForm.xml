@@ -32,7 +32,7 @@
             <property name="Attribute">Key</property>
             <property name="Required">true</property>
             <property name="ModeSearch">EDITABLE</property>
-            <trigger program="org.efaps.esjp.admin.common.systemconfiguration.SystemConf"
+            <trigger program="org.efaps.esjp.admin.common.systemconfiguration.SystemConfiguration.SystemConf"
                 method="autoComplete4Key"
                 name="Admin_Common_SystemConfigurationAttributeForm.keyk.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
@@ -68,7 +68,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <trigger program="org.efaps.esjp.admin.common.systemconfiguration.SystemConf"
+            <trigger program="org.efaps.esjp.admin.common.systemconfiguration.SystemConfiguration.SystemConf"
                 method="dropDownFieldValue"
                 name="Admin_Common_SystemConfigurationAttributeForm.companyLink.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">

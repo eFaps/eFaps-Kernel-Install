@@ -33,7 +33,7 @@
         <!-- target definitions -->
         <target>
             <form>Admin_Common_SystemConfigurationMasterPwdForm</form>
-            <execute program="org.efaps.esjp.admin.common.SystemConf" method="setMasterPassword"/>
+            <execute program="org.efaps.esjp.admin.common.systemconfiguration.SystemConf" method="setMasterPassword"/>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>

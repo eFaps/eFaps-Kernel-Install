@@ -70,7 +70,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <trigger program="org.efaps.esjp.admin.common.SystemConf"
+            <trigger program="org.efaps.esjp.admin.common.systemconfiguration.SystemConf"
                 method="dropDownFieldValue"
                 name="Admin_Common_SystemConfigurationLinkForm.companyLink.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
