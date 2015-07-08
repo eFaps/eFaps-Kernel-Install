@@ -16,31 +16,30 @@
  */
 package org.efaps.esjp.admin.common.systemconfiguration;
 
+import java.util.Properties;
+
 import org.efaps.admin.common.SystemConfiguration;
-import org.efaps.admin.program.esjp.EFapsApplication;
-import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.EFapsException;
 
 /**
- * The Class BooleanSysConfAttribute_Base.
+ * The Class PropertiesSysConfAttribute_Base.
  *
  * @author The eFaps Team
  */
-@EFapsUUID("1ca2e416-d612-4b73-bc1b-94439d073600")
-@EFapsApplication("eFaps-Kernel")
-public abstract class BooleanSysConfAttribute_Base
-    extends AbstractSysConfAttribute<BooleanSysConfAttribute, Boolean>
+public abstract class PropertiesSysConfAttribute_Base
+    extends AbstractSysConfAttribute<PropertiesSysConfAttribute, Properties>
 {
+
     @Override
-    protected BooleanSysConfAttribute getThis()
+    protected PropertiesSysConfAttribute getThis()
     {
-        return (BooleanSysConfAttribute) this;
+        return (PropertiesSysConfAttribute) this;
     }
 
     @Override
-    public Boolean get()
+    public Properties get()
         throws EFapsException
     {
-        return SystemConfiguration.get(getSysConfUUID()).getAttributeValueAsBoolean(getKey());
+        return SystemConfiguration.get(getSysConfUUID()).getAttributeValueAsProperties(getKey());
     }
 }

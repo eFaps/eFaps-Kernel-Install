@@ -16,20 +16,14 @@
  */
 package org.efaps.esjp.admin.common.systemconfiguration;
 
-import org.efaps.admin.program.esjp.EFapsApplication;
-import org.efaps.admin.program.esjp.EFapsUUID;
-
 /**
- * This class must be replaced for customization, therefore it is left empty.
- * Functional description can be found in the related "<code>_Base</code>"
- * class.
+ * The Class PropertiesSysConfAttribute.
  *
  * @author The eFaps Team
  */
-@EFapsUUID("7445edf0-d679-47a5-855e-c57e28055b28")
-@EFapsApplication("eFaps-Kernel")
-public class BooleanSysConfAttribute
-    extends BooleanSysConfAttribute_Base
+public class PropertiesSysConfAttribute
+    extends PropertiesSysConfAttribute_Base
 {
+
 
 }
