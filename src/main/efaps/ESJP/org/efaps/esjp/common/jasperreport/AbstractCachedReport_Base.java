@@ -18,6 +18,7 @@ package org.efaps.esjp.common.jasperreport;
 
 import java.util.concurrent.TimeUnit;
 
+import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
@@ -53,17 +54,16 @@ public abstract class AbstractCachedReport_Base
      */
     public Cache<String, JRRewindableDataSource> getCache()
     {
-        //
         return InfinispanCache.get().getIgnReCache(AbstractCachedReport.CACHENAME);
     }
 
     /**
      * Gets the cache key.
-     *
+     * @param _parameter Parameter a as passed by the eFaps API
      * @return the cache key
      * @throws EFapsException the e faps exception
      */
-    protected String getCacheKey()
+    protected String getCacheKey(final Parameter _parameter)
         throws EFapsException
     {
         return Context.getThreadContext().getPerson().getId() + ":" + getClass().getName();
@@ -71,58 +71,59 @@ public abstract class AbstractCachedReport_Base
 
     /**
      * Checks if is cached.
-     *
+     * @param _parameter Parameter a as passed by the eFaps API
      * @return true, if is cached
      * @throws EFapsException the e faps exception
      */
-    public boolean isCached()
+    public boolean isCached(final Parameter _parameter)
         throws EFapsException
     {
-        return getCache().containsKey(getCacheKey());
+        return getCache().containsKey(getCacheKey(_parameter));
     }
 
     /**
      * Gets the data source from cache.
-     *
+     * @param _parameter Parameter a as passed by the eFaps API
      * @return the data source from cache
      * @throws EFapsException the e faps exception
      */
-    public JRRewindableDataSource getDataSourceFromCache()
+    public JRRewindableDataSource getDataSourceFromCache(final Parameter _parameter)
         throws EFapsException
     {
-        return getCache().get(getCacheKey());
+        return getCache().get(getCacheKey(_parameter));
     }
 
     /**
      * Clear cache.
-     *
+     * @param _parameter Parameter a as passed by the eFaps API
      * @throws EFapsException the e faps exception
      */
-    public void clearCache()
+    public void clearCache(final Parameter _parameter)
         throws EFapsException
     {
-        getCache().remove(getCacheKey());
+        getCache().remove(getCacheKey(_parameter));
     }
 
     /**
      * Cache.
-     *
+     * @param _parameter Parameter a as passed by the eFaps API
      * @param _dataSource the _data source
      * @throws EFapsException the e faps exception
      */
-    public void cache(final JRRewindableDataSource _dataSource)
+    public void cache(final Parameter _parameter,
+                      final JRRewindableDataSource _dataSource)
         throws EFapsException
     {
-        getCache().put(getCacheKey(), _dataSource, getLifespan(), getTimeUnit());
+        getCache().put(getCacheKey(_parameter), _dataSource, getLifespan(_parameter), getTimeUnit(_parameter));
     }
 
     /**
      * Gets the lifespan.
-     *
+     * @param _parameter Parameter a as passed by the eFaps API
      * @return the lifespan
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
-    protected Long getLifespan()
+    protected Long getLifespan(final Parameter _parameter)
         throws EFapsException
     {
         return Long.valueOf(5);
@@ -130,27 +131,27 @@ public abstract class AbstractCachedReport_Base
 
     /**
      * Gets the time unit.
-     *
+     * @param _parameter Parameter a as passed by the eFaps API
      * @return the time unit
      */
-    protected TimeUnit getTimeUnit()
+    protected TimeUnit getTimeUnit(final Parameter _parameter)
     {
         return TimeUnit.MINUTES;
     }
 
     /**
      * Gets the expiry time.
-     *
+     * @param _parameter Parameter a as passed by the eFaps API
      * @return the expiry time
      * @throws EFapsException the e faps exception
      */
-    public DateTime getExpiryTime()
+    public DateTime getExpiryTime(final Parameter _parameter)
         throws EFapsException
     {
         DateTime ret = null;
-        if (isCached()) {
-            final long time = ((InternalCacheEntry<?, ?>) getCache().getAdvancedCache().getCacheEntry(getCacheKey()))
-                            .getExpiryTime();
+        if (isCached(_parameter)) {
+            final long time = ((InternalCacheEntry<?, ?>) getCache().getAdvancedCache()
+                            .getCacheEntry(getCacheKey(_parameter))).getExpiryTime();
             ret = new DateTime(time);
         }
         return ret;
@@ -158,18 +159,18 @@ public abstract class AbstractCachedReport_Base
 
     /**
      * Gets the cached time.
-     *
+     * @param _parameter Parameter a as passed by the eFaps API
      * @return the cached time
      * @throws EFapsException the e faps exception
      */
-    public DateTime getCachedTime()
+    public DateTime getCachedTime(final Parameter _parameter)
         throws EFapsException
     {
-        DateTime ret = getExpiryTime();
+        DateTime ret = getExpiryTime(_parameter);
         if (ret != null) {
-            switch (getTimeUnit()) {
+            switch (getTimeUnit(_parameter)) {
                 case MINUTES:
-                    ret = ret.minusMinutes(getLifespan().intValue());
+                    ret = ret.minusMinutes(getLifespan(_parameter).intValue());
                     break;
                 default:
                     break;
