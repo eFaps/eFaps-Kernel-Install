@@ -26,7 +26,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Common_SystemConfigurationAttributeForm</name>
         <field name="key">
-            <property name="Columns">40</property>
+            <property name="Columns">70</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Key</property>
