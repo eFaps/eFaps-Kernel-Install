@@ -193,10 +193,18 @@ public abstract class SystemConf_Base
             list.add(map);
         }
         final Return ret = new Return();
+
         final PrintQuery print = new PrintQuery(_parameter.getInstance());
-        print.addAttribute(CIAdminCommon.SystemConfiguration.UUID);
+        SelectBuilder sel;
+        if (_parameter.getInstance().getType().isCIType(CIAdminCommon.SystemConfiguration)) {
+            sel = SelectBuilder.get().attribute(CIAdminCommon.SystemConfiguration.UUID);
+        } else {
+            sel = SelectBuilder.get().linkto(CIAdminCommon.SystemConfigurationAttribute.AbstractLink)
+                            .attribute(CIAdminCommon.SystemConfiguration.UUID);
+        }
+        print.addSelect(sel);
         print.execute();
-        final String uuid = print.getAttribute(CIAdminCommon.SystemConfiguration.UUID);
+        final String uuid = print.getSelect(sel);
 
         final List<ISysConfAttribute> attrs = SysConfResourceConfig.getResourceConfig().getAttributes(uuid);
         Collections.sort(attrs, new Comparator<ISysConfAttribute>()
@@ -224,15 +232,22 @@ public abstract class SystemConf_Base
      *
      * @param _parameter the _parameter
      * @return the return
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public Return updateFields4Key(final Parameter _parameter)
         throws EFapsException
     {
         final PrintQuery print = new PrintQuery(_parameter.getInstance());
-        print.addAttribute(CIAdminCommon.SystemConfiguration.UUID);
+        SelectBuilder sel;
+        if (_parameter.getInstance().getType().isCIType(CIAdminCommon.SystemConfiguration)) {
+            sel = SelectBuilder.get().attribute(CIAdminCommon.SystemConfiguration.UUID);
+        } else {
+            sel = SelectBuilder.get().linkto(CIAdminCommon.SystemConfigurationAttribute.AbstractLink)
+                            .attribute(CIAdminCommon.SystemConfiguration.UUID);
+        }
+        print.addSelect(sel);
         print.execute();
-        final String uuid = print.getAttribute(CIAdminCommon.SystemConfiguration.UUID);
+        final String uuid = print.getSelect(sel);
 
         final String key = _parameter.getParameterValue("key");
 
