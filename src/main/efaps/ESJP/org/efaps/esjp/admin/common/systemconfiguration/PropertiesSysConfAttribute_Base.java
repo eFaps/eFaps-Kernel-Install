@@ -31,6 +31,21 @@ public abstract class PropertiesSysConfAttribute_Base
     extends AbstractSysConfAttribute<PropertiesSysConfAttribute, Properties>
 {
 
+    /** Can be concatenated. */
+    private boolean concatenate;
+
+    /**
+     * Concatenate.
+     *
+     * @param _concatenate the _concatenate
+     * @return the properties sys conf attribute
+     */
+    public PropertiesSysConfAttribute concatenate(final boolean _concatenate)
+    {
+        this.concatenate = _concatenate;
+        return getThis();
+    }
+
     @Override
     protected PropertiesSysConfAttribute getThis()
     {
@@ -41,7 +56,7 @@ public abstract class PropertiesSysConfAttribute_Base
     public Properties get()
         throws EFapsException
     {
-        return SystemConfiguration.get(getSysConfUUID()).getAttributeValueAsProperties(getKey());
+        return SystemConfiguration.get(getSysConfUUID()).getAttributeValueAsProperties(getKey(), this.concatenate);
     }
 
     @Override
