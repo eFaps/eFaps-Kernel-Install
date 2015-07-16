@@ -16,6 +16,7 @@
  */
 package org.efaps.esjp.admin.common.systemconfiguration;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
@@ -51,9 +52,9 @@ public abstract class StringSysConfAttribute_Base
                                 final Object _value)
     {
         final StringBuilder ret = new StringBuilder()
-                        .append("<input type=\"text\" name=\"value\">");
+                        .append("<input type=\"text\" name=\"value\" size=\"70\"");
         if (_value != null) {
-            ret.append(" value=\"").append(_value).append("\"");
+            ret.append(" value=\"").append(StringEscapeUtils.escapeHtml4((String) _value)).append("\"");
         }
         ret.append(">");
         return ret;
