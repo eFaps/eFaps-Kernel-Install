@@ -129,6 +129,24 @@ public final class SysConfResourceConfig
         return this.uuid2attr.get(_uuid);
     }
 
+    /**
+     * Gets the attributes.
+     *
+     * @param _uuid the _uuid
+     * @return the attributes
+     */
+    public ISysConfAttribute getAttribute(final String _uuid,
+                                                final String _key)
+    {
+        ISysConfAttribute ret = null;
+        for (final ISysConfAttribute attr: getAttributes(_uuid)) {
+            if (attr.getKey().equals(_key)) {
+                ret = attr;
+                break;
+            }
+        }
+        return ret;
+    }
 
     /**
      * Gets the resource config.

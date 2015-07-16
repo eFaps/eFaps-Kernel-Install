@@ -17,6 +17,7 @@
 package org.efaps.esjp.admin.common.systemconfiguration;
 
 import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.EFapsException;
@@ -31,6 +32,7 @@ import org.efaps.util.EFapsException;
 public abstract class BooleanSysConfAttribute_Base
     extends AbstractSysConfAttribute<BooleanSysConfAttribute, Boolean>
 {
+
     @Override
     protected BooleanSysConfAttribute getThis()
     {
@@ -42,5 +44,23 @@ public abstract class BooleanSysConfAttribute_Base
         throws EFapsException
     {
         return SystemConfiguration.get(getSysConfUUID()).getAttributeValueAsBoolean(getKey());
+    }
+
+    @Override
+    public CharSequence getHtml(final Parameter _parameter,
+                                  final Object _value)
+    {
+        boolean val = false;
+        if (_value != null) {
+            val = Boolean.parseBoolean((String) _value);
+        }
+        final StringBuilder ret = new StringBuilder()
+                    .append("<label tag=\"rem\"><input type=\"radio\" name=\"value\" value=\"true\"")
+                    .append(val ? " checked=\"checked\" "  : "")
+                    .append(" >true</label>")
+                    .append("<br tag=\"rem\"><label tag=\"rem\"><input type=\"radio\" name=\"value\" ")
+                    .append(!val ? " checked=\"checked\" "  : "")
+                    .append("value=\"false\">false</label>");
+        return ret;
     }
 }

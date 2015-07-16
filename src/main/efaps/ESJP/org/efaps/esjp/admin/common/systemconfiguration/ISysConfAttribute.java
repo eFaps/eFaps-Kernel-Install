@@ -16,6 +16,8 @@
  */
 package org.efaps.esjp.admin.common.systemconfiguration;
 
+import org.efaps.admin.event.Parameter;
+import org.efaps.util.EFapsException;
 
 /**
  * The Interface ISysConfAttribute.
@@ -24,10 +26,23 @@ package org.efaps.esjp.admin.common.systemconfiguration;
  */
 public interface ISysConfAttribute
 {
+
     /**
      * Gets the key.
      *
      * @return the key
      */
-    public String getKey();
+    String getKey();
+
+    /**
+     * Gets the JS node.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _value the _value
+     * @return the JS node
+     * @throws EFapsException the efaps exception
+     */
+    CharSequence getHtml(final Parameter _parameter,
+                        final Object _value)
+        throws EFapsException;
 }

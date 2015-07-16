@@ -19,6 +19,7 @@ package org.efaps.esjp.admin.common.systemconfiguration;
 import java.util.Properties;
 
 import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.event.Parameter;
 import org.efaps.util.EFapsException;
 
 /**
@@ -42,4 +43,18 @@ public abstract class PropertiesSysConfAttribute_Base
     {
         return SystemConfiguration.get(getSysConfUUID()).getAttributeValueAsProperties(getKey());
     }
+
+    @Override
+    public CharSequence getHtml(final Parameter _parameter,
+                                final Object _value)
+    {
+        final StringBuilder ret = new StringBuilder()
+                        .append("<textarea rows=\"5\" cols=\"80\" name=\"value\">");
+        if (_value != null) {
+            ret.append(_value);
+        }
+        ret.append("</textarea>");
+        return ret;
+    }
+
 }

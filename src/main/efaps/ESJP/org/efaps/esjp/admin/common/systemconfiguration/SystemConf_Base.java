@@ -27,12 +27,14 @@ import java.util.UUID;
 
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.ci.CIAdminCommon;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
@@ -40,11 +42,11 @@ import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.util.EFapsException;
-
 
 // TODO: Auto-generated Javadoc
 /**
@@ -58,18 +60,20 @@ import org.efaps.util.EFapsException;
 public abstract class SystemConf_Base
     extends AbstractCommon
 {
+
     /**
      * Add an ObjectAttribute for the Instance to the SystemConfiguration
      * specified by the given UUID.
-     * @param _sysConfUUID  UUID of the related SystemConfiguration
-     * @param _instance     INstance the ObjectAttribute belongs to
-     * @param _value        value to add
+     *
+     * @param _sysConfUUID UUID of the related SystemConfiguration
+     * @param _instance INstance the ObjectAttribute belongs to
+     * @param _value value to add
      * @throws EFapsException on error
      */
     public void addObjectAttribute(final UUID _sysConfUUID,
                                    final Instance _instance,
                                    final String _value)
-        throws EFapsException
+                                       throws EFapsException
     {
         final SystemConfiguration config = SystemConfiguration.get(_sysConfUUID);
         if (config != null) {
@@ -147,12 +151,13 @@ public abstract class SystemConf_Base
     public Return dropDownFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        final Field field = new Field() {
+        final Field field = new Field()
+        {
 
             @Override
             public StringBuilder getDropDownField(final Parameter _parameter,
                                                   final List<DropDownPosition> _values)
-                throws EFapsException
+                                                      throws EFapsException
             {
                 final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
                 for (final DropDownPosition dropPos : _values) {
@@ -196,6 +201,7 @@ public abstract class SystemConf_Base
         final List<ISysConfAttribute> attrs = SysConfResourceConfig.getResourceConfig().getAttributes(uuid);
         Collections.sort(attrs, new Comparator<ISysConfAttribute>()
         {
+
             @Override
             public int compare(final ISysConfAttribute _arg0,
                                final ISysConfAttribute _arg1)
@@ -210,6 +216,90 @@ public abstract class SystemConf_Base
             list.add(map);
         }
         ret.put(ReturnValues.VALUES, list);
+        return ret;
+    }
+
+    /**
+     * Update field4 key.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException
+     */
+    public Return updateFields4Key(final Parameter _parameter)
+        throws EFapsException
+    {
+        final PrintQuery print = new PrintQuery(_parameter.getInstance());
+        print.addAttribute(CIAdminCommon.SystemConfiguration.UUID);
+        print.execute();
+        final String uuid = print.getAttribute(CIAdminCommon.SystemConfiguration.UUID);
+
+        final String key = _parameter.getParameterValue("key");
+
+        final ISysConfAttribute attr = SysConfResourceConfig.getResourceConfig().getAttribute(uuid, key);
+        CharSequence node;
+        if (attr == null) {
+            node = "<input type=\"text\" name=\"value\">";
+        } else {
+            node = attr.getHtml(_parameter, null);
+        }
+
+        final Return ret = new Return();
+        final List<Map<String, Object>> values = new ArrayList<>();
+        final Map<String, Object> map = new HashMap<String, Object>();
+        values.add(map);
+        final StringBuilder js = new StringBuilder()
+                        .append("require(['dojo/query', 'dojo/dom-construct'], function (query, domConstruct) {")
+                        .append("var first = true;")
+                        .append("query('[name=value],[tag=rem]').forEach(function (node) {")
+                        .append("if (first) {")
+                        .append("first = false;")
+                        .append("var newNode = '").append(node).append("';")
+                        .append("domConstruct.place(newNode, node, 'replace');")
+                        .append("} else {")
+                        .append("domConstruct.destroy(node);")
+                        .append("}")
+                        .append("});")
+                        .append("});");
+
+        map.put("eFapsFieldUpdateJS", js.toString());
+        ret.put(ReturnValues.VALUES, values);
+        return ret;
+    }
+
+    /**
+     * Value field value.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
+    public Return valueFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        if (TargetMode.CREATE.equals(_parameter.get(ParameterValues.ACCESSMODE))
+                        || TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
+
+            if (_parameter.getInstance() != null && _parameter.getInstance().isValid()
+                            && _parameter.getInstance().getType()
+                                            .isCIType(CIAdminCommon.SystemConfigurationAttribute)) {
+                final PrintQuery print = new PrintQuery(_parameter.getInstance());
+                final SelectBuilder sel = SelectBuilder.get()
+                                .linkto(CIAdminCommon.SystemConfigurationAttribute.AbstractLink)
+                                .attribute(CIAdminCommon.SystemConfiguration.UUID);
+                print.addSelect(sel);
+                print.addAttribute(CIAdminCommon.SystemConfigurationAttribute.Key);
+                print.execute();
+                final String uuid = print.getSelect(sel);
+                final String key = print.getAttribute(CIAdminCommon.SystemConfigurationAttribute.Key);
+                final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+                final ISysConfAttribute attr = SysConfResourceConfig.getResourceConfig().getAttribute(uuid, key);
+                if (attr != null) {
+                    ret.put(ReturnValues.SNIPLETT, attr.getHtml(_parameter, fieldValue.getObject()).toString());
+                }
+            }
+        }
         return ret;
     }
 
