@@ -18,6 +18,8 @@ package org.efaps.esjp.common.jasperreport;
 
 import java.util.concurrent.TimeUnit;
 
+import net.sf.jasperreports.engine.JRRewindableDataSource;
+
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -28,8 +30,6 @@ import org.efaps.util.cache.InfinispanCache;
 import org.infinispan.Cache;
 import org.infinispan.container.entries.InternalCacheEntry;
 import org.joda.time.DateTime;
-
-import net.sf.jasperreports.engine.JRRewindableDataSource;
 
 /**
  * The Class AbstractCachedReport_Base.
@@ -78,7 +78,13 @@ public abstract class AbstractCachedReport_Base
     public boolean isCached(final Parameter _parameter)
         throws EFapsException
     {
-        return getCache().containsKey(getCacheKey(_parameter));
+        boolean ret;
+        if ("true".equalsIgnoreCase(getProperty(_parameter, "CashedReportForceReload"))) {
+            ret = false;
+        } else {
+            ret = getCache().containsKey(getCacheKey(_parameter));
+        }
+        return ret;
     }
 
     /**
