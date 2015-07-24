@@ -35,32 +35,8 @@ import java.util.UUID;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import net.sf.jasperreports.engine.DefaultJasperReportsContext;
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRExpression;
-import net.sf.jasperreports.engine.JRParameter;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.export.JRTextExporter;
-import net.sf.jasperreports.engine.export.JRXlsExporter;
-import net.sf.jasperreports.engine.export.oasis.JROdsExporter;
-import net.sf.jasperreports.engine.export.oasis.JROdtExporter;
-import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
-import net.sf.jasperreports.engine.util.JRLoader;
-import net.sf.jasperreports.engine.util.LocalJasperReportsContext;
-import net.sf.jasperreports.engine.xml.JRXmlDigesterFactory;
-import net.sf.jasperreports.engine.xml.JRXmlLoader;
-import net.sf.jasperreports.export.SimpleExporterInput;
-import net.sf.jasperreports.export.SimpleOdtReportConfiguration;
-import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
-import net.sf.jasperreports.export.SimpleTextReportConfiguration;
-import net.sf.jasperreports.export.SimpleWriterExporterOutput;
-import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
-
 import org.apache.commons.collections4.SetUtils;
+import org.apache.commons.lang3.EnumUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
@@ -86,6 +62,33 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
+import net.sf.jasperreports.engine.DefaultJasperReportsContext;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRExpression;
+import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.export.JRTextExporter;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.export.oasis.JROdsExporter;
+import net.sf.jasperreports.engine.export.oasis.JROdtExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.engine.util.LocalJasperReportsContext;
+import net.sf.jasperreports.engine.xml.JRXmlDigesterFactory;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOdtReportConfiguration;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleTextReportConfiguration;
+import net.sf.jasperreports.export.SimpleWriterExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
+import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
+
 /**
  * "Mime" as property in the calling command, or "mime" as parameter from a
  * form. Command overrules!
@@ -104,7 +107,7 @@ public abstract class StandartReport_Base
     /**
      * Key used to store a map in the Session.
      */
-    protected static String SESSIONKEY = StandartReport.class.getName() + ".SessionKey";
+    protected static final String SESSIONKEY = StandartReport.class.getName() + ".SessionKey";
 
     /**
      * Logger used in this class.
@@ -276,7 +279,7 @@ public abstract class StandartReport_Base
      * Get the instance of the JasperReport.
      * <ol>
      * <li>JasperReport</li>
-     * <li>JasperConfig with JasperConfigAttribute</li>
+     * <li>JasperConfig with JasperConfigReport</li>
      * <li>JasperKey</li>
      * </ol>
      * @param _parameter Parameter as passed by the eFasp API
@@ -298,7 +301,7 @@ public abstract class StandartReport_Base
             } else {
                 sysConf = SystemConfiguration.get(config);
             }
-            name = sysConf.getAttributeValue(getProperty(_parameter, "JasperConfigAttribute"));
+            name = sysConf.getAttributeValue(getProperty(_parameter, "JasperConfigReport"));
         } else {
             // Commons-Configuration
             final SystemConfiguration sysConf = SystemConfiguration.get(UUID
@@ -352,7 +355,8 @@ public abstract class StandartReport_Base
                 ctx.setFileResolver(new JasperFileResolver());
                 ctx.setClassLoader(EFapsClassLoader.getInstance());
 
-                ctx.setProperty("net.sf.jasperreports.subreport.runner.factory", SubReportRunnerFactory.class.getName());
+                ctx.setProperty("net.sf.jasperreports.subreport.runner.factory",
+                                SubReportRunnerFactory.class.getName());
                 ctx.setProperty("net.sf.jasperreports.query.executer.factory.eFaps",
                                 EQLQueryExecuterFactory.class.getName());
 
@@ -382,10 +386,7 @@ public abstract class StandartReport_Base
                 while (t.isAlive()) {
                     // add an abort criteria
                 }
-                String mime = getProperty(_parameter, "Mime");
-                if (mime == null) {
-                    mime = _parameter.getParameterValue("mime");
-                }
+
                 // check for a file name, if null search in the properties
                 if (getFileName() == null) {
                     setFileName(getProperty(_parameter, "FileName"));
@@ -397,7 +398,7 @@ public abstract class StandartReport_Base
                 final JasperPrint print = runner.getJasperPrint();
                 LOG.debug("print created: '{}'", print);
                 if (print != null) {
-                    ret = getFile(print, mime);
+                    ret = getFile(print, getMime(_parameter));
                 }
 
             } catch (final ClassNotFoundException e) {
@@ -437,57 +438,137 @@ public abstract class StandartReport_Base
                            final String _mime)
         throws IOException, JRException, EFapsException
     {
+        return getFile(_jasperPrint, EnumUtils.<JasperMime>getEnum(JasperMime.class, _mime.toUpperCase()));
+    }
+
+
+    /**
+     * Gets the mime.
+     *
+     * @param _parameter the _parameter
+     * @return the mime
+     * @throws EFapsException on error
+     */
+    protected JasperMime getMime(final Parameter _parameter)
+        throws EFapsException
+    {
+        String mime = null;
+        if (containsProperty(_parameter, "Mime")) {
+            mime = _parameter.getParameterValue("Mime");
+        } else if (containsProperty(_parameter, "JasperConfig")) {
+            final String config = getProperty(_parameter, "JasperConfig");
+            final SystemConfiguration sysConf;
+            if (isUUID(config)) {
+                sysConf = SystemConfiguration.get(UUID.fromString(config));
+            } else {
+                sysConf = SystemConfiguration.get(config);
+            }
+            mime = sysConf.getAttributeValue(getProperty(_parameter, "JasperConfigMime"));
+        }
+
+        JasperMime ret;
+        if (mime != null && !mime.isEmpty()) {
+            ret = EnumUtils.<JasperMime>getEnum(JasperMime.class, mime.toUpperCase());
+        } else {
+            ret = JasperMime.PDF;
+        }
+        return ret;
+    }
+
+    /**
+     * Method to get the File.
+     *
+     * @param _jasperPrint jasperprint the file will be created for
+     * @param _mime mimetype of the file, default pdf
+     * @return File
+     * @throws IOException on error
+     * @throws JRException on error
+     * @throws EFapsException on error
+     */
+    protected File getFile(final JasperPrint _jasperPrint,
+                           final JasperMime _mime)
+        throws IOException, JRException, EFapsException
+    {
         File file = null;
-        if ("pdf".equalsIgnoreCase(_mime) || _mime == null) {
-            file = new FileUtil().getFile(getFileName() == null ? "PDF" : getFileName(), "pdf");
-            final FileOutputStream os = new FileOutputStream(file);
-            JasperExportManager.exportReportToPdfStream(_jasperPrint, os);
-            os.close();
-        } else if ("odt".equalsIgnoreCase(_mime)) {
-            file = new FileUtil().getFile(getFileName() == null ? "ODT" : getFileName(), "odt");
-            final SimpleOdtReportConfiguration config = new SimpleOdtReportConfiguration();
-            final JROdtExporter exporter = new JROdtExporter();
-            exporter.setConfiguration(config);
-            exporter.setExporterInput(new SimpleExporterInput(_jasperPrint));
-            exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
-            exporter.exportReport();
-        } else if ("ods".equalsIgnoreCase(_mime)) {
-            file = new FileUtil().getFile(getFileName() == null ? "ODS" : getFileName(), "ods");
-            final JROdsExporter exporter = new JROdsExporter();
-            exporter.setExporterInput(new SimpleExporterInput(_jasperPrint));
-            exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
-            exporter.exportReport();
-        } else if ("xls".equalsIgnoreCase(_mime)) {
-            file = new FileUtil().getFile(getFileName() == null ? "XLS" : getFileName(), "xls");
-            final JRXlsExporter exporter = new JRXlsExporter();
-            _jasperPrint.setName(_jasperPrint.getName().replaceAll("[\\\\/:\"*?<>|]+", "-"));
-            exporter.setExporterInput(new SimpleExporterInput(_jasperPrint));
-            exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
-            final SimpleXlsReportConfiguration config = new SimpleXlsReportConfiguration();
-            config.setDetectCellType(true);
-            config.setIgnoreCellBorder(true);
-            config.setRemoveEmptySpaceBetweenColumns(true);
-            config.setRemoveEmptySpaceBetweenRows(true);
-            config.setWhitePageBackground(false);
-            config.setOnePagePerSheet(false);
-            config.setIgnorePageMargins(true);
-            exporter.setConfiguration(config);
-            exporter.exportReport();
-        }  else if ("docx".equalsIgnoreCase(_mime)) {
-            file = new FileUtil().getFile(getFileName() == null ? "DOCX" : getFileName(), "docx");
-            final JRDocxExporter exporter = new JRDocxExporter();
-            exporter.setExporterInput(new SimpleExporterInput(_jasperPrint));
-            exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
-            exporter.exportReport();
-        } else if ("txt".equalsIgnoreCase(_mime)) {
-            file = new FileUtil().getFile(getFileName() == null ? "TXT" : getFileName(), "txt");
-            final JRTextExporter exporter = new JRTextExporter();
-            exporter.setExporterInput(new SimpleExporterInput(_jasperPrint));
-            exporter.setExporterOutput(new SimpleWriterExporterOutput(file));
-            final SimpleTextReportConfiguration config = new SimpleTextReportConfiguration();
-            config.setCharHeight(new Float(10));
-            config.setCharWidth(new Float(6));
-            exporter.exportReport();
+        switch (_mime) {
+            case PDF:
+                file = new FileUtil().getFile(getFileName() == null ? "PDF" : getFileName(), "pdf");
+                final FileOutputStream os = new FileOutputStream(file);
+                JasperExportManager.exportReportToPdfStream(_jasperPrint, os);
+                os.close();
+                break;
+            case ODT:
+                file = new FileUtil().getFile(getFileName() == null ? "ODT" : getFileName(), "odt");
+                final SimpleOdtReportConfiguration config = new SimpleOdtReportConfiguration();
+                final JROdtExporter odtExp = new JROdtExporter();
+                odtExp.setConfiguration(config);
+                odtExp.setExporterInput(new SimpleExporterInput(_jasperPrint));
+                odtExp.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
+                odtExp.exportReport();
+                break;
+            case ODS:
+                file = new FileUtil().getFile(getFileName() == null ? "ODS" : getFileName(), "ods");
+                final JROdsExporter odsExp = new JROdsExporter();
+                odsExp.setExporterInput(new SimpleExporterInput(_jasperPrint));
+                odsExp.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
+                odsExp.exportReport();
+                break;
+            case XLS:
+                file = new FileUtil().getFile(getFileName() == null ? "XLS" : getFileName(), "xls");
+                final JRXlsExporter xlsExp = new JRXlsExporter();
+                _jasperPrint.setName(_jasperPrint.getName().replaceAll("[\\\\/:\"*?<>|]+", "-"));
+                xlsExp.setExporterInput(new SimpleExporterInput(_jasperPrint));
+                xlsExp.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
+                final SimpleXlsReportConfiguration xlsConfig = new SimpleXlsReportConfiguration();
+                xlsConfig.setDetectCellType(true);
+                xlsConfig.setIgnoreCellBorder(true);
+                xlsConfig.setRemoveEmptySpaceBetweenColumns(true);
+                xlsConfig.setRemoveEmptySpaceBetweenRows(true);
+                xlsConfig.setWhitePageBackground(false);
+                xlsConfig.setOnePagePerSheet(false);
+                xlsConfig.setIgnorePageMargins(true);
+                xlsExp.setConfiguration(xlsConfig);
+                xlsExp.exportReport();
+                break;
+            case DOCX:
+                file = new FileUtil().getFile(getFileName() == null ? "DOCX" : getFileName(), "docx");
+                final JRDocxExporter docxExpr = new JRDocxExporter();
+                docxExpr.setExporterInput(new SimpleExporterInput(_jasperPrint));
+                docxExpr.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
+                docxExpr.exportReport();
+            case XLSX:
+                final JRXlsxExporter xlsxExp = new JRXlsxExporter();
+                _jasperPrint.setName(_jasperPrint.getName().replaceAll("[\\\\/:\"*?<>|]+", "-"));
+                xlsxExp.setExporterInput(new SimpleExporterInput(_jasperPrint));
+                xlsxExp.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
+                final SimpleXlsxReportConfiguration xlsxConfig = new SimpleXlsxReportConfiguration();
+                xlsxConfig.setDetectCellType(true);
+                xlsxConfig.setIgnoreCellBorder(true);
+                xlsxConfig.setRemoveEmptySpaceBetweenColumns(true);
+                xlsxConfig.setRemoveEmptySpaceBetweenRows(true);
+                xlsxConfig.setWhitePageBackground(false);
+                xlsxConfig.setOnePagePerSheet(false);
+                xlsxConfig.setIgnorePageMargins(true);
+                xlsxExp.setConfiguration(xlsxConfig);
+                xlsxExp.exportReport();
+                break;
+            case CSV:
+            case HTML:
+            case RTF:
+            case XML:
+                LOG.warn("NOT IMPLEMENTED YET!");
+                break;
+            case TXT:
+            default:
+                file = new FileUtil().getFile(getFileName() == null ? "TXT" : getFileName(), "txt");
+                final JRTextExporter txtExporter = new JRTextExporter();
+                txtExporter.setExporterInput(new SimpleExporterInput(_jasperPrint));
+                txtExporter.setExporterOutput(new SimpleWriterExporterOutput(file));
+                final SimpleTextReportConfiguration txtConfig = new SimpleTextReportConfiguration();
+                txtConfig.setCharHeight(new Float(10));
+                txtConfig.setCharWidth(new Float(6));
+                txtExporter.exportReport();
+                break;
         }
         return file;
     }
@@ -520,5 +601,34 @@ public abstract class StandartReport_Base
     public void setFileName(final String _fileName)
     {
         this.fileName = _fileName;
+    }
+
+
+    public static enum JasperMime
+    {
+         /** The csv. */
+         CSV,
+         /** The docx. */
+         DOCX,
+         /** The html. */
+         HTML,
+         /** The ods. */
+         ODS,
+         /** The odt. */
+         ODT,
+         /** The pdf. */
+         PDF,
+         /** The pptx. */
+         PPTX,
+         /** The rtf. */
+         RTF,
+         /** The txt. */
+         TXT,
+         /** The xls. */
+         XLS,
+         /** The xlsx. */
+         XLSX,
+         /** The xml. */
+         XML;
     }
 }
