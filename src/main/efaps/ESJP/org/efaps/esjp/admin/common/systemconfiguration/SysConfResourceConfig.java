@@ -26,7 +26,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsClassLoader;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.api.annotation.EFapsSysConfAttribute;
 import org.efaps.api.annotation.EFapsSystemConfiguration;
 import org.efaps.rest.EFapsResourceConfig;
@@ -41,6 +43,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author The eFaps Team
  */
+@EFapsUUID("f12b6149-a855-419d-a090-ef46b71011e5")
+@EFapsApplication("eFaps-Kernel")
 public final class SysConfResourceConfig
 {
     /**

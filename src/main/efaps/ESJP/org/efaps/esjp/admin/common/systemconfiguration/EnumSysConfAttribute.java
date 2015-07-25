@@ -20,15 +20,16 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
- * The Class PropertiesSysConfAttribute.
+ * This class must be replaced for customization, therefore it is left empty.
+ * Functional description can be found in the related "<code>_Base</code>"
+ * class.
  *
  * @author The eFaps Team
  */
-@EFapsUUID("d74ee02f-44f9-45fc-bc2a-187fb3de8436")
+@EFapsUUID("12fbca5f-94c4-4fa7-92dc-f82a5a8c330a")
 @EFapsApplication("eFaps-Kernel")
-public class PropertiesSysConfAttribute
-    extends PropertiesSysConfAttribute_Base
+public class EnumSysConfAttribute<E extends Enum<E>>
+    extends EnumSysConfAttribute_Base<E>
 {
-
 
 }

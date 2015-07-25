@@ -17,6 +17,8 @@
 package org.efaps.esjp.admin.common.systemconfiguration;
 
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.EFapsException;
 
 /**
@@ -24,6 +26,8 @@ import org.efaps.util.EFapsException;
  *
  * @author The eFaps Team
  */
+@EFapsUUID("b50e11ea-59a9-432a-b64a-43d6e8616692")
+@EFapsApplication("eFaps-Kernel")
 public interface ISysConfAttribute
 {
 

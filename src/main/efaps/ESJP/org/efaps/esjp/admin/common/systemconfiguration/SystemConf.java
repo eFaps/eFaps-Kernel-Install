@@ -27,9 +27,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
  */
-@EFapsUUID("12fbca5f-94c4-4fa7-92dc-f82a5a8c330a")
+@EFapsUUID("a91f179a-bfad-406b-bf41-49cf77904e16")
 @EFapsApplication("eFaps-Kernel")
 public class SystemConf
     extends SystemConf_Base
