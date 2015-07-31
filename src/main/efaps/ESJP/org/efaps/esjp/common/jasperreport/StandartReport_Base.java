@@ -35,33 +35,6 @@ import java.util.UUID;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.collections4.SetUtils;
-import org.apache.commons.lang3.EnumUtils;
-import org.efaps.admin.common.SystemConfiguration;
-import org.efaps.admin.event.EventExecution;
-import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Parameter.ParameterValues;
-import org.efaps.admin.event.Return;
-import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsApplication;
-import org.efaps.admin.program.esjp.EFapsClassLoader;
-import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.ci.CIAdminProgram;
-import org.efaps.db.Checkout;
-import org.efaps.db.Context;
-import org.efaps.db.Instance;
-import org.efaps.db.InstanceQuery;
-import org.efaps.db.PrintQuery;
-import org.efaps.db.QueryBuilder;
-import org.efaps.esjp.common.AbstractCommon;
-import org.efaps.esjp.common.file.FileUtil;
-import org.efaps.esjp.common.parameter.ParameterUtil;
-import org.efaps.update.schema.program.jasperreport.JasperReportImporter.FakeQueryExecuterFactory;
-import org.efaps.util.EFapsException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
-
 import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
@@ -88,6 +61,33 @@ import net.sf.jasperreports.export.SimpleTextReportConfiguration;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
+
+import org.apache.commons.collections4.SetUtils;
+import org.apache.commons.lang3.EnumUtils;
+import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.event.EventExecution;
+import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsClassLoader;
+import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIAdminProgram;
+import org.efaps.db.Checkout;
+import org.efaps.db.Context;
+import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
+import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.common.AbstractCommon;
+import org.efaps.esjp.common.file.FileUtil;
+import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.update.schema.program.jasperreport.JasperReportImporter.FakeQueryExecuterFactory;
+import org.efaps.util.EFapsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
 /**
  * "Mime" as property in the calling command, or "mime" as parameter from a
@@ -449,12 +449,12 @@ public abstract class StandartReport_Base
      * @return the mime
      * @throws EFapsException on error
      */
-    protected JasperMime getMime(final Parameter _parameter)
+    public JasperMime getMime(final Parameter _parameter)
         throws EFapsException
     {
         String mime = null;
         if (containsProperty(_parameter, "Mime")) {
-            mime = _parameter.getParameterValue("Mime");
+            mime = getProperty(_parameter, "Mime");
         } else if (containsProperty(_parameter, "JasperConfig")) {
             final String config = getProperty(_parameter, "JasperConfig");
             final SystemConfiguration sysConf;
@@ -492,13 +492,15 @@ public abstract class StandartReport_Base
         File file = null;
         switch (_mime) {
             case PDF:
-                file = new FileUtil().getFile(getFileName() == null ? "PDF" : getFileName(), "pdf");
+                file = new FileUtil().getFile(getFileName() == null ? "PDF" : getFileName(),
+                                JasperMime.PDF.getExtension());
                 final FileOutputStream os = new FileOutputStream(file);
                 JasperExportManager.exportReportToPdfStream(_jasperPrint, os);
                 os.close();
                 break;
             case ODT:
-                file = new FileUtil().getFile(getFileName() == null ? "ODT" : getFileName(), "odt");
+                file = new FileUtil().getFile(getFileName() == null ? "ODT" : getFileName(),
+                                JasperMime.ODT.getExtension());
                 final SimpleOdtReportConfiguration config = new SimpleOdtReportConfiguration();
                 final JROdtExporter odtExp = new JROdtExporter();
                 odtExp.setConfiguration(config);
@@ -507,14 +509,16 @@ public abstract class StandartReport_Base
                 odtExp.exportReport();
                 break;
             case ODS:
-                file = new FileUtil().getFile(getFileName() == null ? "ODS" : getFileName(), "ods");
+                file = new FileUtil().getFile(getFileName() == null ? "ODS" : getFileName(),
+                                JasperMime.ODS.getExtension());
                 final JROdsExporter odsExp = new JROdsExporter();
                 odsExp.setExporterInput(new SimpleExporterInput(_jasperPrint));
                 odsExp.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
                 odsExp.exportReport();
                 break;
             case XLS:
-                file = new FileUtil().getFile(getFileName() == null ? "XLS" : getFileName(), "xls");
+                file = new FileUtil().getFile(getFileName() == null ? "XLS" : getFileName(),
+                                JasperMime.XLS.getExtension());
                 final JRXlsExporter xlsExp = new JRXlsExporter();
                 _jasperPrint.setName(_jasperPrint.getName().replaceAll("[\\\\/:\"*?<>|]+", "-"));
                 xlsExp.setExporterInput(new SimpleExporterInput(_jasperPrint));
@@ -531,11 +535,13 @@ public abstract class StandartReport_Base
                 xlsExp.exportReport();
                 break;
             case DOCX:
-                file = new FileUtil().getFile(getFileName() == null ? "DOCX" : getFileName(), "docx");
-                final JRDocxExporter docxExpr = new JRDocxExporter();
-                docxExpr.setExporterInput(new SimpleExporterInput(_jasperPrint));
-                docxExpr.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
-                docxExpr.exportReport();
+                file = new FileUtil().getFile(getFileName() == null ? "DOCX" : getFileName(),
+                                JasperMime.DOCX.getExtension());
+                final JRDocxExporter docxExp = new JRDocxExporter();
+                docxExp.setExporterInput(new SimpleExporterInput(_jasperPrint));
+                docxExp.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
+                docxExp.exportReport();
+                break;
             case XLSX:
                 final JRXlsxExporter xlsxExp = new JRXlsxExporter();
                 _jasperPrint.setName(_jasperPrint.getName().replaceAll("[\\\\/:\"*?<>|]+", "-"));
@@ -560,7 +566,8 @@ public abstract class StandartReport_Base
                 break;
             case TXT:
             default:
-                file = new FileUtil().getFile(getFileName() == null ? "TXT" : getFileName(), "txt");
+                file = new FileUtil().getFile(getFileName() == null ? "TXT" : getFileName(),
+                                JasperMime.TXT.getExtension());
                 final JRTextExporter txtExporter = new JRTextExporter();
                 txtExporter.setExporterInput(new SimpleExporterInput(_jasperPrint));
                 txtExporter.setExporterOutput(new SimpleWriterExporterOutput(file));
@@ -607,28 +614,45 @@ public abstract class StandartReport_Base
     public static enum JasperMime
     {
          /** The csv. */
-         CSV,
+         CSV("csv"),
          /** The docx. */
-         DOCX,
+         DOCX("docx"),
          /** The html. */
-         HTML,
+         HTML("html"),
          /** The ods. */
-         ODS,
+         ODS("ods"),
          /** The odt. */
-         ODT,
+         ODT("odt"),
          /** The pdf. */
-         PDF,
+         PDF("pdf"),
          /** The pptx. */
-         PPTX,
+         PPTX("pptx"),
          /** The rtf. */
-         RTF,
+         RTF("rtf"),
          /** The txt. */
-         TXT,
+         TXT("txt"),
          /** The xls. */
-         XLS,
+         XLS("xls"),
          /** The xlsx. */
-         XLSX,
+         XLSX("xlsx"),
          /** The xml. */
-         XML;
+         XML("xml");
+
+         private final String extension;
+
+         private JasperMime(final String _extension) {
+             this.extension = _extension;
+         }
+
+
+        /**
+         * Getter method for the instance variable {@link #extension}.
+         *
+         * @return value of instance variable {@link #extension}
+         */
+        public String getExtension()
+        {
+            return this.extension;
+        }
     }
 }
