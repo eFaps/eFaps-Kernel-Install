@@ -20,7 +20,9 @@
 
 package org.efaps.esjp.common.jasperreport.datatype;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -35,13 +37,14 @@ import org.joda.time.format.DateTimeFormatter;
  */
 @EFapsUUID("cdc45ed6-b73c-4dc6-9870-f338997d474c")
 @EFapsApplication("eFaps-Kernel")
-public class DateTimeMonth
+public final class DateTimeMonth
     extends AbstractDateTime
 {
+
     /**
      * for static access.
      */
-    private static final DateTimeMonth DATATYPE = new DateTimeMonth();
+    private static final Map<String, DateTimeMonth> DATATYPES = new HashMap<>();
 
     /**
      * Needed for serialization.
@@ -49,12 +52,22 @@ public class DateTimeMonth
     private static final long serialVersionUID = 1L;
 
     /**
+     * Instantiates a new date time month.
+     *
+     * @param _pattern the _pattern
+     */
+    private DateTimeMonth(final String _pattern)
+    {
+        super(_pattern);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     protected DateTimeFormatter getFormatter(final Locale _locale)
     {
-        return DateTimeFormat.forPattern("MMM").withLocale(_locale);
+        return DateTimeFormat.forPattern(getPattern()).withLocale(_locale);
     }
 
     /**
@@ -62,6 +75,24 @@ public class DateTimeMonth
      */
     public static DateTimeMonth get()
     {
-        return DateTimeMonth.DATATYPE;
+        return DateTimeMonth.get("MMM");
+    }
+
+    /**
+     * Gets the.
+     *
+     * @param _pattern the _pattern
+     * @return the datatype instance
+     */
+    public static DateTimeMonth get(final String _pattern)
+    {
+        DateTimeMonth ret;
+        if (DATATYPES.containsKey(_pattern)) {
+            ret = DATATYPES.get(_pattern);
+        } else {
+            ret = new DateTimeMonth(_pattern);
+            DATATYPES.put(_pattern, ret);
+        }
+        return ret;
     }
 }
