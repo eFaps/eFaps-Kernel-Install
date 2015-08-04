@@ -22,16 +22,16 @@ package org.efaps.esjp.common.jasperreport.datatype;
 
 import java.util.Locale;
 
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+
 import net.sf.dynamicreports.report.base.datatype.AbstractDataType;
 import net.sf.dynamicreports.report.base.expression.AbstractValueFormatter;
 import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.dynamicreports.report.definition.expression.DRIValueFormatter;
 import net.sf.dynamicreports.report.exception.DRException;
-
-import org.efaps.admin.program.esjp.EFapsApplication;
-import org.efaps.admin.program.esjp.EFapsUUID;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
 
 /**
  * TODO comment!
@@ -45,11 +45,23 @@ import org.joda.time.format.DateTimeFormatter;
 public abstract class AbstractDateTime
     extends AbstractDataType<DateTime, DateTime>
 {
-
     /**
      * Needed for serialization.
      */
     private static final long serialVersionUID = 1L;
+
+    /** The pattern for this DateTime  */
+    private final String pattern;
+
+    /**
+     * Instantiates a new abstract date time.
+     *
+     * @param _pattern the _pattern
+     */
+    protected AbstractDateTime(final String _pattern)
+    {
+        this.pattern = _pattern;
+    }
 
     @Override
     public String valueToString(final DateTime _value,
@@ -79,6 +91,12 @@ public abstract class AbstractDateTime
      * @return the formatter to be applied
      */
     protected abstract DateTimeFormatter getFormatter(final Locale _locale);
+
+    @Override
+    public String getPattern()
+    {
+        return this.pattern;
+    }
 
     @Override
     public DRIValueFormatter<?, ? extends DateTime> getValueFormatter()

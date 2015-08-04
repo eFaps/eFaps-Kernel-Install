@@ -20,7 +20,9 @@
 
 package org.efaps.esjp.common.jasperreport.datatype;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -38,10 +40,11 @@ import org.joda.time.format.DateTimeFormatter;
 public class DateTimeDate
     extends AbstractDateTime
 {
+
     /**
      * for static access.
      */
-    private static final DateTimeDate DATATYPE = new DateTimeDate();
+    private static final Map<String, DateTimeDate> DATATYPES = new HashMap<>();
 
     /**
      * Needed for serialization.
@@ -49,12 +52,28 @@ public class DateTimeDate
     private static final long serialVersionUID = 1L;
 
     /**
+     * Instantiates a new date time month.
+     *
+     * @param _pattern the _pattern
+     */
+    private DateTimeDate(final String _pattern)
+    {
+        super(_pattern);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     protected DateTimeFormatter getFormatter(final Locale _locale)
     {
-        return DateTimeFormat.mediumDate().withLocale(_locale);
+        DateTimeFormatter ret;
+        if (getPattern().matches("^[SMLF-][SMLF-]$")) {
+            ret = DateTimeFormat.forStyle(getPattern()).withLocale(_locale);
+        } else {
+            ret = DateTimeFormat.forPattern(getPattern()).withLocale(_locale);
+        }
+        return ret;
     }
 
     /**
@@ -62,6 +81,24 @@ public class DateTimeDate
      */
     public static DateTimeDate get()
     {
-        return DateTimeDate.DATATYPE;
+        return DateTimeDate.get("M-");
+    }
+
+    /**
+     * Gets the.
+     *
+     * @param _pattern the _pattern
+     * @return the datatype instance
+     */
+    public static DateTimeDate get(final String _pattern)
+    {
+        DateTimeDate ret;
+        if (DATATYPES.containsKey(_pattern)) {
+            ret = DATATYPES.get(_pattern);
+        } else {
+            ret = new DateTimeDate(_pattern);
+            DATATYPES.put(_pattern, ret);
+        }
+        return ret;
     }
 }

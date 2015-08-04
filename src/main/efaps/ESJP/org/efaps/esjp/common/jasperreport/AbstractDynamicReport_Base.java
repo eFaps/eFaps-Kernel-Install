@@ -30,6 +30,27 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.dbproperty.DBProperties;
+import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIAdminProgram;
+import org.efaps.db.Checkout;
+import org.efaps.db.Context;
+import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.common.AbstractCommon;
+import org.efaps.esjp.common.file.FileUtil;
+import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
+import org.efaps.esjp.common.jasperreport.datatype.DateTimeExpression;
+import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.jasper.builder.export.Exporters;
 import net.sf.dynamicreports.jasper.builder.export.JasperHtmlExporterBuilder;
@@ -53,27 +74,6 @@ import net.sf.dynamicreports.report.definition.datatype.DRIDataType;
 import net.sf.dynamicreports.report.exception.DRException;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRParameter;
-
-import org.efaps.admin.common.SystemConfiguration;
-import org.efaps.admin.dbproperty.DBProperties;
-import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Parameter.ParameterValues;
-import org.efaps.admin.program.esjp.EFapsApplication;
-import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.ci.CIAdminProgram;
-import org.efaps.db.Checkout;
-import org.efaps.db.Context;
-import org.efaps.db.Instance;
-import org.efaps.db.InstanceQuery;
-import org.efaps.db.QueryBuilder;
-import org.efaps.esjp.common.AbstractCommon;
-import org.efaps.esjp.common.file.FileUtil;
-import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
-import org.efaps.esjp.common.jasperreport.datatype.DateTimeExpression;
-import org.efaps.util.EFapsException;
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
@@ -664,7 +664,7 @@ public abstract class AbstractDynamicReport_Base
         }
 
         final TextFieldBuilder<String> dateField = DynamicReports.cmp.text(new DateTimeExpression(new DateTime(),
-                        new DateTimeDate()));
+                        DateTimeDate.get()));
 
         ret.add(dateField.setHorizontalAlignment(HorizontalAlignment.RIGHT));
         ret.newRow();
