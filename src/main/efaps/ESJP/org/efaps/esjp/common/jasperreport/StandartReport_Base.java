@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.common.jasperreport;
@@ -94,8 +91,6 @@ import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
  * form. Command overrules!
  *
  * @author The eFaps Team
- * @version $Id: StandartReport_Base.java 14418 2014-11-11 18:05:19Z
- *          jan@moxter.net $
  */
 @EFapsUUID("c3a1f5f8-b263-4ad4-b144-db68437074cc")
 @EFapsApplication("eFaps-Kernel")
@@ -171,7 +166,7 @@ public abstract class StandartReport_Base
                         FakeQueryExecuterFactory.class.getName());
         try {
             final JasperDesign jasperDesign = new JRXmlLoader(DefaultJasperReportsContext.getInstance(),
-                            JRXmlDigesterFactory.createDigester()).loadXML(is);
+                            JRXmlDigesterFactory.createDigester(DefaultJasperReportsContext.getInstance())).loadXML(is);
             final Set<JRParameter> paras = new HashSet<>();
             for (final JRParameter parameter : jasperDesign.getParameters()) {
                 if (parameter.isForPrompting() && !parameter.isSystemDefined()) {
@@ -203,6 +198,9 @@ public abstract class StandartReport_Base
             Context.getThreadContext().setSessionAttribute(SESSIONKEY, paras);
         } catch (final JRException | ParserConfigurationException | SAXException e) {
             LOG.error("Catched Error: ", e);
+        }
+        if (html.length() == 0) {
+            html.append("&nbsp;");
         }
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
