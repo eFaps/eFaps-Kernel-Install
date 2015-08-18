@@ -49,6 +49,8 @@ import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
+import org.efaps.db.store.Resource;
+import org.efaps.db.store.Store;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.util.EFapsException;
@@ -521,7 +523,32 @@ public abstract class AccessCheck4UI_Base
         } else {
             ret.put(ReturnValues.TRUE, true);
         }
+        return ret;
+    }
 
+    /**
+     * Method is used to control access based on the possibility to perform
+     * a checkout. Meaning the it is checked if actually a checkedin file
+     * exists.
+     *
+     * @param _parameter Parameter as passed from  the eFaps API.
+     * @return Return with True if VIEW, else false
+     * @throws EFapsException on error
+     */
+    public Return check4Checkout(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Instance instance = _parameter.getInstance();
+        Boolean access = null;
+        final boolean inverse = "true".equalsIgnoreCase(getProperty(_parameter, "Inverse"));
+        if (instance != null && instance.isValid() && instance.getType().hasStore()) {
+            final Resource resource = Store.get(instance.getType().getStoreId()).getResource(instance);
+            access = resource.exists();
+        }
+        if (access == null && inverse || access && !inverse) {
+            ret.put(ReturnValues.TRUE, true);
+        }
         return ret;
     }
 }
