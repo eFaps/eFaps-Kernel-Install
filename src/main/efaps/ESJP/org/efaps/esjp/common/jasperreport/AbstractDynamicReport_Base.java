@@ -66,10 +66,10 @@ import net.sf.dynamicreports.report.builder.component.SubreportBuilder;
 import net.sf.dynamicreports.report.builder.component.TextFieldBuilder;
 import net.sf.dynamicreports.report.builder.style.ReportStyleBuilder;
 import net.sf.dynamicreports.report.builder.style.StyleBuilder;
-import net.sf.dynamicreports.report.constant.HorizontalAlignment;
+import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
 import net.sf.dynamicreports.report.constant.PageOrientation;
 import net.sf.dynamicreports.report.constant.PageType;
-import net.sf.dynamicreports.report.constant.VerticalAlignment;
+import net.sf.dynamicreports.report.constant.VerticalTextAlignment;
 import net.sf.dynamicreports.report.definition.datatype.DRIDataType;
 import net.sf.dynamicreports.report.exception.DRException;
 import net.sf.jasperreports.engine.JRDataSource;
@@ -281,9 +281,9 @@ public abstract class AbstractDynamicReport_Base
     {
         return DynamicReports.stl.style()
                         .setBorder(DynamicReports.stl.pen1Point())
-                        .setHorizontalAlignment(HorizontalAlignment.CENTER)
+                        .setHorizontalTextAlignment(HorizontalTextAlignment.CENTER)
                         .setBackgroundColor(Color.LIGHT_GRAY)
-                        .bold().setVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .bold().setVerticalTextAlignment(VerticalTextAlignment.MIDDLE)
                         .setPadding(DynamicReports.stl.padding(5)).setSpacingAfter(4);
     }
 
@@ -297,8 +297,8 @@ public abstract class AbstractDynamicReport_Base
     protected StyleBuilder getColumnTitleStyle4Excel(final Parameter _parameter)
         throws EFapsException
     {
-        return DynamicReports.stl.style().setHorizontalAlignment(HorizontalAlignment.CENTER)
-                        .setVerticalAlignment(VerticalAlignment.MIDDLE).setPadding(2)
+        return DynamicReports.stl.style().setHorizontalTextAlignment(HorizontalTextAlignment.CENTER)
+                        .setVerticalTextAlignment(VerticalTextAlignment.MIDDLE).setPadding(2)
                         .setBackgroundColor(Color.LIGHT_GRAY)
                         .bold();
     }
@@ -315,9 +315,9 @@ public abstract class AbstractDynamicReport_Base
     {
         return DynamicReports.stl.style()
                         .setBorder(DynamicReports.stl.pen1Point())
-                        .setHorizontalAlignment(HorizontalAlignment.CENTER)
+                        .setHorizontalTextAlignment(HorizontalTextAlignment.CENTER)
                         .setBackgroundColor(Color.LIGHT_GRAY)
-                        .bold().setVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .bold().setVerticalTextAlignment(VerticalTextAlignment.MIDDLE)
                         .setPadding(DynamicReports.stl.padding(2));
     }
 
@@ -332,7 +332,7 @@ public abstract class AbstractDynamicReport_Base
         throws EFapsException
     {
         return DynamicReports.stl.style().bold()
-                        .setHorizontalAlignment(HorizontalAlignment.LEFT)
+                        .setHorizontalTextAlignment(HorizontalTextAlignment.LEFT)
                         .setPadding(DynamicReports.stl.padding(2));
     }
 
@@ -347,7 +347,7 @@ public abstract class AbstractDynamicReport_Base
         throws EFapsException
     {
         return DynamicReports.stl.style().bold()
-                        .setHorizontalAlignment(HorizontalAlignment.LEFT)
+                        .setHorizontalTextAlignment(HorizontalTextAlignment.LEFT)
                         .setPadding(DynamicReports.stl.padding(2));
     }
 
@@ -362,7 +362,7 @@ public abstract class AbstractDynamicReport_Base
         throws EFapsException
     {
         return DynamicReports.stl.style().bold()
-                        .setHorizontalAlignment(HorizontalAlignment.LEFT)
+                        .setHorizontalTextAlignment(HorizontalTextAlignment.LEFT)
                         .setPadding(DynamicReports.stl.padding(2));
     }
 
@@ -419,9 +419,9 @@ public abstract class AbstractDynamicReport_Base
         throws EFapsException
     {
         return DynamicReports.stl.style().setPadding(2)
-                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .setVerticalTextAlignment(VerticalTextAlignment.MIDDLE)
                         .setBorder(DynamicReports.stl.pen1Point())
-                        .setHorizontalAlignment(HorizontalAlignment.CENTER)
+                        .setHorizontalTextAlignment(HorizontalTextAlignment.CENTER)
                         .setBackgroundColor(Color.LIGHT_GRAY)
                         .bold();
     }
@@ -450,9 +450,9 @@ public abstract class AbstractDynamicReport_Base
         throws EFapsException
     {
         return DynamicReports.stl.style().setPadding(2)
-                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .setVerticalTextAlignment(VerticalTextAlignment.MIDDLE)
                         .setBorder(DynamicReports.stl.pen1Point())
-                        .setHorizontalAlignment(HorizontalAlignment.CENTER)
+                        .setHorizontalTextAlignment(HorizontalTextAlignment.CENTER)
                         .setBackgroundColor(Color.LIGHT_GRAY)
                         .bold();
     }
@@ -468,7 +468,7 @@ public abstract class AbstractDynamicReport_Base
         throws EFapsException
     {
         return DynamicReports.stl.style().setPadding(2)
-                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .setVerticalTextAlignment(VerticalTextAlignment.MIDDLE)
                         .setBorder(DynamicReports.stl.pen1Point());
     }
 
@@ -496,7 +496,7 @@ public abstract class AbstractDynamicReport_Base
         throws EFapsException
     {
         return DynamicReports.stl.style().setPadding(2)
-                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .setVerticalTextAlignment(VerticalTextAlignment.MIDDLE)
                         .setBorder(DynamicReports.stl.pen1Point());
     }
 
@@ -511,9 +511,9 @@ public abstract class AbstractDynamicReport_Base
         throws EFapsException
     {
         return DynamicReports.stl.style().setPadding(2)
-                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .setVerticalTextAlignment(VerticalTextAlignment.MIDDLE)
                         .setBorder(DynamicReports.stl.pen1Point())
-                        .setHorizontalAlignment(HorizontalAlignment.CENTER)
+                        .setHorizontalTextAlignment(HorizontalTextAlignment.CENTER)
                         .setBackgroundColor(Color.LIGHT_GRAY)
                         .bold()
                         .setBackgroundColor(new Color(170, 170, 170));
@@ -543,9 +543,9 @@ public abstract class AbstractDynamicReport_Base
         throws EFapsException
     {
         return DynamicReports.stl.style().setPadding(2)
-                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .setVerticalTextAlignment(VerticalTextAlignment.MIDDLE)
                         .setBorder(DynamicReports.stl.pen1Point())
-                        .setHorizontalAlignment(HorizontalAlignment.CENTER)
+                        .setHorizontalTextAlignment(HorizontalTextAlignment.CENTER)
                         .setBackgroundColor(Color.LIGHT_GRAY)
                         .bold()
                         .setBackgroundColor(new Color(170, 170, 170));
@@ -562,9 +562,9 @@ public abstract class AbstractDynamicReport_Base
         throws EFapsException
     {
         return DynamicReports.stl.style().setPadding(2)
-                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .setVerticalTextAlignment(VerticalTextAlignment.MIDDLE)
                         .setBorder(DynamicReports.stl.pen1Point())
-                        .setHorizontalAlignment(HorizontalAlignment.CENTER)
+                        .setHorizontalTextAlignment(HorizontalTextAlignment.CENTER)
                         .setBackgroundColor(Color.LIGHT_GRAY)
                         .bold()
                         .setBackgroundColor(new Color(140, 140, 140));
@@ -594,9 +594,9 @@ public abstract class AbstractDynamicReport_Base
         throws EFapsException
     {
         return DynamicReports.stl.style().setPadding(2)
-                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .setVerticalTextAlignment(VerticalTextAlignment.MIDDLE)
                         .setBorder(DynamicReports.stl.pen1Point())
-                        .setHorizontalAlignment(HorizontalAlignment.CENTER)
+                        .setHorizontalTextAlignment(HorizontalTextAlignment.CENTER)
                         .setBackgroundColor(Color.LIGHT_GRAY)
                         .bold()
                         .setBackgroundColor(new Color(140, 140, 140));
@@ -628,7 +628,7 @@ public abstract class AbstractDynamicReport_Base
         throws EFapsException
     {
         final StyleBuilder boldCenteredStyle = DynamicReports.stl.style().bold()
-                        .setHorizontalAlignment(HorizontalAlignment.CENTER);
+                        .setHorizontalTextAlignment(HorizontalTextAlignment.CENTER);
         return DynamicReports.cmp.pageXslashY().setStyle(boldCenteredStyle);
     }
 
@@ -643,7 +643,7 @@ public abstract class AbstractDynamicReport_Base
         throws EFapsException
     {
         final StyleBuilder style = DynamicReports.stl.style().bold()
-                        .setVerticalAlignment(VerticalAlignment.MIDDLE)
+                        .setVerticalTextAlignment(VerticalTextAlignment.MIDDLE)
                         .setFontSize(10);
 
         final HorizontalListBuilder ret = DynamicReports.cmp.horizontalList();
@@ -654,23 +654,23 @@ public abstract class AbstractDynamicReport_Base
             final String companyName = config.getAttributeValue("org.efaps.commons.CompanyName");
             if (companyName != null) {
                 ret.add(DynamicReports.cmp.text(companyName).setStyle(style)
-                                .setHorizontalAlignment(HorizontalAlignment.LEFT));
+                                .setHorizontalTextAlignment(HorizontalTextAlignment.LEFT));
             }
             final String companyTax = config.getAttributeValue("org.efaps.commons.CompanyTaxNumber");
             if (companyName != null) {
                 ret.add(DynamicReports.cmp.text(companyTax).setStyle(style)
-                                .setHorizontalAlignment(HorizontalAlignment.LEFT));
+                                .setHorizontalTextAlignment(HorizontalTextAlignment.LEFT));
             }
         }
 
         final TextFieldBuilder<String> dateField = DynamicReports.cmp.text(new DateTimeExpression(new DateTime(),
                         DateTimeDate.get()));
 
-        ret.add(dateField.setHorizontalAlignment(HorizontalAlignment.RIGHT));
+        ret.add(dateField.setHorizontalTextAlignment(HorizontalTextAlignment.RIGHT));
         ret.newRow();
         ret.add(DynamicReports.cmp.text(DBProperties.getProperty(getClass().getName() + ".Title"))
                         .setStyle(DynamicReports.stl.style(style).setFontSize(12))
-                        .setHorizontalAlignment(HorizontalAlignment.CENTER));
+                        .setHorizontalTextAlignment(HorizontalTextAlignment.CENTER));
         return ret;
     }
 
