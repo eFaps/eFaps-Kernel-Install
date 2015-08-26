@@ -14,21 +14,15 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 <common-msgphrase xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>e5c4e9b1-bf4c-4f7c-8483-713bb27bdd2a</uuid>
     <file-application>eFaps-Kernel</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Common_ApplicationRevisionShortMsgPhrase</name>
-        <label>{0} {1,datetime, YYYY/MM/dd}</label>
+        <label>{0,left,6} {1,datetime, YYYY/MM/dd} {2}</label>
         <argument index="0">attribute[Revision]</argument>
         <argument index="1">attribute[Date]</argument>
         <argument index="2">linkto[ApplicationLink].attribute[Name]</argument>
