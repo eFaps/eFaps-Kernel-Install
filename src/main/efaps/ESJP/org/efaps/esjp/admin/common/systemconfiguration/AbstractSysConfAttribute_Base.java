@@ -18,8 +18,6 @@ package org.efaps.esjp.admin.common.systemconfiguration;
 
 import java.util.UUID;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.EFapsException;
@@ -130,8 +128,6 @@ public abstract class AbstractSysConfAttribute_Base<T extends AbstractSysConfAtt
     @Override
     public String toString()
     {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-                        .append("key", getKey())
-                        .toString();
+        return new StringBuilder().append(getKey()).append(" - ").append(this.getClass().getSimpleName()).toString();
     }
 }
