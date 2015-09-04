@@ -48,12 +48,10 @@ import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.util.EFapsException;
 
-// TODO: Auto-generated Javadoc
 /**
  * Contains some funtionalities related to SystemConfigurations.
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("aa441e81-fd9f-4462-99c2-2d27bd37f137")
 @EFapsApplication("eFaps-Kernel")
@@ -207,21 +205,23 @@ public abstract class SystemConf_Base
         final String uuid = print.getSelect(sel);
 
         final List<ISysConfAttribute> attrs = SysConfResourceConfig.getResourceConfig().getAttributes(uuid);
-        Collections.sort(attrs, new Comparator<ISysConfAttribute>()
-        {
-
-            @Override
-            public int compare(final ISysConfAttribute _arg0,
-                               final ISysConfAttribute _arg1)
+        if (attrs != null) {
+            Collections.sort(attrs, new Comparator<ISysConfAttribute>()
             {
-                return _arg0.getKey().compareTo(_arg1.getKey());
+
+                @Override
+                public int compare(final ISysConfAttribute _arg0,
+                                   final ISysConfAttribute _arg1)
+                {
+                    return _arg0.getKey().compareTo(_arg1.getKey());
+                }
+            });
+            for (final ISysConfAttribute attr : attrs) {
+                final Map<String, String> map = new HashMap<String, String>();
+                map.put("eFapsAutoCompleteKEY", attr.getKey());
+                map.put("eFapsAutoCompleteVALUE", attr.getKey());
+                list.add(map);
             }
-        });
-        for (final ISysConfAttribute attr : attrs) {
-            final Map<String, String> map = new HashMap<String, String>();
-            map.put("eFapsAutoCompleteKEY", attr.getKey());
-            map.put("eFapsAutoCompleteVALUE", attr.getKey());
-            list.add(map);
         }
         ret.put(ReturnValues.VALUES, list);
         return ret;
@@ -254,7 +254,7 @@ public abstract class SystemConf_Base
         final ISysConfAttribute attr = SysConfResourceConfig.getResourceConfig().getAttribute(uuid, key);
         CharSequence node;
         if (attr == null) {
-            node = "<input type=\"text\" name=\"value\">";
+            node = "<textarea rows=\"5\" name=\"value\"></textarea>";
         } else {
             node = attr.getHtml(_parameter, null);
         }
@@ -264,18 +264,18 @@ public abstract class SystemConf_Base
         final Map<String, Object> map = new HashMap<String, Object>();
         values.add(map);
         final StringBuilder js = new StringBuilder()
-                        .append("require(['dojo/query', 'dojo/dom-construct'], function (query, domConstruct) {")
-                        .append("var first = true;")
-                        .append("query('[name=value],[tag=rem]').forEach(function (node) {")
-                        .append("if (first) {")
-                        .append("first = false;")
-                        .append("var newNode = '").append(node).append("';")
-                        .append("domConstruct.place(newNode, node, 'replace');")
-                        .append("} else {")
-                        .append("domConstruct.destroy(node);")
-                        .append("}")
-                        .append("});")
-                        .append("});");
+                .append("require(['dojo/query', 'dojo/dom-construct'], function (query, domConstruct) {")
+                .append("var first = true;")
+                .append("query('[name=value],[tag=rem]').forEach(function (node) {")
+                .append("if (first) {")
+                .append("first = false;")
+                .append("var newNode = '").append(node).append("';")
+                .append("domConstruct.place(newNode, node, 'replace');")
+                .append("} else {")
+                .append("domConstruct.destroy(node);")
+                .append("}")
+                .append("});")
+                .append("});");
 
         map.put("eFapsFieldUpdateJS", js.toString());
         ret.put(ReturnValues.VALUES, values);

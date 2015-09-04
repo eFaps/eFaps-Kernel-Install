@@ -130,17 +130,24 @@ public final class SysConfResourceConfig
      */
     public List<ISysConfAttribute> getAttributes(final String _uuid)
     {
-        return this.uuid2attr.get(_uuid);
+        List<ISysConfAttribute> ret;
+        if (this.uuid2attr.containsKey(_uuid)) {
+            ret = this.uuid2attr.get(_uuid);
+        } else {
+            ret = new ArrayList<>();
+        }
+        return ret;
     }
 
     /**
      * Gets the attributes.
      *
      * @param _uuid the _uuid
+     * @param _key the _key
      * @return the attributes
      */
     public ISysConfAttribute getAttribute(final String _uuid,
-                                                final String _key)
+                                          final String _key)
     {
         ISysConfAttribute ret = null;
         for (final ISysConfAttribute attr: getAttributes(_uuid)) {
