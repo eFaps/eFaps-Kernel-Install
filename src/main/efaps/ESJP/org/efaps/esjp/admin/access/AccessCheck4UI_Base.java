@@ -53,6 +53,8 @@ import org.efaps.db.store.Resource;
 import org.efaps.db.store.Store;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.update.AppDependency;
+import org.efaps.update.util.InstallationException;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -551,6 +553,35 @@ public abstract class AccessCheck4UI_Base
         if (instance != null && instance.isValid() && instance.getType().hasStore()) {
             final Resource resource = Store.get(instance.getType().getStoreId()).getResource(instance);
             access = resource.exists();
+        }
+        if (access == null && inverse || access && !inverse) {
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+    /**
+     * Method is used to control access based on Applications installed.
+     *
+     * @param _parameter Parameter as passed from  the eFaps API.
+     * @return Return with True if VIEW, else false
+     * @throws EFapsException on error
+     */
+    public Return check4Application(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        Boolean access = null;
+        final boolean inverse = "true".equalsIgnoreCase(getProperty(_parameter, "Inverse"));
+        for (final String application : analyseProperty(_parameter, "Application").values()) {
+            try {
+                access =  AppDependency.getAppDependency(application).isMet();
+            } catch (final InstallationException e) {
+                throw new EFapsException("", e);
+            }
+            if (access) {
+                break;
+            }
         }
         if (access == null && inverse || access && !inverse) {
             ret.put(ReturnValues.TRUE, true);
