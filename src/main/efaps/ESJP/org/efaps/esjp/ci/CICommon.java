@@ -33,6 +33,94 @@ import org.efaps.ci.CIType;
 public class CICommon
 {
 
+    public static final _DashboardAbstract DashboardAbstract = new _DashboardAbstract("b2388ab1-f9c6-47f1-9893-bc2d72a71d19");
+
+    public static class _DashboardAbstract
+        extends CIType
+    {
+
+        protected _DashboardAbstract(final String _uuid)
+        {
+            super(_uuid);
+        }
+
+        public final CIAttribute Name = new CIAttribute(this, "Name");
+        public final CIAttribute Description = new CIAttribute(this, "Description");
+        public final CIAttribute Creator = new CIAttribute(this, "Creator");
+        public final CIAttribute Created = new CIAttribute(this, "Created");
+        public final CIAttribute Modifier = new CIAttribute(this, "Modifier");
+        public final CIAttribute Modified = new CIAttribute(this, "Modified");
+    }
+
+    public static final _DashboardDefault DashboardDefault = new _DashboardDefault("6bd550d1-4eac-4354-a984-431204f2bdb7");
+
+    public static class _DashboardDefault
+        extends _DashboardAbstract
+    {
+
+        protected _DashboardDefault(final String _uuid)
+        {
+            super(_uuid);
+        }
+    }
+
+
+    public static final _DashboardAbstract2Object DashboardAbstract2Object = new _DashboardAbstract2Object("18dc5f79-e1aa-4e12-a8c1-6159b5f57fa6");
+
+    public static class _DashboardAbstract2Object
+        extends CIType
+    {
+
+        protected _DashboardAbstract2Object(final String _uuid)
+        {
+            super(_uuid);
+        }
+
+        public final CIAttribute FromLinkAbstract = new CIAttribute(this, "FromLinkAbstract");
+        public final CIAttribute Creator = new CIAttribute(this, "Creator");
+        public final CIAttribute Created = new CIAttribute(this, "Created");
+        public final CIAttribute Modifier = new CIAttribute(this, "Modifier");
+        public final CIAttribute Modified = new CIAttribute(this, "Modified");
+    }
+
+    public static final _DashboardDefault2Element DashboardDefault2Element = new _DashboardDefault2Element("f356aad6-093f-4313-a1ef-1c77f7e462dd");
+
+    public static class _DashboardDefault2Element
+        extends _DashboardAbstract2Object
+    {
+
+        protected _DashboardDefault2Element(final String _uuid)
+        {
+            super(_uuid);
+        }
+
+        public final CIAttribute FromLink = new CIAttribute(this, "FromLink");
+        public final CIAttribute ToLink = new CIAttribute(this, "ToLink");
+        public final CIAttribute Field = new CIAttribute(this, "Field");
+    }
+
+    public static final _DashboardElement DashboardElement = new _DashboardElement("01dd4e3a-09f3-47cf-87c0-e3f3ab821732");
+
+    public static class _DashboardElement
+        extends CIType
+    {
+
+        protected _DashboardElement(final String _uuid)
+        {
+            super(_uuid);
+        }
+
+        public final CIAttribute Name = new CIAttribute(this, "Name");
+        public final CIAttribute Description = new CIAttribute(this, "Description");
+        public final CIAttribute Config = new CIAttribute(this, "Config");
+        public final CIAttribute EsjpLink = new CIAttribute(this, "EsjpLink");
+        public final CIAttribute Creator = new CIAttribute(this, "Creator");
+        public final CIAttribute Created = new CIAttribute(this, "Created");
+        public final CIAttribute Modifier = new CIAttribute(this, "Modifier");
+        public final CIAttribute Modified = new CIAttribute(this, "Modified");
+    }
+
+
     public static final _HistoryAbstract HistoryAbstract = new _HistoryAbstract("66a75f87-1e07-410d-a0c4-c6ec1671b9a1");
 
     public static class _HistoryAbstract
