@@ -36,7 +36,7 @@ public abstract class AbstractDashboardPanel_Base
 {
 
     /** The config. */
-    private final Properties config;
+    private final String config;
 
     /**
      * Instantiates a new abstract dashboard panel_ base.
@@ -45,15 +45,7 @@ public abstract class AbstractDashboardPanel_Base
      */
     public AbstractDashboardPanel_Base(final String _config)
     {
-        this.config = new Properties();
-        if (_config != null && !_config.isEmpty()) {
-            try {
-                this.config.load(new StringReader(_config));
-            } catch (final IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
+        this.config = _config;
     }
 
     /**
@@ -63,7 +55,16 @@ public abstract class AbstractDashboardPanel_Base
      */
     public Properties getConfig()
     {
-        return this.config;
+        final Properties ret = new Properties();
+        if (this.config != null && !this.config.isEmpty()) {
+            try {
+                ret.load(new StringReader(this.config));
+            } catch (final IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        return ret;
     }
 
     /**
