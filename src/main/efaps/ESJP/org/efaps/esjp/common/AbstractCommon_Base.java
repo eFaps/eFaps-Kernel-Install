@@ -101,6 +101,15 @@ public abstract class AbstractCommon_Base
         return analyseProperty(_parameter, _key, 0);
     }
 
+    /**
+     * Analyse property.
+     *
+     * @param _parameter the _parameter
+     * @param _properties the _properties
+     * @param _key the _key
+     * @return the map
+     * @throws EFapsException on error
+     */
     protected Map<Integer, String> analyseProperty(final Parameter _parameter,
                                                    final Properties _properties,
                                                    final String _key)
@@ -109,6 +118,16 @@ public abstract class AbstractCommon_Base
         return analyseProperty(_parameter, _properties, _key, 0);
     }
 
+    /**
+     * Analyse property.
+     *
+     * @param _parameter the _parameter
+     * @param _properties the _properties
+     * @param _key the _key
+     * @param _offset the _offset
+     * @return the map
+     * @throws EFapsException on error
+     */
     protected Map<Integer, String> analyseProperty(final Parameter _parameter,
                                                    final Properties _properties,
                                                    final String _key,
@@ -733,5 +752,22 @@ public abstract class AbstractCommon_Base
     public String getDBProperty(final String _key)
     {
         return DBProperties.getProperty(this.getClass().getName() + "." + _key);
+    }
+
+    /**
+     * Gets the query bldr from properties.
+     *
+     * @param _properties the _properties
+     * @return the query bldr from properties
+     * @throws EFapsException on error
+     */
+    protected static QueryBuilder getQueryBldrFromProperties(final Properties _properties)
+        throws EFapsException
+    {
+        final Parameter parameter = new Parameter();
+        final AbstractCommon cm = new AbstractCommon()
+        {
+        };
+        return cm.getQueryBldrFromProperties(parameter, _properties);
     }
 }

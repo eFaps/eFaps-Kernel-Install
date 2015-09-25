@@ -17,12 +17,12 @@
 package org.efaps.esjp.common.dashboard;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.util.Properties;
 
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.esjp.common.AbstractCommon;
 
 /**
  * The Class AbstractDashboardPanel_Base.
@@ -32,11 +32,23 @@ import org.efaps.esjp.common.AbstractCommon;
 @EFapsUUID("9a965d08-8d92-4718-a9d5-af2f93481daa")
 @EFapsApplication("eFaps-Kernel")
 public abstract class AbstractDashboardPanel_Base
-    extends AbstractCommon
+    implements Serializable
 {
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+
     /** The config. */
-    private final String config;
+    private String config;
+
+    /**
+     * Instantiates a new abstract dashboard panel.
+     */
+    public AbstractDashboardPanel_Base()
+    {
+    }
 
     /**
      * Instantiates a new abstract dashboard panel_ base.
@@ -65,6 +77,11 @@ public abstract class AbstractDashboardPanel_Base
             }
         }
         return ret;
+    }
+
+    public void setConfig(final String _config)
+    {
+        this.config = _config;
     }
 
     /**

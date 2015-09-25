@@ -18,12 +18,14 @@
  * Last Changed By: $Author$
  */
 
-
 package org.efaps.esjp.common;
+
+import java.util.Properties;
 
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
-
+import org.efaps.db.QueryBuilder;
+import org.efaps.util.EFapsException;
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
@@ -39,4 +41,16 @@ public abstract class AbstractCommon
     extends AbstractCommon_Base
 {
 
+    /**
+     * Gets the query bldr from properties.
+     *
+     * @param _properties the _properties
+     * @return the query bldr from properties
+     * @throws EFapsException on error
+     */
+    public static QueryBuilder getQueryBldrFromProperties(final Properties _properties)
+        throws EFapsException
+    {
+        return AbstractCommon_Base.getQueryBldrFromProperties(_properties);
+    }
 }

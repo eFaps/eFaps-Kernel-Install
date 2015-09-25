@@ -31,6 +31,20 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 public abstract class AbstractDashboardPanel
     extends AbstractDashboardPanel_Base
 {
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Instantiates a new abstract dashboard panel.
+     */
+    public AbstractDashboardPanel()
+    {
+        super();
+    }
+
     /**
      * Instantiates a new abstract dashboard panel.
      *
