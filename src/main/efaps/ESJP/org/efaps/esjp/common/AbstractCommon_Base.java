@@ -467,6 +467,25 @@ public abstract class AbstractCommon_Base
                                                       final String _key)
         throws EFapsException
     {
+        return getQueryBldrFromProperties(_parameter, _props, _key, 0);
+    }
+
+    /**
+     * Gets the querybldr from properties.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _props properties the QueryBuilder is wanted form
+     * @param _key  key to be used
+     * @param _offSet the offset
+     * @return QueryBuilder
+     * @throws EFapsException on error
+     */
+    protected QueryBuilder getQueryBldrFromProperties(final Parameter _parameter,
+                                                      final Properties _props,
+                                                      final String _key,
+                                                      final int _offSet)
+        throws EFapsException
+    {
         final Map<Object, Object> properties = new HashMap<>();
         final String key = _key == null ? null : _key + ".";
         for (final Entry<Object, Object> entry : _props.entrySet()) {
@@ -478,9 +497,8 @@ public abstract class AbstractCommon_Base
                 properties.put(entry.getKey(), entry.getValue());
             }
         }
-
         final Parameter parameter = ParameterUtil.clone(_parameter, ParameterValues.PROPERTIES, properties);
-        return getQueryBldrFromProperties(parameter, 0);
+        return getQueryBldrFromPropertiesInternal(parameter, _offSet);
     }
 
     /**
@@ -489,6 +507,19 @@ public abstract class AbstractCommon_Base
      * @throws EFapsException on error
      */
     protected QueryBuilder getQueryBldrFromProperties(final Parameter _parameter)
+        throws EFapsException
+    {
+        return getQueryBldrFromProperties(_parameter, 0);
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _offset offset to start to search for
+     * @return QueryBuilder
+     * @throws EFapsException on error
+     */
+    protected QueryBuilder getQueryBldrFromProperties(final Parameter _parameter,
+                                                      final int _offset)
         throws EFapsException
     {
         QueryBuilder ret;
@@ -503,15 +534,16 @@ public abstract class AbstractCommon_Base
             if (sysConf != null) {
                 final Properties props = sysConf.getAttributeValueAsProperties(getProperty(_parameter,
                                 "QueryBldrConfigAttribute"));
-                ret = getQueryBldrFromProperties(_parameter, props);
+                ret = getQueryBldrFromProperties(_parameter, props, null, _offset);
             } else {
-                ret = getQueryBldrFromProperties(_parameter, 0);
+                ret = getQueryBldrFromPropertiesInternal(_parameter, _offset);
             }
         } else {
-            ret = getQueryBldrFromProperties(_parameter, 0);
+            ret = getQueryBldrFromPropertiesInternal(_parameter, _offset);
         }
         return ret;
     }
+
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
@@ -519,8 +551,8 @@ public abstract class AbstractCommon_Base
      * @return QueryBuilder
      * @throws EFapsException on error
      */
-    protected QueryBuilder getQueryBldrFromProperties(final Parameter _parameter,
-                                                      final int _offset)
+    protected QueryBuilder getQueryBldrFromPropertiesInternal(final Parameter _parameter,
+                                                              final int _offset)
         throws EFapsException
     {
         QueryBuilder ret = null;
