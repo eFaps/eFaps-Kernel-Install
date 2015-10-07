@@ -22,8 +22,8 @@ import java.lang.reflect.InvocationTargetException;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsClassLoader;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.api.ui.IDashboard;
 import org.efaps.api.ui.IEsjpSnipplet;
-import org.efaps.api.ui.IEsjpSnippletProvider;
 import org.efaps.ci.CIAdminProgram;
 import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Instance;
@@ -45,22 +45,47 @@ import org.slf4j.LoggerFactory;
  */
 @EFapsUUID("159f73ed-f9ee-4015-b6eb-0acbf5fcc812")
 @EFapsApplication("eFaps-Kernel")
-public abstract class EsjpSnippletProvider_Base
+public abstract class Dashboard_Base
     extends AbstractCommon
-    implements IEsjpSnippletProvider
+    implements IDashboard
 {
 
     /** The Constant CACHEKEY. */
-    public static final String CACHEKEY = EsjpSnippletProvider.class.getName() + ".CacheKey";
+    public static final String CACHEKEY = Dashboard.class.getName() + ".CacheKey";
 
-    /**
-     *
-     */
+    /** */
     private static final long serialVersionUID = 1L;
+
     /**
      * Logger for this class.
      */
-    private static final Logger LOG = LoggerFactory.getLogger(EsjpSnippletProvider.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Dashboard.class);
+
+    /** The title. */
+    private String title;
+
+    /** The dashboard inst. */
+    private Instance dashboardInst;
+
+    /**
+     * Gets the dashboard inst.
+     *
+     * @return the dashboard inst
+     */
+    public Instance getDashboardInst()
+    {
+        return this.dashboardInst;
+    }
+
+    /**
+     * Sets the dashboard inst.
+     *
+     * @param _dashboardInst the new dashboard inst
+     */
+    public void setDashboardInst(final Instance _dashboardInst)
+    {
+        this.dashboardInst = _dashboardInst;
+    }
 
     @Override
     public IEsjpSnipplet getEsjpSnipplet(final String _key)
@@ -68,12 +93,10 @@ public abstract class EsjpSnippletProvider_Base
         IEsjpSnipplet ret = null;
         try {
             Instance elInst = null;
-            final QueryBuilder dbAttrQueryBldr = new QueryBuilder(CICommon.DashboardDefault);
 
             final QueryBuilder elQueryBldr = new QueryBuilder(CICommon.DashboardDefault2Element);
             elQueryBldr.addWhereAttrEqValue(CICommon.DashboardDefault2Element.Field, _key);
-            elQueryBldr.addWhereAttrInQuery(CICommon.DashboardDefault2Element.FromLink, dbAttrQueryBldr
-                            .getAttributeQuery(CICommon.DashboardDefault.ID));
+            elQueryBldr.addWhereAttrEqValue(CICommon.DashboardDefault2Element.FromLink, getDashboardInst());
             final MultiPrintQuery multi = elQueryBldr.getCachedPrint(CACHEKEY);
             final SelectBuilder selElInst = SelectBuilder.get().linkto(CICommon.DashboardDefault2Element.ToLink)
                             .instance();
@@ -113,6 +136,22 @@ public abstract class EsjpSnippletProvider_Base
             LOG.error("Catched error: ", e);
         }
         return ret == null ? new DefaultSnipplet() : ret;
+    }
+
+    @Override
+    public String getTitle()
+    {
+        return this.title;
+    }
+
+    /**
+     * Sets the title.
+     *
+     * @param _title the new title
+     */
+    public void setTitle(final String _title)
+    {
+        this.title = _title;
     }
 
     /**

@@ -43,6 +43,7 @@
             <property name="Rows">5</property>
         </field>
         <field name="esjp">
+            <property name="SelectAlternateOID">linkto[EsjpLink].oid</property>
             <property name="Label">Admin_Program_Java.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>

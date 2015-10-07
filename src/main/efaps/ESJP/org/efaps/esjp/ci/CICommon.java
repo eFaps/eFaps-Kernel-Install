@@ -45,7 +45,9 @@ public class CICommon
         }
 
         public final CIAttribute Name = new CIAttribute(this, "Name");
+        public final CIAttribute Title = new CIAttribute(this, "Title");
         public final CIAttribute Description = new CIAttribute(this, "Description");
+        public final CIAttribute Weight = new CIAttribute(this, "Weight");
         public final CIAttribute Creator = new CIAttribute(this, "Creator");
         public final CIAttribute Created = new CIAttribute(this, "Created");
         public final CIAttribute Modifier = new CIAttribute(this, "Modifier");

@@ -26,13 +26,11 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  *
  * @author The eFaps Team
  */
-@EFapsUUID("71ac79f3-e696-47a8-b098-c68294d48149")
+@EFapsUUID("c5383f68-b0b2-4d38-8157-30232bf70bee")
 @EFapsApplication("eFaps-Kernel")
-public class EsjpSnippletProvider
-    extends EsjpSnippletProvider_Base
+public class DashboardProvider
+    extends DashboardProvider_Base
 {
-    /**
-     *
-     */
+    /** */
     private static final long serialVersionUID = 1L;
 }

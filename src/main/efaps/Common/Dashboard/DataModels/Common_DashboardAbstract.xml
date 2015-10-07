@@ -48,10 +48,23 @@
             <sqlcolumn>NAME</sqlcolumn>
         </attribute>
         <attribute>
+            <name>Title</name>
+            <type>String</type>
+            <sqltable>Common_DashboardSQLTable</sqltable>
+            <sqlcolumn>TITLE</sqlcolumn>
+        </attribute>
+        <attribute>
             <name>Description</name>
             <type>String</type>
             <sqltable>Common_DashboardSQLTable</sqltable>
             <sqlcolumn>DESCR</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Weight</name>
+            <type>Integer</type>
+            <sqltable>Common_DashboardSQLTable</sqltable>
+            <sqlcolumn>WEIGHT</sqlcolumn>
+            <defaultvalue>0</defaultvalue>
         </attribute>
         <attribute>
             <name>Creator</name>

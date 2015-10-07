@@ -31,6 +31,10 @@
             <property name="Label">Common_DashboardAbstract/Name.Label</property>
             <property name="HRef">TREE</property>
         </field>
+         <field name="title">
+            <property name="Attribute">Title</property>
+            <property name="Label">Common_DashboardAbstract/Title.Label</property>
+        </field>
         <field name="description">
             <property name="Attribute">Description</property>
             <property name="Label">Common_DashboardAbstract/Description.Label</property>
