@@ -58,10 +58,11 @@
             <property name="ModeSearch">READONLY</property>
         </field>
         <field name="revision">
-            <property name="Select">linkto[UILink].attribute[Revision]</property>
-            <property name="Label">Admin_UI_Abstract/Revision.Label</property>
-            <property name="Width">2</property>
-            <property name="ModeSearch">READONLY</property>
+            <property name="SelectAlternateOID">linkto[UILink].linkto[RevisionLink].oid</property>
+            <property name="MsgPhrase">Admin_Common_ApplicationRevisionMsgPhrase</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Admin_Common_ApplicationRevision.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>

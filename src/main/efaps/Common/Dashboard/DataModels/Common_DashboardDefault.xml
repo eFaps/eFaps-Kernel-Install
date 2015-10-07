@@ -23,20 +23,24 @@
         <version-expression>(version==latest)</version-expression>
         <name>Common_DashboardDefault</name>
         <parent>Common_DashboardAbstract</parent>
+        <trigger program="org.efaps.esjp.admin.access.AccessCheck4Object"
+            name="Common_DashboardDefault.ACCESSCHECK"
+            event="ACCESSCHECK">
+        </trigger>
         <trigger program="org.efaps.esjp.common.cache.CacheUtils"
             method="cleanQueryCacheTrigger" name="Common_DashboardDefault.INSERT_POST"
             event="INSERT_POST">
-            <property name="CacheName">org.efaps.esjp.common.dashboard.EsjpSnippletProvider.CacheKey</property>
+            <property name="CacheName">org.efaps.esjp.common.dashboard.Dashboard.CacheKey</property>
         </trigger>
         <trigger program="org.efaps.esjp.common.cache.CacheUtils"
             method="cleanQueryCacheTrigger" name="Common_DashboardDefault.UPDATE_POST"
             event="UPDATE_POST">
-            <property name="CacheName">org.efaps.esjp.common.dashboard.EsjpSnippletProvider.CacheKey</property>
+            <property name="CacheName">org.efaps.esjp.common.dashboard.Dashboard.CacheKey</property>
         </trigger>
         <trigger program="org.efaps.esjp.common.cache.CacheUtils"
             method="cleanQueryCacheTrigger" name="Common_DashboardDefault.DELETE_POST"
             event="DELETE_POST">
-            <property name="CacheName">org.efaps.esjp.common.dashboard.EsjpSnippletProvider.CacheKey</property>
+            <property name="CacheName">org.efaps.esjp.common.dashboard.Dashboard.CacheKey</property>
         </trigger>
     </definition>
 </datamodel-type>

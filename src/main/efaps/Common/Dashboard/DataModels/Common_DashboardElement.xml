@@ -92,17 +92,17 @@
         <trigger program="org.efaps.esjp.common.cache.CacheUtils"
             method="cleanQueryCacheTrigger" name="Common_DashboardElement.INSERT_POST"
             event="INSERT_POST">
-            <property name="CacheName">org.efaps.esjp.common.dashboard.EsjpSnippletProvider.CacheKey</property>
+            <property name="CacheName">org.efaps.esjp.common.dashboard.Dashboard.CacheKey</property>
         </trigger>
         <trigger program="org.efaps.esjp.common.cache.CacheUtils"
             method="cleanQueryCacheTrigger" name="Common_DashboardElement.UPDATE_POST"
             event="UPDATE_POST">
-            <property name="CacheName">org.efaps.esjp.common.dashboard.EsjpSnippletProvider.CacheKey</property>
+            <property name="CacheName">org.efaps.esjp.common.dashboard.Dashboard.CacheKey</property>
         </trigger>
         <trigger program="org.efaps.esjp.common.cache.CacheUtils"
             method="cleanQueryCacheTrigger" name="Common_DashboardElement.DELETE_POST"
             event="DELETE_POST">
-            <property name="CacheName">org.efaps.esjp.common.dashboard.EsjpSnippletProvider.CacheKey</property>
+            <property name="CacheName">org.efaps.esjp.common.dashboard.Dashboard.CacheKey</property>
         </trigger>
     </definition>
 </datamodel-type>

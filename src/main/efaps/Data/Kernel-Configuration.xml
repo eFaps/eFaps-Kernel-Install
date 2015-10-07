@@ -2,7 +2,7 @@
 
 <!--
 
-  Copyright 2003 - 2013 The eFaps Team
+  Copyright 2003 - 2015 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -16,129 +16,127 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
-<common-systemconfiguration xmlns="http://www.efaps.org/xsd"
-                            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>acf2b19b-f7c4-4e4a-a724-fb2d9ed30079</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
-  <definition>
-    <version-expression>(version==4) || (version==latest)</version-expression>
-    <name>Kernel-Configuration</name>
-    <attribute>
-      <key>org.efaps.kernel.LoginTimeElapseBeforeRetry</key>
-      <value>60</value>
-      <description>
+<common-systemconfiguration xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>acf2b19b-f7c4-4e4a-a724-fb2d9ed30079</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <definition>
+        <version-expression>(version==4) || (version==latest)</version-expression>
+        <name>Kernel-Configuration</name>
+        <attribute>
+            <key>org.efaps.kernel.LoginTimeElapseBeforeRetry</key>
+            <value>60</value>
+            <description>
         This attribute defines the time in minutes which must elapse after trying
         n-times to login with the wrong password, before the user has again the
         possibility to try to login. To deactivate this mechanism set the value to
         0.
       </description>
-    </attribute>
-    <attribute>
-      <key>org.efaps.kernel.LoginMaximumTries</key>
-      <value>3</value>
-      <description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.kernel.LoginMaximumTries</key>
+            <value>3</value>
+            <description>
         This attribute defines the maximum number of tries to login with the wrong
         Password into eFaps, before the User is going to be deactivated. To
         deactivate this mechanism set the value to 0.
       </description>
-    </attribute>
-    <attribute>
-      <key>org.efaps.kernel.PasswordStore</key>
-      <value>Algorithm=SHA-1
+        </attribute>
+        <attribute>
+            <key>org.efaps.kernel.PasswordStore</key>
+            <value>Algorithm=SHA-1
 Iterations=1000
 Saltsize=8</value>
-      <description>
+            <description>
             Properties for the PasswordStore Digester Configuration.
       </description>
-    </attribute>
-    <attribute>
-        <key>org.efaps.kernel.PasswordRepeatedThreshold</key>
-        <value>5</value>
-        <description>(Integer) The Threshold of how many passwords will be stored to compare it with a new given password.</description>
-    </attribute>
-    <attribute>
-      <key>org.efaps.kernel.DataBaseTimeZone</key>
-      <value>America/Lima</value>
-      <description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.kernel.PasswordRepeatedThreshold</key>
+            <value>5</value>
+            <description>(Integer) The Threshold of how many passwords will be stored to compare it with a new given password.</description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.kernel.DataBaseTimeZone</key>
+            <value>America/Lima</value>
+            <description>
         This attribute defines the timezone the database server is running in. This
         is necessary to use the current timezone functionalities from the database
         server. If the value is not set. The timezone UTC will be used.
       </description>
-    </attribute>
-    <attribute>
-      <key>org.efaps.kernel.update.ActivateJavaScriptCompiledWarn</key>
-      <value>false</value>
-      <description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.kernel.update.ActivateJavaScriptCompiledWarn</key>
+            <value>false</value>
+            <description>
         Boolean (true/false):
         This Attribute defines if in case of compiling JavaScript the warnings
         related to the JavaScript should be presented or not.
       </description>
-    </attribute>
-    <attribute>
-        <key>org.efaps.kernel.update.DeactivateJavaScriptCompression</key>
-        <value>false</value>
-        <description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.kernel.update.DeactivateJavaScriptCompression</key>
+            <value>false</value>
+            <description>
             Boolean (true/false): If set to true the javascript stored in the eFaps Database
             will not be compressed on compile.
         </description>
-    </attribute>
-    <attribute>
-      <key>org.efaps.kernel.DefaultMenu</key>
-      <value>none</value>
-      <description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.kernel.DefaultMenu</key>
+            <value>none</value>
+            <description>
         This Attribute defines the Menu which is added as a DefaultMenu to all
         Menubars. To deactivate this feature set the value to "none". The
         DefaultMenu can also be deactivated individually in every Command or Menu
         by setting the Property "TargetDefaultMenu" to "none".
       </description>
-    </attribute>
-    <attribute>
-        <key>org.efaps.kernel.SystemMessageTriggerActivated</key>
-        <value>false</value>
-        <description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.kernel.SystemMessageTriggerActivated</key>
+            <value>false</value>
+            <description>
             Boolean (true/false): activate the automatic search for messages.
         </description>
-    </attribute>
-    <attribute>
-        <key>org.efaps.kernel.SystemMessageTriggerInterval</key>
-        <value>1</value>
-        <description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.kernel.SystemMessageTriggerInterval</key>
+            <value>1</value>
+            <description>
             Integer: Interval in minutes for the system message trigger.
         </description>
-    </attribute>
-    <attribute>
-        <key>org.efaps.kernel.rest.ClassPaths</key>
-        <value>to be set for implementation</value>
-        <description>The path to the libaries the webapp is build on. Needed for compilation of java and Jasperreports. e.g. "/tmp/Jetty_0_0_0_0_8060_efaps.war__efaps__.bo28gn/webapp/WEB-INF/lib/"</description>
-    </attribute>
-    <attribute>
-        <key>org.efaps.kernel.ActivateBPM</key>
-        <value>false</value>
-        <description>Boolean (true/false): activate the BPM process mechanism.</description>
-    </attribute>
-     <attribute>
-        <key>org.efaps.kernel.ActivateGroups</key>
-        <value>false</value>
-        <description>Boolean (true/false): activate the Groups Access Mechanism. Default: false.</description>
-    </attribute>
-    <attribute>
-        <key>org.efaps.kernel.RequirePersonUUID</key>
-        <value>false</value>
-        <description>Activate that UUID for Persons is Required.</description>
-    </attribute>
-    <attribute>
-        <key>org.efaps.kernel.ShowDBPropertiesKey</key>
-        <value>false</value>
-        <description>Boolean (true/false): show the Keys for the DBProperties.</description>
-    </attribute>
-  </definition>
+        </attribute>
+        <attribute>
+            <key>org.efaps.kernel.rest.ClassPaths</key>
+            <value>to be set for implementation</value>
+            <description>The path to the libaries the webapp is build on. Needed for compilation of java and Jasperreports. e.g. "/tmp/Jetty_0_0_0_0_8060_efaps.war__efaps__.bo28gn/webapp/WEB-INF/lib/"</description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.kernel.ActivateBPM</key>
+            <value>false</value>
+            <description>Boolean (true/false): activate the BPM process mechanism.</description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.kernel.ActivateGroups</key>
+            <value>false</value>
+            <description>Boolean (true/false): activate the Groups Access Mechanism. Default: false.</description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.kernel.RequirePersonUUID</key>
+            <value>false</value>
+            <description>Activate that UUID for Persons is Required.</description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.kernel.ShowDBPropertiesKey</key>
+            <value>false</value>
+            <description>Boolean (true/false): show the Keys for the DBProperties.</description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.kernel.AccessCheck4Object</key>
+            <value><![CDATA[Common_DashboardDefault.Role.SimpleAccess4Type=Administration
+Common_DashboardDefault.AccessSets=DashboardRead
+Common_DashboardDefault.Person.InRole=Admin_User_ViewUsers]]></value>
+        </attribute>
+    </definition>
 </common-systemconfiguration>
