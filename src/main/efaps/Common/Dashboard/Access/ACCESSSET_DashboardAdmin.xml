@@ -20,7 +20,7 @@
 
 <access-set xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>44aea84a-b98c-4ada-a58f-5a595f0205cf</uuid>
+    <uuid>27a7c2cd-0e4d-45c8-a429-159f296ba1da</uuid>
     <file-application>eFaps-Kernel</file-application>
     <definition>
         <version-expression>(version==4) || (version==latest)</version-expression>
