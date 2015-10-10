@@ -25,15 +25,16 @@
         <typeid-column>TYPEID</typeid-column>
         <database>
             <table-name>T_CMDASHBOARD</table-name>
-            <column name="TYPEID"   type="INTEGER"                      not-null="true"/>
-            <column name="NAME"     type="STRING_SHORT" length="64"               not-null="true"/>
-            <column name="TITLE"    type="STRING_SHORT" length="64"               not-null="true"/>
-            <column name="DESCR"    type="STRING_SHORT" length="265"/>
-            <column name="WEIGHT"   type="INTEGER"/>
-            <column name="CREATOR"  type="INTEGER"                      not-null="true"/>
-            <column name="CREATED"  type="DATETIME"                     not-null="true"/>
-            <column name="MODIFIER" type="INTEGER"                      not-null="true"/>
-            <column name="MODIFIED" type="DATETIME"                     not-null="true"/>
+            <column name="COMPANYID"    type="INTEGER"                      not-null="true" />
+            <column name="TYPEID"       type="INTEGER"                      not-null="true"/>
+            <column name="NAME"         type="STRING_SHORT" length="64"     not-null="true"/>
+            <column name="TITLE"        type="STRING_SHORT" length="64"     not-null="true"/>
+            <column name="DESCR"        type="STRING_SHORT" length="265"/>
+            <column name="WEIGHT"       type="INTEGER"/>
+            <column name="CREATOR"      type="INTEGER"                      not-null="true"/>
+            <column name="CREATED"      type="DATETIME"                     not-null="true"/>
+            <column name="MODIFIER"     type="INTEGER"                      not-null="true"/>
+            <column name="MODIFIED"     type="DATETIME"                     not-null="true"/>
             <foreign name="T_CMDASHBOARD_FK_CREATOR"    key="CREATOR"   reference="T_USERABSTRACT(ID)" />
             <foreign name="T_CMDASHBOARD_FK_MDFR"       key="MODIFIER"  reference="T_USERPERSON(ID)"/>
         </database>

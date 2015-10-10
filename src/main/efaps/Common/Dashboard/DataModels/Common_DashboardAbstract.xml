@@ -42,6 +42,12 @@
             <sqlcolumn>ID</sqlcolumn>
         </attribute>
         <attribute>
+            <name>Company</name>
+            <type>CompanyLink</type>
+            <sqltable>Common_DashboardSQLTable</sqltable>
+            <sqlcolumn>COMPANYID</sqlcolumn>
+        </attribute>
+        <attribute>
             <name>Name</name>
             <type>String</type>
             <sqltable>Common_DashboardSQLTable</sqltable>
