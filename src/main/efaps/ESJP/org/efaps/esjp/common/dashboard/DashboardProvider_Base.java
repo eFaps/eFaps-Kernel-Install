@@ -50,6 +50,7 @@ public abstract class DashboardProvider_Base
         final QueryBuilder queryBldr = new QueryBuilder(CICommon.DashboardDefault);
         queryBldr.addOrderByAttributeAsc(CICommon.DashboardDefault.Weight);
         final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.setEnforceSorted(true);
         multi.addAttribute(CICommon.DashboardDefault.Title);
         multi.execute();
         while (multi.next()) {
