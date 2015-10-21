@@ -68,10 +68,10 @@ public abstract class AbstractCachedReport_Base
     {
         final StringBuilder ret = new StringBuilder();
         ret.append(Context.getThreadContext().getPerson().getId())
-            .append(":").append(getClass().getName());
+            .append(":").append(getProperty(_parameter, "FilterKey", getClass().getName()));
         if ("true".equalsIgnoreCase(getProperty(_parameter, "CachedReportAddInstanceCriteria"))) {
             if (_parameter.getInstance() != null && _parameter.getInstance().isValid()) {
-                ret.append(":").append( _parameter.getInstance().getKey());
+                ret.append(":").append(_parameter.getInstance().getKey());
             }
         }
         return ret.toString();
