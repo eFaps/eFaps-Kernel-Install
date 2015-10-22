@@ -148,7 +148,22 @@ public abstract class SimpleAccessCheckOnType_Base
             cmd.append(" and ").append(type.getMainTable().getSqlTable()).append(".ID=").append(_instance.getId());
         }
 
-        if (type.isGroupDepended() && !_accessType.equals(AccessTypeEnums.CREATE.getAccessType())
+        if (type.isCompanyDependent() && !_accessType.equals(AccessTypeEnums.CREATE.getAccessType())) {
+            cmd.append(" and ").append(type.getMainTable().getSqlTable()).append(".")
+                .append(type.getCompanyAttribute().getSqlColNames().get(0)).append(" in (");
+            boolean first = true;
+            for (final Long compId : context.getPerson().getCompanies()) {
+                if (first) {
+                    first = false;
+                } else {
+                    cmd.append(",");
+                }
+                cmd.append(compId);
+            }
+            cmd.append(")");
+        }
+
+        if (type.isGroupDependent() && !_accessType.equals(AccessTypeEnums.CREATE.getAccessType())
                         && !localRoles.isEmpty()
                         && EFapsSystemConfiguration.get().getAttributeValueAsBoolean(
                                         KernelSettings.ACTIVATE_GROUPS)) {
@@ -238,18 +253,32 @@ public abstract class SimpleAccessCheckOnType_Base
         final Context context = Context.getThreadContext();
 
         final Type type = ((Instance) _instances.get(0)).getType();
-        if (type.isCheckStatus()) {
+        if (type.isCheckStatus() || type.isCompanyDependent()) {
             final Set<Long> users = new HashSet<Long>();
             final Set<Role> localRoles = new HashSet<Role>();
             final StringBuilder cmd = new StringBuilder();
             cmd.append("select ").append(type.getMainTable().getSqlTable()).append(".ID ")
                 .append(" from T_ACCESSSET2USER ")
-                .append(" join T_ACCESSSET2STATUS on T_ACCESSSET2USER.ACCESSSET = T_ACCESSSET2STATUS.ACCESSSET")
-                .append(" join ").append(type.getMainTable().getSqlTable()).append(" on ")
-                .append(type.getMainTable().getSqlTable()).append(".")
-                .append(type.getStatusAttribute().getSqlColNames().get(0))
-                .append("=T_ACCESSSET2STATUS.ACCESSSTATUS")
-                .append(" where T_ACCESSSET2USER.ACCESSSET in (0");
+                .append(" join T_ACCESSSET2STATUS on T_ACCESSSET2USER.ACCESSSET = T_ACCESSSET2STATUS.ACCESSSET");
+
+            boolean noCompCheck = false;
+            if (type.isCheckStatus()) {
+                cmd.append(" join ").append(type.getMainTable().getSqlTable()).append(" on ")
+                    .append(type.getMainTable().getSqlTable()).append(".")
+                    .append(type.getStatusAttribute().getSqlColNames().get(0))
+                    .append(" = T_ACCESSSET2STATUS.ACCESSSTATUS");
+            } else if (type.isCompanyDependent() && type.getMainTable().getSqlColType() != null) {
+                // in case that tit is companydependent but not status
+                cmd.append(" join T_ACCESSSET2DMTYPE on T_ACCESSSET2USER.ACCESSSET = T_ACCESSSET2DMTYPE.ACCESSSET ")
+                    .append(" join ").append(type.getMainTable().getSqlTable())
+                    .append(" on ").append(type.getMainTable().getSqlTable()).append(".")
+                    .append(type.getMainTable().getSqlColType())
+                    .append(" = T_ACCESSSET2DMTYPE.DMTYPE ");
+            } else {
+                noCompCheck = true;
+            }
+
+            cmd.append(" where T_ACCESSSET2USER.ACCESSSET in (0");
             for (final AccessSet accessSet : type.getAccessSets()) {
                 if (accessSet.getAccessTypes().contains(_accessType)) {
                     cmd.append(",").append(accessSet.getId());
@@ -267,9 +296,29 @@ public abstract class SimpleAccessCheckOnType_Base
                 }
             }
             cmd.append(")");
+
+            if (type.isCompanyDependent()) {
+                if (noCompCheck) {
+                    AbstractAccessCheck_Base.LOG.error("Cannot check for Company on type '{}'", type);
+                } else {
+                    cmd.append(" and ").append(type.getMainTable().getSqlTable()).append(".")
+                        .append(type.getCompanyAttribute().getSqlColNames().get(0)).append(" in (");
+                    boolean first = true;
+                    for (final Long compId : context.getPerson().getCompanies()) {
+                        if (first) {
+                            first = false;
+                        } else {
+                            cmd.append(",");
+                        }
+                        cmd.append(compId);
+                    }
+                    cmd.append(")");
+                }
+            }
+
             // add the check for groups if: the type is group depended, a local
             // role is defined for the user, the group mechanism is activated
-            if (type.isGroupDepended() && !localRoles.isEmpty()
+            if (type.isGroupDependent() && !localRoles.isEmpty()
                             && EFapsSystemConfiguration.get().getAttributeValueAsBoolean(
                                             KernelSettings.ACTIVATE_GROUPS)) {
                 cmd.append(" and ").append(type.getMainTable().getSqlTable()).append(".")
@@ -344,7 +393,6 @@ public abstract class SimpleAccessCheckOnType_Base
         }
         return accessMap;
     }
-
 
     /**
      * Method that queries against the database.

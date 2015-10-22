@@ -64,7 +64,7 @@ public abstract class EventDefinitionJob_Base
             attrQueryBldr2.addWhereAttrInQuery("QuartzDefinitionLink", attrQuery);
             attrQueryBldr2.addWhereAttrEqValue("Active", true);
             final AttributeQuery attrQuery2 = attrQueryBldr2.getAttributeQuery("ID");
-            attrQuery2.setCompanyDepended(false);
+            attrQuery2.setCompanyDependent(false);
 
             // ERP_EventDefinition2JavaProgram
             final QueryBuilder queryBldr = new QueryBuilder(Type

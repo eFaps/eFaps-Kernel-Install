@@ -1128,11 +1128,19 @@ public abstract class AbstractDynamicReport_Base
         this.includeFooter = _includeFooter;
     }
 
+    /**
+     * Column.
+     *
+     * @param <T> the generic type
+     * @param _title the _title
+     * @param _fieldName the _field name
+     * @param _dataType the _data type
+     * @return the text column builder
+     */
     public static <T> TextColumnBuilder<T> column(final String _title,
                                                   final String _fieldName,
                                                   final DRIDataType<? super T, T> _dataType)
     {
         return DynamicReports.col.column(_title, DynamicReports.field(_fieldName, _dataType));
     }
-
 }

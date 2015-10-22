@@ -36,7 +36,7 @@ import org.efaps.util.EFapsException;
  */
 @EFapsUUID("9e9bc652-f3e4-4c22-a091-07bd11615b16")
 @EFapsApplication("eFaps-Kernel")
-public class InsertOnlyAccessCheck_Base
+public abstract class InsertOnlyAccessCheck_Base
     extends SimpleAccessCheckOnType
 {
 
@@ -69,8 +69,8 @@ public class InsertOnlyAccessCheck_Base
         } else {
             final boolean bolVal = AccessTypeEnums.CREATE.getAccessType().equals(_accessType);
             ret = new HashMap<Instance, Boolean>();
-            for (final Object _instance : _instances) {
-                ret.put((Instance) _instance, bolVal);
+            for (final Object obj : _instances) {
+                ret.put((Instance) obj, bolVal);
             }
         }
         return ret;
