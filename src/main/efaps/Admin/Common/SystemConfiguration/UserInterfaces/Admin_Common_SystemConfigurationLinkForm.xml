@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2015 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,42 +16,53 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 
-<ui-form xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>749fc5da-163c-4fe0-8f02-62e4bf6beb23</uuid>
     <file-application>eFaps-Kernel</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Common_SystemConfigurationLinkForm</name>
-        <!-- fields -->
-        <field name="key">
-            <property name="Columns">40</property>
+         <field name="key">
+            <property name="Columns">70</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Key</property>
             <property name="Required">true</property>
             <property name="ModeSearch">EDITABLE</property>
+            <trigger program="org.efaps.esjp.admin.common.systemconfiguration.SystemConf"
+                method="autoComplete4Key"
+                name="Admin_Common_SystemConfigurationLinkForm.keyk.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="HasDownArrow">true</property>
+                <property name="Required">false</property>
+                <property name="SysConfLink">true</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.admin.common.systemconfiguration.SystemConf"
+                method="updateFields4Key"
+                name="Admin_Common_SystemConfigurationLinkForm.key.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE">
+                <property name="SysConfLink">true</property>
+            </trigger>
         </field>
         <field name="value">
             <property name="Columns">70</property>
+            <property name="Rows">5</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Value</property>
             <property name="Required">true</property>
             <property name="ModeSearch">EDITABLE</property>
+            <trigger program="org.efaps.esjp.admin.common.systemconfiguration.SystemConf"
+                method="valueFieldValue"
+                name="Admin_Common_SystemConfigurationLinkForm.value.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="SysConfLink">true</property>
+            </trigger>
         </field>
-        <field name="description">
+       <field name="description">
             <property name="Rows">5</property>
             <property name="Columns">70</property>
             <property name="ModeCreate">EDITABLE</property>
