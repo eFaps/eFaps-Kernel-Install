@@ -34,6 +34,7 @@ import org.efaps.util.EFapsException;
 @EFapsApplication("eFaps-Kernel")
 public abstract class PropertiesSysConfAttribute_Base
     extends AbstractSysConfAttribute<PropertiesSysConfAttribute, Properties>
+    implements IConcatenate
 {
 
     /** Can be concatenated. */
@@ -49,6 +50,17 @@ public abstract class PropertiesSysConfAttribute_Base
     {
         this.concatenate = _concatenate;
         return getThis();
+    }
+
+    /**
+     * Getter method for the instance variable {@link #concatenate}.
+     *
+     * @return value of instance variable {@link #concatenate}
+     */
+    @Override
+    public boolean isConcatenate()
+    {
+        return this.concatenate;
     }
 
     @Override
@@ -76,5 +88,4 @@ public abstract class PropertiesSysConfAttribute_Base
         ret.append("</textarea>");
         return ret;
     }
-
 }

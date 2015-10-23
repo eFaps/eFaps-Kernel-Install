@@ -33,6 +33,7 @@ import org.efaps.util.EFapsException;
 @EFapsApplication("eFaps-Kernel")
 public abstract class SysConfLink_Base
     extends AbstractSysConfAttribute<SysConfLink, Instance>
+    implements ISysConfLink
 {
     @Override
     protected SysConfLink getThis()

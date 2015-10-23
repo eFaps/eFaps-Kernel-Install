@@ -21,10 +21,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.datamodel.ui.IUIValue;
@@ -71,7 +74,7 @@ public abstract class SystemConf_Base
     public void addObjectAttribute(final UUID _sysConfUUID,
                                    final Instance _instance,
                                    final String _value)
-                                       throws EFapsException
+        throws EFapsException
     {
         final SystemConfiguration config = SystemConfiguration.get(_sysConfUUID);
         if (config != null) {
@@ -119,7 +122,7 @@ public abstract class SystemConf_Base
                     while (multi.next()) {
                         final Long companyId = multi.<Long>getAttribute(
                                         CIAdminCommon.SystemConfigurationObjectAttribute.CompanyLink);
-                        if (companyId == null || (companyId != null && companyId == 0)) {
+                        if (companyId == null || companyId != null && companyId == 0) {
                             instance = multi.getCurrentInstance();
                         } else if (companyId == Context.getThreadContext().getCompany().getId()) {
                             instance = multi.getCurrentInstance();
@@ -183,6 +186,7 @@ public abstract class SystemConf_Base
         throws EFapsException
     {
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
+        final boolean isLink = "true".equalsIgnoreCase(getProperty(_parameter, "SysConfLink"));
         final List<Map<String, String>> list = new ArrayList<>();
         if (input != null && !input.isEmpty()) {
             final Map<String, String> map = new HashMap<String, String>();
@@ -193,22 +197,37 @@ public abstract class SystemConf_Base
         final Return ret = new Return();
 
         final PrintQuery print = new PrintQuery(_parameter.getInstance());
-        SelectBuilder sel;
+        SelectBuilder selUUID;
+        SelectBuilder selInst;
         if (_parameter.getInstance().getType().isCIType(CIAdminCommon.SystemConfiguration)) {
-            sel = SelectBuilder.get().attribute(CIAdminCommon.SystemConfiguration.UUID);
+            selUUID = SelectBuilder.get().attribute(CIAdminCommon.SystemConfiguration.UUID);
+            selInst = SelectBuilder.get().instance();
         } else {
-            sel = SelectBuilder.get().linkto(CIAdminCommon.SystemConfigurationAttribute.AbstractLink)
+            selUUID = SelectBuilder.get().linkto(CIAdminCommon.SystemConfigurationAttribute.AbstractLink)
                             .attribute(CIAdminCommon.SystemConfiguration.UUID);
+            selInst = SelectBuilder.get().linkto(CIAdminCommon.SystemConfigurationAttribute.AbstractLink)
+                            .instance();
         }
-        print.addSelect(sel);
+        print.addSelect(selUUID, selInst);
         print.execute();
-        final String uuid = print.getSelect(sel);
 
-        final List<ISysConfAttribute> attrs = SysConfResourceConfig.getResourceConfig().getAttributes(uuid);
+        final String uuid = print.getSelect(selUUID);
+        final Set<String> keys = new HashSet<>();
+        final QueryBuilder queryBldr = new QueryBuilder(CIAdminCommon.SystemConfigurationAbstract);
+        queryBldr.addWhereAttrEqValue(CIAdminCommon.SystemConfigurationAbstract.AbstractLink, print.getSelect(selInst));
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CIAdminCommon.SystemConfigurationAbstract.Key);
+        multi.execute();
+        while (multi.next()) {
+            keys.add(multi.<String>getAttribute(CIAdminCommon.SystemConfigurationAbstract.Key));
+        }
+
+        final List<? extends ISysConfAttribute> attrs = isLink
+                        ? SysConfResourceConfig.getResourceConfig().getLinks(uuid)
+                                        : SysConfResourceConfig.getResourceConfig().getAttributes(uuid);
         if (attrs != null) {
             Collections.sort(attrs, new Comparator<ISysConfAttribute>()
             {
-
                 @Override
                 public int compare(final ISysConfAttribute _arg0,
                                    final ISysConfAttribute _arg1)
@@ -221,6 +240,18 @@ public abstract class SystemConf_Base
                 map.put("eFapsAutoCompleteKEY", attr.getKey());
                 map.put("eFapsAutoCompleteVALUE", attr.getKey());
                 list.add(map);
+                if (attr instanceof IConcatenate && ((IConcatenate) attr).isConcatenate()) {
+                    for (int i = 1; i < 100; i++) {
+                        final String keyTmp = attr.getKey() + String.format("%02d", i);
+                        final Map<String, String> map2 = new HashMap<String, String>();
+                        map2.put("eFapsAutoCompleteKEY", keyTmp);
+                        map2.put("eFapsAutoCompleteVALUE", keyTmp);
+                        list.add(map2);
+                        if (!keys.contains(keyTmp)) {
+                            break;
+                        }
+                    }
+                }
             }
         }
         ret.put(ReturnValues.VALUES, list);
@@ -237,6 +268,8 @@ public abstract class SystemConf_Base
     public Return updateFields4Key(final Parameter _parameter)
         throws EFapsException
     {
+        final boolean isLink = "true".equalsIgnoreCase(getProperty(_parameter, "SysConfLink"));
+
         final PrintQuery print = new PrintQuery(_parameter.getInstance());
         SelectBuilder sel;
         if (_parameter.getInstance().getType().isCIType(CIAdminCommon.SystemConfiguration)) {
@@ -251,7 +284,16 @@ public abstract class SystemConf_Base
 
         final String key = _parameter.getParameterValue("key");
 
-        final ISysConfAttribute attr = SysConfResourceConfig.getResourceConfig().getAttribute(uuid, key);
+        ISysConfAttribute attr = isLink
+                        ? SysConfResourceConfig.getResourceConfig().getLink(uuid, key)
+                                        : SysConfResourceConfig.getResourceConfig().getAttribute(uuid, key);
+        if (attr == null && StringUtils.isNumeric(key.substring(key.length() - 2, key.length()))) {
+            attr = isLink ? SysConfResourceConfig.getResourceConfig().getLink(uuid,
+                                          key.substring(0, key.length() - 2))
+                          : SysConfResourceConfig.getResourceConfig().getAttribute(uuid,
+                                          key.substring(0, key.length() - 2 ));
+        }
+
         CharSequence node;
         if (attr == null) {
             node = "<textarea rows=\"5\" name=\"value\"></textarea>";
@@ -297,19 +339,30 @@ public abstract class SystemConf_Base
                         || TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
 
             if (_parameter.getInstance() != null && _parameter.getInstance().isValid()
-                            && _parameter.getInstance().getType()
-                                            .isCIType(CIAdminCommon.SystemConfigurationAttribute)) {
+                            && _parameter.getInstance().getType().isKindOf(CIAdminCommon.SystemConfigurationAbstract)) {
+                final boolean isLink = "true".equalsIgnoreCase(getProperty(_parameter, "SysConfLink"));
+
                 final PrintQuery print = new PrintQuery(_parameter.getInstance());
                 final SelectBuilder sel = SelectBuilder.get()
-                                .linkto(CIAdminCommon.SystemConfigurationAttribute.AbstractLink)
+                                .linkto(CIAdminCommon.SystemConfigurationAbstract.AbstractLink)
                                 .attribute(CIAdminCommon.SystemConfiguration.UUID);
                 print.addSelect(sel);
-                print.addAttribute(CIAdminCommon.SystemConfigurationAttribute.Key);
+                print.addAttribute(CIAdminCommon.SystemConfigurationAbstract.Key);
                 print.execute();
                 final String uuid = print.getSelect(sel);
-                final String key = print.getAttribute(CIAdminCommon.SystemConfigurationAttribute.Key);
+                final String key = print.getAttribute(CIAdminCommon.SystemConfigurationAbstract.Key);
                 final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
-                final ISysConfAttribute attr = SysConfResourceConfig.getResourceConfig().getAttribute(uuid, key);
+
+                ISysConfAttribute attr = isLink
+                                ? SysConfResourceConfig.getResourceConfig().getLink(uuid, key)
+                                                : SysConfResourceConfig.getResourceConfig().getAttribute(uuid, key);
+                if (attr == null && StringUtils.isNumeric(key.substring(key.length() - 2, key.length()))) {
+                    attr = isLink ? SysConfResourceConfig.getResourceConfig().getLink(uuid,
+                                                  key.substring(0, key.length() - 2))
+                                  : SysConfResourceConfig.getResourceConfig().getAttribute(uuid,
+                                                  key.substring(0, key.length() - 2 ));
+                }
+
                 if (attr != null) {
                     ret.put(ReturnValues.SNIPLETT, attr.getHtml(_parameter, fieldValue.getObject()).toString());
                 }
