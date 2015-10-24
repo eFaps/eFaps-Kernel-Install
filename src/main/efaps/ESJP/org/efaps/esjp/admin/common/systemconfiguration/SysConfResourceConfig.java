@@ -25,11 +25,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsClassLoader;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.api.annotation.EFapsSysConfAttribute;
+import org.efaps.api.annotation.EFapsSysConfLink;
 import org.efaps.api.annotation.EFapsSystemConfiguration;
 import org.efaps.rest.EFapsResourceConfig;
 import org.efaps.rest.EFapsResourceConfig.EFapsResourceFinder;
@@ -58,9 +61,15 @@ public final class SysConfResourceConfig
     private static final Logger LOG = LoggerFactory.getLogger(SysConfResourceConfig.class);
 
     /**
-     * Classes found by the scanner.
+     * Attributes found by the scanner.
      */
     private final Map<String, List<ISysConfAttribute>> uuid2attr = new HashMap<>();
+
+    /**
+     * Links  found by the scanner.
+     */
+    private final Map<String, List<ISysConfLink>> uuid2link = new HashMap<>();
+
 
     /**
      * Constructor.
@@ -104,8 +113,11 @@ public final class SysConfResourceConfig
         for (final Class<?> clazz : asl.getAnnotatedClasses()) {
             final EFapsSystemConfiguration sysConfAn = clazz.getAnnotation(EFapsSystemConfiguration.class);
             final List<ISysConfAttribute> confAttrs = new ArrayList<>();
+            final List<ISysConfLink> confLinks = new ArrayList<>();
             this.uuid2attr.put(sysConfAn.value(), confAttrs);
-            LOG.info("Found SystemConfiguration: {}", sysConfAn.value());
+            this.uuid2link.put(sysConfAn.value(), confLinks);
+            LOG.info("Found SystemConfiguration: {} - {}",
+                            SystemConfiguration.get(UUID.fromString(sysConfAn.value())).getName(), sysConfAn.value());
             for (final Field field : clazz.getDeclaredFields()) {
                 if (field.isAnnotationPresent(EFapsSysConfAttribute.class)) {
                     if (Modifier.isStatic(field.getModifiers())) {
@@ -117,24 +129,54 @@ public final class SysConfResourceConfig
                             LOG.error("Catched error", e);
                         }
                     }
+                } else if (field.isAnnotationPresent(EFapsSysConfLink.class)) {
+                    if (Modifier.isStatic(field.getModifiers())) {
+                        try {
+                            final ISysConfLink link = (ISysConfLink) field.get(null);
+                            confLinks.add(link);
+                            LOG.info("    Found Link: {}", link);
+                        } catch (final IllegalArgumentException | IllegalAccessException e) {
+                            LOG.error("Catched error", e);
+                        }
+                    }
                 }
             }
         }
     }
 
     /**
-     * Gets the attributes.
+     * Gets the links.
      *
      * @param _uuid the _uuid
-     * @return the attributes
+     * @return the links
      */
-    public List<ISysConfAttribute> getAttributes(final String _uuid)
+    public List<ISysConfLink> getLinks(final String _uuid)
     {
-        List<ISysConfAttribute> ret;
-        if (this.uuid2attr.containsKey(_uuid)) {
-            ret = this.uuid2attr.get(_uuid);
+        List<ISysConfLink> ret;
+        if (this.uuid2link.containsKey(_uuid)) {
+            ret = this.uuid2link.get(_uuid);
         } else {
             ret = new ArrayList<>();
+        }
+        return ret;
+    }
+
+    /**
+     * Gets the link.
+     *
+     * @param _uuid the _uuid
+     * @param _key the _key
+     * @return the link
+     */
+    public ISysConfLink getLink(final String _uuid,
+                                     final String _key)
+    {
+        ISysConfLink ret = null;
+        for (final ISysConfLink link : getLinks(_uuid)) {
+            if (link.getKey().equals(_key)) {
+                ret = link;
+                break;
+            }
         }
         return ret;
     }
@@ -150,11 +192,28 @@ public final class SysConfResourceConfig
                                           final String _key)
     {
         ISysConfAttribute ret = null;
-        for (final ISysConfAttribute attr: getAttributes(_uuid)) {
+        for (final ISysConfAttribute attr : getAttributes(_uuid)) {
             if (attr.getKey().equals(_key)) {
                 ret = attr;
                 break;
             }
+        }
+        return ret;
+    }
+
+    /**
+     * Gets the attributes.
+     *
+     * @param _uuid the _uuid
+     * @return the attributes
+     */
+    public List<ISysConfAttribute> getAttributes(final String _uuid)
+    {
+        List<ISysConfAttribute> ret;
+        if (this.uuid2attr.containsKey(_uuid)) {
+            ret = this.uuid2attr.get(_uuid);
+        } else {
+            ret = new ArrayList<>();
         }
         return ret;
     }
