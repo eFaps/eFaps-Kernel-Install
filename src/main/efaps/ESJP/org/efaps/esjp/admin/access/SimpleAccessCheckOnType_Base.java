@@ -118,12 +118,23 @@ public abstract class SimpleAccessCheckOnType_Base
         final Set<Long> users = new HashSet<Long>();
         final Set<Role> localRoles = new HashSet<Role>();
 
+        boolean noCompCheck = false;
         if (type.isCheckStatus() && !_accessType.equals(AccessTypeEnums.CREATE.getAccessType())) {
             cmd.append(" join T_ACCESSSET2STATUS on T_ACCESSSET2USER.ACCESSSET = T_ACCESSSET2STATUS.ACCESSSET")
                 .append(" join ").append(type.getMainTable().getSqlTable())
                 .append(" on ").append(type.getMainTable().getSqlTable()).append(".")
                 .append(type.getStatusAttribute().getSqlColNames().get(0))
-                .append("=T_ACCESSSET2STATUS.ACCESSSTATUS");
+                .append(" = T_ACCESSSET2STATUS.ACCESSSTATUS");
+        } else if (type.isCompanyDependent() && type.getMainTable().getSqlColType() != null
+                        && !_accessType.equals(AccessTypeEnums.CREATE.getAccessType())) {
+            // in case that it is companydependent but not status
+            cmd.append(" join T_ACCESSSET2DMTYPE on T_ACCESSSET2USER.ACCESSSET = T_ACCESSSET2DMTYPE.ACCESSSET ")
+                .append(" join ").append(type.getMainTable().getSqlTable())
+                .append(" on ").append(type.getMainTable().getSqlTable()).append(".")
+                .append(type.getMainTable().getSqlColType())
+                .append(" = T_ACCESSSET2DMTYPE.DMTYPE ");
+        } else {
+            noCompCheck = true;
         }
 
         cmd.append(" where T_ACCESSSET2USER.ACCESSSET in (0");
@@ -145,22 +156,26 @@ public abstract class SimpleAccessCheckOnType_Base
         }
         cmd.append(")");
         if (type.isCheckStatus() && !_accessType.equals(AccessTypeEnums.CREATE.getAccessType())) {
-            cmd.append(" and ").append(type.getMainTable().getSqlTable()).append(".ID=").append(_instance.getId());
+            cmd.append(" and ").append(type.getMainTable().getSqlTable()).append(".ID = ").append(_instance.getId());
         }
 
         if (type.isCompanyDependent() && !_accessType.equals(AccessTypeEnums.CREATE.getAccessType())) {
-            cmd.append(" and ").append(type.getMainTable().getSqlTable()).append(".")
-                .append(type.getCompanyAttribute().getSqlColNames().get(0)).append(" in (");
-            boolean first = true;
-            for (final Long compId : context.getPerson().getCompanies()) {
-                if (first) {
-                    first = false;
-                } else {
-                    cmd.append(",");
+            if (noCompCheck) {
+                AbstractAccessCheck_Base.LOG.error("Cannot check for Company on type '{}'", type);
+            } else {
+                cmd.append(" and ").append(type.getMainTable().getSqlTable()).append(".")
+                    .append(type.getCompanyAttribute().getSqlColNames().get(0)).append(" in (");
+                boolean first = true;
+                for (final Long compId : context.getPerson().getCompanies()) {
+                    if (first) {
+                        first = false;
+                    } else {
+                        cmd.append(",");
+                    }
+                    cmd.append(compId);
                 }
-                cmd.append(compId);
+                cmd.append(")");
             }
-            cmd.append(")");
         }
 
         if (type.isGroupDependent() && !_accessType.equals(AccessTypeEnums.CREATE.getAccessType())
@@ -268,7 +283,7 @@ public abstract class SimpleAccessCheckOnType_Base
                     .append(type.getStatusAttribute().getSqlColNames().get(0))
                     .append(" = T_ACCESSSET2STATUS.ACCESSSTATUS");
             } else if (type.isCompanyDependent() && type.getMainTable().getSqlColType() != null) {
-                // in case that tit is companydependent but not status
+                // in case that it is companydependent but not status
                 cmd.append(" join T_ACCESSSET2DMTYPE on T_ACCESSSET2USER.ACCESSSET = T_ACCESSSET2DMTYPE.ACCESSSET ")
                     .append(" join ").append(type.getMainTable().getSqlTable())
                     .append(" on ").append(type.getMainTable().getSqlTable()).append(".")
