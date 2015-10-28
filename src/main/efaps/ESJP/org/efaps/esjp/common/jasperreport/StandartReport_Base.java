@@ -326,6 +326,34 @@ public abstract class StandartReport_Base
 
 
     /**
+     * Gets the mime.
+     *
+     * @param _parameter the _parameter
+     * @return the mime
+     * @throws EFapsException on error
+     */
+    protected String getDataSourceClass(final Parameter _parameter)
+        throws EFapsException
+    {
+        String ret = null;
+        if (containsProperty(_parameter, "DataSourceClass")) {
+            ret = getProperty(_parameter, "DataSourceClass");
+        } else if (containsProperty(_parameter, "JasperConfig")) {
+            final String config = getProperty(_parameter, "JasperConfig");
+            final SystemConfiguration sysConf;
+            if (isUUID(config)) {
+                sysConf = SystemConfiguration.get(UUID.fromString(config));
+            } else {
+                sysConf = SystemConfiguration.get(config);
+            }
+            ret = sysConf.getAttributeValue(getProperty(_parameter, "JasperConfigDataSourceClass"));
+        } else if (_parameter.getParameterValue("DataSourceClass") != null) {
+            ret = _parameter.getParameterValue("DataSourceClass");
+        }
+        return ret;
+    }
+
+    /**
      * @param _parameter Parameter as passed by the eFasp API
      * @return file created
      * @throws EFapsException on error
@@ -335,8 +363,7 @@ public abstract class StandartReport_Base
     {
         File ret = null;
 
-        final String dataSourceClass = getProperty(_parameter, "DataSourceClass");
-        final boolean noDataSource = "true".equalsIgnoreCase(getProperty(_parameter, "NoDataSource"));
+        final String dataSourceClass = getDataSourceClass(_parameter);
 
         add2ReportParameter(_parameter);
 
@@ -368,9 +395,6 @@ public abstract class StandartReport_Base
                                     new Class[] { JasperReport.class, Parameter.class, JRDataSource.class, Map.class });
                     dataSource = (IeFapsDataSource) clazz.newInstance();
                     method.invoke(dataSource, jasperReport, _parameter, null, this.jrParameters);
-                } else if (!noDataSource) {
-                    dataSource = new EFapsDataSource();
-                    dataSource.init(jasperReport, _parameter, null, this.jrParameters);
                 }
                 if (dataSource != null) {
                     this.jrParameters.put("EFAPS_SUBREPORT", new SubReportContainer(_parameter, dataSource,
@@ -438,7 +462,6 @@ public abstract class StandartReport_Base
     {
         return getFile(_jasperPrint, EnumUtils.<JasperMime>getEnum(JasperMime.class, _mime.toUpperCase()));
     }
-
 
     /**
      * Gets the mime.
