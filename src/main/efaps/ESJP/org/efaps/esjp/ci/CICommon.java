@@ -21,6 +21,7 @@
 package org.efaps.esjp.ci;
 
 import org.efaps.ci.CIAttribute;
+import org.efaps.ci.CIStatus;
 import org.efaps.ci.CIType;
 
 /**
@@ -32,6 +33,45 @@ import org.efaps.ci.CIType;
 // CHECKSTYLE:OFF
 public class CICommon
 {
+
+
+    public static final _BackgroundJobAbstract BackgroundJobAbstract = new _BackgroundJobAbstract("96a038fc-8d28-4a0d-b841-b6c6496d4bc7");
+
+    public static class _BackgroundJobAbstract
+        extends CIType
+    {
+
+        protected _BackgroundJobAbstract(final String _uuid)
+        {
+            super(_uuid);
+        }
+
+        public final CIAttribute Company = new CIAttribute(this, "Company");
+        public final CIAttribute StatusAbstract = new CIAttribute(this, "StatusAbstract");
+        public final CIAttribute Name = new CIAttribute(this, "Name");
+        public final CIAttribute Title = new CIAttribute(this, "Title");
+        public final CIAttribute Progress = new CIAttribute(this, "Progress");
+        public final CIAttribute Target = new CIAttribute(this, "Target");
+        public final CIAttribute Creator = new CIAttribute(this, "Creator");
+        public final CIAttribute Created = new CIAttribute(this, "Created");
+        public final CIAttribute Modifier = new CIAttribute(this, "Modifier");
+        public final CIAttribute Modified = new CIAttribute(this, "Modified");
+    }
+
+    public static final _BackgroundJobStatus BackgroundJobStatus = new _BackgroundJobStatus("f43f45f4-cff2-4d7c-909c-ece88f26c412");
+    public static class _BackgroundJobStatus extends org.efaps.esjp.ci.CIAdmin._DataModel_StatusAbstract
+    {
+        protected _BackgroundJobStatus(final String _uuid)
+        {
+            super(_uuid);
+        }
+        public final CIStatus Scheduled = new CIStatus(this, "Scheduled");
+        public final CIStatus Ready = new CIStatus(this, "Ready");
+        public final CIStatus Active = new CIStatus(this, "Active");
+        public final CIStatus Finished = new CIStatus(this, "Finished");
+        public final CIStatus Canceled = new CIStatus(this, "Canceled");
+    }
+
 
     public static final _DashboardAbstract DashboardAbstract = new _DashboardAbstract("b2388ab1-f9c6-47f1-9893-bc2d72a71d19");
 
