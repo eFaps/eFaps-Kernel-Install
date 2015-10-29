@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.UUID;
 
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.AttributeSet;
@@ -65,6 +66,7 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.Update;
+import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
 import org.slf4j.Logger;
@@ -79,6 +81,7 @@ import org.slf4j.LoggerFactory;
 @EFapsUUID("3a99a177-8b5c-4dd4-b876-dcba28ea3138")
 @EFapsApplication("eFaps-Kernel")
 public abstract class Edit_Base
+    extends AbstractCommon
     implements EventExecution
 {
 
@@ -129,6 +132,7 @@ public abstract class Edit_Base
         if (classifcationName != null) {
             updateClassifcation(_parameter, instance, classifcationName);
         }
+        updateConnection2Object(_parameter, instance);
         return new Return();
     }
 
@@ -163,7 +167,7 @@ public abstract class Edit_Base
     public String updateMainElements(final Parameter _parameter,
                                      final Form _form,
                                      final Instance _instance,
-                                     final Map<String,Object> _valueMap,
+                                     final Map<String, Object> _valueMap,
                                      final List<FieldTable> _fieldTables)
         throws EFapsException
     {
@@ -825,6 +829,76 @@ public abstract class Edit_Base
         return rows;
     }
 
+
+    /**
+     * Update connection 2 object.
+     *
+     * @param _parameter the _parameter
+     * @param _instance the instance
+     * @throws EFapsException on error
+     */
+    public void updateConnection2Object(final Parameter _parameter,
+                                        final Instance _instance)
+        throws EFapsException
+    {
+        final Map<Integer, String> connectTypes = analyseProperty(_parameter, "ConnectType");
+        if (!connectTypes.isEmpty()) {
+            final Map<Integer, String> currentLinks = analyseProperty(_parameter, "ConnectCurrentLink");
+            final Map<Integer, String> foreignLinks = analyseProperty(_parameter, "ConnectForeignLink");
+            final Map<Integer, String> foreignFields = analyseProperty(_parameter, "ConnectForeignField");
+            // all must be of the same size
+            if (connectTypes.size() == currentLinks.size() && foreignLinks.size() == foreignFields.size()
+                            && connectTypes.size() == foreignLinks.size()) {
+                for (final Entry<Integer, String> entry: connectTypes.entrySet()) {
+                    final String[] foreigns = _parameter.getParameterValues(foreignFields.get(entry.getKey()));
+                    if (foreigns != null) {
+                        for (final String foreign : foreigns) {
+                            final String typeStr = entry.getValue();
+                            final Type type = isUUID(typeStr) ? Type.get(UUID.fromString(typeStr)) : Type.get(typeStr);
+
+                            final QueryBuilder queryBldr = new QueryBuilder(type);
+                            queryBldr.addWhereAttrEqValue(currentLinks.get(entry.getKey()), _instance);
+                            final List<Instance> insts = queryBldr.getQuery().execute();
+                            if (insts.size() == 1 && (foreign == null || foreign.isEmpty())) {
+                                new Delete(insts.get(0)).execute();
+                            } else if (insts.size() < 2) {
+                                final Update update = insts.isEmpty() ? new Insert(type) : new Update(insts.get(0));
+                                if (insts.isEmpty()) {
+                                    update.add(currentLinks.get(entry.getKey()), _instance);
+                                }
+                                final Instance inst = Instance.get(foreign);
+                                if (inst.isValid()) {
+                                    update.add(foreignLinks.get(entry.getKey()), inst);
+                                } else {
+                                    update.add(foreignLinks.get(entry.getKey()), foreign);
+                                }
+                                add2updateConnection2Object(_parameter, update);
+                                update.execute();
+                            }
+                        }
+                    }
+                }
+            } else {
+                Edit_Base.LOG.error("The properties must be of the same size!");
+            }
+        }
+    }
+
+    /**
+     * Add2update connection2 object.
+     *
+     * @param _parameter the _parameter
+     * @param _update the _update
+     * @throws EFapsException on error
+     */
+    protected void add2updateConnection2Object(final Parameter _parameter,
+                                               final Update _update)
+        throws EFapsException
+    {
+
+    }
+
+
     /**
      * Class for update of a row.
      */
@@ -905,8 +979,12 @@ public abstract class Edit_Base
         }
 
         /**
+         * Adds the value.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
          * @param _attrName name of the attribute
-         * @param _value value
+         * @param _fieldName the field name
+         * @param _idx the idx
          */
         public void addValue(final Parameter _parameter,
                              final String _attrName,
