@@ -273,12 +273,12 @@ public abstract class SimpleAccessCheckOnType_Base
             final Set<Role> localRoles = new HashSet<Role>();
             final StringBuilder cmd = new StringBuilder();
             cmd.append("select ").append(type.getMainTable().getSqlTable()).append(".ID ")
-                .append(" from T_ACCESSSET2USER ")
-                .append(" join T_ACCESSSET2STATUS on T_ACCESSSET2USER.ACCESSSET = T_ACCESSSET2STATUS.ACCESSSET");
+                .append(" from T_ACCESSSET2USER ");
 
             boolean noCompCheck = false;
             if (type.isCheckStatus()) {
-                cmd.append(" join ").append(type.getMainTable().getSqlTable()).append(" on ")
+                cmd.append(" join T_ACCESSSET2STATUS on T_ACCESSSET2USER.ACCESSSET = T_ACCESSSET2STATUS.ACCESSSET")
+                    .append(" join ").append(type.getMainTable().getSqlTable()).append(" on ")
                     .append(type.getMainTable().getSqlTable()).append(".")
                     .append(type.getStatusAttribute().getSqlColNames().get(0))
                     .append(" = T_ACCESSSET2STATUS.ACCESSSTATUS");
