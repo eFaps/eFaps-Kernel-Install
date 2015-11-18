@@ -34,6 +34,8 @@ import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.attributetype.StringType;
 import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.datamodel.ui.NumberUI;
+import org.efaps.admin.datamodel.ui.StringUI;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -148,6 +150,16 @@ public abstract class Search_Base
                     if (field.getAttribute() != null) {
                         ret.addWhereAttrMatchValue(field.getAttribute(), value)
                                         .setIgnoreCase(ignFields.contains(field.getName()));
+                    } else if (field.getSelect() != null) {
+                        if (field.getUIProvider() instanceof StringUI) {
+                            ret.addWhereSelectMatchValue(field.getSelect(), value + "*")
+                                .setIgnoreCase(ignFields.contains(field.getName()));
+                        } else if (field.getUIProvider() instanceof NumberUI) {
+                            ret.addWhereAttrEqValue(field.getSelect(), value);
+                        } else {
+                            ret.addWhereAttrMatchValue(field.getSelect(), value)
+                                .setIgnoreCase(ignFields.contains(field.getName()));
+                        }
                     }
                 }
             }
