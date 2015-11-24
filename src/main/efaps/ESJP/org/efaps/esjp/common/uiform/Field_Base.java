@@ -660,8 +660,13 @@ public abstract class Field_Base
             }
         });
         final Return ret = new Return();
-        html.append(getDropDownField(_parameter, positions));
-        ret.put(ReturnValues.SNIPLETT, html.toString());
+
+        if (_parameter.get(ParameterValues.UIOBJECT) instanceof UIValue) {
+            ret.put(ReturnValues.VALUES, positions);
+        } else {
+            html.append(getDropDownField(_parameter, positions));
+            ret.put(ReturnValues.SNIPLETT, html.toString());
+        }
         return ret;
     }
 
