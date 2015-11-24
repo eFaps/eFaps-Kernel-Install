@@ -33,6 +33,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.AttributeSet;
 import org.efaps.admin.datamodel.Classification;
@@ -859,9 +860,9 @@ public abstract class Edit_Base
                             final QueryBuilder queryBldr = new QueryBuilder(type);
                             queryBldr.addWhereAttrEqValue(currentLinks.get(entry.getKey()), _instance);
                             final List<Instance> insts = queryBldr.getQuery().execute();
-                            if (insts.size() == 1 && (foreign == null || foreign.isEmpty())) {
+                            if (insts.size() == 1 && StringUtils.isEmpty(foreign)) {
                                 new Delete(insts.get(0)).execute();
-                            } else if (insts.size() < 2) {
+                            } else if (insts.size() < 2 && !StringUtils.isEmpty(foreign)) {
                                 final Update update = insts.isEmpty() ? new Insert(type) : new Update(insts.get(0));
                                 if (insts.isEmpty()) {
                                     update.add(currentLinks.get(entry.getKey()), _instance);
