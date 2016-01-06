@@ -214,7 +214,8 @@ public abstract class SystemConf_Base
         final String uuid = print.getSelect(selUUID);
         final Set<String> keys = new HashSet<>();
         final QueryBuilder queryBldr = new QueryBuilder(CIAdminCommon.SystemConfigurationAbstract);
-        queryBldr.addWhereAttrEqValue(CIAdminCommon.SystemConfigurationAbstract.AbstractLink, print.getSelect(selInst));
+        queryBldr.addWhereAttrEqValue(CIAdminCommon.SystemConfigurationAbstract.AbstractLink,
+                        print.<Instance>getSelect(selInst));
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(CIAdminCommon.SystemConfigurationAbstract.Key);
         multi.execute();
@@ -291,7 +292,7 @@ public abstract class SystemConf_Base
             attr = isLink ? SysConfResourceConfig.getResourceConfig().getLink(uuid,
                                           key.substring(0, key.length() - 2))
                           : SysConfResourceConfig.getResourceConfig().getAttribute(uuid,
-                                          key.substring(0, key.length() - 2 ));
+                                          key.substring(0, key.length() - 2));
         }
 
         CharSequence node;
@@ -318,7 +319,6 @@ public abstract class SystemConf_Base
                 .append("}")
                 .append("});")
                 .append("});");
-
         map.put("eFapsFieldUpdateJS", js.toString());
         ret.put(ReturnValues.VALUES, values);
         return ret;
@@ -360,7 +360,7 @@ public abstract class SystemConf_Base
                     attr = isLink ? SysConfResourceConfig.getResourceConfig().getLink(uuid,
                                                   key.substring(0, key.length() - 2))
                                   : SysConfResourceConfig.getResourceConfig().getAttribute(uuid,
-                                                  key.substring(0, key.length() - 2 ));
+                                                  key.substring(0, key.length() - 2));
                 }
 
                 if (attr != null) {
