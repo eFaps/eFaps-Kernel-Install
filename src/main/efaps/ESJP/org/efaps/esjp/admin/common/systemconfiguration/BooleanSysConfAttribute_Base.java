@@ -33,6 +33,14 @@ public abstract class BooleanSysConfAttribute_Base
     extends AbstractSysConfAttribute<BooleanSysConfAttribute, Boolean>
 {
 
+    /**
+     * Instantiates a new boolean sys conf attribute_ base.
+     */
+    public BooleanSysConfAttribute_Base()
+    {
+        defaultValue(false);
+    }
+
     @Override
     protected BooleanSysConfAttribute getThis()
     {
@@ -43,7 +51,13 @@ public abstract class BooleanSysConfAttribute_Base
     public Boolean get()
         throws EFapsException
     {
-        return SystemConfiguration.get(getSysConfUUID()).getAttributeValueAsBoolean(getKey());
+        boolean ret;
+        if (SystemConfiguration.get(getSysConfUUID()).containsAttributeValue(getKey())) {
+            ret = SystemConfiguration.get(getSysConfUUID()).getAttributeValueAsBoolean(getKey());
+        } else {
+            ret = getDefaultValue();
+        }
+        return ret;
     }
 
     @Override

@@ -34,6 +34,14 @@ public abstract class IntegerSysConfAttribute_Base
     extends AbstractSysConfAttribute<IntegerSysConfAttribute, Integer>
 {
 
+    /**
+     * Instantiates a new integer sys conf attribute_ base.
+     */
+    public IntegerSysConfAttribute_Base()
+    {
+        defaultValue(0);
+    }
+
     @Override
     protected IntegerSysConfAttribute getThis()
     {
@@ -44,7 +52,13 @@ public abstract class IntegerSysConfAttribute_Base
     public Integer get()
         throws EFapsException
     {
-        return SystemConfiguration.get(getSysConfUUID()).getAttributeValueAsInteger(getKey());
+        int ret;
+        if (SystemConfiguration.get(getSysConfUUID()).containsAttributeValue(getKey())) {
+            ret = SystemConfiguration.get(getSysConfUUID()).getAttributeValueAsInteger(getKey());
+        } else {
+            ret = getDefaultValue();
+        }
+        return ret;
     }
 
     @Override

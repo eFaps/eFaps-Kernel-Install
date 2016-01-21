@@ -44,6 +44,9 @@ public abstract class AbstractSysConfAttribute_Base<T extends AbstractSysConfAtt
     /** The key. */
     private String key;
 
+    /** The default value. */
+    private V defaultValue;
+
     /**
      * Gets the this.
      *
@@ -102,6 +105,28 @@ public abstract class AbstractSysConfAttribute_Base<T extends AbstractSysConfAtt
     public String getDescription()
     {
         return this.description;
+    }
+
+    /**
+     * Gets the default value.
+     *
+     * @return the default value
+     */
+    public V getDefaultValue()
+    {
+        return this.defaultValue;
+    }
+
+    /**
+     * Sets the default value.
+     *
+     * @param _defaultValue the new default value
+     * @return the t
+     */
+    public T defaultValue(final V _defaultValue)
+    {
+        this.defaultValue = _defaultValue;
+        return getThis();
     }
 
     /**
