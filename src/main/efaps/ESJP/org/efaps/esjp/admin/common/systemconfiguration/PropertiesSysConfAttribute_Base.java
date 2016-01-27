@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
  */
 package org.efaps.esjp.admin.common.systemconfiguration;
 
+import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -73,7 +74,15 @@ public abstract class PropertiesSysConfAttribute_Base
     public Properties get()
         throws EFapsException
     {
-        return SystemConfiguration.get(getSysConfUUID()).getAttributeValueAsProperties(getKey(), this.concatenate);
+        Properties ret;
+        if (SystemConfiguration.get(getSysConfUUID()).containsAttributeValue(getKey())) {
+            ret = SystemConfiguration.get(getSysConfUUID()).getAttributeValueAsProperties(getKey(), this.concatenate);
+        } else if (getDefaultValue() != null) {
+            ret = getDefaultValue();
+        } else {
+            ret = new Properties();
+        }
+        return ret;
     }
 
     @Override
@@ -84,8 +93,34 @@ public abstract class PropertiesSysConfAttribute_Base
                         .append("<textarea rows=\"5\" cols=\"80\" name=\"value\">");
         if (_value != null) {
             ret.append(StringEscapeUtils.escapeHtml4((String) _value));
+        } else if (getDefaultValue() != null) {
+            final StringBuilder str = new StringBuilder();
+            for (final Entry<Object, Object> entry: getDefaultValue().entrySet()) {
+                if (str.length() > 0) {
+                    str.append("/n");
+                }
+                str.append(entry.getKey()).append("=").append(entry.getValue());
+                ret.append(StringEscapeUtils.escapeHtml4(str.toString()));
+            }
         }
         ret.append("</textarea>");
         return ret;
+    }
+
+    /**
+     * Adds a default value to the properties
+     *
+     * @param _key the _key
+     * @param _value the _value
+     * @return the properties sys conf attribute
+     */
+    public PropertiesSysConfAttribute addDefaultValue(final String _key,
+                                                      final String _value)
+    {
+        if (getDefaultValue() == null) {
+            defaultValue(new Properties());
+        }
+        getDefaultValue().put(_key, _value);
+        return getThis();
     }
 }
