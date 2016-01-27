@@ -219,7 +219,7 @@ public abstract class AbstractCommon_Base
         throws EFapsException
     {
         String ret = null;
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final Map<?, ?> properties = getPropertiesMapInternal(_parameter);
         // test for basic
         if (properties.containsKey(_key)) {
             ret = String.valueOf(properties.get(_key));
@@ -239,8 +239,40 @@ public abstract class AbstractCommon_Base
                                        final String _key)
         throws EFapsException
     {
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final Map<?, ?> properties = getPropertiesMapInternal(_parameter);
         return properties.containsKey(_key);
+    }
+
+    /**
+     * Get the properties map. Reads first the Map from
+     * <code>ParameterValues.PROPERTIES</code> and than
+     * checks for overwrite by a SystenConfiguration.
+     *
+     * @param _parameter the _parameter
+     * @return the properties map internal
+     * @throws EFapsException the e faps exception
+     */
+    @SuppressWarnings("unchecked")
+    private Map<?, ?> getPropertiesMapInternal(final Parameter _parameter)
+        throws EFapsException
+    {
+        Map<Object, Object> ret = (Map<Object, Object>) _parameter.get(ParameterValues.PROPERTIES);
+        if (ret != null && ret.containsKey("PropertiesConfig")) {
+            final String config = (String) ret.get("PropertiesConfig");
+            SystemConfiguration sysConf;
+            if (isUUID(config)) {
+                sysConf = SystemConfiguration.get(UUID.fromString(config));
+            } else {
+                sysConf = SystemConfiguration.get(config);
+            }
+            if (sysConf != null) {
+                final Properties props = sysConf
+                                .getAttributeValueAsProperties((String) ret.get("PropertiesConfigAttribute"));
+                ret = (Map<Object, Object>) _parameter.get(ParameterValues.PROPERTIES);
+                ret.putAll(props);
+            }
+        }
+        return ret;
     }
 
     /**
