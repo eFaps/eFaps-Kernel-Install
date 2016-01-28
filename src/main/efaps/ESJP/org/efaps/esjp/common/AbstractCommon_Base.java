@@ -138,7 +138,6 @@ public abstract class AbstractCommon_Base
         return analyseProperty(parameter, _key, _offset);
     }
 
-
     /**
      * Search for the given Property and returns a tree map with the found values.<br/>
      * Properties like:<br/>
@@ -162,7 +161,7 @@ public abstract class AbstractCommon_Base
         throws EFapsException
     {
         final Map<Integer, String> ret = new TreeMap<Integer, String>();
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final Map<?, ?> properties = getPropertiesMapInternal(_parameter);
         // test for basic
         final int start = _offset == 0 ? 1 : _offset;
         if (_offset == 0 && properties.containsKey(_key)) {
