@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsClassLoader;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.program.esjp.Listener;
 import org.efaps.api.annotation.EFapsSysConfAttribute;
 import org.efaps.api.annotation.EFapsSysConfLink;
 import org.efaps.api.annotation.EFapsSystemConfiguration;
@@ -110,6 +111,7 @@ public final class SysConfResourceConfig
                 }
             }
         }
+        resourceFinder.close();
         for (final Class<?> clazz : asl.getAnnotatedClasses()) {
             final EFapsSystemConfiguration sysConfAn = clazz.getAnnotation(EFapsSystemConfiguration.class);
             final List<ISysConfAttribute> confAttrs = new ArrayList<>();
@@ -141,6 +143,11 @@ public final class SysConfResourceConfig
                     }
                 }
             }
+        }
+        for (final ISysConfListener listener : Listener.get().<ISysConfListener>invoke(
+                        ISysConfListener.class)) {
+            listener.addAttributes(this.uuid2attr);
+            listener.addLinks(this.uuid2link);
         }
     }
 
