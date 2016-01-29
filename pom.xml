@@ -162,6 +162,13 @@
                     </suiteXmlFiles>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <sourceDirectory>${basedir}/src/main/efaps/ESJP</sourceDirectory>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
