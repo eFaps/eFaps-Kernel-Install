@@ -295,16 +295,21 @@ public abstract class SystemConf_Base
                                           key.substring(0, key.length() - 2));
         }
 
+        final Map<String, Object> map = new HashMap<String, Object>();
+
         CharSequence node;
         if (attr == null) {
             node = "<textarea rows=\"5\" name=\"value\"></textarea>";
         } else {
             node = attr.getHtml(_parameter, null);
+            if (attr instanceof AbstractSysConfAttribute_Base) {
+                map.put("description", ((AbstractSysConfAttribute_Base<?, ?>) attr).getDescription());
+            }
         }
 
         final Return ret = new Return();
         final List<Map<String, Object>> values = new ArrayList<>();
-        final Map<String, Object> map = new HashMap<String, Object>();
+
         values.add(map);
         final StringBuilder js = new StringBuilder()
                 .append("require(['dojo/query', 'dojo/dom-construct'], function (query, domConstruct) {")
