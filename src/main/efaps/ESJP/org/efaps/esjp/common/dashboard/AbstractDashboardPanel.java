@@ -33,6 +33,11 @@ public abstract class AbstractDashboardPanel
 {
 
     /**
+     * Key used to store the filters in the context.
+     */
+    public static final String CACHENAME = AbstractDashboardPanel_Base.CACHENAME;
+
+    /**
      *
      */
     private static final long serialVersionUID = 1L;

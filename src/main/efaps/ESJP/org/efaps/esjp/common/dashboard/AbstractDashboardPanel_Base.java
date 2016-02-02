@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,23 @@
  * limitations under the License.
  *
  */
+
 package org.efaps.esjp.common.dashboard;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
+import org.efaps.util.EFapsException;
+import org.efaps.util.cache.InfinispanCache;
+import org.infinispan.Cache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Class AbstractDashboardPanel_Base.
@@ -36,8 +44,16 @@ public abstract class AbstractDashboardPanel_Base
 {
 
     /**
-     *
+     * Key used to store the filters in the context.
      */
+    protected static final String CACHENAME = AbstractDashboardPanel.class.getName() + ".Cache";
+
+    /**
+     * Logger for this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractDashboardPanel.class);
+
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
     /** The config. */
@@ -72,16 +88,114 @@ public abstract class AbstractDashboardPanel_Base
             try {
                 ret.load(new StringReader(this.config));
             } catch (final IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                LOG.error("Catched error on reading properties.");
             }
         }
         return ret;
     }
 
+    /**
+     * Sets the config.
+     *
+     * @param _config the new config
+     */
     public void setConfig(final String _config)
     {
         this.config = _config;
+    }
+
+    /**
+     * Checks if is cached.
+     * @return true, if is cached
+     * @throws EFapsException the e faps exception
+     */
+    public boolean isCached()
+        throws EFapsException
+    {
+        boolean ret;
+        if ("true".equalsIgnoreCase(getConfig().getProperty("ForceReload", "false"))) {
+            ret = false;
+        } else {
+            ret = getCache().containsKey(getCacheKey());
+        }
+        return ret;
+    }
+
+    /**
+     * Gets the CharSequence from cache.
+     * @return the data source from cache
+     * @throws EFapsException the e faps exception
+     */
+    public CharSequence getFromCache()
+        throws EFapsException
+    {
+        return getCache().get(getCacheKey());
+    }
+
+    /**
+     * Gets the cache.
+     *
+     * @return the cache
+     */
+    public Cache<String, CharSequence> getCache()
+    {
+        return InfinispanCache.get().getIgnReCache(AbstractDashboardPanel.CACHENAME);
+    }
+
+    /**
+     * Clear cache.
+     * @throws EFapsException the e faps exception
+     */
+    public void clearCache()
+        throws EFapsException
+    {
+        getCache().remove(getCacheKey());
+    }
+
+    /**
+     * Cache.
+     *
+     * @param _html the _html
+     * @throws EFapsException the e faps exception
+     */
+    public void cache(final CharSequence _html)
+        throws EFapsException
+    {
+        getCache().put(getCacheKey(), _html, getLifespan(), getTimeUnit());
+    }
+
+    /**
+     * Gets the cache key.
+     * @return the cache key
+     * @throws EFapsException the e faps exception
+     */
+    protected String getCacheKey()
+        throws EFapsException
+    {
+        final StringBuilder ret = new StringBuilder();
+        ret.append(Context.getThreadContext().getPerson().getId())
+            .append(":").append(getConfig().getProperty("CacheKey", getClass().getName()));
+        return ret.toString();
+    }
+
+    /**
+     * Gets the lifespan.
+     * @return the lifespan
+     * @throws EFapsException on error
+     */
+    protected Long getLifespan()
+        throws EFapsException
+    {
+        return Long.valueOf(getConfig().getProperty("Lifespan", "1"));
+    }
+
+    /**
+     * Gets the time unit.
+     * @return the time unit
+     */
+    protected TimeUnit getTimeUnit()
+    {
+        return TimeUnit.valueOf(getConfig().getProperty("TimeUnit", "MINUTES"));
     }
 
     /**
