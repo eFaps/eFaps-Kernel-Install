@@ -575,7 +575,6 @@ public abstract class AbstractCommon_Base
         return ret;
     }
 
-
     /**
      * @param _parameter Parameter as passed by the eFaps API
      * @param _offset offset to start to search for
@@ -642,71 +641,74 @@ public abstract class AbstractCommon_Base
                 }
             }
         }
-        if (!excludes.isEmpty()) {
-            final List<Long> typeIds = new ArrayList<Long>();
-            for (final Type type : excludes) {
-                for (final Type exType :  getTypeList(_parameter, type)) {
-                    typeIds.add(exType.getId());
+
+        if (ret != null) {
+            if (!excludes.isEmpty()) {
+                final List<Long> typeIds = new ArrayList<Long>();
+                for (final Type type : excludes) {
+                    for (final Type exType :  getTypeList(_parameter, type)) {
+                        typeIds.add(exType.getId());
+                    }
+                }
+                ret.addWhereAttrNotEqValue(ret.getType().getTypeAttribute(), typeIds.toArray());
+            }
+
+            for (final String classStr : classif.values()) {
+                final Classification clazz;
+                if (isUUID(classStr)) {
+                    clazz = Classification.get(UUID.fromString(classStr));
+                } else {
+                    clazz = Classification.get(classStr);
+                }
+                if (clazz == null) {
+                    final AbstractUserInterfaceObject command = (AbstractUserInterfaceObject) _parameter
+                                    .get(ParameterValues.UIOBJECT);
+                    AbstractCommon_Base.LOG.error("Classification Definition invalid. Object: {}, Value: {}",
+                                    command == null ? "UNKNOWN" : command.getName(), classStr);
+                } else {
+                    ret.addWhereClassification(clazz);
                 }
             }
-            ret.addWhereAttrNotEqValue(ret.getType().getTypeAttribute(), typeIds.toArray());
-        }
 
-        for (final String classStr : classif.values()) {
-            final Classification clazz;
-            if (isUUID(classStr)) {
-                clazz = Classification.get(UUID.fromString(classStr));
-            } else {
-                clazz = Classification.get(classStr);
+            final List<Status> statusList = getStatusListFromProperties(_parameter, _offset);
+            if (!statusList.isEmpty()) {
+                Type tempType = ret.getType();
+                while (!tempType.isCheckStatus() && tempType.getParentType() != null) {
+                    tempType = tempType.getParentType();
+                }
+                ret.addWhereAttrEqValue(tempType.getStatusAttribute(), statusList.toArray());
             }
-            if (clazz == null) {
-                final AbstractUserInterfaceObject command = (AbstractUserInterfaceObject) _parameter
-                                .get(ParameterValues.UIOBJECT);
-                AbstractCommon_Base.LOG.error("Classification Definition invalid. Object: {}, Value: {}",
-                                command == null ? "UNKNOWN" : command.getName(), classStr);
-            } else {
-                ret.addWhereClassification(clazz);
-            }
-        }
-
-        final List<Status> statusList = getStatusListFromProperties(_parameter, _offset);
-        if (!statusList.isEmpty()) {
-            Type tempType = ret.getType();
-            while (!tempType.isCheckStatus() && tempType.getParentType() != null) {
-                tempType = tempType.getParentType();
-            }
-            ret.addWhereAttrEqValue(tempType.getStatusAttribute(), statusList.toArray());
-        }
-        // in case of multiple, the linkfrom must be evaluated
-        if (multiple && linkFroms.size() > 1) {
-            final QueryBuilder attrQueryBldr = new QueryBuilder(ret.getType());
-            attrQueryBldr.setOr(true);
-            final Set<List<String>> added = new HashSet<List<String>>();
-            for (final Entry<Integer, String> entry : linkFroms.entrySet()) {
-                if (types.containsKey(entry.getKey())) {
-                    final String typeStr = types.get(entry.getKey());
-                    Type type;
-                    if (isUUID(typeStr)) {
-                        type = Type.get(UUID.fromString(typeStr));
-                    } else {
-                        type = Type.get(typeStr);
-                    }
-                    if (type != null) {
-                        final List<String> colNames = type.getAttribute(entry.getValue()).getSqlColNames();
-                        for (final Attribute attr : ret.getType().getAttributes().values()) {
-                            if (CollectionUtils.isEqualCollection(colNames, attr.getSqlColNames())) {
-                                if (!added.contains(colNames)) {
-                                    attrQueryBldr.addWhereAttrEqValue(attr, getInstance4LinkFrom(_parameter));
-                                    added.add(colNames);
+            // in case of multiple, the linkfrom must be evaluated
+            if (multiple && linkFroms.size() > 1) {
+                final QueryBuilder attrQueryBldr = new QueryBuilder(ret.getType());
+                attrQueryBldr.setOr(true);
+                final Set<List<String>> added = new HashSet<List<String>>();
+                for (final Entry<Integer, String> entry : linkFroms.entrySet()) {
+                    if (types.containsKey(entry.getKey())) {
+                        final String typeStr = types.get(entry.getKey());
+                        Type type;
+                        if (isUUID(typeStr)) {
+                            type = Type.get(UUID.fromString(typeStr));
+                        } else {
+                            type = Type.get(typeStr);
+                        }
+                        if (type != null) {
+                            final List<String> colNames = type.getAttribute(entry.getValue()).getSqlColNames();
+                            for (final Attribute attr : ret.getType().getAttributes().values()) {
+                                if (CollectionUtils.isEqualCollection(colNames, attr.getSqlColNames())) {
+                                    if (!added.contains(colNames)) {
+                                        attrQueryBldr.addWhereAttrEqValue(attr, getInstance4LinkFrom(_parameter));
+                                        added.add(colNames);
+                                    }
+                                    break;
                                 }
-                                break;
                             }
                         }
                     }
                 }
-            }
-            if (!added.isEmpty()) {
-                ret.addWhereAttrInQuery("ID", attrQueryBldr.getAttributeQuery("ID"));
+                if (!added.isEmpty()) {
+                    ret.addWhereAttrInQuery("ID", attrQueryBldr.getAttributeQuery("ID"));
+                }
             }
         }
         return ret;
