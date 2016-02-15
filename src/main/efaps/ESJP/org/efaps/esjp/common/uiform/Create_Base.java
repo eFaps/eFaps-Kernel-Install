@@ -38,6 +38,7 @@ import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.attributetype.AbstractFileType;
+import org.efaps.admin.datamodel.attributetype.LinkType;
 import org.efaps.admin.datamodel.attributetype.RateType;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.EventExecution;
@@ -264,6 +265,10 @@ public abstract class Create_Base
             final boolean inverted = "true".equalsIgnoreCase(_parameter.getParameterValues(_fieldName
                             + RateUI.INVERTEDSUFFIX)[_idx]);
             _insert.add(_attr, new Object[] { inverted ? 1 : value, inverted ? value : 1 });
+        } else if (_attr.getAttributeType().getDbAttrType() instanceof LinkType) {
+            final String value = _parameter.getParameterValues(_fieldName)[_idx];
+            final Instance tmpInst = Instance.get(value);
+            _insert.add(_attr, tmpInst.isValid() ? tmpInst : value);
         } else {
             _insert.add(_attr, _parameter.getParameterValues(_fieldName)[_idx]);
         }
