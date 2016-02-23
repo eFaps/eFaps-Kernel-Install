@@ -109,9 +109,9 @@ public abstract class Field_Base
      *  <tr><td>plusWeeks</td><td>Integer</td><td>weeks to add</td></tr>
      * </table>
      *
-     *
      * @param _parameter Parameter as passed by the eFaps API
      * @return ReturnValue containing the date
+     * @throws EFapsException on error
      */
     public Return getDefault4DateFieldValue(final Parameter _parameter)
         throws EFapsException
@@ -753,7 +753,7 @@ public abstract class Field_Base
 
         final StringBuilder html = new StringBuilder();
 
-        final Map<? , ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final String typesStr = (String) props.get("Types");
         final String selected = (String) props.get("SelectedType");
         final boolean includeAbstract = "true".equalsIgnoreCase((String) props.get("IncludeAbstract"));
@@ -1818,6 +1818,7 @@ public abstract class Field_Base
          * Setter method for instance variable {@link #selected}.
          *
          * @param _selected value for instance variable {@link #selected}
+         * @return the drop down position
          */
         public DropDownPosition setSelected(final boolean _selected)
         {

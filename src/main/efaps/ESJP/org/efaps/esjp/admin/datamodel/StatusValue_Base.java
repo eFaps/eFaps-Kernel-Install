@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.admin.datamodel;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Status.StatusGroup;
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.datamodel.ui.UIValue;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -39,6 +37,7 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
+import org.efaps.api.ui.IOption;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.Update;
@@ -50,7 +49,6 @@ import org.efaps.util.EFapsException;
  * This Class gets a Status from the Database.<br>
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("c0e0547a-a39f-4741-ae3d-c196e8cb2f60")
 @EFapsApplication("eFaps-Kernel")
@@ -71,33 +69,40 @@ public abstract class StatusValue_Base
     {
         final Return ret = new Return();
 
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final UIValue uiValue = (UIValue) _parameter.get(ParameterValues.UIOBJECT);
 
-        final Map<String, String> map = new TreeMap<String, String>();
-
-        if (fieldValue.getTargetMode().equals(TargetMode.VIEW) || fieldValue.getTargetMode().equals(TargetMode.PRINT)
-                        || fieldValue.getTargetMode().equals(TargetMode.UNKNOWN)) {
-            final Object object = fieldValue.getValue();
+        final List<IOption> values = new ArrayList<>();
+        if (uiValue.getTargetMode().equals(TargetMode.VIEW) || uiValue.getTargetMode().equals(TargetMode.PRINT)
+                        || uiValue.getTargetMode().equals(TargetMode.UNKNOWN)) {
+            final Object object = uiValue.getDbValue();
             if (object instanceof Long) {
                 final Status status = Status.get((Long) object);
-                map.put(status.getLabel(), ((Long) status.getId()).toString());
+                values.add(getOption(_parameter)
+                                .setLabel(status.getLabel())
+                                .setValue(status.getId())
+                                .setSelected(true));
             }
-        } else if (fieldValue.getTargetMode().equals(TargetMode.CREATE)) {
-            final Type type = fieldValue.getAttribute().getLink();
+        } else if (uiValue.getTargetMode().equals(TargetMode.CREATE)) {
+            final Type type = uiValue.getAttribute().getLink();
             final StatusGroup group = Status.get(type.getUUID());
             for (final Status status : group.values()) {
-                map.put(status.getLabel(), ((Long) status.getId()).toString());
+                values.add(getOption(_parameter)
+                                .setLabel(status.getLabel())
+                                .setValue(status.getId()));
             }
         } else {
-            if (fieldValue.getInstance().getType().isCheckStatus()) {
-                final Type type = fieldValue.getInstance().getType().getStatusAttribute().getLink();
+            if (uiValue.getInstance().getType().isCheckStatus()) {
+                final Type type = uiValue.getInstance().getType().getStatusAttribute().getLink();
                 final StatusGroup group = Status.get(type.getName());
                 for (final Status status : group.values()) {
-                    map.put(status.getLabel(), ((Long) status.getId()).toString());
+                    values.add(getOption(_parameter)
+                                    .setLabel(status.getLabel())
+                                    .setValue(status.getId())
+                                    .setSelected(Long.valueOf(status.getId()).equals(uiValue.getDbValue())));
                 }
             }
         }
-        ret.put(ReturnValues.VALUES, map);
+        ret.put(ReturnValues.VALUES, values);
         return ret;
     }
 
@@ -188,5 +193,91 @@ public abstract class StatusValue_Base
         throws EFapsException
     {
         new Edit().execute(_parameter);
+    }
+
+    /**
+     * Gets the option.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the option
+     */
+    protected StatusValueOption getOption(final Parameter _parameter)
+    {
+        return new StatusValueOption();
+    }
+
+
+    /**
+     * The Class StatusValueOption.
+     */
+    public static class StatusValueOption
+        implements IOption
+    {
+
+        /** The Constant serialVersionUID. */
+        private static final long serialVersionUID = 1L;
+
+        /** The label. */
+        private String label;
+
+        /** The object. */
+        private Object value;
+
+        /** The selected. */
+        private boolean selected;
+
+        @Override
+        public String getLabel()
+        {
+            return this.label;
+        }
+
+        @Override
+        public Object getValue()
+        {
+            return this.value;
+        }
+
+        @Override
+        public boolean isSelected()
+        {
+            return this.selected;
+        }
+
+        /**
+         * Sets the label.
+         *
+         * @param _label the label
+         * @return the range value option
+         */
+        public StatusValueOption setLabel(final String _label)
+        {
+            this.label = _label;
+            return this;
+        }
+
+        /**
+         * Sets the selected.
+         *
+         * @param _selected the selected
+         * @return the range value option
+         */
+        public StatusValueOption setSelected(final boolean _selected)
+        {
+            this.selected = _selected;
+            return this;
+        }
+
+        /**
+         * Sets the value.
+         *
+         * @param _value the value
+         * @return the range value option
+         */
+        public StatusValueOption setValue(final Object _value)
+        {
+            this.value = _value;
+            return this;
+        }
     }
 }

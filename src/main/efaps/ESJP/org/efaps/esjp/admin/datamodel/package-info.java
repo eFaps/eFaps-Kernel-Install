@@ -15,23 +15,9 @@
  *
  */
 
-package org.efaps.esjp.admin.datamodel;
-
-import org.efaps.admin.event.EventExecution;
-import org.efaps.admin.program.esjp.EFapsApplication;
-import org.efaps.admin.program.esjp.EFapsUUID;
-
 /**
- * This class must be replaced for customization, therefore it is left empty.
- * Functional description can be found in the related "<code>_Base</code>"
- * class.
+ * Datamodel related classes.
  *
  * @author The eFaps Team
  */
-@EFapsUUID("f83e4c40-db9d-41d0-bf34-eec674f04b6f")
-@EFapsApplication("eFaps-Kernel")
-public class StatusValue
-    extends StatusValue_Base
-    implements EventExecution
-{
-}
+package org.efaps.esjp.admin.datamodel;
