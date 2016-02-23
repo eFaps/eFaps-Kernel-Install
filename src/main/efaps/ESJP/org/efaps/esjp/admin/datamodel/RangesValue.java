@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -31,12 +28,17 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("6e9283bb-06a7-40a5-8420-becc4cff72f5")
 @EFapsApplication("eFaps-Kernel")
 public class RangesValue
     extends RangesValue_Base
 {
+    /**
+     * Key used to store the values in the request cache.
+     */
+    public static final String REQUESTCACHEKEY = RangesValue_Base.REQUESTCACHEKEY;
 
+    /** */
+    private static final long serialVersionUID = 1L;
 }

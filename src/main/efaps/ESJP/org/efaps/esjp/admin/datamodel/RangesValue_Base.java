@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.admin.datamodel;
 
+import java.io.Serializable;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
+import java.util.UUID;
 
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.datamodel.ui.UIValue;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
@@ -39,10 +39,12 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
+import org.efaps.api.ui.IOption;
 import org.efaps.beans.ValueList;
 import org.efaps.beans.valueparser.ParseException;
 import org.efaps.beans.valueparser.ValueParser;
 import org.efaps.db.Context;
+import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.common.AbstractCommon;
@@ -62,24 +64,28 @@ import org.efaps.util.EFapsException;
  * e.g. $&lt;Name&gt; - $&lt;Value&gt;
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("17503d60-c2d2-4856-9d94-87333b45f739")
 @EFapsApplication("eFaps-Kernel")
 public abstract class RangesValue_Base
     extends AbstractCommon
-    implements EventExecution
+    implements EventExecution, Serializable
 {
     /**
      * Key used to store the values in the request cache.
      */
-    public static final String REQUESTCACHEKEY = "org.efaps.esjp.admin.datamodel.RangesValue";
+    protected static final String REQUESTCACHEKEY = RangesValue.class.getName() + ".CacheKey";
+
+    /** The Constant serialVersionUID. */
+    private static final long serialVersionUID = 1L;
 
     /**
-     * @see org.efaps.admin.event.EventExecution#execute(org.efaps.admin.event.Parameter)
+     * Execute.
+     *
      * @param _parameter    parameter as defined by the eFaps API
      * @return map with value and keys
      * @throws EFapsException on error
+     * @see org.efaps.admin.event.EventExecution#execute(org.efaps.admin.event.Parameter)
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -87,28 +93,20 @@ public abstract class RangesValue_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final Object tmp = _parameter.get(ParameterValues.UIOBJECT);
-        Attribute attribute;
-        // just for backward compatibility
-        if (tmp instanceof FieldValue) {
-            final FieldValue fieldValue = (FieldValue) tmp;
-            attribute = fieldValue.getAttribute();
+        final UIValue uiValue = (UIValue) _parameter.get(ParameterValues.UIOBJECT);
+        final Attribute attribute = uiValue.getAttribute();
+
+        Map<Attribute, List<IOption>> cachedValues;
+        if (Context.getThreadContext().containsRequestAttribute(RangesValue.REQUESTCACHEKEY)) {
+            cachedValues = (Map<Attribute, List<IOption>>)
+                            Context.getThreadContext().getRequestAttribute(RangesValue.REQUESTCACHEKEY);
         } else {
-            final UIValue fieldValue = (UIValue) tmp;
-            attribute = fieldValue.getAttribute();
+            cachedValues = new HashMap<Attribute, List<IOption>>();
+            Context.getThreadContext().setRequestAttribute(RangesValue.REQUESTCACHEKEY, cachedValues);
         }
 
-        Map<Attribute, Map<Object, Object>> values;
-        if (Context.getThreadContext().containsRequestAttribute(RangesValue_Base.REQUESTCACHEKEY)) {
-            values = (Map<Attribute, Map<Object, Object>>)
-                            Context.getThreadContext().getRequestAttribute(RangesValue_Base.REQUESTCACHEKEY);
-        } else {
-            values = new HashMap<Attribute, Map<Object, Object>>();
-            Context.getThreadContext().setRequestAttribute(RangesValue_Base.REQUESTCACHEKEY, values);
-        }
-
-        if (values.containsKey(attribute)) {
-            ret.put(ReturnValues.VALUES, values.get(attribute));
+        if (cachedValues.containsKey(attribute)) {
+            ret.put(ReturnValues.VALUES, cachedValues.get(attribute));
         } else {
             final String type = getProperty(_parameter, "Type");
             final String value = getProperty(_parameter, "Value");
@@ -132,45 +130,62 @@ public abstract class RangesValue_Base
                 multi.execute();
             }
 
-            final Map<String, String> tmpMap = new TreeMap<String, String>();
-            final Map<String, Long> order = new TreeMap<String, Long>();
+            final List<IOption> values = new ArrayList<>();
             while (multi.next()) {
                 final String strVal;
                 if (list != null) {
-                    strVal = list.makeString(multi.getCurrentInstance(), multi,
-                                    (TargetMode) _parameter.get(ParameterValues.ACCESSMODE));
+                    strVal = list.makeString(multi.getCurrentInstance(), multi, (TargetMode) _parameter.get(
+                                    ParameterValues.ACCESSMODE));
                 } else {
                     strVal = multi.getAttribute(value).toString();
                 }
-                tmpMap.put(strVal, ((Long) multi.getCurrentInstance().getId()).toString());
-                order.put(strVal,  multi.getCurrentInstance().getId());
+                final RangeValueOption option = getOption(_parameter)
+                                .setLabel(strVal)
+                                .setValue(multi.getCurrentInstance().getId());
+                if (_parameter.get(ParameterValues.ACCESSMODE).equals(TargetMode.CREATE)) {
+                    option.setSelected(isSelected(_parameter, option));
+                } else {
+                    option.setSelected(Long.valueOf(
+                                    multi.getCurrentInstance().getId()).equals(uiValue.getObject()));
+                }
+                values.add(option);
             }
-            @SuppressWarnings("rawtypes")
-            Map retmap;
 
             if (!attribute.isRequired() && "true".equalsIgnoreCase(getProperty(_parameter, "EmptyValue"))) {
-                if (!tmpMap.isEmpty() && !order.isEmpty()) {
-                    tmpMap.put("-", "");
-                    order.put("-", new Long(0));
-                }
+                values.add(getOption(_parameter)
+                                .setLabel("-")
+                                .setValue(0));
             }
 
-            if (_parameter.get(ParameterValues.UIOBJECT) instanceof FieldValue) {
-                retmap = tmpMap;
-                setSelectedValue(_parameter, retmap);
-            } else {
-                retmap = new LinkedHashMap<Long, String>();
-                for (final Entry<String, Long> entry : order.entrySet()) {
-                    retmap.put(entry.getValue(), entry.getKey());
+            Collections.sort(values, new Comparator<IOption>()
+            {
+
+                @Override
+                public int compare(final IOption _arg0,
+                                   final IOption _arg1)
+                {
+                    return _arg0.getLabel().compareTo(_arg1.getLabel());
                 }
-            }
-            values.put(attribute, retmap);
-            ret.put(ReturnValues.VALUES, retmap);
+            });
+            ret.put(ReturnValues.VALUES, values);
         }
         return ret;
     }
 
     /**
+     * Gets the option.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the option
+     */
+    protected RangeValueOption getOption(final Parameter _parameter)
+    {
+        return new RangeValueOption();
+    }
+
+    /**
+     * Add2 query bldr.
+     *
      * @param _parameter    Parameter as passes by the eFaps API
      * @param _queryBldr    QueryBuilder to add to
      * @throws EFapsException on error
@@ -186,28 +201,103 @@ public abstract class RangesValue_Base
      * Set the default value.
      *
      * @param _parameter Parameter as passed from the eFaps API
-     * @param _map map with the values
+     * @param _option the option
+     * @return true, if is selected
      * @throws EFapsException on error
      */
-    protected void setSelectedValue(final Parameter _parameter,
-                                    final Map<?, ?> _map)
+    protected boolean isSelected(final Parameter _parameter,
+                                 final RangeValueOption _option)
         throws EFapsException
     {
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        if (_parameter.get(ParameterValues.ACCESSMODE).equals(TargetMode.CREATE)
-                        && containsProperty(_parameter, "Default")) {
-            fieldValue.setValue(getProperty(_parameter, "Default"));
-        } else if (_parameter.get(ParameterValues.ACCESSMODE).equals(TargetMode.CREATE)
-                        && containsProperty(_parameter, "DefaultRegex")) {
-            final String regex = getProperty(_parameter, "DefaultRegex");
-            for (final Entry<?, ?> entry : _map.entrySet()) {
-                if (entry.getKey() instanceof String) {
-                    if (((String) entry.getKey()).matches(regex)) {
-                        fieldValue.setValue(entry.getKey());
-                        break;
-                    }
-                }
+        boolean ret = false;
+        if (_parameter.get(ParameterValues.ACCESSMODE).equals(TargetMode.CREATE)) {
+            if (containsProperty(_parameter, "SystemConfig") && containsProperty(_parameter, "SysConfLink")) {
+                final String configStr = getProperty(_parameter, "SystemConfig");
+                final SystemConfiguration config = isUUID(configStr) ? SystemConfiguration.get(UUID.fromString(
+                                configStr)) : SystemConfiguration.get(configStr);
+                final Instance inst = config.getLink(getProperty(_parameter, "SysConfLink"));
+                ret = _option.getValue().equals(inst.getId());
+            } else if (containsProperty(_parameter, "Default")) {
+                ret = _option.getLabel().equals(getProperty(_parameter, "Default"));
+            } else if (containsProperty(_parameter, "DefaultRegex")) {
+                final String regex = getProperty(_parameter, "DefaultRegex");
+                ret = _option.getLabel().matches(regex);
             }
+        }
+        return ret;
+    }
+
+    /**
+     * The Class RangeValueOption.
+     */
+    public static class RangeValueOption
+        implements IOption
+    {
+
+        /** The Constant serialVersionUID. */
+        private static final long serialVersionUID = 1L;
+
+        /** The label. */
+        private String label;
+
+        /** The object. */
+        private Object value;
+
+        /** The selected. */
+        private boolean selected;
+
+        @Override
+        public String getLabel()
+        {
+            return this.label;
+        }
+
+        @Override
+        public Object getValue()
+        {
+            return this.value;
+        }
+
+        @Override
+        public boolean isSelected()
+        {
+            return this.selected;
+        }
+
+        /**
+         * Sets the label.
+         *
+         * @param _label the label
+         * @return the range value option
+         */
+        public RangeValueOption setLabel(final String _label)
+        {
+            this.label = _label;
+            return this;
+        }
+
+        /**
+         * Sets the selected.
+         *
+         * @param _selected the selected
+         * @return the range value option
+         */
+        public RangeValueOption setSelected(final boolean _selected)
+        {
+            this.selected = _selected;
+            return this;
+        }
+
+        /**
+         * Sets the value.
+         *
+         * @param _value the value
+         * @return the range value option
+         */
+        public RangeValueOption setValue(final Object _value)
+        {
+            this.value = _value;
+            return this;
         }
     }
 }
