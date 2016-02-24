@@ -99,7 +99,7 @@ public abstract class InheritAccessCheck4Object_Base
                 stmt = con.getConnection().createStatement();
                 final ResultSet rs = stmt.executeQuery(cmd.toString());
                 if (rs.next()) {
-                    ret = (rs.getLong(1) > 0) ? true : false;
+                    ret = rs.getLong(1) > 0 ? true : false;
                 }
                 rs.close();
             } finally {
@@ -111,7 +111,7 @@ public abstract class InheritAccessCheck4Object_Base
         } catch (final SQLException e) {
             AbstractAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
         } finally {
-            if ((con != null) && con.isOpened()) {
+            if (con != null && con.isOpened()) {
                 con.abort();
             }
         }
@@ -121,6 +121,9 @@ public abstract class InheritAccessCheck4Object_Base
             final Instance parentInst = getParentInstance(_parameter, _instance, _accessType);
             if (check4SimpleAccessCheck(_parameter, parentInst)) {
                 ret = getSimpleAccess4Type(_parameter).checkAccess(_parameter, parentInst, _accessType);
+            } else if (!parentInst.isValid() && _instance.isValid()
+                            && super.check4SimpleAccessCheck(_parameter, _instance)) {
+                ret = getSimpleAccess4Type(_parameter).checkAccess(_parameter, _instance, _accessType);
             } else {
                 ret = getObjectAccess(_parameter, parentInst, _accessType);
             }
@@ -257,7 +260,7 @@ public abstract class InheritAccessCheck4Object_Base
         } catch (final SQLException e) {
             AbstractAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
         } finally {
-            if ((con != null) && con.isOpened()) {
+            if (con != null && con.isOpened()) {
                 con.abort();
             }
             final List<Instance> accessInst = new ArrayList<Instance>();
