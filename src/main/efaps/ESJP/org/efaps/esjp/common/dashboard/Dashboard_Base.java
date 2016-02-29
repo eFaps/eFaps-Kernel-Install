@@ -180,5 +180,12 @@ public abstract class Dashboard_Base
         {
             return false;
         }
+
+        @Override
+        public String getIdentifier()
+            throws EFapsBaseException
+        {
+            return "DefaultSnipplet";
+        }
     }
 }

@@ -165,6 +165,18 @@ public abstract class AbstractDashboardPanel_Base
     }
 
     /**
+     * Gets the identifier.
+     *
+     * @return the identifier
+     * @throws EFapsException the e faps exception
+     */
+    public String getIdentifier()
+        throws EFapsException
+    {
+        return getCacheKey();
+    }
+
+    /**
      * Gets the cache key.
      * @return the cache key
      * @throws EFapsException the e faps exception
@@ -173,8 +185,11 @@ public abstract class AbstractDashboardPanel_Base
         throws EFapsException
     {
         final StringBuilder ret = new StringBuilder();
-        ret.append(Context.getThreadContext().getPerson().getId())
-            .append(":").append(getConfig().getProperty("CacheKey", getClass().getName()));
+        ret.append(Context.getThreadContext().getPerson().getId());
+        if (Context.getThreadContext().getCompany() == null) {
+            ret.append(":").append(Context.getThreadContext().getCompany().getId());
+        }
+        ret.append(":").append(getConfig().getProperty("CacheKey", getClass().getName()));
         return ret.toString();
     }
 
