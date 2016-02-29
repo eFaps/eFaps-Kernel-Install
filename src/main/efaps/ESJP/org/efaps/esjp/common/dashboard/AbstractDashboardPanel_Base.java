@@ -186,7 +186,7 @@ public abstract class AbstractDashboardPanel_Base
     {
         final StringBuilder ret = new StringBuilder();
         ret.append(Context.getThreadContext().getPerson().getId());
-        if (Context.getThreadContext().getCompany() == null) {
+        if (Context.getThreadContext().getCompany() != null) {
             ret.append(":").append(Context.getThreadContext().getCompany().getId());
         }
         ret.append(":").append(getConfig().getProperty("CacheKey", getClass().getName()));
