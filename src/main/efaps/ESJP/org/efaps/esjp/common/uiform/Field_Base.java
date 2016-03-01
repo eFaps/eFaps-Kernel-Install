@@ -174,23 +174,23 @@ public abstract class Field_Base
     * @return Boolean value
     * @throws EFapsException on error
     */
-   public Return getDefault4BooleanSysConfigFieldValue(final Parameter _parameter)
-       throws EFapsException
-   {
-       final Return ret = new Return();
+    public Return getDefault4BooleanSysConfigFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
 
-       final String config = getProperty(_parameter, "SystemConfiguration");
-       final String attribute = getProperty(_parameter, "AttributeConfiguration");
-       final String keyValue = getProperty(_parameter, "Key");
+        final String config = getProperty(_parameter, "SystemConfiguration");
+        final String attribute = getProperty(_parameter, "AttributeConfiguration");
+        final String keyValue = getProperty(_parameter, "Key");
 
-       final SystemConfiguration sysConf = SystemConfiguration.get(config);
-       final Properties properties = sysConf.getAttributeValueAsProperties(attribute, true);
-       final String key = properties.getProperty(keyValue);
-       if (key != null) {
-           ret.put(ReturnValues.VALUES, BooleanUtils.toBoolean(key));
-       }
-       return ret;
-   }
+        final SystemConfiguration sysConf = SystemConfiguration.get(config);
+        final Properties properties = sysConf.getAttributeValueAsProperties(attribute, true);
+        final String key = properties.getProperty(keyValue);
+        if (key != null) {
+            ret.put(ReturnValues.VALUES, BooleanUtils.toBoolean(key));
+        }
+        return ret;
+    }
 
     /**
      * Render a single checkbox.<br>
@@ -209,13 +209,13 @@ public abstract class Field_Base
         throws EFapsException
     {
         final StringBuilder html = new StringBuilder();
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
 
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final boolean checked = "true".equalsIgnoreCase((String) props.get("checked"));
         final String value = props.containsKey("value") ? (String) props.get("value") : "true";
 
-        html.append("<input type=\"checkbox\" name=\"").append(fieldValue.getField().getName()).append("\" ")
+        html.append("<input type=\"checkbox\" name=\"").append(uiValue.getField().getName()).append("\" ")
                         .append(UIInterface.EFAPSTMPTAG).append(" value=\"").append(value).append("\" ");
         if (checked) {
             html.append(" checked=\"checked\" ");
@@ -266,17 +266,17 @@ public abstract class Field_Base
         throws EFapsException
     {
         final StringBuilder html = new StringBuilder();
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         final Map<Integer, String> checkeds = analyseProperty(_parameter, "Checked");
         final Map<Integer, String> values = analyseProperty(_parameter, "Value");
         final Map<Integer, String> comments = analyseProperty(_parameter, "Comment");
         final boolean jS = "true".equals(getProperty(_parameter, "JavaScript"));
 
-        if (Display.EDITABLE.equals(fieldValue.getDisplay())) {
+        if (Display.EDITABLE.equals(uiValue.getDisplay())) {
             if (!comments.isEmpty() && !values.isEmpty() && !checkeds.isEmpty()
                             && values.size() == comments.size()) {
                 for (final Entry<Integer, String> value : values.entrySet()) {
-                    html.append("<input type=\"checkbox\" name=\"").append(fieldValue.getField().getName())
+                    html.append("<input type=\"checkbox\" name=\"").append(uiValue.getField().getName())
                         .append("\" ")
                         .append(UIInterface.EFAPSTMPTAG).append(" value=\"").append(value.getValue()).append("\" ");
                     if ("true".equals(checkeds.get(value.getKey()))) {
@@ -319,14 +319,14 @@ public abstract class Field_Base
     {
         final Return ret = new Return();
         final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
-        if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((FieldValue) uiObject).getDisplay())) {
+        if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((IUIValue) uiObject).getDisplay())) {
             final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
-            final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+            final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
             final Map<Integer, String> values = analyseProperty(_parameter, "Value");
             for (final String value : values.values()) {
                 final StringBuilder propKey = new StringBuilder()
-                                .append(fieldValue.getField().getCollection().getName())
-                                .append(".").append(fieldValue.getField().getName()).append(".")
+                                .append(uiValue.getField().getCollection().getName())
+                                .append(".").append(uiValue.getField().getName()).append(".")
                                 .append(value).append(".Label");
                 final DropDownPosition pos = new DropDownPosition(value, DBProperties.getProperty(propKey
                                 .toString()));
@@ -1497,13 +1497,9 @@ public abstract class Field_Base
         final Return ret = new Return();
         // if the call instance is the same as the instance do not show
         if ("true".equalsIgnoreCase(getProperty(_parameter, "check4InstanceNotCallInstance"))) {
-            final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-            if (fieldValue.getInstance().equals(fieldValue.getCallInstance())) {
-                if (fieldValue.getDisplay().equals(Display.NONE)) {
-                    ret.put(ReturnValues.VALUES, "");
-                } else {
-                    ret.put(ReturnValues.SNIPLETT, "&nbsp;");
-                }
+            final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+            if (uiValue.getInstance().equals(uiValue.getCallInstance())) {
+                ret.put(ReturnValues.VALUES, "");
             }
         } else {
             ret.put(ReturnValues.SNIPLETT, "&nbsp;");
