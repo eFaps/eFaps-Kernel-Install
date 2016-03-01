@@ -262,10 +262,4 @@ public abstract class AbstractDashboardPanel_Base
     {
         return getConfig().getProperty("Title");
     }
-
-
-    protected CharSequence getCacheInfo()
-    {
-        return null;
-    }
 }
