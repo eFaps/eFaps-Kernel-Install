@@ -20,9 +20,11 @@ package org.efaps.esjp.common.dashboard;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringReader;
+import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
@@ -161,14 +163,32 @@ public abstract class AbstractDashboardPanel_Base
     public void cache(final CharSequence _html)
         throws EFapsException
     {
-        getCache().put(getCacheKey(), _html, getLifespan(), getTimeUnit());
+        cache(_html, true);
+    }
+
+    /**
+     * Cache.
+     *
+     * @param _html the _html
+     * @param _addCachedInfo the add cached info
+     * @throws EFapsException the eFaps exception
+     */
+    public void cache(final CharSequence _html,
+                      final boolean _addCachedInfo)
+        throws EFapsException
+    {
+        final StringBuilder htm = new StringBuilder().append(_html).append("<div class=\"eFapsCached\">")
+                        .append(DBProperties.getFormatedDBProperty(AbstractDashboardPanel.class.getName()
+                                        + ".Cached.Label", new Date()))
+                        .append("</div>");
+        getCache().put(getCacheKey(), htm, getLifespan(), getTimeUnit());
     }
 
     /**
      * Gets the identifier.
      *
      * @return the identifier
-     * @throws EFapsException the e faps exception
+     * @throws EFapsException the eFaps exception
      */
     public String getIdentifier()
         throws EFapsException
@@ -241,5 +261,11 @@ public abstract class AbstractDashboardPanel_Base
     protected String getTitle()
     {
         return getConfig().getProperty("Title");
+    }
+
+
+    protected CharSequence getCacheInfo()
+    {
+        return null;
     }
 }
