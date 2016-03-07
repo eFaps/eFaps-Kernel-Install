@@ -61,5 +61,9 @@
             <property name="Attribute">Created</property>
             <property name="Label">Common_BackgroundJobAbstract/Created.Label</property>
         </field>
+         <field name="modified">
+            <property name="Attribute">Modified</property>
+            <property name="Label">Common_BackgroundJobAbstract/Modified.Label</property>
+        </field>
     </definition>
 </ui-table>
