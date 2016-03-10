@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,7 +65,8 @@ public abstract class Service_Base
     }
 
     /**
-     * Launch a job.
+     * Launch a job. (Saves the context to ensure the job
+     * instance will be accessible from other processes.)
      *
      * @param _type the type
      * @param _job the _job
@@ -81,6 +82,7 @@ public abstract class Service_Base
         insert.add(CICommon.BackgroundJobAbstract.Name,
                         NumberGenerator.get(UUID.fromString("06617556-f557-4463-bdad-3e9259f4bacc")).getNextVal());
         insert.execute();
+        Context.save();
         final ExecutionBridge bridge = new ExecutionBridge();
         bridge.setInstance(insert.getInstance())
             .setJobContext(new JobContext()
@@ -88,7 +90,7 @@ public abstract class Service_Base
                         .setLocale(Context.getThreadContext().getLocale())
                         .setCompanyUUID(Context.getThreadContext().getCompany().getUUID()));
         this.executorService.execute(new JobRunnable(_job, bridge));
-        return null;
+        return bridge;
     }
 
     /**
