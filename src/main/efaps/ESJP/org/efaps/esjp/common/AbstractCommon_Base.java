@@ -805,7 +805,6 @@ public abstract class AbstractCommon_Base
         return ret;
     }
 
-
     /**
      * @param _key key the label is wanted for
      * @return class dependend Property
@@ -813,6 +812,19 @@ public abstract class AbstractCommon_Base
     public String getDBProperty(final String _key)
     {
         return DBProperties.getProperty(this.getClass().getName() + "." + _key);
+    }
+
+    /**
+     * Gets the formated db property.
+     *
+     * @param _key key the label is wanted for
+     * @param _args the _args
+     * @return class dependend Property
+     */
+    public String getFormatedDBProperty(final String _key,
+                                        final Object... _args)
+    {
+        return DBProperties.getFormatedDBProperty(this.getClass().getName() + "." + _key,  _args);
     }
 
     /**
