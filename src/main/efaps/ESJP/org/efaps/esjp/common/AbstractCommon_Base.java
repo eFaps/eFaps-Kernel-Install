@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -61,7 +58,6 @@ import org.slf4j.LoggerFactory;
  * Class contains some generic methods used by its subclasses.
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("b374b7e1-2598-4841-b77c-542ed39c721e")
 @EFapsApplication("eFaps-Kernel")
@@ -258,7 +254,7 @@ public abstract class AbstractCommon_Base
         Map<Object, Object> ret = (Map<Object, Object>) _parameter.get(ParameterValues.PROPERTIES);
         if (ret != null && ret.containsKey("PropertiesConfig")) {
             final String config = (String) ret.get("PropertiesConfig");
-            SystemConfiguration sysConf;
+            final SystemConfiguration sysConf;
             if (isUUID(config)) {
                 sysConf = SystemConfiguration.get(UUID.fromString(config));
             } else {
@@ -311,7 +307,7 @@ public abstract class AbstractCommon_Base
     protected String getRequestKey()
         throws EFapsException
     {
-        String ret;
+        final String ret;
         if (Context.getThreadContext().containsRequestAttribute(AbstractCommon_Base.REQUESTKEY4CACHING)) {
             ret = (String) Context.getThreadContext().getRequestAttribute(AbstractCommon_Base.REQUESTKEY4CACHING);
         } else {
@@ -433,7 +429,7 @@ public abstract class AbstractCommon_Base
 
                 String statusStr = entry.getValue();
                 if (statusStr.equals("*")) {
-                    StatusGroup stGrp;
+                    final StatusGroup stGrp;
                     if (isUUID(stGrpStr)) {
                         stGrp = Status.get(UUID.fromString(stGrpStr));
                     } else {
@@ -553,10 +549,10 @@ public abstract class AbstractCommon_Base
                                                       final int _offset)
         throws EFapsException
     {
-        QueryBuilder ret;
+        final QueryBuilder ret;
         if (containsProperty(_parameter, "QueryBldrConfig")) {
             final String config = getProperty(_parameter, "QueryBldrConfig");
-            SystemConfiguration sysConf;
+            final SystemConfiguration sysConf;
             if (isUUID(config)) {
                 sysConf = SystemConfiguration.get(UUID.fromString(config));
             } else {
@@ -594,7 +590,7 @@ public abstract class AbstractCommon_Base
         boolean multiple = false;
         final List<Type> excludes = new ArrayList<Type>();
         for (final Entry<Integer, String> typeEntry : types.entrySet()) {
-            Type type;
+            final Type type;
             String typeStr = typeEntry.getValue();
             boolean negate = false;
             if (typeStr.startsWith("!")) {
@@ -686,7 +682,7 @@ public abstract class AbstractCommon_Base
                 for (final Entry<Integer, String> entry : linkFroms.entrySet()) {
                     if (types.containsKey(entry.getKey())) {
                         final String typeStr = types.get(entry.getKey());
-                        Type type;
+                        final Type type;
                         if (isUUID(typeStr)) {
                             type = Type.get(UUID.fromString(typeStr));
                         } else {

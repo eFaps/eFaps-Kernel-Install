@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
 package org.efaps.esjp.common.uisearch;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -31,7 +28,6 @@ import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -49,7 +45,6 @@ import org.slf4j.LoggerFactory;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("251927a6-d71d-4a7b-b0d2-b6bb5a50b73f")
 @EFapsApplication("eFaps-Kernel")
@@ -62,7 +57,6 @@ public abstract class Connect_Base
      */
     private static final Logger LOG = LoggerFactory.getLogger(Connect.class);
 
-
     /**
      * @param _parameter Parameter as passed from the eFaps API
      * @return new Return
@@ -72,26 +66,22 @@ public abstract class Connect_Base
     public Return execute(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<?, ?> others = (HashMap<?, ?>) _parameter.get(ParameterValues.OTHERS);
-        final String[] childOids = (String[]) others.get("selectedRow");
-        if (childOids != null) {
-
+        final List<Instance> instances = getSelectedInstances(_parameter);
+        if (!instances.isEmpty()) {
             if (!validateProperties(_parameter)) {
                 Connect_Base.LOG.error("Must have properties 'ConnectParentAttribute' and 'ConnectChildAttribute' "
                                 + "of same size and at least one 'ConnectType'");
             } else {
-                for (final String childOid : childOids) {
-                    final Instance childInst = Instance.get(childOid);
-                    if (childInst.isValid()) {
-                        final int idx = getIdx(_parameter, childInst);
-                        final TypeWA typeWithAttr = getTypeWithAttribute(_parameter, childInst, idx);
-                        if (typeWithAttr != null && checkMultiple(_parameter, typeWithAttr, childInst)) {
-                            final Insert insert = new Insert(typeWithAttr.getType());
-                            addInsertConnect(_parameter, insert);
-                            insert.add(typeWithAttr.getParentAttr(), _parameter.getInstance());
-                            insert.add(typeWithAttr.getChildAttr(), childInst);
-                            insert.execute();
-                        }
+                for (final Instance childInst : instances) {
+                    final int idx = getIdx(_parameter, childInst);
+                    final TypeWA typeWithAttr = getTypeWithAttribute(_parameter, childInst, idx);
+                    if (typeWithAttr != null && checkMultiple(_parameter, typeWithAttr, childInst)
+                                    && checkConstrains(_parameter, typeWithAttr, childInst)) {
+                        final Insert insert = new Insert(typeWithAttr.getType());
+                        addInsertConnect(_parameter, insert);
+                        insert.add(typeWithAttr.getParentAttr(), _parameter.getInstance());
+                        insert.add(typeWithAttr.getChildAttr(), childInst);
+                        insert.execute();
                     }
                 }
             }
@@ -99,6 +89,46 @@ public abstract class Connect_Base
         return new Return();
     }
 
+    /**
+     * Check constrains.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _typeWA the type wa
+     * @param _childInst the child inst
+     * @return true, if successful
+     * @throws EFapsException on error
+     */
+    protected boolean checkConstrains(final Parameter _parameter,
+                                      final TypeWA _typeWA,
+                                      final Instance _childInst)
+        throws EFapsException
+    {
+        final boolean checkMultiple = "false".equals(getProperty(_parameter, "AllowMultiple"));
+        boolean check = false;
+        if (checkMultiple) {
+            final QueryBuilder queryBldr = new QueryBuilder(_typeWA.getType());
+            queryBldr.addWhereAttrEqValue(_typeWA.getParentAttr(), _parameter.getInstance());
+            queryBldr.addWhereAttrEqValue(_typeWA.getChildAttr(), _childInst);
+            final InstanceQuery query = queryBldr.getQuery();
+            query.executeWithoutAccessCheck();
+            if (!query.next()) {
+                check = true;
+            }
+        } else {
+            check = true;
+        }
+        return check;
+    }
+
+    /**
+     * Check multiple.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _typeWA the type wa
+     * @param _childInst the child inst
+     * @return true, if successful
+     * @throws EFapsException on error
+     */
     protected boolean checkMultiple(final Parameter _parameter,
                                     final TypeWA _typeWA,
                                     final Instance _childInst)
@@ -121,6 +151,13 @@ public abstract class Connect_Base
         return check;
     }
 
+    /**
+     * Validate properties.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return true, if successful
+     * @throws EFapsException on error
+     */
     protected boolean validateProperties(final Parameter _parameter)
         throws EFapsException
     {
@@ -132,6 +169,15 @@ public abstract class Connect_Base
                         || types.isEmpty());
     }
 
+    /**
+     * Gets the type with attribute.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _childInst the child inst
+     * @param _idx the idx
+     * @return the type with attribute
+     * @throws EFapsException on error
+     */
     protected TypeWA getTypeWithAttribute(final Parameter _parameter,
                                           final Instance _childInst,
                                           final int _idx)
@@ -179,15 +225,15 @@ public abstract class Connect_Base
     }
 
     /**
+     * Gets the idx.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _childInst    instance to be connected
-     * @param _childTypes mapping of childTypes
-     * @param _types    mapping of types
      * @return the type
      * @throws EFapsException on error
      */
     protected int getIdx(final Parameter _parameter,
-                             final Instance _childInst)
+                         final Instance _childInst)
         throws EFapsException
     {
         int ret = -1;
@@ -263,40 +309,78 @@ public abstract class Connect_Base
     }
 
 
+    /**
+     * The Class TypeWA.
+     *
+     * @author The eFaps Team
+     */
     public static class TypeWA
     {
 
+        /** The parent attr. */
         private Attribute parentAttr;
 
+        /** The child attr. */
         private Attribute childAttr;
 
+        /** The type. */
         private Type type;
 
+        /**
+         * Sets the parent attr.
+         *
+         * @param _parentAttr the new parent attr
+         */
         public void setParentAttr(final Attribute _parentAttr)
         {
             this.parentAttr = _parentAttr;
         }
 
+        /**
+         * Gets the parent attr.
+         *
+         * @return the parent attr
+         */
         public Attribute getParentAttr()
         {
             return this.parentAttr;
         }
 
+        /**
+         * Sets the child attr.
+         *
+         * @param _childAttr the new child attr
+         */
         public void setChildAttr(final Attribute _childAttr)
         {
             this.childAttr = _childAttr;
         }
 
+        /**
+         * Gets the child attr.
+         *
+         * @return the child attr
+         */
         public Attribute getChildAttr()
         {
             return this.childAttr;
         }
 
+        /**
+         * Sets the type.
+         *
+         * @param _type the new type
+         */
         public void setType(final Type _type)
         {
             this.type = _type;
         }
 
+        /**
+         * Gets the type.
+         *
+         * @return the type
+         */
         public Type getType()
         {
             return this.type;
