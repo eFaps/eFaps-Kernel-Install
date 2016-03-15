@@ -86,6 +86,7 @@ import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 
+// TODO: Auto-generated Javadoc
 /**
  * "Mime" as property in the calling command, or "mime" as parameter from a
  * form. Command overrules!
@@ -120,10 +121,12 @@ public abstract class StandartReport_Base
     private String fileName = null;
 
     /**
-     * @see org.efaps.admin.event.EventExecution#execute(org.efaps.admin.event.Parameter)
+     * Execute.
+     *
      * @param _parameter parameter as passed fom the eFaps esjp API
      * @return Return
      * @throws EFapsException on error
+     * @see org.efaps.admin.event.EventExecution#execute(org.efaps.admin.event.Parameter)
      */
     @Override
     public Return execute(final Parameter _parameter)
@@ -136,17 +139,19 @@ public abstract class StandartReport_Base
     }
 
     /**
-     * @see org.efaps.admin.event.EventExecution#execute(org.efaps.admin.event.Parameter)
+     * Gets the prompt parameters field value.
+     *
      * @param _parameter parameter as passed fom the eFaps esjp API
      * @return Return
      * @throws EFapsException on error
+     * @see org.efaps.admin.event.EventExecution#execute(org.efaps.admin.event.Parameter)
      */
     public Return getPromptParametersFieldValue(final Parameter _parameter)
         throws EFapsException
     {
         final Return ret = new Return();
         final StringBuilder html = new StringBuilder();
-        Instance reportInst;
+        final Instance reportInst;
         if (_parameter.getInstance() != null
                         && _parameter.getInstance().getType().isKindOf(CIAdminProgram.JasperReport)) {
             reportInst = _parameter.getInstance();
@@ -174,13 +179,13 @@ public abstract class StandartReport_Base
                     final String name = parameter.getName();
                     final String descr = parameter.getDescription();
                     final JRExpression expr = parameter.getDefaultValueExpression();
-                    String defaultValue;
+                    final String defaultValue;
                     if (expr != null) {
                         defaultValue = expr.getText();
                     } else {
                         defaultValue = "";
                     }
-                    String inputType;
+                    final String inputType;
                     switch (parameter.getValueClassName()) {
                         case "java.lang.Integer":
                             inputType = "number";
@@ -207,10 +212,12 @@ public abstract class StandartReport_Base
     }
 
     /**
-     * @see org.efaps.admin.event.EventExecution#execute(org.efaps.admin.event.Parameter)
+     * Create4 jasper.
+     *
      * @param _parameter parameter as passed fom the eFaps esjp API
      * @return Return
      * @throws EFapsException on error
+     * @see org.efaps.admin.event.EventExecution#execute(org.efaps.admin.event.Parameter)
      */
     @SuppressWarnings("unchecked")
     public Return create4Jasper(final Parameter _parameter)
@@ -253,6 +260,8 @@ public abstract class StandartReport_Base
     }
 
     /**
+     * Add2 report parameter.
+     *
      * @param _parameter Parameter as passed by the eFasp API
      * @throws EFapsException on error
      */
@@ -289,9 +298,8 @@ public abstract class StandartReport_Base
     {
         Instance ret = null;
         String name = null;
-        if (containsProperty(_parameter, "JasperReport")) {
-            name = getProperty(_parameter, "JasperReport");
-        } else if (containsProperty(_parameter, "JasperConfig")) {
+        // first priority special Config explicitly set
+        if (containsProperty(_parameter, "JasperConfig") && containsProperty(_parameter, "JasperConfigReport")) {
             final String config = getProperty(_parameter, "JasperConfig");
             final SystemConfiguration sysConf;
             if (isUUID(config)) {
@@ -300,7 +308,9 @@ public abstract class StandartReport_Base
                 sysConf = SystemConfiguration.get(config);
             }
             name = sysConf.getAttributeValue(getProperty(_parameter, "JasperConfigReport"));
-        } else {
+        }
+        // second priority the general SystemConfiguration from Commons
+        if (name == null && containsProperty(_parameter, "JasperKey")) {
             // Commons-Configuration
             final SystemConfiguration sysConf = SystemConfiguration.get(UUID
                             .fromString("9ac2673a-18f9-41ba-b9be-5b0980bdf6f3"));
@@ -310,20 +320,23 @@ public abstract class StandartReport_Base
                 name = props.getProperty(key);
             }
         }
-
-        if (name == null) {
-            StandartReport_Base.LOG.error("Neither JasperReport nor JasperKey lead to valid Report Name");
+        // last the properties of the command
+        if (name == null && containsProperty(_parameter, "JasperReport")) {
+            name = getProperty(_parameter, "JasperReport");
         }
-        final QueryBuilder queryBldr = new QueryBuilder(CIAdminProgram.JasperReportCompiled);
-        queryBldr.addWhereAttrEqValue(CIAdminProgram.JasperReportCompiled.Name, name);
-        final InstanceQuery query = queryBldr.getQuery();
-        query.execute();
-        if (query.next()) {
-            ret = query.getCurrentValue();
+        if (name == null) {
+            StandartReport_Base.LOG.debug("Neither JasperReport, JasperKey nor properties lead to valid Report Name");
+        } else {
+            final QueryBuilder queryBldr = new QueryBuilder(CIAdminProgram.JasperReportCompiled);
+            queryBldr.addWhereAttrEqValue(CIAdminProgram.JasperReportCompiled.Name, name);
+            final InstanceQuery query = queryBldr.getQuery();
+            query.execute();
+            if (query.next()) {
+                ret = query.getCurrentValue();
+            }
         }
         return ret;
     }
-
 
     /**
      * Gets the mime.
@@ -354,6 +367,8 @@ public abstract class StandartReport_Base
     }
 
     /**
+     * Gets the file.
+     *
      * @param _parameter Parameter as passed by the eFasp API
      * @return file created
      * @throws EFapsException on error
@@ -489,7 +504,7 @@ public abstract class StandartReport_Base
             mime = _parameter.getParameterValue("mime");
         }
 
-        JasperMime ret;
+        final JasperMime ret;
         if (mime != null && !mime.isEmpty()) {
             ret = EnumUtils.<JasperMime>getEnum(JasperMime.class, mime.toUpperCase());
         } else {
@@ -633,40 +648,49 @@ public abstract class StandartReport_Base
         this.fileName = _fileName;
     }
 
-
-    public static enum JasperMime
+    /**
+     * The Enum JasperMime.
+     *
+     */
+    public enum JasperMime
     {
-         /** The csv. */
-         CSV("csv"),
-         /** The docx. */
-         DOCX("docx"),
-         /** The html. */
-         HTML("html"),
-         /** The ods. */
-         ODS("ods"),
-         /** The odt. */
-         ODT("odt"),
-         /** The pdf. */
-         PDF("pdf"),
-         /** The pptx. */
-         PPTX("pptx"),
-         /** The rtf. */
-         RTF("rtf"),
-         /** The txt. */
-         TXT("txt"),
-         /** The xls. */
-         XLS("xls"),
-         /** The xlsx. */
-         XLSX("xlsx"),
-         /** The xml. */
-         XML("xml");
+        /** The csv. */
+        CSV("csv"),
+        /** The docx. */
+        DOCX("docx"),
+        /** The html. */
+        HTML("html"),
+        /** The ods. */
+        ODS("ods"),
+        /** The odt. */
+        ODT("odt"),
+        /** The pdf. */
+        PDF("pdf"),
+        /** The pptx. */
+        PPTX("pptx"),
+        /** The rtf. */
+        RTF("rtf"),
+        /** The txt. */
+        TXT("txt"),
+        /** The xls. */
+        XLS("xls"),
+        /** The xlsx. */
+        XLSX("xlsx"),
+        /** The xml. */
+        XML("xml");
 
-         private final String extension;
+        /** The extension. */
+        private final String extension;
 
-         private JasperMime(final String _extension) {
-             this.extension = _extension;
-         }
-
+        /**
+         * Instantiates a new jasper mime.
+         *
+         * @param _extension the extension
+         */
+        JasperMime(final String _extension)
+        {
+            this.extension = _extension;
+        }
 
         /**
          * Getter method for the instance variable {@link #extension}.
