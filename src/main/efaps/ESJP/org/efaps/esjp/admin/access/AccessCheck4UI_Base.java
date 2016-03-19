@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -65,7 +62,6 @@ import org.slf4j.LoggerFactory;
  * UserInterface.
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("8e51edcd-791e-4815-b24b-2b1ded9bd167")
 @EFapsApplication("eFaps-Kernel")
@@ -204,7 +200,7 @@ public abstract class AccessCheck4UI_Base
                 final String[] stati = statiStr.split(",");
                 for (final String status : stati) {
                     final String statusGrpStr = (String) props.get("StatusGroup");
-                    Status stat;
+                    final Status stat;
                     if (statusGrpStr != null && !statusGrpStr.isEmpty()) {
                         stat = Status.find(statusGrpStr, status.trim());
                     } else {
@@ -371,20 +367,32 @@ public abstract class AccessCheck4UI_Base
             final String defaultValue = getProperty(_parameter, "Default");
             for (final String attribute : analyseProperty(_parameter, "Attribute").values()) {
                 if (defaultValue == null) {
-                    access = config.getAttributeValueAsBoolean(attribute);
+                    if (attribute.startsWith("!")) {
+                        access = !config.getAttributeValueAsBoolean(attribute.substring(1));
+                    } else {
+                        access = config.getAttributeValueAsBoolean(attribute);
+                    }
                 } else {
-                    String attrValue = config.getAttributeValue(attribute);
+                    String attrValue = config.getAttributeValue(attribute.startsWith("!")
+                                    ? attribute.substring(1)
+                                    : attribute);
                     if (attrValue == null) {
                         attrValue = defaultValue;
                     }
-                    access = Boolean.parseBoolean(attrValue);
+                    access = attribute.startsWith("!")
+                                    ? !Boolean.parseBoolean(attrValue)
+                                    : !Boolean.parseBoolean(attrValue);
                 }
                 if (access) {
                     break;
                 }
             }
             for (final String attribute : analyseProperty(_parameter, "AttributeExists").values()) {
-                access = config.getAttributeValue(attribute) != null;
+                if (attribute.startsWith("!")) {
+                    access = config.getAttributeValue(attribute) == null;
+                } else {
+                    access = config.getAttributeValue(attribute) != null;
+                }
                 if (access) {
                     break;
                 }
@@ -477,7 +485,7 @@ public abstract class AccessCheck4UI_Base
         final Return ret = new Return();
         final Map<Integer, String> companies = analyseProperty(_parameter, "Companies");
         for (final String companyStr : companies.values()) {
-            Company company;
+            final Company company;
             if (isUUID(companyStr)) {
                 company = Company.get(UUID.fromString(companyStr));
             } else {
