@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package org.efaps.esjp.admin.common.systemconfiguration;
 
 import java.util.UUID;
 
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.EFapsException;
@@ -148,6 +149,18 @@ public abstract class AbstractSysConfAttribute_Base<T extends AbstractSysConfAtt
     {
         this.key = _key;
         return getThis();
+    }
+
+    /**
+     * Check if the Attribute is set explecitely.
+     *
+     * @return true, if successful
+     * @throws EFapsException on error
+     */
+    public boolean exists()
+        throws EFapsException
+    {
+        return SystemConfiguration.get(getSysConfUUID()).containsAttributeValue(getKey());
     }
 
     @Override
