@@ -96,7 +96,7 @@ public abstract class RangesValue_Base
         final UIValue uiValue = (UIValue) _parameter.get(ParameterValues.UIOBJECT);
         final Attribute attribute = uiValue.getAttribute();
 
-        Map<Attribute, List<IOption>> cachedValues;
+        final Map<Attribute, List<IOption>> cachedValues;
         if (Context.getThreadContext().containsRequestAttribute(RangesValue.REQUESTCACHEKEY)) {
             cachedValues = (Map<Attribute, List<IOption>>)
                             Context.getThreadContext().getRequestAttribute(RangesValue.REQUESTCACHEKEY);
@@ -142,7 +142,7 @@ public abstract class RangesValue_Base
                 final RangeValueOption option = getOption(_parameter)
                                 .setLabel(strVal)
                                 .setValue(multi.getCurrentInstance().getId());
-                if (_parameter.get(ParameterValues.ACCESSMODE).equals(TargetMode.CREATE)) {
+                if (TargetMode.CREATE.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
                     option.setSelected(isSelected(_parameter, option));
                 } else {
                     option.setSelected(Long.valueOf(
