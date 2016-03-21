@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.ui.FieldValue;
@@ -303,7 +304,8 @@ public abstract class SystemConf_Base
         } else {
             node = attr.getHtml(_parameter, null);
             if (attr instanceof AbstractSysConfAttribute_Base) {
-                map.put("description", ((AbstractSysConfAttribute_Base<?, ?>) attr).getDescription());
+                map.put("description", StringEscapeUtils.escapeEcmaScript(
+                                ((AbstractSysConfAttribute_Base<?, ?>) attr).getDescription()));
             }
         }
 
