@@ -63,7 +63,10 @@ public class SysConfigUtil
             final SelectBuilder selUUID = SelectBuilder.get().linkto(
                             CIAdminCommon.SystemConfigurationAbstract.AbstractLink).attribute(
                                             CIAdminCommon.SystemConfiguration.UUID);
-            multi.addSelect(selUUID);
+            final SelectBuilder selName = SelectBuilder.get().linkto(
+                            CIAdminCommon.SystemConfigurationAbstract.AbstractLink).attribute(
+                                            CIAdminCommon.SystemConfiguration.Name);
+            multi.addSelect(selUUID, selName);
             multi.addAttribute(CIAdminCommon.SystemConfigurationAbstract.Key);
             multi.setEnforceSorted(true);
             multi.execute();
@@ -82,7 +85,7 @@ public class SysConfigUtil
                                     : SysConfResourceConfig.getResourceConfig().getAttribute(uuid, key);
                 }
                 if (attr == null) {
-                    LOG.warn("Did not find Key {}", key);
+                    LOG.warn("Did not find Key {} defined in {}", key, multi.getSelect(selName));
                 } else {
                     LOG.debug("Found Key {}", key);
                 }
