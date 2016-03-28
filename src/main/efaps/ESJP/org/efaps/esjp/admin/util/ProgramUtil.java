@@ -21,15 +21,24 @@
 
 package org.efaps.esjp.admin.util;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIAdminEvent;
+import org.efaps.ci.CIAdminProgram;
+import org.efaps.ci.CIAdminUserInterface;
 import org.efaps.db.Delete;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,9 +94,7 @@ public class ProgramUtil
                     del.execute();
                 }
 
-                //Admin_Event_Definition
-                final QueryBuilder eventQueryBldr = new QueryBuilder(
-                                UUID.fromString("9c1d52f4-94d6-4f95-ab81-bed23884cf03"));
+                final QueryBuilder eventQueryBldr = new QueryBuilder(CIAdminEvent.Definition);
                 eventQueryBldr.addWhereAttrEqValue("JavaProg", prgInst);
                 final InstanceQuery eventQuery = eventQueryBldr.getQuery();
                 eventQuery.execute();
@@ -100,6 +107,82 @@ public class ProgramUtil
                 final Delete del = new Delete(prgInst);
                 del.execute();
                 ProgramUtil.LOG.info("Removed esjp sucessfully");
+            }
+        }
+    }
+
+    /**
+     * Validate methods.
+     *
+     * @param _parameter the _parameter
+     * @throws EFapsException the e faps exception
+     */
+    public void validateMethods(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Map<String, Map<String, Boolean>> map = new HashMap<>();
+
+        final QueryBuilder queryBldr = new QueryBuilder(CIAdminEvent.Definition);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder selProgName = SelectBuilder.get().linkto(CIAdminEvent.Definition.JavaProg)
+                        .attribute(CIAdminProgram.Java.Name);
+        final SelectBuilder selAbstractName = SelectBuilder.get().linkto(CIAdminEvent.Definition.Abstract)
+                        .attribute(CIAdminProgram.Java.Name);
+        final SelectBuilder selAbstractInst = SelectBuilder.get().linkto(CIAdminEvent.Definition.Abstract).instance();
+        multi.addSelect(selProgName, selAbstractName, selAbstractInst);
+        multi.addAttribute(CIAdminEvent.Definition.Method);
+        multi.executeWithoutAccessCheck();
+        while (multi.next()) {
+            final String progName = multi.getSelect(selProgName);
+            final String methodName = multi.getAttribute(CIAdminEvent.Definition.Method);
+
+            Map<String, Boolean> methodMap;
+            if (map.containsKey(progName)) {
+                methodMap = map.get(progName);
+            } else {
+                methodMap = new HashMap<>();
+                map.put(progName, methodMap);
+            }
+            boolean found = false;
+            if (methodMap.containsKey(methodName)) {
+                found = methodMap.get(methodName);
+            } else {
+                try {
+                    final Class<?> clazz = Class.forName(progName);
+                    final Method method = clazz.getMethod(methodName, Parameter.class);
+                    if (method != null) {
+                        found = true;
+                        methodMap.put(methodName, true);
+                    }
+                } catch (final ClassNotFoundException e) {
+                    LOG.debug("ESJP {} not found", progName);
+                } catch (final NoSuchMethodException e) {
+                    LOG.debug("Method {} in ESJP {} not found", methodName, progName);
+                } catch (final SecurityException e) {
+                    LOG.error("SecurityException", e);
+                }
+            }
+            if (!found) {
+                final Instance abstractInst = multi.getSelect(selAbstractInst);
+                final String abstractName = multi.getSelect(selAbstractName);
+                if (abstractInst.getType().isCIType(CIAdminUserInterface.Field)) {
+                    final PrintQuery print = new PrintQuery(abstractInst);
+                    final SelectBuilder selColName = SelectBuilder.get().linkto(CIAdminUserInterface.Field.Collection)
+                                    .attribute(CIAdminProgram.Java.Name);
+                    final SelectBuilder selColInst = SelectBuilder.get().linkto(CIAdminUserInterface.Field.Collection)
+                                    .instance();
+                    print.addSelect(selColName, selColInst);
+                    print.executeWithoutAccessCheck();
+
+                    final Instance colInst = print.getSelect(selColInst);
+                    final String colName = print.getSelect(selColName);
+                    LOG.warn("Could not find method '{}' in ESJP '{}' realted a {} '{}' in {} '{}'", methodName,
+                                    progName, abstractInst.getType().getName(), abstractName,
+                                    colInst.getType().getName(), colName);
+                } else {
+                    LOG.warn("Could not find method '{}' in ESJP '{}' realted a {} '{}'", methodName, progName,
+                                    abstractInst.getType().getName(), abstractName);
+                }
             }
         }
     }
