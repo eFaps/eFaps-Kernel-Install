@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,23 +24,33 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.ExtendedMessageFormat;
 import org.apache.commons.lang3.text.FormatFactory;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsFormatFactory;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.util.EFapsException;
+import org.efaps.util.MsgFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
  */
-@EFapsUUID("b5db289c-f0ab-4596-bf39-3688e4749cd9")
+@EFapsUUID("689bf0c2-b5fb-466d-bd28-e6bbba09072b")
 @EFapsApplication("eFaps-Kernel")
-@EFapsFormatFactory(name = "left")
-public class LeftFormatFcty
+@EFapsFormatFactory(name = "eval")
+public class EvalFormatFcty
     implements FormatFactory
 {
+    /**
+     * Logging instance used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(EvalFormatFcty.class);
 
     /**
      * static Format instance.
@@ -54,11 +64,11 @@ public class LeftFormatFcty
     {
         Format ret;
         final String key = _locale.toLanguageTag() + "_" + _arguments;
-        if (LeftFormatFcty.FORMATS.containsKey(key)) {
-            ret = LeftFormatFcty.FORMATS.get(key);
+        if (EvalFormatFcty.FORMATS.containsKey(key)) {
+            ret = EvalFormatFcty.FORMATS.get(key);
         } else {
-            ret = new LeftFormat(_arguments);
-            LeftFormatFcty.FORMATS.put(key, ret);
+            ret = new EvalFormat(_arguments, _locale);
+            EvalFormatFcty.FORMATS.put(key, ret);
         }
         return ret;
     }
@@ -66,32 +76,45 @@ public class LeftFormatFcty
     @Override
     public String toString()
     {
-        return "LeftFormat";
+        return "EvalFormat";
     }
 
     /**
      * The actual format class.
      */
-    private static class LeftFormat
+    private static class EvalFormat
         extends Format
     {
-
-        /**
-         *
-         */
+        /** The Constant serialVersionUID. */
         private static final long serialVersionUID = 1L;
 
-        /** The length. */
-        private final Integer length;
+        /** The pattern. */
+        private final String pattern;
+
+        /** The locale. */
+        private final Locale locale;
+
+        /** The criteria. */
+        private String criteria;
 
         /**
          * Instantiates a new left format.
          *
-         * @param _arguments the _arguments
+         * @param _pattern the _pattern
+         * @param _locale the _locale
          */
-        LeftFormat(final String _arguments)
+        EvalFormat(final String _pattern,
+                   final Locale _locale)
         {
-            this.length = Integer.valueOf(_arguments);
+            final String[] patternTmp = _pattern.split("\\|");
+            if (patternTmp.length == 1) {
+                this.criteria = null;
+                this.pattern = StringEscapeUtils.unescapeJava(patternTmp[0]);
+            } else {
+                this.criteria = StringEscapeUtils.unescapeJava(patternTmp[0]);
+                this.pattern = StringEscapeUtils.unescapeJava(patternTmp[1]);
+            }
+            this.locale = _locale;
         }
 
         @Override
@@ -99,7 +122,16 @@ public class LeftFormatFcty
                                    final StringBuffer _toAppendTo,
                                    final FieldPosition _pos)
         {
-            return _toAppendTo.append(StringUtils.left(String.valueOf(_obj), this.length));
+            if (_obj != null && StringUtils.isNotEmpty(String.valueOf(_obj))
+                            && (this.criteria == null || this.criteria.equals(String.valueOf(_obj)))) {
+                try {
+                    final ExtendedMessageFormat format = MsgFormat.getFormat(this.pattern, this.locale);
+                    _toAppendTo.append(format.format(new Object[] { _obj }));
+                } catch (final EFapsException e) {
+                    LOG.error("Catched EFapsException", e);
+                }
+            }
+            return _toAppendTo;
         }
 
         @Override
