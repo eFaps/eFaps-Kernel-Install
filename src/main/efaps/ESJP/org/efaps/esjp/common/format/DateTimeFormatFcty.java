@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.common.format;
@@ -37,7 +34,6 @@ import org.joda.time.DateTime;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: $
  */
 @EFapsUUID("4724d655-3070-41a1-9ba3-1b7b8d02d4a3")
 @EFapsApplication("eFaps-Kernel")
@@ -96,11 +92,13 @@ public class DateTimeFormatFcty
         private final Locale locale;
 
         /**
-         * @param _arguments arguments
+         * Instantiates a new date time format.
+         *
+         * @param _pattern the _pattern
          * @param _locale Locale
          */
-        public DateTimeFormat(final String _pattern,
-                              final Locale _locale)
+        DateTimeFormat(final String _pattern,
+                       final Locale _locale)
         {
             this.pattern = _pattern;
             this.locale = _locale;
@@ -111,7 +109,10 @@ public class DateTimeFormatFcty
                                    final StringBuffer _toAppendTo,
                                    final FieldPosition _pos)
         {
-            return _toAppendTo.append(((DateTime) _obj).toString(this.pattern, this.locale));
+            if (_obj != null && _obj instanceof DateTime) {
+                _toAppendTo.append(((DateTime) _obj).toString(this.pattern, this.locale));
+            }
+            return _toAppendTo;
         }
 
         @Override
