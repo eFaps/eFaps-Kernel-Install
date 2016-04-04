@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.common.history;
@@ -50,7 +47,6 @@ import org.joda.time.DateTime;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("4cb893f9-141c-40dc-beab-c147a4b2096f")
 @EFapsApplication("eFaps-Kernel")
@@ -68,103 +64,113 @@ public abstract class AbstractUpdateHistoryTrigger_Base
         _log.getInstance().getAttributes().addAll(getAttributes(_parameter, getHistoryInstance(_parameter)));
     }
 
+    /**
+     * Gets the attributes.
+     *
+     * @param _parameter the _parameter
+     * @param _instance the _instance
+     * @return the attributes
+     * @throws EFapsException the e faps exception
+     */
     protected List<AttributeValue> getAttributes(final Parameter _parameter,
                                                  final Instance _instance)
         throws EFapsException
     {
         final List<AttributeValue> ret = new ArrayList<>();
         final Map<?, ?> values = (Map<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
-        final BidiMap<Integer, String> selectAttributes = new DualHashBidiMap<>(analyseProperty(_parameter,
-                        "SelectAttribute"));
-        final Map<Integer, String> selects = analyseProperty(_parameter, "Select");
-        final BidiMap<Integer, String> phraseAttributes = new DualHashBidiMap<>(analyseProperty(_parameter,
-                        "PhraseAttribute"));
-        final Map<Integer, String> phrases = analyseProperty(_parameter, "Phrase");
-        final Collection<String> ignore = analyseProperty(_parameter, "IgnoreAttribute").values();
+        if (values != null) {
+            final BidiMap<Integer, String> selectAttributes = new DualHashBidiMap<>(analyseProperty(_parameter,
+                            "SelectAttribute"));
+            final Map<Integer, String> selects = analyseProperty(_parameter, "Select");
+            final BidiMap<Integer, String> phraseAttributes = new DualHashBidiMap<>(analyseProperty(_parameter,
+                            "PhraseAttribute"));
+            final Map<Integer, String> phrases = analyseProperty(_parameter, "Phrase");
+            final Collection<String> ignore = analyseProperty(_parameter, "IgnoreAttribute").values();
 
-        for (final Entry<?, ?> entry : values.entrySet()) {
-            final Attribute attr = (Attribute) entry.getKey();
-            if (!attr.getAttributeType().isAlwaysUpdate() && !attr.getAttributeType().isCreateUpdate()
-                            && !ignore.contains(attr.getName())) {
-                final AttributeValue attrValue = new AttributeValue();
-                attrValue.setName(attr.getName());
-                if (attr.getAttributeType().getDbAttrType() instanceof PasswordType) {
-                    attrValue.setValue("****************");
-                } else if (attr.getAttributeType().getDbAttrType() instanceof StatusType) {
-                    final Object objArr = entry.getValue();
-                    if (objArr instanceof Object[]) {
-                        final Object obj = ((Object[]) objArr)[0];
-                        final Long id;
-                        if (obj instanceof String) {
-                            id = Long.valueOf((String) obj);
-                        } else {
-                            id = (Long) obj;
-                        }
-                        attrValue.setValue(Status.get(id).getKey());
-                    }
-                } else if (attr.getAttributeType().getDbAttrType() instanceof BitEnumType) {
-                    final Object objArr = entry.getValue();
-                    if (objArr instanceof Object[]) {
-                        final Object val = attr.getAttributeType().getDbAttrType()
-                                        .readValue(attr, Arrays.asList((Object[]) objArr));
-                        if (val == null) {
-                            attrValue.setValue(val);
-                        } else {
-                            final StringBuilder strBldr = new StringBuilder();
-                            boolean first = true;
-                            for (final Object obj : (List<?>) val) {
-                                if (first) {
-                                    first = false;
-                                } else {
-                                    strBldr.append(", ");
-                                }
-                                if (obj instanceof List) {
-                                    strBldr.append(((List<?>) obj).get(0));
-                                } else {
-                                    strBldr.append(obj);
-                                }
-                            }
-                            attrValue.setValue(strBldr.toString());
-                        }
-                    }
-                } else if (attr.getAttributeType().getDbAttrType() instanceof EnumType) {
-                    final Object objArr = entry.getValue();
-                    if (objArr instanceof Object[]) {
-                        final Object val = attr.getAttributeType().getDbAttrType()
-                                        .readValue(attr, Arrays.asList((Object[]) objArr));
-                        if (val == null) {
-                            attrValue.setValue(val);
-                        } else {
-                            attrValue.setValue(val.toString());
-                        }
-                    }
-                } else {
-                    // check is a select exists
-                    if (selectAttributes.containsValue(attr.getName())) {
-                        final String select = selects.get(selectAttributes.getKey(attr.getName()));
-                        final PrintQuery print = new PrintQuery(_instance);
-                        print.addSelect(select);
-                        print.executeWithoutAccessCheck();
-                        attrValue.setValue(print.getSelect(select));
-                    } else if (phraseAttributes.containsValue(attr.getName())) {
-                        final String phrase = phrases.get(phraseAttributes.getKey(attr.getName()));
-                        final PrintQuery print = new PrintQuery(_instance);
-                        print.addPhrase("SelectPhrase", phrase);
-                        print.executeWithoutAccessCheck();
-                        attrValue.setValue(print.getPhrase("SelectPhrase"));
-                    } else {
-                        final Object obj = entry.getValue();
-                        if (obj instanceof Object[]) {
-                            final Object tmpObj = ((Object[]) obj)[0];
-                            if (tmpObj instanceof DateTime) {
-                                attrValue.setValue(((DateTime) tmpObj).toString());
+            for (final Entry<?, ?> entry : values.entrySet()) {
+                final Attribute attr = (Attribute) entry.getKey();
+                if (!attr.getAttributeType().isAlwaysUpdate() && !attr.getAttributeType().isCreateUpdate()
+                                && !ignore.contains(attr.getName())) {
+                    final AttributeValue attrValue = new AttributeValue();
+                    attrValue.setName(attr.getName());
+                    if (attr.getAttributeType().getDbAttrType() instanceof PasswordType) {
+                        attrValue.setValue("****************");
+                    } else if (attr.getAttributeType().getDbAttrType() instanceof StatusType) {
+                        final Object objArr = entry.getValue();
+                        if (objArr instanceof Object[]) {
+                            final Object obj = ((Object[]) objArr)[0];
+                            final Long id;
+                            if (obj instanceof String) {
+                                id = Long.valueOf((String) obj);
                             } else {
-                                attrValue.setValue(tmpObj);
+                                id = (Long) obj;
+                            }
+                            attrValue.setValue(Status.get(id).getKey());
+                        }
+                    } else if (attr.getAttributeType().getDbAttrType() instanceof BitEnumType) {
+                        final Object objArr = entry.getValue();
+                        if (objArr instanceof Object[]) {
+                            final Object val = attr.getAttributeType().getDbAttrType()
+                                            .readValue(attr, Arrays.asList((Object[]) objArr));
+                            if (val == null) {
+                                attrValue.setValue(val);
+                            } else {
+                                final StringBuilder strBldr = new StringBuilder();
+                                boolean first = true;
+                                for (final Object obj : (List<?>) val) {
+                                    if (first) {
+                                        first = false;
+                                    } else {
+                                        strBldr.append(", ");
+                                    }
+                                    if (obj instanceof List) {
+                                        strBldr.append(((List<?>) obj).get(0));
+                                    } else {
+                                        strBldr.append(obj);
+                                    }
+                                }
+                                attrValue.setValue(strBldr.toString());
+                            }
+                        }
+                    } else if (attr.getAttributeType().getDbAttrType() instanceof EnumType) {
+                        final Object objArr = entry.getValue();
+                        if (objArr instanceof Object[]) {
+                            final Object val = attr.getAttributeType().getDbAttrType()
+                                            .readValue(attr, Arrays.asList((Object[]) objArr));
+                            if (val == null) {
+                                attrValue.setValue(val);
+                            } else {
+                                attrValue.setValue(val.toString());
+                            }
+                        }
+                    } else {
+                        // check is a select exists
+                        if (selectAttributes.containsValue(attr.getName())) {
+                            final String select = selects.get(selectAttributes.getKey(attr.getName()));
+                            final PrintQuery print = new PrintQuery(_instance);
+                            print.addSelect(select);
+                            print.executeWithoutAccessCheck();
+                            attrValue.setValue(print.getSelect(select));
+                        } else if (phraseAttributes.containsValue(attr.getName())) {
+                            final String phrase = phrases.get(phraseAttributes.getKey(attr.getName()));
+                            final PrintQuery print = new PrintQuery(_instance);
+                            print.addPhrase("SelectPhrase", phrase);
+                            print.executeWithoutAccessCheck();
+                            attrValue.setValue(print.getPhrase("SelectPhrase"));
+                        } else {
+                            final Object obj = entry.getValue();
+                            if (obj instanceof Object[]) {
+                                final Object tmpObj = ((Object[]) obj)[0];
+                                if (tmpObj instanceof DateTime) {
+                                    attrValue.setValue(((DateTime) tmpObj).toString());
+                                } else {
+                                    attrValue.setValue(tmpObj);
+                                }
                             }
                         }
                     }
+                    ret.add(attrValue);
                 }
-                ret.add(attrValue);
             }
         }
         return ret;

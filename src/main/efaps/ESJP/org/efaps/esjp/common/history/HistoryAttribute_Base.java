@@ -32,9 +32,11 @@ import org.efaps.esjp.common.history.xml.AttributeValue;
 import org.efaps.esjp.common.history.xml.ClassInstObj;
 import org.efaps.esjp.common.history.xml.ConnectInstObj;
 import org.efaps.esjp.common.history.xml.ConnectLog;
+import org.efaps.esjp.common.history.xml.CreateAttributeSetLog;
 import org.efaps.esjp.common.history.xml.CreateClassificationLog;
 import org.efaps.esjp.common.history.xml.CreateLog;
 import org.efaps.esjp.common.history.xml.CreateRelatedLog;
+import org.efaps.esjp.common.history.xml.DeleteAttributeSetLog;
 import org.efaps.esjp.common.history.xml.DeleteClassificationLog;
 import org.efaps.esjp.common.history.xml.DeleteLog;
 import org.efaps.esjp.common.history.xml.DeleteRelatedLog;
@@ -43,6 +45,7 @@ import org.efaps.esjp.common.history.xml.HistoryInstObj;
 import org.efaps.esjp.common.history.xml.InstObj;
 import org.efaps.esjp.common.history.xml.LoginLog;
 import org.efaps.esjp.common.history.xml.LogoutLog;
+import org.efaps.esjp.common.history.xml.UpdateAttributeSetLog;
 import org.efaps.esjp.common.history.xml.UpdateClassificationLog;
 import org.efaps.esjp.common.history.xml.UpdateLog;
 import org.efaps.esjp.common.history.xml.UpdateRelatedLog;
@@ -63,11 +66,12 @@ public abstract class HistoryAttribute_Base
     public Class<?>[] getClasses()
     {
         return new Class<?>[] { AbstractHistoryLog.class, AbstractConnectLog.class, ConnectLog.class,
-                        DisconnectLog.class, AbstractInstObj.class, InstObj.class, HistoryInstObj.class,
-                        ConnectInstObj.class, AttributeValue.class, UpdateLog.class, CreateLog.class,
-                        LoginLog.class, LogoutLog.class, CreateClassificationLog.class, UpdateClassificationLog.class,
-                        DeleteClassificationLog.class, ClassInstObj.class, DeleteLog.class, CreateRelatedLog.class,
-                        UpdateRelatedLog.class, DeleteRelatedLog.class };
+            DisconnectLog.class, AbstractInstObj.class, InstObj.class, HistoryInstObj.class,
+            ConnectInstObj.class, AttributeValue.class, UpdateLog.class, CreateLog.class,
+            LoginLog.class, LogoutLog.class, CreateClassificationLog.class, UpdateClassificationLog.class,
+            DeleteClassificationLog.class, ClassInstObj.class, DeleteLog.class,
+            CreateRelatedLog.class, UpdateRelatedLog.class, DeleteRelatedLog.class,
+            CreateAttributeSetLog.class, DeleteAttributeSetLog.class, UpdateAttributeSetLog.class };
     }
 
     @Override
