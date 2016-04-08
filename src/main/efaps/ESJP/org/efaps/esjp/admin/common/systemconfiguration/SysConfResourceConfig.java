@@ -207,7 +207,8 @@ public final class SysConfResourceConfig
 
         attr = new StringSysConfAttribute()
                         .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
-                        .key(KernelSettings.USERUI_DISPLAYPERSON);
+                        .key(KernelSettings.USERUI_DISPLAYPERSON)
+                        .defaultValue("${LASTNAME}, ${FIRSTNAME}");
         LOG.info("    Add Attribute: {}", attr);
 
         attr = new IntegerSysConfAttribute()
