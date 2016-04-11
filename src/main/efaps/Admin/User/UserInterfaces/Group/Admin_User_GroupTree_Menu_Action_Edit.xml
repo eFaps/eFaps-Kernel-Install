@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -29,8 +29,7 @@
 
   <uuid>a6b7ec57-f465-436e-95b3-d72357c1512c</uuid>
   <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
-
+  
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Admin_User_GroupTree_Menu_Action_Edit</name>

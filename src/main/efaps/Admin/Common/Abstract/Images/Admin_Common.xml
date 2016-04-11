@@ -14,10 +14,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
+
  Original Author: Aha-Soft
  Original Name:   Wrench.png
  Original Web:    www.aha-soft.com
@@ -30,8 +27,7 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>fe5c367e-77c4-4ee3-8dae-34c929587f6b</uuid>
     <file-application>eFaps-Kernel</file-application>
-    <file-revision>$Rev$</file-revision>
-    <definition>
+        <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Common</name>
         <file>Admin_Common.png</file>

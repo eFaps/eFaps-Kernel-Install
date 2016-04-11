@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -29,8 +29,7 @@
 
   <uuid>13bfcf7e-9d8a-46ec-a414-5ef5bd63eccd</uuid>
   <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
-
+  
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Admin_UI_FieldTree_Links_Menu_Action</name>

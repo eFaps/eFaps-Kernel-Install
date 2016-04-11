@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
  * <b>Caution: The dot is expected!</b>
  *
  * @author The eFaps Team
- * @version $Id: JasperFileResolver_Base.java 8885 2013-02-20 00:32:07Z
+ * @version $Id: JasperFileResolver_Base.java 8885 2016-02-20 00:32:07Z
  *          jan@moxter.net $
  */
 @EFapsUUID("4733dd43-2ef3-4572-a1e9-c820567e9a36")

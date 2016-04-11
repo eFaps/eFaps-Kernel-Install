@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -28,8 +28,7 @@
 
     <uuid>79ea1ad1-a493-4140-9740-330ec2fd9787</uuid>
     <file-application>eFaps-Kernel</file-application>
-    <file-revision>$Rev$</file-revision>
-
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_User_RoleMyDesk_Menu_Action</name>

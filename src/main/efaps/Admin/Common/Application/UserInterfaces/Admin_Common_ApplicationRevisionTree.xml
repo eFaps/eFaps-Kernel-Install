@@ -19,8 +19,7 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>17289460-755b-413a-b8e4-d7e21a77d2f5</uuid>
     <file-application>eFaps-Kernel</file-application>
-    <file-revision>$Rev$</file-revision>
-    <definition>
+        <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Common_ApplicationRevisionTree</name>
         <target>

@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -29,8 +29,7 @@
 
   <uuid>fd217e2a-1511-41cd-8c6a-e68a0d0920d4</uuid>
   <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
-
+  
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Admin_User_JAASSystemTree_Menu_Action</name>

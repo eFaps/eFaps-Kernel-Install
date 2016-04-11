@@ -16,10 +16,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
+
 
 -->
 
@@ -27,8 +24,7 @@
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>03580f05-02d5-4bbd-8f69-c57aa6c50653</uuid>
     <file-application>eFaps-Kernel</file-application>
-    <file-revision>$Rev$</file-revision>
-    <definition>
+        <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Common_SystemConfigurationTree_Attributes</name>
         <target>

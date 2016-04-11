@@ -16,10 +16,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
+
 
 -->
 
@@ -28,8 +25,7 @@
 
     <uuid>a93d6b86-9146-420f-9b8c-fabaa8104dfc</uuid>
     <file-application>eFaps-Kernel</file-application>
-    <file-revision>$Rev$</file-revision>
-
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_User_CompanyMyDesk_Menu_Action_Create</name>

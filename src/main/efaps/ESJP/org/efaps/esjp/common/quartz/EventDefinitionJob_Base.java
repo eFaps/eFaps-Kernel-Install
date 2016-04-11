@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  * Revision:        $Rev: 10208 $
- * Last Changed:    $Date: 2013-09-16 16:16:22 -0500 (lun, 16 sep 2013) $
+ * Last Changed:    $Date: 2016-09-16 16:16:22 -0500 (lun, 16 sep 2016) $
  * Last Changed By: $Author: jan@moxter.net $
  */
 
@@ -41,7 +41,7 @@ import org.quartz.JobExecutionException;
  * TODO Comment.
  *
  * @author The eFaps Team
- * @version $Id: EventDefinitionJob_Base.java 10208 2013-09-16 21:16:22Z jan@moxter.net $
+ * @version $Id: EventDefinitionJob_Base.java 10208 2016-09-16 21:16:22Z jan@moxter.net $
  */
 @EFapsUUID("9b423589-e341-45c0-b59f-098d6dd8006c")
 @EFapsApplication("eFaps-Kernel")

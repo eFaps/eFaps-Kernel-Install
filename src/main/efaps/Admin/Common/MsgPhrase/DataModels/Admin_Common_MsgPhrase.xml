@@ -14,18 +14,14 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
+
 
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>0d01e261-f33d-4bd1-9857-d04299b8aee3</uuid>
     <file-application>eFaps-Kernel</file-application>
-    <file-revision>$Rev$</file-revision>
-    <definition>
+        <definition>
         <version-expression>(version==3) || (version==latest)</version-expression>
         <name>Admin_Common_MsgPhrase</name>
         <parent>Admin_Abstract</parent>

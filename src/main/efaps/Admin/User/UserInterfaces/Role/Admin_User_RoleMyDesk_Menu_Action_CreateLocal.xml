@@ -25,8 +25,7 @@
 
     <uuid>82f2571c-7e57-443b-a0fa-f6cfe6a7ed0b</uuid>
     <file-application>eFaps-Kernel</file-application>
-    <file-revision>$Rev$</file-revision>
-
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_User_RoleMyDesk_Menu_Action_CreateLocal</name>

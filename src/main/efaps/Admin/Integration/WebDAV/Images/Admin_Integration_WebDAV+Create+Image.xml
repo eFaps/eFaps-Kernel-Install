@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -37,8 +37,7 @@
 
   <uuid>23d7bb69-a23f-40eb-9b24-0a78fb3fd533</uuid>
   <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
-
+  
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Admin_Integration_WebDAV+Create+Image</name>

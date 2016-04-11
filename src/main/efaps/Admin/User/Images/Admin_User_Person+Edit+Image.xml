@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -35,8 +35,7 @@
 
   <uuid>f9517a49-6e65-431d-a096-4693d562c043</uuid>
   <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
-
+  
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Admin_User_Person+Edit+Image</name>

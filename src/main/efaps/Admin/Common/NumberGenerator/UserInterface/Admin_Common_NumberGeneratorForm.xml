@@ -22,8 +22,7 @@
   xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>e764aa14-b52b-49e2-8d8b-1070b8936b3a</uuid>
     <file-application>eFaps-Kernel</file-application>
-    <file-revision>$Rev$</file-revision>
-    <definition>
+        <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Common_NumberGeneratorForm</name>
         <!-- fields -->

@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2015 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@
 
     <uuid>faf1aacc-bb36-44b3-b9fa-6737b187f0f0</uuid>
     <file-application>eFaps-Kernel</file-application>
-    <file-revision>$Rev$</file-revision>
     <description>Table is used to show the children of a menu. The table is not
     sortable, so that the children will be shown in the same order, as they will
     rendered in the web interface.
@@ -41,7 +40,7 @@
             <property name="SortAble">false</property>
             <property name="Width">2</property>
             <property name="SortAble">false</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="name">
             <property name="SelectAlternateOID">linkto[ToCommand].oid</property>

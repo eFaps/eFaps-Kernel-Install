@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,10 +14,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
+
  Original Author: Mark James (mjames at gmail.com)
  Original Name:   home.png
  Original Web:    Silk icon set 1.3
@@ -29,8 +26,7 @@
 
     <uuid>c40ef815-aea5-4c2b-94e6-076e1833f95c</uuid>
     <file-application>eFaps-Kernel</file-application>
-    <file-revision>$Rev$</file-revision>
-
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Main_Home</name>

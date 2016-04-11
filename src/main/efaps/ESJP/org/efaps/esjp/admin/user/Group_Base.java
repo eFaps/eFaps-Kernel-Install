@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: Association_Base.java 9233 2013-04-22 15:16:22Z jan@moxter.net
+ * @version $Id: Association_Base.java 9233 2016-04-22 15:16:22Z jan@moxter.net
  *          $
  */
 @EFapsUUID("30482e5e-08df-47bc-b683-9993636643b3")

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ import org.efaps.util.EFapsException;
  * Class contains some generic methods used by its subclasses.
  *
  * @author The eFaps Team
- * @version $Id: AbstractCommon_Base.java 9574 2013-06-07 00:23:17Z
+ * @version $Id: AbstractCommon_Base.java 9574 2016-06-07 00:23:17Z
  *          jan@moxter.net $
  */
 @EFapsUUID("50b92f6d-8c95-4016-a1f7-db9f4b770516")

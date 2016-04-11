@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: AbstractConnectHistoryTrigger_Base.java 9780 2013-07-08
+ * @version $Id: AbstractConnectHistoryTrigger_Base.java 9780 2016-07-08
  *          17:04:43Z jan@moxter.net $
  */
 @EFapsUUID("28b038f6-3577-47d8-b611-b7c6552f218e")

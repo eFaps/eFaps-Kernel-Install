@@ -32,8 +32,7 @@
 
   <uuid>45809378-557f-46d0-9132-9138245533ca</uuid>
   <file-application>eFaps-Kernel</file-application>
-  <file-revision>$Rev$</file-revision>
-
+  
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Admin_Common_ApplicationVersionImage</name>

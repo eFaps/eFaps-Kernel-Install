@@ -28,8 +28,7 @@
 
     <uuid>27412bbe-1dfd-49bb-a534-b6d317bceb28</uuid>
     <file-application>eFaps-Kernel</file-application>
-    <file-revision>$Rev$</file-revision>
-
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_User_RoleMyDesk_Menu_Action_CreateGlobal</name>

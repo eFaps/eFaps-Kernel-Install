@@ -16,10 +16,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
+
 
 -->
 
@@ -28,8 +25,7 @@
 
     <uuid>121649fa-316f-4c27-aba8-f0dfd820cfea</uuid>
     <file-application>eFaps-Kernel</file-application>
-    <file-revision>$Rev$</file-revision>
-
+    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_User_CompanyMyDesk_Menu_Action_Delete</name>
