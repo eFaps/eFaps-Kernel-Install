@@ -342,7 +342,6 @@ public abstract class Field_Base
         return ret;
     }
 
-
     /**
      * @param _parameter    Parameter as passed from the eFaps API
      * @return Return containing Html Snipplet
@@ -351,7 +350,7 @@ public abstract class Field_Base
     public Return getRadioList(final Parameter _parameter)
         throws EFapsException
     {
-        Return ret;
+        final Return ret;
         final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
         if (uiObject instanceof FieldValue) {
             if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((FieldValue) uiObject).getDisplay())) {
@@ -386,7 +385,7 @@ public abstract class Field_Base
                     final Class<?> enumClazz = Class.forName(enumName);
                     if (enumClazz.isEnum()) {
                         final Object[] consts = enumClazz.getEnumConstants();
-                        Integer ordinal;
+                        final Integer ordinal;
                         if (((FieldValue) uiObject).getValue() != null) {
                             ordinal = (Integer) ((FieldValue) uiObject).getValue();
                         } else {
@@ -474,7 +473,7 @@ public abstract class Field_Base
     public Return getCheckBoxList(final Parameter _parameter)
         throws EFapsException
     {
-        Return ret;
+        final Return ret;
         final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
         if (uiObject instanceof FieldValue) {
             if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((FieldValue) uiObject).getDisplay())) {
@@ -634,7 +633,7 @@ public abstract class Field_Base
     {
         final StringBuilder html = new StringBuilder();
         final String statusGroupStr = getProperty(_parameter, "StatusGroup");
-        StatusGroup statusGroup;
+        final StatusGroup statusGroup;
         if (isUUID(statusGroupStr)) {
             statusGroup = Status.get(UUID.fromString(statusGroupStr));
         } else {
@@ -898,7 +897,7 @@ public abstract class Field_Base
     public Return dropDownFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        Return ret;
+        final Return ret;
         final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
         if (uiObject instanceof FieldValue) {
             if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((FieldValue) uiObject).getDisplay())) {
@@ -1067,7 +1066,7 @@ public abstract class Field_Base
                         }
                     } else if (containsProperty(_parameter, "DefaultSysConf")) {
                         final String sysconf = getProperty(_parameter, "DefaultSysConf");
-                        SystemConfiguration conf;
+                        final SystemConfiguration conf;
                         if (isUUID(sysconf)) {
                             conf = SystemConfiguration.get(UUID.fromString(sysconf));
                         } else {
@@ -1297,16 +1296,16 @@ public abstract class Field_Base
     {
         final Return ret = new Return();
         _parameter.get(ParameterValues.ACCESSMODE);
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final UIValue uiValue = (UIValue) _parameter.get(ParameterValues.UIOBJECT);
         final TargetMode mode = (TargetMode) _parameter.get(ParameterValues.ACCESSMODE);
         final StringBuilder html = new StringBuilder();
 
         if ((TargetMode.EDIT.equals(mode) || TargetMode.CREATE.equals(mode))
-                        && fieldValue.getField().isEditableDisplay(mode)
-                        && !fieldValue.getDisplay().equals(Display.NONE)) {
+                        && uiValue.getField().isEditableDisplay(mode)
+                        && !uiValue.getDisplay().equals(Display.NONE)) {
             final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
-            if (fieldValue.getValue() != null) {
-                final UoM uomValue = Dimension.getUoM((Long) fieldValue.getValue());
+            if (uiValue.getObject() != null) {
+                final UoM uomValue = Dimension.getUoM((Long) uiValue.getObject());
                 if (uomValue != null) {
                     final Dimension dim = uomValue.getDimension();
                     for (final UoM uom : dim.getUoMs()) {
@@ -1318,7 +1317,7 @@ public abstract class Field_Base
             } else {
                 final Map<Integer, String> dimensions = analyseProperty(_parameter, "Dimension");
                 for (final String dimension : dimensions.values()) {
-                    Dimension dim;
+                    final Dimension dim;
                     if (isUUID(dimension)) {
                         dim = Dimension.get(UUID.fromString(dimension));
                     } else {
@@ -1342,10 +1341,9 @@ public abstract class Field_Base
                 }
             });
             html.append(getDropDownField(_parameter, positions));
-
         }  else {
-            if (fieldValue.getValue() != null) {
-                final UoM uomValue = Dimension.getUoM((Long) fieldValue.getValue());
+            if (uiValue.getObject() != null) {
+                final UoM uomValue = Dimension.getUoM((Long) uiValue.getObject());
                 if (uomValue != null) {
                     html.append(uomValue.getName());
                 }
@@ -1516,7 +1514,7 @@ public abstract class Field_Base
         throws EFapsException
     {
         final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
-        int selected;
+        final int selected;
         if (containsProperty(_parameter, "Selected")) {
             selected = Integer.parseInt(getProperty(_parameter, "Selected"));
         } else {
@@ -1564,7 +1562,7 @@ public abstract class Field_Base
 
                 if (enumClazz.isEnum()) {
                     final Object[] consts = enumClazz.getEnumConstants();
-                    Integer ordinal;
+                    final Integer ordinal;
 
                     final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
                     if (uiObject instanceof UIValue && ((UIValue) uiObject).getDbValue() != null) {
@@ -1658,7 +1656,7 @@ public abstract class Field_Base
         final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
         boolean selected = false;
         while (multi.next()) {
-            Object value;
+            final Object value;
             if (valueSel == null) {
                 value = multi.getCurrentInstance().getId();
             } else {
