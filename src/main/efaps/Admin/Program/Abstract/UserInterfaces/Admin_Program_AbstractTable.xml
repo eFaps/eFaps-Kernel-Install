@@ -16,8 +16,6 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
-
 -->
 
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -47,6 +45,7 @@
             <property name="MsgPhrase">Admin_Common_ApplicationRevisionShortMsgPhrase</property>
             <property name="Label">Admin_Common_ApplicationRevision.Label</property>
             <property name="HRef">true</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="checkout">
             <icon>Action_View</icon>

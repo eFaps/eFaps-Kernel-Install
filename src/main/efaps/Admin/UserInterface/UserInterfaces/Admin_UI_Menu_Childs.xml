@@ -18,10 +18,8 @@
 
 -->
 
-<ui-table xmlns="http://www.efaps.org/xsd"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>faf1aacc-bb36-44b3-b9fa-6737b187f0f0</uuid>
     <file-application>eFaps-Kernel</file-application>
     <description>Table is used to show the children of a menu. The table is not
@@ -71,11 +69,11 @@
         </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="SelectAlternateOID">linkto[ToCommand].oid</property>
+            <property name="HRef">TREE</property>
             <property name="Target">popup</property>
             <property name="SortAble">false</property>
             <property name="Width">15px</property>
         </field>
     </definition>
-
 </ui-table>
