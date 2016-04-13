@@ -122,6 +122,7 @@ public final class SysConfResourceConfig
             final List<ISysConfLink> confLinks = new ArrayList<>();
             this.uuid2attr.put(sysConfAn.value(), confAttrs);
             this.uuid2link.put(sysConfAn.value(), confLinks);
+            LOG.debug("Found Annotation in class {}", clazz);
             LOG.info("Found SystemConfiguration: {} - {}",
                             SystemConfiguration.get(UUID.fromString(sysConfAn.value())).getName(), sysConfAn.value());
             for (final Field field : clazz.getDeclaredFields()) {
@@ -140,7 +141,7 @@ public final class SysConfResourceConfig
                         try {
                             final ISysConfLink link = (ISysConfLink) field.get(null);
                             confLinks.add(link);
-                            LOG.info("    Found Link: {}", link);
+                            LOG.info("    Found Link     : {}", link);
                         } catch (final IllegalArgumentException | IllegalAccessException e) {
                             LOG.error("Catched error", e);
                         }
@@ -364,7 +365,7 @@ public final class SysConfResourceConfig
      */
     public List<ISysConfLink> getLinks(final String _uuid)
     {
-        List<ISysConfLink> ret;
+        final List<ISysConfLink> ret;
         if (this.uuid2link.containsKey(_uuid)) {
             ret = this.uuid2link.get(_uuid);
         } else {
@@ -421,7 +422,7 @@ public final class SysConfResourceConfig
      */
     public List<ISysConfAttribute> getAttributes(final String _uuid)
     {
-        List<ISysConfAttribute> ret;
+        final List<ISysConfAttribute> ret;
         if (this.uuid2attr.containsKey(_uuid)) {
             ret = this.uuid2attr.get(_uuid);
         } else {
