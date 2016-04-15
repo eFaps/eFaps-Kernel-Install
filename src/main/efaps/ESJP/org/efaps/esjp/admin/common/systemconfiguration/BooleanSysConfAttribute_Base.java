@@ -64,7 +64,7 @@ public abstract class BooleanSysConfAttribute_Base
     public CharSequence getHtml(final Parameter _parameter,
                                   final Object _value)
     {
-        boolean val = false;
+        boolean val = getDefaultValue();
         if (_value != null) {
             val = Boolean.parseBoolean((String) _value);
         }

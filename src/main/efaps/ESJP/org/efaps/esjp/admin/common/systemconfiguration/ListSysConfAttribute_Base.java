@@ -63,8 +63,12 @@ public abstract class ListSysConfAttribute_Base
     {
         final StringBuilder ret = new StringBuilder()
                         .append("<textarea rows=\"5\" cols=\"80\" name=\"value\">");
-        if (_value != null) {
+        if (_value != null ) {
             ret.append(StringEscapeUtils.escapeHtml4((String) _value));
+        } else if (getDefaultValue() != null && !getDefaultValue().isEmpty()) {
+            for (final String val : getDefaultValue()) {
+                ret.append(StringEscapeUtils.escapeHtml4(val + "\n"));
+            }
         }
         ret.append("</textarea>");
         return ret;

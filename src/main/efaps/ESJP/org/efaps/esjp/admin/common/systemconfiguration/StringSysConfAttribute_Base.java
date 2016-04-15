@@ -59,8 +59,11 @@ public abstract class StringSysConfAttribute_Base
     {
         final StringBuilder ret = new StringBuilder()
                         .append("<input type=\"text\" name=\"value\" size=\"70\"");
-        if (_value != null) {
-            ret.append(" value=\"").append(StringEscapeUtils.escapeHtml4((String) _value)).append("\"");
+        if (_value != null || getDefaultValue() != null) {
+            ret.append(" value=\"").append(
+                            StringEscapeUtils.escapeHtml4(_value == null
+                                ? getDefaultValue()
+                                : (String) _value)).append("\"");
         }
         ret.append(">");
         return ret;

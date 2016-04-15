@@ -272,9 +272,9 @@ public abstract class SystemConf_Base
     {
         final boolean isLink = "true".equalsIgnoreCase(getProperty(_parameter, "SysConfLink"));
 
-        final PrintQuery print = new PrintQuery(_parameter.getInstance());
+        final PrintQuery print = new PrintQuery(_parameter.getCallInstance());
         SelectBuilder sel;
-        if (_parameter.getInstance().getType().isCIType(CIAdminCommon.SystemConfiguration)) {
+        if (_parameter.getCallInstance().getType().isCIType(CIAdminCommon.SystemConfiguration)) {
             sel = SelectBuilder.get().attribute(CIAdminCommon.SystemConfiguration.UUID);
         } else {
             sel = SelectBuilder.get().linkto(CIAdminCommon.SystemConfigurationAttribute.AbstractLink)

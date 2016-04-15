@@ -67,8 +67,11 @@ public abstract class IntegerSysConfAttribute_Base
     {
         final StringBuilder ret = new StringBuilder()
                         .append("<input type=\"number\" name=\"value\" size=\"5\"");
-        if (_value != null) {
-            ret.append(" value=\"").append(StringEscapeUtils.escapeHtml4((String) _value)).append("\"");
+        if (_value != null || getDefaultValue() != null) {
+            ret.append(" value=\"").append(StringEscapeUtils.escapeHtml4(
+                            _value == null
+                            ? String.valueOf(getDefaultValue())
+                            : String.valueOf(_value))).append("\"");
         }
         ret.append(">");
         return ret;

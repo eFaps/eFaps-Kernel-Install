@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import org.efaps.util.EFapsException;
  * The Class EnumSysConfAttribute_Base.
  *
  * @author The eFaps Team
+ * @param <E> the element type
  */
 @EFapsUUID("12fbca5f-94c4-4fa7-92dc-f82a5a8c330a")
 @EFapsApplication("eFaps-Kernel")
