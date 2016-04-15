@@ -197,10 +197,10 @@ public abstract class SystemConf_Base
         }
         final Return ret = new Return();
 
-        final PrintQuery print = new PrintQuery(_parameter.getInstance());
+        final PrintQuery print = new PrintQuery(_parameter.getCallInstance());
         SelectBuilder selUUID;
         SelectBuilder selInst;
-        if (_parameter.getInstance().getType().isCIType(CIAdminCommon.SystemConfiguration)) {
+        if (_parameter.getCallInstance().getType().isCIType(CIAdminCommon.SystemConfiguration)) {
             selUUID = SelectBuilder.get().attribute(CIAdminCommon.SystemConfiguration.UUID);
             selInst = SelectBuilder.get().instance();
         } else {
