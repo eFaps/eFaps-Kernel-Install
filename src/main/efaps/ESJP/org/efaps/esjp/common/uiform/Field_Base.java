@@ -1296,7 +1296,7 @@ public abstract class Field_Base
     {
         final Return ret = new Return();
         _parameter.get(ParameterValues.ACCESSMODE);
-        final UIValue uiValue = (UIValue) _parameter.get(ParameterValues.UIOBJECT);
+        final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         final TargetMode mode = (TargetMode) _parameter.get(ParameterValues.ACCESSMODE);
         final StringBuilder html = new StringBuilder();
 
