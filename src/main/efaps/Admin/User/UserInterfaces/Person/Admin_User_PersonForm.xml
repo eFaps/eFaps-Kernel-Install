@@ -246,6 +246,7 @@
             <property name="ModeEdit">NONE</property>
         </field>
         <field name="rolestable" character="Target">
+            <property name="ModeEdit">NONE</property>
             <table>Admin_User2User_AbstractTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Admin_User_Person2Role</property>
@@ -265,11 +266,7 @@
             </trigger>
         </field>
         <field name="groupstable" character="Target">
-            <table>Admin_User2User_AbstractTable</table>
-             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Admin_User_Person2Group</property>
-                <property name="LinkFrom">UserFromLink</property>
-            </evaluate>
+            <property name="ModeEdit">NONE</property>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Admin_User_PersonForm.groupstable.UI_ACCESSCHECK"
@@ -277,6 +274,11 @@
                 <property name="SystemConfig">Kernel-Configuration</property>
                 <property name="Attribute">org.efaps.kernel.ActivateGroups</property>
             </trigger>
+            <table>Admin_User2User_AbstractTable</table>
+             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Admin_User_Person2Group</property>
+                <property name="LinkFrom">UserFromLink</property>
+            </evaluate>
         </field>
         <field name="companieheader" character="Heading">
             <property name="Level">1</property>
@@ -284,6 +286,7 @@
             <property name="ModeEdit">NONE</property>
         </field>
         <field name="companietable" character="Target">
+            <property name="ModeEdit">NONE</property>
             <table>Admin_User2User_AbstractTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Admin_User_Person2Company</property>
@@ -296,6 +299,7 @@
             <property name="ModeEdit">NONE</property>
         </field>
         <field name="jaaskeytable" character="Target">
+            <property name="ModeEdit">NONE</property>
             <table>Admin_User_JAASKeyTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Admin_User_JAASKey</property>
