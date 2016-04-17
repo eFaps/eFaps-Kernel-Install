@@ -13,18 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.db;
 
 import org.efaps.admin.datamodel.ui.FieldValue;
-import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -38,14 +34,20 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("0f824311-3747-4cfc-85ce-a5268a6ba9c9")
 @EFapsApplication("eFaps-Kernel")
-public class Store implements EventExecution
+public class Store
 {
-
-    public Return execute(final Parameter _parameter) throws EFapsException
+    /**
+     * Execute.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return execute(final Parameter _parameter)
+        throws EFapsException
     {
         final Return ret = new Return();
         final Insert insert = new Insert(CIDB.Store);
@@ -64,7 +66,6 @@ public class Store implements EventExecution
         connect.add("From", ((Long) instance.getId()).toString());
         connect.add("To", ((Long) resource.getId()).toString());
         connect.execute();
-
         return ret;
     }
 
