@@ -48,6 +48,19 @@ public final class InstanceUtils
     public static boolean isKindOf(final Instance _instance,
                                    final CIType _ciType)
     {
+        return isValid(_instance) && _instance.getType().isKindOf(_ciType);
+    }
+
+    /**
+     * Checks if Instance is type.
+     *
+     * @param _instance the instance
+     * @param _ciType the _ci type
+     * @return true, if is valid
+     */
+    public static boolean isType(final Instance _instance,
+                                 final CIType _ciType)
+    {
         return isValid(_instance) && _instance.getType().isCIType(_ciType);
     }
 
