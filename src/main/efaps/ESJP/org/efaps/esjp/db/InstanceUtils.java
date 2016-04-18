@@ -18,6 +18,7 @@ package org.efaps.esjp.db;
 
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIType;
 import org.efaps.db.Instance;
 
 /**
@@ -29,6 +30,27 @@ import org.efaps.db.Instance;
 @EFapsApplication("eFaps-Kernel")
 public final class InstanceUtils
 {
+
+    /**
+     * Instantiates a new instance utils.
+     */
+    private InstanceUtils()
+    {
+    }
+
+    /**
+     * Checks if Instance is kind of.
+     *
+     * @param _instance the instance
+     * @param _ciType the _ci type
+     * @return true, if is valid
+     */
+    public static boolean isKindOf(final Instance _instance,
+                                   final CIType _ciType)
+    {
+        return isValid(_instance) && _instance.getType().isCIType(_ciType);
+    }
+
     /**
      * Checks if is valid.
      *
