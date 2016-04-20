@@ -1605,7 +1605,6 @@ public abstract class Field_Base
         return ret;
     }
 
-
     /**
      * @param _parameter Parameter as passed from the eFaps API
      * @return Return containing Html Snipplet
@@ -1618,7 +1617,7 @@ public abstract class Field_Base
         final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
         add2QueryBuilder4List(_parameter, queryBldr);
 
-        final MultiPrintQuery multi = queryBldr.getPrint();
+        final MultiPrintQuery multi = queryBldr.getCachedPrint4Request();
         final String select = getProperty(_parameter, "Select");
         if (select != null) {
             multi.addSelect(select);
@@ -1697,7 +1696,7 @@ public abstract class Field_Base
                     }
                 }  else if (containsProperty(_parameter, "DefaultSysConf")) {
                     final String sysconf = getProperty(_parameter, "DefaultSysConf");
-                    SystemConfiguration conf;
+                    final SystemConfiguration conf;
                     if (isUUID(sysconf)) {
                         conf = SystemConfiguration.get(UUID.fromString(sysconf));
                     } else {
