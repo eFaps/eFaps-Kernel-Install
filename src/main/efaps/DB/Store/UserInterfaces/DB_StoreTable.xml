@@ -16,21 +16,15 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
-
 -->
 
-<ui-table xmlns="http://www.efaps.org/xsd"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>b006263a-cdc0-4e76-b99e-995f14d48b2d</uuid>
     <file-application>eFaps-Kernel</file-application>
-    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>DB_StoreTable</name>
-        <!-- fields -->
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
@@ -49,8 +43,12 @@
             <property name="Width">3</property>
         </field>
         <field name="revision">
-            <property name="Attribute">Revision</property>
+            <property name="SelectAlternateOID">linkto[RevisionLink].oid</property>
             <property name="Label">DB_Store/Revision.Label</property>
+            <property name="MsgPhrase">Admin_Common_ApplicationRevisionShortMsgPhrase</property>
+            <property name="Label">Admin_Common_ApplicationRevision.Label</property>
+            <property name="HRef">true</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
@@ -60,5 +58,4 @@
             <property name="Width">15px</property>
         </field>
     </definition>
-
 </ui-table>
