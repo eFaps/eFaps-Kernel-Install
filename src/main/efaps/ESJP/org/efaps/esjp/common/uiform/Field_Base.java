@@ -352,8 +352,8 @@ public abstract class Field_Base
     {
         final Return ret;
         final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
-        if (uiObject instanceof FieldValue) {
-            if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((FieldValue) uiObject).getDisplay())) {
+        if (uiObject instanceof IUIValue) {
+            if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((IUIValue) uiObject).getDisplay())) {
                 ret = listFieldValue(_parameter, Field_Base.ListType.RADIO);
             } else {
                 ret = new Return();
@@ -367,106 +367,6 @@ public abstract class Field_Base
 
     /**
      * @param _parameter    Parameter as passed from the eFaps API
-     * @param _type         list type to be rendered
-     * @return Return containing Html Snipplet
-     * @throws EFapsException on error
-     */
-    public Return getList4Enum(final Parameter _parameter,
-                               final Field_Base.ListType _type)
-        throws EFapsException
-    {
-        final Return ret = new Return();
-        final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
-        if (uiObject instanceof FieldValue) {
-            final String enumName = getProperty(_parameter, "Enum");
-            if (enumName != null) {
-                final boolean orderByOrdinal = "true".equalsIgnoreCase(getProperty(_parameter, "OrderByOrdinal"));
-                try {
-                    final Class<?> enumClazz = Class.forName(enumName);
-                    if (enumClazz.isEnum()) {
-                        final Object[] consts = enumClazz.getEnumConstants();
-                        final Integer ordinal;
-                        if (((FieldValue) uiObject).getValue() != null) {
-                            ordinal = (Integer) ((FieldValue) uiObject).getValue();
-                        } else {
-                            ordinal = -1;
-                        }
-                        if (org.efaps.admin.ui.field.Field.Display.EDITABLE
-                                        .equals(((FieldValue) uiObject).getDisplay())) {
-                            final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
-                            int i = 0;
-                            for (final Object con : consts) {
-                                final String label = DBProperties.getProperty(enumName + "." + con.toString());
-                                final DropDownPosition pos = new DropDownPosition(i, label, orderByOrdinal
-                                                ? new Integer(i) : label);
-                                values.add(pos);
-                                pos.setSelected(i == ordinal);
-                                i++;
-                            }
-                            Collections.sort(values, new Comparator<DropDownPosition>()
-                            {
-
-                                @SuppressWarnings("unchecked")
-                                @Override
-                                public int compare(final DropDownPosition _o1,
-                                                   final DropDownPosition _o2)
-                                {
-                                    return _o1.getOrderValue().compareTo(_o2.getOrderValue());
-                                }
-                            });
-                            switch (_type) {
-                                case DROPDOWN:
-                                    ret.put(ReturnValues.SNIPLETT, getDropDownField(_parameter, values));
-                                    break;
-                                case RADIO:
-                                    ret.put(ReturnValues.SNIPLETT, getInputField(_parameter, values, _type));
-                                    break;
-                                default:
-                                    ret.put(ReturnValues.SNIPLETT, "");
-                                    Field_Base.LOG.warn("Wrong config");
-                                    break;
-                            }
-
-                        } else {
-                            ret.put(ReturnValues.SNIPLETT, ordinal > -1
-                                            ? DBProperties.getProperty(enumName + "." + consts[ordinal].toString())
-                                            : "");
-                        }
-                    }
-                } catch (final ClassNotFoundException e) {
-                    throw new EFapsException(Field_Base.class, "ClassNotFoundException", e);
-                }
-            } else {
-                throw new EFapsException(Field_Base.class, "No Enum defined");
-            }
-        }
-        return ret;
-    }
-
-    /**
-     * @param _parameter    Parameter as passed from the eFaps API
-     * @return Return containing Html Snipplet
-     * @throws EFapsException on error
-     */
-    public Return getDropDown4Enum(final Parameter _parameter)
-        throws EFapsException
-    {
-        return getList4Enum(_parameter, ListType.DROPDOWN);
-    }
-
-    /**
-     * @param _parameter    Parameter as passed from the eFaps API
-     * @return Return containing Html Snipplet
-     * @throws EFapsException on error
-     */
-    public Return getRadioList4Enum(final Parameter _parameter)
-        throws EFapsException
-    {
-        return getList4Enum(_parameter, ListType.RADIO);
-    }
-
-    /**
-     * @param _parameter    Parameter as passed from the eFaps API
      * @return Return containing Html Snipplet
      * @throws EFapsException on error
      */
@@ -475,8 +375,8 @@ public abstract class Field_Base
     {
         final Return ret;
         final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
-        if (uiObject instanceof FieldValue) {
-            if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((FieldValue) uiObject).getDisplay())) {
+        if (uiObject instanceof IUIValue) {
+            if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((IUIValue) uiObject).getDisplay())) {
                 ret = listFieldValue(_parameter, Field_Base.ListType.CHECKBOX);
             } else {
                 ret = new Return();
@@ -510,11 +410,11 @@ public abstract class Field_Base
             final UUID uuid = UUID.fromString(configurationUUID);
             final SystemConfiguration config = SystemConfiguration.get(uuid);
             if (config != null) {
-                final FieldValue fieldvalue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+                final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
                 final Properties confProps = config.getObjectAttributeValueAsProperties(_parameter.getInstance());
                 final List<String> keys = new ArrayList<>(confProps.stringPropertyNames());
                 Collections.sort(keys);
-                if (Display.EDITABLE.equals(fieldvalue.getDisplay())) {
+                if (Display.EDITABLE.equals(uiValue.getDisplay())) {
                     final StringBuilder propStr = new StringBuilder();
                     for (final String key : keys) {
                         propStr.append(key).append("=").append(confProps.getProperty(key)).append("\n");
@@ -558,9 +458,9 @@ public abstract class Field_Base
         final String seperator = props.containsKey("Seperator") ? (String) props.get("Seperator") : ", ";
         final boolean clazzSeq = props.containsKey("ClassSequence")
                                             ? Boolean.parseBoolean((String) props.get("ClassSequence")) : false;
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         if (fieldValue != null) {
-            final Object value = fieldValue.getValue();
+            final Object value = fieldValue.getObject();
             if (value instanceof List) {
                 final List<Classification> clazzes = new ArrayList<Classification>();
                 for (final Object val : (List<?>) value) {
@@ -680,8 +580,8 @@ public abstract class Field_Base
         StringBuilder html = new StringBuilder();
 
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final FieldValue fieldvalue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        if (Display.EDITABLE.equals(fieldvalue.getDisplay())) {
+        final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+        if (Display.EDITABLE.equals(uiValue.getDisplay())) {
             if (properties.containsKey("Types")) {
                 html = tobeRemoved(_parameter);
             } else {
@@ -810,8 +710,8 @@ public abstract class Field_Base
     {
         final Return ret = new Return();
         final StringBuilder html = new StringBuilder();
-        final FieldValue fieldvalue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        if (Display.EDITABLE.equals(fieldvalue.getDisplay())) {
+        final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+        if (Display.EDITABLE.equals(uiValue.getDisplay())) {
             final Map<Integer, String> rootClasses = analyseProperty(_parameter, "Classification");
             final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
             final Set<Classification> clazzList = new HashSet<Classification>();
@@ -853,7 +753,7 @@ public abstract class Field_Base
                 }
                 final DropDownPosition pos = new DropDownPosition(clazz.getId(), label, label);
                 positions.add(pos);
-                if (Long.valueOf(clazz.getId()).equals(fieldvalue.getValue())) {
+                if (Long.valueOf(clazz.getId()).equals(uiValue.getObject())) {
                     pos.setSelected(true);
                 }
             }
@@ -899,8 +799,8 @@ public abstract class Field_Base
     {
         final Return ret;
         final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
-        if (uiObject instanceof FieldValue) {
-            if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((FieldValue) uiObject).getDisplay())) {
+        if (uiObject instanceof IUIValue) {
+            if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((IUIValue) uiObject).getDisplay())) {
                 ret = listFieldValue(_parameter, Field_Base.ListType.DROPDOWN);
             } else {
                 ret = new Return();
@@ -1018,14 +918,14 @@ public abstract class Field_Base
             multi.execute();
             Object dbValue = null;
             final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
-            if (uiObject instanceof FieldValue) {
-                dbValue = ((FieldValue) uiObject).getValue();
+            if (uiObject instanceof IUIValue) {
+                dbValue = ((IUIValue) uiObject).getObject();
             }
 
             final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
             boolean selected = false;
             while (multi.next()) {
-                Object value;
+                final Object value;
                 if (valueSel == null) {
                     value = multi.getCurrentInstance().getId();
                 } else {
@@ -1354,81 +1254,6 @@ public abstract class Field_Base
     }
 
     /**
-     *
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return empty Return
-     * @throws EFapsException on error
-     */
-    public Return getField4Mode(final Parameter _parameter)
-        throws EFapsException
-    {
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        final String reuqestKey = fieldValue.getField().getName() + ".getField4Mode";
-        final Return ret = new Return();
-        if (Context.getThreadContext().containsRequestAttribute(reuqestKey)) {
-            ret.put(ReturnValues.VALUES, fieldValue.getValue());
-        } else {
-            Context.getThreadContext().setRequestAttribute(reuqestKey, true);
-
-            final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-            final String target = (String) props.get("TargetMode");
-            final String displayStr = (String) props.get("Display");
-
-            final TargetMode mode = TargetMode.valueOf(target);
-            final org.efaps.admin.ui.field.Field.Display display = org.efaps.admin.ui.field.Field.Display.valueOf(
-                            displayStr);
-
-            final String html;
-            switch (display) {
-                case EDITABLE:
-                    html = fieldValue.getEditHtml(mode);
-                    break;
-                case READONLY:
-                    html = fieldValue.getReadOnlyHtml(mode);
-                    break;
-                case HIDDEN:
-                    html = fieldValue.getHiddenHtml(mode);
-                    break;
-                default:
-                    html = "";
-                    break;
-            }
-            ret.put(ReturnValues.SNIPLETT, html);
-        }
-        return ret;
-    }
-
-    /**
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return Snipplet
-     * @throws EFapsException on error
-     */
-    public Return getHiddenInputField(final Parameter _parameter)
-        throws EFapsException
-    {
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-
-        final Return ret = new Return();
-        final StringBuilder html = new StringBuilder();
-        final Object value = fieldValue.getValue() != null ? fieldValue.getValue() : "";
-
-        html.append("<span ").append(UIInterface.EFAPSTMPTAG).append(" name=\"")
-            .append(fieldValue.getField().getName()).append("\">").append(value).append("</span>");
-        if (fieldValue.getTargetMode().equals(TargetMode.EDIT)) {
-            html.append("<input type=\"hidden\" name=\"").append(fieldValue.getField().getName()).append("\"")
-                .append(" value=\"").append(value).append("\"/>");
-        }
-
-        if (!fieldValue.getDisplay().equals(Display.NONE)) {
-            ret.put(ReturnValues.SNIPLETT, html.toString());
-        }
-
-        return ret;
-    }
-
-
-    /**
      * Get a new UUID and fill the given field "TargetField" with it.<br/>
      *
      * &lt;trigger program=&quot;org.efaps.esjp.common.uiform.Field&quot;
@@ -1565,10 +1390,8 @@ public abstract class Field_Base
                     final Integer ordinal;
 
                     final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
-                    if (uiObject instanceof UIValue && ((UIValue) uiObject).getDbValue() != null) {
-                        ordinal = (Integer) ((UIValue) uiObject).getDbValue();
-                    } else if (uiObject instanceof FieldValue && ((FieldValue) uiObject).getValue() != null) {
-                        ordinal = (Integer) ((FieldValue) uiObject).getValue();
+                    if (uiObject instanceof IUIValue && ((IUIValue) uiObject).getObject() != null) {
+                        ordinal = (Integer) ((IUIValue) uiObject).getObject();
                     } else {
                         ordinal = -1;
                     }
@@ -1596,12 +1419,41 @@ public abstract class Field_Base
                     }
                 }
             } catch (final ClassNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                LOG.error("ClassNotFoundException", e);
             }
         }
         final Return ret = new Return();
         ret.put(ReturnValues.VALUES, values);
+        return ret;
+    }
+
+    /**
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @return Return containing Html Snipplet
+     * @throws EFapsException on error
+     */
+    public Return getLabel4Enum(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final String enumName = getProperty(_parameter, "Enum");
+        if (enumName != null) {
+            try {
+                final Class<?> enumClazz = Class.forName(enumName);
+                if (enumClazz.isEnum()) {
+                    final Object[] consts = enumClazz.getEnumConstants();
+                    final Integer ordinal;
+                    final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
+                    if (uiObject instanceof IUIValue && ((IUIValue) uiObject).getObject() != null) {
+                        ordinal = (Integer) ((IUIValue) uiObject).getObject();
+                        final String label = DBProperties.getProperty(enumName + "." + consts[ordinal].toString());
+                        ret.put(ReturnValues.VALUES, label);
+                    }
+                }
+            } catch (final ClassNotFoundException e) {
+                LOG.error("ClassNotFoundException", e);
+            }
+        }
         return ret;
     }
 
