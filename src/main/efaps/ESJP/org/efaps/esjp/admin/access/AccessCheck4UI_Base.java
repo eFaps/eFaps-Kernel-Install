@@ -381,7 +381,7 @@ public abstract class AccessCheck4UI_Base
                     }
                     access = attribute.startsWith("!")
                                     ? !Boolean.parseBoolean(attrValue)
-                                    : !Boolean.parseBoolean(attrValue);
+                                    : Boolean.parseBoolean(attrValue);
                 }
                 if (access) {
                     break;
