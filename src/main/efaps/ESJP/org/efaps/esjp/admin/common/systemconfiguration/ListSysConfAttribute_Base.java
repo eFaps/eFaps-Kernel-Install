@@ -51,8 +51,8 @@ public abstract class ListSysConfAttribute_Base
     {
         final List<String> ret = new ArrayList<>();
         final String str = SystemConfiguration.get(getSysConfUUID()).getAttributeValue(getKey());
-        if (str != null && !str.isEmpty()) {
-            ret.addAll(Arrays.asList(StringUtils.split(str, "\n")));
+        if (StringUtils.isNotEmpty(str)) {
+            ret.addAll(Arrays.asList(str.split("\\r?\\n")));
         }
         return ret;
     }
@@ -63,7 +63,7 @@ public abstract class ListSysConfAttribute_Base
     {
         final StringBuilder ret = new StringBuilder()
                         .append("<textarea rows=\"5\" cols=\"80\" name=\"value\">");
-        if (_value != null ) {
+        if (_value != null) {
             ret.append(StringEscapeUtils.escapeHtml4((String) _value));
         } else if (getDefaultValue() != null && !getDefaultValue().isEmpty()) {
             for (final String val : getDefaultValue()) {
@@ -73,5 +73,4 @@ public abstract class ListSysConfAttribute_Base
         ret.append("</textarea>");
         return ret;
     }
-
 }
