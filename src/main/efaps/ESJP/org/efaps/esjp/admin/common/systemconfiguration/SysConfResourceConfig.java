@@ -355,6 +355,22 @@ public final class SysConfResourceConfig
                                         + " eFapsApp-Sales=Role.AsList=ubicaciones;products");
         LOG.info("    Add Attribute: {}", attr);
         attrs.add(attr);
+
+        attr = new StringSysConfAttribute()
+                        .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
+                        .key(KernelSettings.INDEXANALYZERPROVCLASS)
+                        .description("ClassName of the class used for getting the Analyzer. Must implement\n"
+                                        + " org.efaps.admin.index.IAnalyzerProvider");
+        LOG.info("    Add Attribute: {}", attr);
+        attrs.add(attr);
+
+        attr = new StringSysConfAttribute()
+                        .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
+                        .key(KernelSettings.INDEXDIRECTORYPROVCLASS)
+                        .description("ClassName of the class used for getting the Directory. Must implement\n"
+                                        + " org.efaps.admin.index.IDirectoryProvider");
+        LOG.info("    Add Attribute: {}", attr);
+        attrs.add(attr);
     }
 
     /**
