@@ -33,6 +33,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.index.IndexDefinition;
 import org.efaps.admin.index.Indexer;
 import org.efaps.admin.index.Queue;
+import org.efaps.admin.user.Company;
 import org.efaps.ci.CIAdminUser;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -77,8 +78,8 @@ public abstract class Process_Base
                 final PrintQuery print = new PrintQuery(inst);
                 print.addAttribute(inst.getType().getCompanyAttribute());
                 print.executeWithoutAccessCheck();
-                final Long companyId = print.getAttribute(inst.getType().getCompanyAttribute());
-                final Map<Type, List<Instance>> subMap = instanceMap.get(companyId);
+                final Company company = print.getAttribute(inst.getType().getCompanyAttribute());
+                final Map<Type, List<Instance>> subMap = instanceMap.get(company.getId());
                 final List<Instance> instances;
                 if (subMap.containsKey(inst.getType())) {
                     instances = subMap.get(inst.getType());
@@ -110,6 +111,10 @@ public abstract class Process_Base
                     Indexer.index(analyzer, directory, subentry.getValue());
                 }
             }
+        }
+        // remoce the reindexed keys from the cache
+        for (final String key: keys) {
+            cache.remove(key);
         }
         return new Return();
     }
