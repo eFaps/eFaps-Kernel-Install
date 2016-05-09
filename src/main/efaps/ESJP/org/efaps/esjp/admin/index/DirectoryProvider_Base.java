@@ -22,6 +22,8 @@ import java.io.IOException;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.efaps.admin.index.IDirectoryProvider;
+import org.efaps.db.Context;
+import org.efaps.esjp.admin.common.systemconfiguration.KernelConfigurations;
 import org.efaps.util.EFapsException;
 
 /**
@@ -32,13 +34,36 @@ import org.efaps.util.EFapsException;
 public abstract class DirectoryProvider_Base
     implements IDirectoryProvider
 {
+
     @Override
     public Directory getDirectory()
         throws EFapsException
     {
+        return getDirectory(Context.getThreadContext().getCompany().getId(), Context.getThreadContext().getLanguage());
+    }
+
+    /**
+     * Gets the directory.
+     *
+     * @param _companyId the _company id
+     * @param _language the _language
+     * @return the directory
+     * @throws EFapsException the e faps exception
+     */
+    public Directory getDirectory(final Long _companyId,
+                                  final String _language)
+        throws EFapsException
+    {
         final Directory ret;
         try {
-            ret = FSDirectory.open(new File("/eFaps/index").toPath());
+
+            final String basefolder = KernelConfigurations.INDEXBASEFOLDER.get();
+            final File base = new File(basefolder, String.valueOf(_companyId));
+            final File folder = new File(base, _language);
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
+            ret = FSDirectory.open(folder.toPath());
         } catch (final IOException e) {
             throw new EFapsException(DirectoryProvider.class, "");
         }

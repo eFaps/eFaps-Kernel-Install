@@ -23,8 +23,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.efaps.admin.KernelSettings;
@@ -53,6 +55,14 @@ import org.slf4j.LoggerFactory;
 @EFapsApplication("eFaps-Kernel")
 public final class SysConfResourceConfig
 {
+
+    /** The attrs. */
+    private static Set<ISysConfAttribute> ATTRS = new HashSet<>();
+    static {
+        ATTRS.add(KernelConfigurations.INDEXBASEFOLDER);
+        ATTRS.add(KernelConfigurations.INDEXLANG);
+    }
+
     /**
      * Singleton instance.
      */
@@ -72,7 +82,6 @@ public final class SysConfResourceConfig
      * Links  found by the scanner.
      */
     private final Map<String, List<ISysConfLink>> uuid2link = new HashMap<>();
-
 
     /**
      * Constructor.
@@ -356,6 +365,13 @@ public final class SysConfResourceConfig
         LOG.info("    Add Attribute: {}", attr);
         attrs.add(attr);
 
+        attr = new BooleanSysConfAttribute()
+                        .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
+                        .key(KernelSettings.INDEXACTIVATE)
+                        .description(" Activate the general index mechanism.");
+        LOG.info("    Add Attribute: {}", attr);
+        attrs.add(attr);
+
         attr = new StringSysConfAttribute()
                         .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
                         .key(KernelSettings.INDEXANALYZERPROVCLASS)
@@ -371,6 +387,11 @@ public final class SysConfResourceConfig
                                         + " org.efaps.admin.index.IDirectoryProvider");
         LOG.info("    Add Attribute: {}", attr);
         attrs.add(attr);
+
+
+        for (final ISysConfAttribute attrTmp : ATTRS) {
+            attrs.add(attrTmp);
+        }
     }
 
     /**

@@ -17,9 +17,13 @@
 package org.efaps.esjp.admin.index;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.de.GermanAnalyzer;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.analysis.es.SpanishAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.efaps.admin.index.IAnalyzerProvider;
+import org.efaps.db.Context;
+import org.efaps.util.EFapsException;
 
 /**
  * The Class AnalyzerProvider_Base.
@@ -29,9 +33,37 @@ import org.efaps.admin.index.IAnalyzerProvider;
 public abstract class AnalyzerProvider_Base
     implements IAnalyzerProvider
 {
+
     @Override
     public Analyzer getAnalyzer()
+        throws EFapsException
     {
-        return new StandardAnalyzer(SpanishAnalyzer.getDefaultStopSet());
+        return getAnalyzer(null, Context.getThreadContext().getLanguage());
+    }
+
+    /**
+     * Gets the analyzer.
+     *
+     * @param _companyId the _company id
+     * @param _language the _language
+     * @return the analyzer
+     */
+    public Analyzer getAnalyzer(final Long _companyId,
+                                final String _language)
+    {
+        StandardAnalyzer ret;
+        switch (_language) {
+            case "de":
+                ret = new StandardAnalyzer(GermanAnalyzer.getDefaultStopSet());
+                break;
+            case "es":
+                ret = new StandardAnalyzer(SpanishAnalyzer.getDefaultStopSet());
+                break;
+            case "en":
+            default:
+                ret = new StandardAnalyzer(EnglishAnalyzer.getDefaultStopSet());
+                break;
+        }
+        return ret;
     }
 }
