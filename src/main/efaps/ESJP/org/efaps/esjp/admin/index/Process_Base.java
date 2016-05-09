@@ -30,6 +30,7 @@ import org.apache.lucene.store.Directory;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.index.IndexContext;
 import org.efaps.admin.index.IndexDefinition;
 import org.efaps.admin.index.Indexer;
 import org.efaps.admin.index.Queue;
@@ -43,6 +44,11 @@ import org.efaps.esjp.admin.common.systemconfiguration.KernelConfigurations;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.InfinispanCache;
 import org.infinispan.AdvancedCache;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO comment!
@@ -50,7 +56,13 @@ import org.infinispan.AdvancedCache;
  * @author The eFaps Team
  */
 public abstract class Process_Base
+    implements Job
 {
+
+    /**
+     * Logging instance used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(Process.class);
 
     /**
      * Re index.
@@ -108,11 +120,16 @@ public abstract class Process_Base
                 final Directory directory = dirProvider.getDirectory(entry.getKey(), language);
                 final Analyzer analyzer = analyzerProvider.getAnalyzer(null, language);
                 for (final Entry<Type, List<Instance>> subentry : entry.getValue().entrySet()) {
-                    Indexer.index(analyzer, directory, subentry.getValue());
+                    final IndexContext indexContext = new IndexContext()
+                                    .setDirectory(directory)
+                                    .setAnalyzer(analyzer)
+                                    .setLanguage(language)
+                                    .setCompanyId(entry.getKey());
+                    Indexer.index(indexContext, subentry.getValue());
                 }
             }
         }
-        // remoce the reindexed keys from the cache
+        // remove the reindexed keys from the cache
         for (final String key: keys) {
             cache.remove(key);
         }
@@ -146,10 +163,27 @@ public abstract class Process_Base
                 for (final String language : KernelConfigurations.INDEXLANG.get()) {
                     final Directory directory = dirProvider.getDirectory(compInst.getId(), language);
                     final Analyzer analyzer = analyzerProvider.getAnalyzer(null, language);
-                    Indexer.index(analyzer, directory, instances);
+                    final IndexContext indexContext = new IndexContext()
+                        .setDirectory(directory)
+                        .setAnalyzer(analyzer)
+                        .setLanguage(language)
+                        .setCompanyId(compInst.getId());
+                    Indexer.index(indexContext, instances);
                 }
             }
         }
         return new Return();
+    }
+
+    @Override
+    public void execute(final JobExecutionContext _context)
+        throws JobExecutionException
+    {
+        final Parameter paramter = new Parameter();
+        try {
+            updateIndex(paramter);
+        } catch (final EFapsException e) {
+            LOG.error("EFapsException", e);
+        }
     }
 }
