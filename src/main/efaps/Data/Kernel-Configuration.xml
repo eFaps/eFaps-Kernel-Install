@@ -138,5 +138,15 @@ Saltsize=8</value>
 Common_DashboardDefault.AccessSets=DashboardRead
 Common_DashboardDefault.Person.InRole=Admin_User_ViewUsers]]></value>
         </attribute>
+        <attribute>
+            <key>org.efaps.kernel.index.AnalyzerProvider</key>
+            <value>org.efaps.esjp.admin.index.AnalyzerProvider</value>
+            <description>ClassName of the class used for getting the Analyzer. Must implement org.efaps.admin.index.IAnalyzerProvider</description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.kernel.index.DirectoryProvider</key>
+            <value>org.efaps.esjp.admin.index.DirectoryProvider</value>
+            <description>ClassName of the class used for getting the Directory. Must implement org.efaps.admin.index.IDirectoryProvider</description>
+        </attribute>
     </definition>
 </common-systemconfiguration>
