@@ -648,7 +648,7 @@ public abstract class AbstractCommon_Base
                 }
                 ret.addWhereAttrNotEqValue(ret.getType().getTypeAttribute(), typeIds.toArray());
             }
-
+            final Set<Classification> clazzes = new HashSet<>();
             for (final String classStr : classif.values()) {
                 final Classification clazz;
                 if (isUUID(classStr)) {
@@ -662,8 +662,11 @@ public abstract class AbstractCommon_Base
                     AbstractCommon_Base.LOG.error("Classification Definition invalid. Object: {}, Value: {}",
                                     command == null ? "UNKNOWN" : command.getName(), classStr);
                 } else {
-                    ret.addWhereClassification(clazz);
+                    clazzes.add(clazz);
                 }
+            }
+            if (!clazzes.isEmpty()) {
+                ret.addWhereClassification(clazzes.toArray(new Classification[clazzes.size()]));
             }
 
             final List<Status> statusList = getStatusListFromProperties(_parameter, _offset);
