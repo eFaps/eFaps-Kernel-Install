@@ -15,22 +15,14 @@
  limitations under the License.
 
 -->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>d9b722e4-1aa7-48f0-8958-2b011909ebb9</uuid>
+    <uuid>8b1b6f35-8065-4e99-af2a-2084fc5199e3</uuid>
     <file-application>eFaps-Kernel</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_IndexDefinitionMyDesk</name>
-        <access>
-            <role>Administration</role>
-        </access>
-        <target>
-            <table>Admin_IndexDefinitionTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Admin_IndexDefinition</property>
-            </evaluate>
-        </target>
-        <property name="TargetMode">view</property>
+        <name>Admin_IndexSearch</name>
+        <parent>Admin_IndexSearchAbstract</parent>
+        <purpose GeneralInstance="false" />
     </definition>
-</ui-command>
+</datamodel-type>

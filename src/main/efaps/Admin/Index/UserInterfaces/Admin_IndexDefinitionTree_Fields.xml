@@ -30,5 +30,6 @@
                 <property name="LinkFrom">DefinitionLink</property>
             </evaluate>
         </target>
+        <property name="TargetMode">view</property>
     </definition>
 </ui-command>

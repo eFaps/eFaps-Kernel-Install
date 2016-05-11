@@ -17,20 +17,22 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>d9b722e4-1aa7-48f0-8958-2b011909ebb9</uuid>
+    <uuid>bcb75832-2277-453e-80ea-4bc3f1a19aa1</uuid>
     <file-application>eFaps-Kernel</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_IndexDefinitionMyDesk</name>
+        <name>Admin_IndexSearchMyDesk</name>
         <access>
             <role>Administration</role>
         </access>
         <target>
-            <table>Admin_IndexDefinitionTable</table>
+            <menu>Admin_IndexSearchMyDesk_Menu</menu>
+            <table>Admin_IndexSearchTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Admin_IndexDefinition</property>
+                <property name="Type">Admin_IndexSearchAbstract</property>
             </evaluate>
         </target>
+        <property name="TargetShowCheckBoxes">true</property>
         <property name="TargetMode">view</property>
     </definition>
 </ui-command>

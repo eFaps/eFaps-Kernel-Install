@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2016 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -17,20 +17,18 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>d9b722e4-1aa7-48f0-8958-2b011909ebb9</uuid>
+    <uuid>199f46e0-053c-4ff3-adcf-55b19e1c0d6b</uuid>
     <file-application>eFaps-Kernel</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_IndexDefinitionMyDesk</name>
+        <name>Admin_IndexSearchMyDesk_Menu_Action_Delete</name>
         <access>
             <role>Administration</role>
         </access>
         <target>
-            <table>Admin_IndexDefinitionTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Admin_IndexDefinition</property>
-            </evaluate>
+            <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
         </target>
-        <property name="TargetMode">view</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
     </definition>
 </ui-command>
