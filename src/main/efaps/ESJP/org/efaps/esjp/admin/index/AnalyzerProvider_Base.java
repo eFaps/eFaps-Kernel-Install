@@ -51,7 +51,7 @@ public abstract class AnalyzerProvider_Base
     public Analyzer getAnalyzer(final Long _companyId,
                                 final String _language)
     {
-        StandardAnalyzer ret;
+        final StandardAnalyzer ret;
         switch (_language) {
             case "de":
                 ret = new StandardAnalyzer(GermanAnalyzer.getDefaultStopSet());

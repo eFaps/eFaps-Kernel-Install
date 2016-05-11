@@ -27,9 +27,11 @@
         <database>
             <table-name>T_INDEXFIELD</table-name>
             <column name="DEFID"        type="INTEGER"                      not-null="true" />
+            <column name="IDX"          type="INTEGER"                      not-null="true" />
             <column name="KEY"          type="STRING_SHORT" length="64"     not-null="true" />
             <column name="SELECTSTMT"   type="STRING_SHORT" length="256" />
             <column name="FIELDTYPE"    type="INTEGER"                      not-null="true" />
+            <column name="PRGID"        type="INTEGER"/>
             <column name="CREATOR"      type="INTEGER"                      not-null="true"/>
             <column name="CREATED"      type="DATETIME"                     not-null="true"/>
             <column name="MODIFIER"     type="INTEGER"                      not-null="true"/>

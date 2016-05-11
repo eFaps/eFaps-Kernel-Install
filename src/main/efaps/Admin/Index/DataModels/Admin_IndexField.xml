@@ -44,6 +44,12 @@
             <sqlcolumn>DEFID</sqlcolumn>
         </attribute>
         <attribute>
+            <name>FieldIndex</name>
+            <type>Integer</type>
+            <sqltable>Admin_IndexFieldSQLTable</sqltable>
+            <sqlcolumn>IDX</sqlcolumn>
+        </attribute>
+        <attribute>
             <name>Key</name>
             <type>String</type>
             <sqltable>Admin_IndexFieldSQLTable</sqltable>
@@ -63,6 +69,13 @@
             <sqlcolumn>FIELDTYPE</sqlcolumn>
         </attribute>
          <attribute>
+            <name>TransformerLink</name>
+            <type>Link</type>
+            <typelink>Admin_Program_Java</typelink>
+            <sqltable>Admin_IndexFieldSQLTable</sqltable>
+            <sqlcolumn>PRGID</sqlcolumn>
+        </attribute>
+        <attribute>
             <name>Creator</name>
             <type>CreatorLink</type>
             <sqltable>Admin_IndexFieldSQLTable</sqltable>
