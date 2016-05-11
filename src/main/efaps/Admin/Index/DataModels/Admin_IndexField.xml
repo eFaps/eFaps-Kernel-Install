@@ -44,10 +44,10 @@
             <sqlcolumn>DEFID</sqlcolumn>
         </attribute>
         <attribute>
-            <name>FieldIndex</name>
-            <type>Integer</type>
+            <name>Identifier</name>
+            <type>String</type>
             <sqltable>Admin_IndexFieldSQLTable</sqltable>
-            <sqlcolumn>IDX</sqlcolumn>
+            <sqlcolumn>IDENT</sqlcolumn>
         </attribute>
         <attribute>
             <name>Key</name>

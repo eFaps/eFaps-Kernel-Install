@@ -27,7 +27,7 @@
         <database>
             <table-name>T_INDEXFIELD</table-name>
             <column name="DEFID"        type="INTEGER"                      not-null="true" />
-            <column name="IDX"          type="INTEGER"                      not-null="true" />
+            <column name="IDENT"        type="STRING_SHORT" length="64"     not-null="true" />
             <column name="KEY"          type="STRING_SHORT" length="64"     not-null="true" />
             <column name="SELECTSTMT"   type="STRING_SHORT" length="256" />
             <column name="FIELDTYPE"    type="INTEGER"                      not-null="true" />

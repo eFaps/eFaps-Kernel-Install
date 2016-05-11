@@ -45,7 +45,7 @@ public class StringRight2Long
         if (_object instanceof String) {
             int i = 0;
             String subStr = "0";
-            while (NumberUtils.isDigits(subStr)) {
+            while (NumberUtils.isDigits(subStr) && i - 1 < ((String) _object).length()) {
                 i++;
                 subStr = StringUtils.right((String) _object, i);
             }
