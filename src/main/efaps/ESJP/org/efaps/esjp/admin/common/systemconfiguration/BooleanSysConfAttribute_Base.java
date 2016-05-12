@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ public abstract class BooleanSysConfAttribute_Base
     public Boolean get()
         throws EFapsException
     {
-        boolean ret;
+        final boolean ret;
         if (SystemConfiguration.get(getSysConfUUID()).containsAttributeValue(getKey())) {
             ret = SystemConfiguration.get(getSysConfUUID()).getAttributeValueAsBoolean(getKey());
         } else {

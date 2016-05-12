@@ -198,8 +198,8 @@ public abstract class SystemConf_Base
         final Return ret = new Return();
 
         final PrintQuery print = new PrintQuery(_parameter.getCallInstance());
-        SelectBuilder selUUID;
-        SelectBuilder selInst;
+        final SelectBuilder selUUID;
+        final SelectBuilder selInst;
         if (_parameter.getCallInstance().getType().isCIType(CIAdminCommon.SystemConfiguration)) {
             selUUID = SelectBuilder.get().attribute(CIAdminCommon.SystemConfiguration.UUID);
             selInst = SelectBuilder.get().instance();
@@ -273,7 +273,7 @@ public abstract class SystemConf_Base
         final boolean isLink = "true".equalsIgnoreCase(getProperty(_parameter, "SysConfLink"));
 
         final PrintQuery print = new PrintQuery(_parameter.getCallInstance());
-        SelectBuilder sel;
+        final SelectBuilder sel;
         if (_parameter.getCallInstance().getType().isCIType(CIAdminCommon.SystemConfiguration)) {
             sel = SelectBuilder.get().attribute(CIAdminCommon.SystemConfiguration.UUID);
         } else {
@@ -298,11 +298,11 @@ public abstract class SystemConf_Base
 
         final Map<String, Object> map = new HashMap<String, Object>();
 
-        CharSequence node;
+        final CharSequence node;
         if (attr == null) {
             node = "<textarea rows=\"5\" name=\"value\"></textarea>";
         } else {
-            node = attr.getHtml(_parameter, null);
+            node = StringEscapeUtils.escapeEcmaScript(attr.getHtml(_parameter, null).toString());
             if (attr instanceof AbstractSysConfAttribute_Base) {
                 map.put("description", StringEscapeUtils.escapeEcmaScript(
                                 ((AbstractSysConfAttribute_Base<?, ?>) attr).getDescription()));

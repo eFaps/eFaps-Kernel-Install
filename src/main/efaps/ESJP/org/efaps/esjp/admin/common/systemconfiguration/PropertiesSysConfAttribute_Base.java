@@ -74,7 +74,7 @@ public abstract class PropertiesSysConfAttribute_Base
     public Properties get()
         throws EFapsException
     {
-        Properties ret;
+        final Properties ret;
         if (SystemConfiguration.get(getSysConfUUID()).containsAttributeValue(getKey())) {
             ret = SystemConfiguration.get(getSysConfUUID()).getAttributeValueAsProperties(getKey(), this.concatenate);
         } else if (getDefaultValue() != null) {
@@ -97,18 +97,18 @@ public abstract class PropertiesSysConfAttribute_Base
             final StringBuilder str = new StringBuilder();
             for (final Entry<Object, Object> entry: getDefaultValue().entrySet()) {
                 if (str.length() > 0) {
-                    str.append("/n");
+                    str.append("\n");
                 }
                 str.append(entry.getKey()).append("=").append(entry.getValue());
-                ret.append(StringEscapeUtils.escapeHtml4(str.toString()));
             }
+            ret.append(StringEscapeUtils.escapeHtml4(str.toString()));
         }
         ret.append("</textarea>");
-        return ret;
+        return ret.toString();
     }
 
     /**
-     * Adds a default value to the properties
+     * Adds a default value to the properties.
      *
      * @param _key the _key
      * @param _value the _value
