@@ -17,19 +17,21 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>9a8d78db-f234-4a7b-8551-782d2559804e</uuid>
+    <uuid>c3492559-edc6-47b5-b761-96917f94a0b8</uuid>
     <file-application>eFaps-Kernel</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_IndexSearchTree_Menu_Action_Edit</name>
+        <name>Admin_IndexSearchTree_ResultFields_Menu_Action_Create</name>
         <access>
             <role>Administration</role>
         </access>
         <target>
-            <form>Admin_IndexSearchForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit" />
+            <form>Admin_IndexSearchResultFieldForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Create" />
         </target>
         <property name="Target">modal</property>
-        <property name="TargetMode">edit</property>
+        <property name="TargetCreateType">Admin_IndexSearchResultField</property>
+        <property name="TargetConnectAttribute">Admin_IndexSearchResultField/SearchLink</property>
+        <property name="TargetMode">create</property>
     </definition>
 </ui-command>

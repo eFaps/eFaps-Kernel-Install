@@ -38,6 +38,7 @@ import org.efaps.admin.program.esjp.Listener;
 import org.efaps.api.annotation.EFapsSysConfAttribute;
 import org.efaps.api.annotation.EFapsSysConfLink;
 import org.efaps.api.annotation.EFapsSystemConfiguration;
+import org.efaps.esjp.admin.index.Search;
 import org.efaps.rest.EFapsResourceConfig;
 import org.efaps.rest.EFapsResourceConfig.EFapsResourceFinder;
 import org.efaps.util.EFapsException;
@@ -388,6 +389,14 @@ public final class SysConfResourceConfig
         LOG.info("    Add Attribute: {}", attr);
         attrs.add(attr);
 
+        /** See description. */
+        attr = new StringSysConfAttribute()
+                        .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
+                        .key(KernelSettings.INDEXSEARCHCLASS)
+                        .defaultValue(Search.class.getName())
+                        .description("ClassName of the class used for getting the Search. Must implement\n"
+                                        + " org.efaps.admin.index.ISearch.");
+        attrs.add(attr);
 
         for (final ISysConfAttribute attrTmp : ATTRS) {
             attrs.add(attrTmp);
