@@ -67,7 +67,11 @@ public abstract class AbstractCachedReport_Base
         throws EFapsException
     {
         final StringBuilder ret = new StringBuilder();
-        ret.append(Context.getThreadContext().getPerson().getId())
+        ret.append(Context.getThreadContext().getCompany() == null
+                        ? "NONE"
+                        : Context.getThreadContext().getCompany().getId())
+            .append(":")
+            .append(Context.getThreadContext().getPerson().getId())
             .append(":").append(getProperty(_parameter, "FilterKey", getClass().getName()));
         if ("true".equalsIgnoreCase(getProperty(_parameter, "CachedReportAddInstanceCriteria"))) {
             if (_parameter.getInstance() != null && _parameter.getInstance().isValid()) {
@@ -86,7 +90,7 @@ public abstract class AbstractCachedReport_Base
     public boolean isCached(final Parameter _parameter)
         throws EFapsException
     {
-        boolean ret;
+        final boolean ret;
         if ("true".equalsIgnoreCase(getProperty(_parameter, "CachedReportForceReload"))) {
             ret = false;
         } else {
