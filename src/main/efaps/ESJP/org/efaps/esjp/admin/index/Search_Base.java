@@ -17,6 +17,7 @@
 package org.efaps.esjp.admin.index;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -61,6 +62,9 @@ public abstract class Search_Base
     /** The result fields. */
     private Map<String, Collection<String>> resultFields;
 
+    /** The result fields. */
+    private Map<String, String> resultLabels;
+
     /**
      * Inits the.
      */
@@ -70,6 +74,7 @@ public abstract class Search_Base
             try {
                 this.initialized = true;
                 this.resultFields = new LinkedHashMap<>();
+                this.resultLabels = new HashMap<>();
                 // this should be replaced by an actual evaluation of which one
                 // of the searches should be used
                 final QueryBuilder indxQueryBldr = new QueryBuilder(CIAdminIndex.IndexSearch);
@@ -85,10 +90,12 @@ public abstract class Search_Base
                     queryBldr.addOrderByAttributeAsc(CIAdminIndex.IndexSearchResultField.Priority);
                     final MultiPrintQuery multi = queryBldr.getCachedPrint(Search.CACHEKEY);
                     multi.setEnforceSorted(true);
-                    multi.addAttribute(CIAdminIndex.IndexSearchResultField.Key);
+                    multi.addAttribute(CIAdminIndex.IndexSearchResultField.Key,
+                                    CIAdminIndex.IndexSearchResultField.Label);
                     multi.execute();
                     while (multi.next()) {
                         final String key = multi.getAttribute(CIAdminIndex.IndexSearchResultField.Key);
+                        final String label = multi.getAttribute(CIAdminIndex.IndexSearchResultField.Label);
                         final QueryBuilder keyQueryBldr = new QueryBuilder(CIAdminIndex.IndexSearchResultFieldKey);
                         keyQueryBldr.addWhereAttrEqValue(CIAdminIndex.IndexSearchResultFieldKey.ResultFieldLink, multi
                                         .getCurrentInstance());
@@ -104,9 +111,9 @@ public abstract class Search_Base
                             } else {
                                 keys.add(DBProperties.getProperty(keyTmp));
                             }
-
                         }
                         this.resultFields.put(key, keys);
+                        this.resultLabels.put(key, DBProperties.getProperty(label));
                     }
                 }
             } catch (final EFapsException e) {
@@ -132,5 +139,12 @@ public abstract class Search_Base
     {
         init();
         return this.resultFields;
+    }
+
+    @Override
+    public Map<String, String> getResultLabel()
+    {
+        init();
+        return this.resultLabels;
     }
 }
