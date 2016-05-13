@@ -24,5 +24,20 @@
         <name>Admin_IndexSearch</name>
         <parent>Admin_IndexSearchAbstract</parent>
         <purpose GeneralInstance="false" />
+        <trigger program="org.efaps.esjp.common.cache.CacheUtils"
+            method="cleanQueryCacheTrigger" name="Admin_IndexSearch.INSERT_POST"
+            event="INSERT_POST">
+            <property name="CacheName">org.efaps.esjp.admin.index.Search.CacheKey</property>
+        </trigger>
+        <trigger program="org.efaps.esjp.common.cache.CacheUtils"
+            method="cleanQueryCacheTrigger" name="Admin_IndexSearch.UPDATE_POST"
+            event="UPDATE_POST">
+            <property name="CacheName">org.efaps.esjp.admin.index.Search.CacheKey</property>
+        </trigger>
+        <trigger program="org.efaps.esjp.common.cache.CacheUtils"
+            method="cleanQueryCacheTrigger" name="Admin_IndexSearch.DELETE_POST"
+            event="DELETE_POST">
+            <property name="CacheName">org.efaps.esjp.admin.index.Search.CacheKey</property>
+        </trigger>
     </definition>
 </datamodel-type>
