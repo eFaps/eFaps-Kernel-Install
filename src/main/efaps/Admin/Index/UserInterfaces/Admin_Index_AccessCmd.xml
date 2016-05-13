@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
  Copyright 2003 - 2016 The eFaps Team
@@ -16,22 +16,17 @@
  limitations under the License.
 
 -->
-
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>9cebf60b-541c-4656-9ed0-6bcca06cc0a3</uuid>
+    <uuid>88c9ce19-d759-443e-b791-0e725fe58f52</uuid>
     <file-application>eFaps-Kernel</file-application>
-        <definition>
+    <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_DataModel_AbstractMyDesk</name>
-        <childs>
-            <child>Admin_DataModel_SQLTableMyDesk</child>
-            <child>Admin_DataModel_TypeMyDesk</child>
-            <child>Admin_DataModel_AttributeTypeMyDesk</child>
-            <child>Admin_DataModel_DimensionMyDesk</child>
-            <child>Admin_DataModel_StatusMyDesk</child>
-            <child>Admin_IndexDefinitionMyDesk</child>
-            <child>Admin_IndexSearchMyDesk</child>
-        </childs>
+        <name>Admin_Index_AccessCmd</name>
+        <target>
+        </target>
+        <property name="Target">content</property>
+        <property name="TargetMode">view</property>
+        <property name="TargetShowCheckBoxes">true</property>
     </definition>
-</ui-menu>
+</ui-command>

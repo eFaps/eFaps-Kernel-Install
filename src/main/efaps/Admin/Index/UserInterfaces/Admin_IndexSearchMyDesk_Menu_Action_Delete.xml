@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2016 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,22 +15,20 @@
  limitations under the License.
 
 -->
-
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>9cebf60b-541c-4656-9ed0-6bcca06cc0a3</uuid>
+    <uuid>199f46e0-053c-4ff3-adcf-55b19e1c0d6b</uuid>
     <file-application>eFaps-Kernel</file-application>
-        <definition>
+    <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_DataModel_AbstractMyDesk</name>
-        <childs>
-            <child>Admin_DataModel_SQLTableMyDesk</child>
-            <child>Admin_DataModel_TypeMyDesk</child>
-            <child>Admin_DataModel_AttributeTypeMyDesk</child>
-            <child>Admin_DataModel_DimensionMyDesk</child>
-            <child>Admin_DataModel_StatusMyDesk</child>
-            <child>Admin_IndexDefinitionMyDesk</child>
-            <child>Admin_IndexSearchMyDesk</child>
-        </childs>
+        <name>Admin_IndexSearchMyDesk_Menu_Action_Delete</name>
+        <access>
+            <role>Administration</role>
+        </access>
+        <target>
+            <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
+        </target>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
     </definition>
-</ui-menu>
+</ui-command>

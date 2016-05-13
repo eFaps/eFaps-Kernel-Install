@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2016 The eFaps Team
+ Copyright 2003 - 2015 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,22 +15,22 @@
  limitations under the License.
 
 -->
-
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>9cebf60b-541c-4656-9ed0-6bcca06cc0a3</uuid>
+    <uuid>1353fe42-ef71-4385-a043-4ae7fc5e206b</uuid>
     <file-application>eFaps-Kernel</file-application>
-        <definition>
+    <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_DataModel_AbstractMyDesk</name>
-        <childs>
-            <child>Admin_DataModel_SQLTableMyDesk</child>
-            <child>Admin_DataModel_TypeMyDesk</child>
-            <child>Admin_DataModel_AttributeTypeMyDesk</child>
-            <child>Admin_DataModel_DimensionMyDesk</child>
-            <child>Admin_DataModel_StatusMyDesk</child>
-            <child>Admin_IndexDefinitionMyDesk</child>
-            <child>Admin_IndexSearchMyDesk</child>
-        </childs>
+        <name>Admin_IndexSearchMyDesk_Menu_Action_Create</name>
+        <access>
+            <role>Administration</role>
+        </access>
+        <target>
+            <form>Admin_IndexSearchForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Create" />
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Admin_IndexSearch</property>
+        <property name="TargetMode">create</property>
     </definition>
-</ui-menu>
+</ui-command>

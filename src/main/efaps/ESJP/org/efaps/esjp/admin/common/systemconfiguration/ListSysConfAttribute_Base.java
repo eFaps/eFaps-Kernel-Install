@@ -18,6 +18,7 @@ package org.efaps.esjp.admin.common.systemconfiguration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -38,6 +39,13 @@ import org.efaps.util.EFapsException;
 public abstract class ListSysConfAttribute_Base
     extends AbstractSysConfAttribute<ListSysConfAttribute, List<String>>
 {
+    /**
+     * Instantiates a new list sys conf attribute_ base.
+     */
+    public ListSysConfAttribute_Base()
+    {
+        defaultValue(Collections.<String>emptyList());
+    }
 
     @Override
     protected ListSysConfAttribute getThis()
@@ -50,9 +58,13 @@ public abstract class ListSysConfAttribute_Base
         throws EFapsException
     {
         final List<String> ret = new ArrayList<>();
-        final String str = SystemConfiguration.get(getSysConfUUID()).getAttributeValue(getKey());
-        if (StringUtils.isNotEmpty(str)) {
-            ret.addAll(Arrays.asList(str.split("\\r?\\n")));
+        if (SystemConfiguration.get(getSysConfUUID()).containsAttributeValue(getKey())) {
+            final String str = SystemConfiguration.get(getSysConfUUID()).getAttributeValue(getKey());
+            if (StringUtils.isNotEmpty(str)) {
+                ret.addAll(Arrays.asList(str.split("\\r?\\n")));
+            }
+        } else {
+            ret.addAll(getDefaultValue());
         }
         return ret;
     }

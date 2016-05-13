@@ -16,8 +16,6 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
-
 -->
 
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -57,7 +55,7 @@
         <field name="creator">
             <property name="SelectAlternateOID">linkto[Creator].oid</property>
             <property name="Attribute">Creator</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="HRef">TREE</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="ShowTypeIcon">true</property>
         </field>
@@ -70,7 +68,7 @@
         <field name="modifier">
             <property name="SelectAlternateOID">linkto[Modifier].oid</property>
             <property name="Attribute">Modifier</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="HRef">TREE</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="ShowTypeIcon">true</property>
         </field>
@@ -85,7 +83,7 @@
         <field name="parentClassType">
             <property name="SelectAlternateOID">linkto[ParentClassType].oid</property>
             <property name="Select">linkto[ParentClassType].attribute[Name]</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="HRef">TREE</property>
             <property name="Label">Admin_DataModel_Type/ParentClassType.Label</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="ShowTypeIcon">true</property>
@@ -93,10 +91,16 @@
         <field name="parentType">
             <property name="SelectAlternateOID">linkto[ParentType].oid</property>
             <property name="Select">linkto[ParentType].attribute[Name]</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="HRef">TREE</property>
             <property name="Label">Admin_DataModel_Type/ParentType.Label</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="parentType">
+            <property name="SelectAlternateOID">linkfrom[Admin_IndexDefinition#TypeLink].oid</property>
+            <property name="Select">linkfrom[Admin_IndexDefinition#TypeLink].linkto[TypeLink].attribute[Name]</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Admin_IndexDefinition.Label</property>
         </field>
     </definition>
 </ui-form>

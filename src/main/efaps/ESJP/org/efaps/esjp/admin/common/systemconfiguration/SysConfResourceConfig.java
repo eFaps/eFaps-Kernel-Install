@@ -23,8 +23,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.efaps.admin.KernelSettings;
@@ -36,6 +38,7 @@ import org.efaps.admin.program.esjp.Listener;
 import org.efaps.api.annotation.EFapsSysConfAttribute;
 import org.efaps.api.annotation.EFapsSysConfLink;
 import org.efaps.api.annotation.EFapsSystemConfiguration;
+import org.efaps.esjp.admin.index.Search;
 import org.efaps.rest.EFapsResourceConfig;
 import org.efaps.rest.EFapsResourceConfig.EFapsResourceFinder;
 import org.efaps.util.EFapsException;
@@ -53,6 +56,14 @@ import org.slf4j.LoggerFactory;
 @EFapsApplication("eFaps-Kernel")
 public final class SysConfResourceConfig
 {
+
+    /** The attrs. */
+    private static Set<ISysConfAttribute> ATTRS = new HashSet<>();
+    static {
+        ATTRS.add(KernelConfigurations.INDEXBASEFOLDER);
+        ATTRS.add(KernelConfigurations.INDEXLANG);
+    }
+
     /**
      * Singleton instance.
      */
@@ -72,7 +83,6 @@ public final class SysConfResourceConfig
      * Links  found by the scanner.
      */
     private final Map<String, List<ISysConfLink>> uuid2link = new HashMap<>();
-
 
     /**
      * Constructor.
@@ -355,6 +365,42 @@ public final class SysConfResourceConfig
                                         + " eFapsApp-Sales=Role.AsList=ubicaciones;products");
         LOG.info("    Add Attribute: {}", attr);
         attrs.add(attr);
+
+        attr = new BooleanSysConfAttribute()
+                        .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
+                        .key(KernelSettings.INDEXACTIVATE)
+                        .description(" Activate the general index mechanism.");
+        LOG.info("    Add Attribute: {}", attr);
+        attrs.add(attr);
+
+        attr = new StringSysConfAttribute()
+                        .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
+                        .key(KernelSettings.INDEXANALYZERPROVCLASS)
+                        .description("ClassName of the class used for getting the Analyzer. Must implement\n"
+                                        + " org.efaps.admin.index.IAnalyzerProvider");
+        LOG.info("    Add Attribute: {}", attr);
+        attrs.add(attr);
+
+        attr = new StringSysConfAttribute()
+                        .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
+                        .key(KernelSettings.INDEXDIRECTORYPROVCLASS)
+                        .description("ClassName of the class used for getting the Directory. Must implement\n"
+                                        + " org.efaps.admin.index.IDirectoryProvider");
+        LOG.info("    Add Attribute: {}", attr);
+        attrs.add(attr);
+
+        /** See description. */
+        attr = new StringSysConfAttribute()
+                        .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
+                        .key(KernelSettings.INDEXSEARCHCLASS)
+                        .defaultValue(Search.class.getName())
+                        .description("ClassName of the class used for getting the Search. Must implement\n"
+                                        + " org.efaps.admin.index.ISearch.");
+        attrs.add(attr);
+
+        for (final ISysConfAttribute attrTmp : ATTRS) {
+            attrs.add(attrTmp);
+        }
     }
 
     /**

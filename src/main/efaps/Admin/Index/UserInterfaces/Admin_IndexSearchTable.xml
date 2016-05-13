@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2016 The eFaps Team
 
@@ -16,22 +15,21 @@
  limitations under the License.
 
 -->
-
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>9cebf60b-541c-4656-9ed0-6bcca06cc0a3</uuid>
+    <uuid>bc19e799-3e3e-4388-82b2-b6a3430fd9ba</uuid>
     <file-application>eFaps-Kernel</file-application>
-        <definition>
+    <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_DataModel_AbstractMyDesk</name>
-        <childs>
-            <child>Admin_DataModel_SQLTableMyDesk</child>
-            <child>Admin_DataModel_TypeMyDesk</child>
-            <child>Admin_DataModel_AttributeTypeMyDesk</child>
-            <child>Admin_DataModel_DimensionMyDesk</child>
-            <child>Admin_DataModel_StatusMyDesk</child>
-            <child>Admin_IndexDefinitionMyDesk</child>
-            <child>Admin_IndexSearchMyDesk</child>
-        </childs>
+        <name>Admin_IndexSearchTable</name>
+        <field name="type">
+            <property name="Attribute">Type</property>
+            <property name="Label">Admin_IndexSearchAbstract/Type.Label</property>
+        </field>
+        <field name="name">
+            <property name="Attribute">Name</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Admin_IndexSearchAbstract/Name.Label</property>
+        </field>
     </definition>
-</ui-menu>
+</ui-table>
