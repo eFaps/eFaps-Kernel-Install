@@ -34,6 +34,8 @@ import org.efaps.admin.index.IndexContext;
 import org.efaps.admin.index.IndexDefinition;
 import org.efaps.admin.index.Indexer;
 import org.efaps.admin.index.Queue;
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.user.Company;
 import org.efaps.ci.CIAdminUser;
 import org.efaps.db.Instance;
@@ -44,9 +46,6 @@ import org.efaps.esjp.admin.common.systemconfiguration.KernelConfigurations;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.InfinispanCache;
 import org.infinispan.AdvancedCache;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,8 +54,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author The eFaps Team
  */
+@EFapsUUID("cb0a815a-b40c-48c8-a2f5-6d19bab6ddcc")
+@EFapsApplication("eFaps-Kernel")
 public abstract class Process_Base
-    implements Job
 {
 
     /**
@@ -173,17 +173,5 @@ public abstract class Process_Base
             }
         }
         return new Return();
-    }
-
-    @Override
-    public void execute(final JobExecutionContext _context)
-        throws JobExecutionException
-    {
-        final Parameter paramter = new Parameter();
-        try {
-            updateIndex(paramter);
-        } catch (final EFapsException e) {
-            LOG.error("EFapsException", e);
-        }
     }
 }

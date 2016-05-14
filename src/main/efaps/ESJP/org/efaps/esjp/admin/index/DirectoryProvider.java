@@ -16,11 +16,18 @@
  */
 package org.efaps.esjp.admin.index;
 
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
+
 /**
- * The Class DirectoryProvider.
+ * This class must be replaced for customization, therefore it is left empty.
+ * Functional description can be found in the related "<code>_Base</code>"
+ * class.
  *
  * @author The eFaps Team
  */
+@EFapsUUID("56aa6e8f-592a-49bd-9436-58465ffc9c7b")
+@EFapsApplication("eFaps-Kernel")
 public class DirectoryProvider
     extends DirectoryProvider_Base
 {

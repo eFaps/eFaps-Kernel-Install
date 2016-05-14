@@ -17,6 +17,7 @@
 package org.efaps.esjp.admin.index;
 
 import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsListener;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -26,11 +27,12 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  *
  * @author The eFaps Team
  */
-@EFapsUUID("acea3632-aa33-40ae-a838-07a67454026b")
+@EFapsUUID("2f34a071-97b5-45bf-b7c7-cb0cb01901bd")
 @EFapsApplication("eFaps-Kernel")
-public class Search
-    extends Search_Base
+@EFapsListener
+public class Definition
+    extends Definition_Base
 {
-    /** The Constant CACHEKEY. */
-    public static final String CACHEKEY = Search_Base.CACHEKEY;
+
+
 }

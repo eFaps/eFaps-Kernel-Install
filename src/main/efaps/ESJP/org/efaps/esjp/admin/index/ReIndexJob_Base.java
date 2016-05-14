@@ -16,21 +16,34 @@
  */
 package org.efaps.esjp.admin.index;
 
+import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.util.EFapsException;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 
 /**
- * This class must be replaced for customization, therefore it is left empty.
- * Functional description can be found in the related "<code>_Base</code>"
- * class.
+ * The Class ReIndexJob_Base.
  *
  * @author The eFaps Team
  */
-@EFapsUUID("acea3632-aa33-40ae-a838-07a67454026b")
+@EFapsUUID("1883f55e-f3a0-431e-8706-a7ff494c1f2a")
 @EFapsApplication("eFaps-Kernel")
-public class Search
-    extends Search_Base
+public abstract class ReIndexJob_Base
+    implements Job
 {
-    /** The Constant CACHEKEY. */
-    public static final String CACHEKEY = Search_Base.CACHEKEY;
+
+    @Override
+    public void execute(final JobExecutionContext _context)
+        throws JobExecutionException
+    {
+        final Parameter paramter = new Parameter();
+        try {
+            new Process().reIndex(paramter);
+        } catch (final EFapsException e) {
+            throw new JobExecutionException(e);
+        }
+    }
 }

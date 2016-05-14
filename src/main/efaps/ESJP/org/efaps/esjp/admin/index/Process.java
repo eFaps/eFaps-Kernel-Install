@@ -18,11 +18,18 @@
 
 package org.efaps.esjp.admin.index;
 
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
+
 /**
- * TODO comment!
+ * This class must be replaced for customization, therefore it is left empty.
+ * Functional description can be found in the related "<code>_Base</code>"
+ * class.
  *
  * @author The eFaps Team
  */
+@EFapsUUID("ad553f4f-e054-4ce3-9fa6-4ff84bf5a367")
+@EFapsApplication("eFaps-Kernel")
 public class Process
     extends Process_Base
 {

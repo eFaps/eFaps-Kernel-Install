@@ -16,21 +16,40 @@
  */
 package org.efaps.esjp.admin.index;
 
+import org.efaps.admin.event.Parameter;
+import org.efaps.admin.index.IndexDefinition;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.esjp.admin.common.IReloadCacheListener;
+import org.efaps.util.EFapsException;
 
 /**
- * This class must be replaced for customization, therefore it is left empty.
- * Functional description can be found in the related "<code>_Base</code>"
- * class.
+ * The Class Definition_Base.
  *
  * @author The eFaps Team
  */
-@EFapsUUID("acea3632-aa33-40ae-a838-07a67454026b")
+@EFapsUUID("f47f76c0-1c7b-4cd0-8dc6-74261520e4ca")
 @EFapsApplication("eFaps-Kernel")
-public class Search
-    extends Search_Base
+public abstract class Definition_Base
+    implements IReloadCacheListener
 {
-    /** The Constant CACHEKEY. */
-    public static final String CACHEKEY = Search_Base.CACHEKEY;
+
+    @Override
+    public void onReloadSystemConfig(final Parameter _parameter)
+        throws EFapsException
+    {
+    }
+
+    @Override
+    public void onReloadCache(final Parameter _parameter)
+        throws EFapsException
+    {
+        IndexDefinition.initialize();
+    }
+
+    @Override
+    public int getWeight()
+    {
+        return 0;
+    }
 }

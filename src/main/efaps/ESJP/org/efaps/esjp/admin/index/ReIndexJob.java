@@ -26,11 +26,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  *
  * @author The eFaps Team
  */
-@EFapsUUID("acea3632-aa33-40ae-a838-07a67454026b")
+@EFapsUUID("4169ae07-829d-4131-8ccd-36ab340aabd3")
 @EFapsApplication("eFaps-Kernel")
-public class Search
-    extends Search_Base
+public class ReIndexJob
+    extends ReIndexJob_Base
 {
-    /** The Constant CACHEKEY. */
-    public static final String CACHEKEY = Search_Base.CACHEKEY;
+
 }

@@ -22,6 +22,8 @@ import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.analysis.es.SpanishAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.efaps.admin.index.IAnalyzerProvider;
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.util.EFapsException;
 
@@ -30,6 +32,8 @@ import org.efaps.util.EFapsException;
  *
  * @author The eFaps Team
  */
+@EFapsUUID("390a545a-79c5-4f17-826b-9fd8eab6993b")
+@EFapsApplication("eFaps-Kernel")
 public abstract class AnalyzerProvider_Base
     implements IAnalyzerProvider
 {

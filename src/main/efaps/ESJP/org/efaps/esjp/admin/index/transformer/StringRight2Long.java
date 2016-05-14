@@ -19,6 +19,8 @@ package org.efaps.esjp.admin.index.transformer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.efaps.admin.index.ITransformer;
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.EFapsException;
 
 /**
@@ -26,6 +28,8 @@ import org.efaps.util.EFapsException;
  * Converts Strings to valid
  * @author The eFaps Team
  */
+@EFapsUUID("d5f3dddb-a4dd-4565-a3d5-51c7c0ffc06e")
+@EFapsApplication("eFaps-Kernel")
 public class StringRight2Long
     implements ITransformer
 {

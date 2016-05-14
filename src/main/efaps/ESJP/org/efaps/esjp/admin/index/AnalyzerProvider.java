@@ -16,11 +16,18 @@
  */
 package org.efaps.esjp.admin.index;
 
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
+
 /**
- * The Class AnalyzerProvider.
+ * This class must be replaced for customization, therefore it is left empty.
+ * Functional description can be found in the related "<code>_Base</code>"
+ * class.
  *
  * @author The eFaps Team
  */
+@EFapsUUID("5a119bbe-fddd-4e92-8bb6-9de54b0af6c8")
+@EFapsApplication("eFaps-Kernel")
 public class AnalyzerProvider
     extends AnalyzerProvider_Base
 {

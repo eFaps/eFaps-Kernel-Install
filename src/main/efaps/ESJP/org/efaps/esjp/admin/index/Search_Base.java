@@ -28,6 +28,8 @@ import org.apache.commons.lang3.EnumUtils;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.index.ISearch;
 import org.efaps.admin.index.Indexer;
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
@@ -42,6 +44,8 @@ import org.slf4j.LoggerFactory;
  *
  * @author The eFaps Team
  */
+@EFapsUUID("02edb104-402e-4860-91cf-3102d5bfa1af")
+@EFapsApplication("eFaps-Kernel")
 public abstract class Search_Base
     implements ISearch
 {

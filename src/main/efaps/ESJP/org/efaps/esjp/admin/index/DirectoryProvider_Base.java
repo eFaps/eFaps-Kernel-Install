@@ -22,6 +22,8 @@ import java.io.IOException;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.efaps.admin.index.IDirectoryProvider;
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.esjp.admin.common.systemconfiguration.KernelConfigurations;
 import org.efaps.util.EFapsException;
@@ -31,6 +33,8 @@ import org.efaps.util.EFapsException;
  *
  * @author The eFaps Team
  */
+@EFapsUUID("5695e5bf-5fb2-4770-9f6a-5ee82b3c728c")
+@EFapsApplication("eFaps-Kernel")
 public abstract class DirectoryProvider_Base
     implements IDirectoryProvider
 {
