@@ -155,10 +155,11 @@ public abstract class Process_Base
             for (final IndexDefinition def : defs) {
                 final Type type = Type.get(def.getUUID());
                 final QueryBuilder queryBldr = new QueryBuilder(type);
-                final InstanceQuery query = queryBldr.getQuery();
+                queryBldr.setCompanyDependent(false);
                 if (type.isCompanyDependent()) {
                     queryBldr.addWhereAttrEqValue(type.getCompanyAttribute(), compInst);
                 }
+                final InstanceQuery query = queryBldr.getQuery();
                 final List<Instance> instances = query.executeWithoutAccessCheck();
                 for (final String language : KernelConfigurations.INDEXLANG.get()) {
                     final Directory directory = dirProvider.getDirectory(compInst.getId(), language);
