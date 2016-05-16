@@ -398,6 +398,16 @@ public final class SysConfResourceConfig
                                         + " org.efaps.admin.index.ISearch.");
         attrs.add(attr);
 
+        /** See description. */
+        attr = new StringSysConfAttribute()
+                        .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
+                        .key(KernelSettings.INDEXDEFAULTOP)
+                        .defaultValue("AND")
+                        .description("The default operator for the QueryParser Can be 'AND' or 'OR'. Default is set\n"
+                                        + " to 'AND' for eFaps.");
+        attrs.add(attr);
+
+
         for (final ISysConfAttribute attrTmp : ATTRS) {
             attrs.add(attrTmp);
         }
