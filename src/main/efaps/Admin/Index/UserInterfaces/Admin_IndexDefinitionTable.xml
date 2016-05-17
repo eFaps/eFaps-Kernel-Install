@@ -43,5 +43,9 @@
             <property name="Label">Admin_Common_MsgPhrase.Label</property>
             <property name="HRef">TREE</property>
         </field>
+        <field name="active">
+            <property name="Select">attribute[Active]</property>
+            <property name="Label">Admin_IndexDefinition/Active.Label</property>
+        </field>
     </definition>
 </ui-table>

@@ -15,21 +15,15 @@
  limitations under the License.
 
 -->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>a661a23e-1265-4263-8dea-4dff423cbaaf</uuid>
+    <uuid>670e2871-818f-492e-bc71-2d92dd5b5cd8</uuid>
     <file-application>eFaps-Kernel</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_IndexSearchResultFieldTree_Menu_Action_Edit</name>
-        <access>
-            <role>Administration</role>
-        </access>
-        <target>
-            <form>Admin_IndexSearchResultFieldForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit" />
-        </target>
-        <property name="Target">modal</property>
-        <property name="TargetMode">edit</property>
+        <name>Admin_IndexDefinitionTree_Menu_Action</name>
+        <childs>
+            <child>Admin_IndexDefinitionTree_Menu_Action_Edit</child>
+        </childs>
     </definition>
-</ui-command>
+</ui-menu>

@@ -23,6 +23,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Admin_IndexDefinitionTree</name>
         <target>
+            <menu>Admin_IndexDefinitionTree_Menu</menu>
             <form>Admin_IndexDefinitionForm</form>
         </target>
         <type>Admin_IndexDefinition</type>

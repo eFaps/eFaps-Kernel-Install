@@ -30,6 +30,10 @@
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Admin_IndexDefinition/Type.Label</property>
         </field>
+        <field name="active">
+            <property name="Attribute">Active</property>
+            <property name="ModeEdit">EDITABLE</property>
+        </field>
        <field name="typeLink">
             <property name="SelectAlternateOID">linkto[TypeLink].oid</property>
             <property name="Select">linkto[TypeLink].attribute[Name]</property>

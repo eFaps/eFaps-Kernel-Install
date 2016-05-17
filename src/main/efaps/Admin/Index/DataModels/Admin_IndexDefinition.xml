@@ -50,6 +50,13 @@
             <sqlcolumn>MSGPHRASEID</sqlcolumn>
         </attribute>
         <attribute>
+            <name>Active</name>
+            <type>Boolean</type>
+            <sqltable>Admin_IndexDefinitionSQLTable</sqltable>
+            <sqlcolumn>ACTIVE</sqlcolumn>
+            <defaultvalue>TRUE</defaultvalue>
+        </attribute>
+        <attribute>
             <name>Creator</name>
             <type>CreatorLink</type>
             <sqltable>Admin_IndexDefinitionSQLTable</sqltable>
