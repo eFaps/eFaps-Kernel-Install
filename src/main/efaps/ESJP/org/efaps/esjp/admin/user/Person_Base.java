@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -61,7 +58,6 @@ import org.efaps.util.EFapsException;
  * to a role.
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("9688a81e-eaae-4bd2-b6df-a5a8087483d0")
 @EFapsApplication("eFaps-Kernel")
@@ -310,14 +306,13 @@ public abstract class Person_Base
                     final Insert insert = new Insert(_ciType);
                     insert.add(CIAdminUser._Abstract2Abstract.UserFromAbstractLink, _instance);
                     insert.add(CIAdminUser._Abstract2Abstract.UserToAbstractLink,
-                                    multi.getAttribute(CIAdminUser._Abstract2Abstract.UserToAbstractLink));
+                                    multi.<Long>getAttribute(CIAdminUser._Abstract2Abstract.UserToAbstractLink));
                     insert.add(CIAdminUser._Abstract2Abstract.UserJAASSystem,
-                                    multi.getAttribute(CIAdminUser._Abstract2Abstract.UserJAASSystem));
+                                    multi.<Long>getAttribute(CIAdminUser._Abstract2Abstract.UserJAASSystem));
                     insert.execute();
                 }
             }
         };
-
         return create.execute(_parameter);
     }
 
