@@ -16,21 +16,15 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
-
 -->
 
-<ui-table xmlns="http://www.efaps.org/xsd"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>7334bcdd-5657-4939-b4c1-4bf34b033c28</uuid>
     <file-application>eFaps-Kernel</file-application>
-    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_UI_FileList</name>
-        <!-- fields -->
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="Label">Admin_UI_Abstract/Type.Label</property>
@@ -47,16 +41,21 @@
             <property name="Label">Admin_UI_Abstract/UUID.Label</property>
         </field>
         <field name="revision">
-            <property name="Attribute">Revision</property>
-            <property name="Label">Admin_UI_Abstract/Revision.Label</property>
+            <property name="SelectAlternateOID">linkto[RevisionLink].oid</property>
+            <property name="MsgPhrase">Admin_Common_ApplicationRevisionShortMsgPhrase</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Admin_Common_ApplicationRevision.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="fileName">
             <property name="Attribute">FileName</property>
             <property name="Label">Admin_UI_File/FileName.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="fileLength">
             <property name="Attribute">FileLength</property>
             <property name="Label">Admin_UI_File/FileLength.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="checkout">
             <icon>Action_View</icon>
