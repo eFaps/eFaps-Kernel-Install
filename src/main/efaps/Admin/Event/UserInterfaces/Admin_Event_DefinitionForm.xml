@@ -25,7 +25,6 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Event_DefinitionForm</name>
-        <!-- fields -->
         <field name="type4View">
             <property name="Attribute">Type</property>
             <property name="Label">Admin_Event_Definition/Type.Label</property>
@@ -63,7 +62,6 @@
             <property name="Attribute">IndexPosition</property>
             <property name="Label">Admin_Event_Definition/IndexPosition.Label</property>
             <property name="Required">true</property>
-            <property name="ModeSearch">EDITABLE</property>
         </field>
         <field name="program4View">
             <property name="SelectAlternateOID">linkto[JavaProg].oid</property>
@@ -88,6 +86,7 @@
         <field name="method">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">Method</property>
             <property name="Label">Admin_Event_Definition/Method.Label</property>
             <property name="Required">true</property>

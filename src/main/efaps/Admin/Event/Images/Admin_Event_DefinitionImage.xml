@@ -16,10 +16,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          tmo
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
+ Author:          The eFaps Team
  Original Author: Mark James (mjames at gmail.com)
  Original Name:   transmit.png
                   pencil.png
@@ -29,18 +26,14 @@
                   [ http://creativecommons.org/licenses/by/2.5/ ]
 
 -->
-
-<ui-image xmlns="http://www.efaps.org/xsd"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>974b2e60-0b07-479c-8df3-8c315942db7e</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_Event_Definition+Edit+Image</name>
-    <file>Admin_Event_Definition+Edit+Image.gif</file>
-  </definition>
-
+<ui-image xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>8d5fbf39-2014-4124-843d-c140fac731de</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_Event_DefinitionImage</name>
+        <file>Admin_Event_DefinitionImage.gif</file>
+        <type>Admin_Event_Definition</type>
+    </definition>
 </ui-image>

@@ -16,27 +16,22 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
-
 -->
 
-<ui-table xmlns="http://www.efaps.org/xsd"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>e89de421-5717-4332-a013-ec63792e42b8</uuid>
     <file-application>eFaps-Kernel</file-application>
-    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Event_DefinitionTable</name>
-        <!-- fields -->
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="Label">Admin_Event_Definition/Type.Label</property>
             <property name="ShowTypeIcon">true</property>
             <property name="Width">3</property>
             <property name="FilterType">PICKLIST</property>
+            <property name="ModeSearch">READONLY</property>
         </field>
         <field name="name">
             <property name="SelectAlternateOID">oid</property>
@@ -44,6 +39,7 @@
             <property name="Label">Admin_Event_Definition/Name.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Width">3</property>
+            <property name="ModeSearch">READONLY</property>
         </field>
         <field name="abstract">
             <property name="SelectAlternateOID">linkto[Abstract].oid</property>
@@ -52,21 +48,25 @@
             <property name="ShowTypeIcon">true</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Width">3</property>
+            <property name="ModeSearch">READONLY</property>
         </field>
         <field name="index">
             <property name="Attribute">IndexPosition</property>
             <property name="Label">Admin_Event_Definition/IndexPosition.Label</property>
+            <property name="ModeSearch">READONLY</property>
         </field>
         <field name="javaprog">
             <property name="SelectAlternateOID">linkto[JavaProg].oid</property>
             <property name="Select">linkto[JavaProg].attribute[Name]</property>
             <property name="Label">Admin_Event_Definition/JavaProg.Label</property>
             <property name="Width">3</property>
+            <property name="ModeSearch">READONLY</property>
         </field>
         <field name="method">
             <property name="Attribute">Method</property>
             <property name="Label">Admin_Event_Definition/Method.Label</property>
             <property name="Width">2</property>
+            <property name="ModeSearch">READONLY</property>
         </field>
     </definition>
 

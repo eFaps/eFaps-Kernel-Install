@@ -25,7 +25,6 @@
         <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_User_PersonForm</name>
-        <!-- fields -->
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="ShowTypeIcon">true</property>
@@ -73,7 +72,7 @@
             <property name="Attribute">UUID</property>
             <property name="Required">true</property>
             <property name="ModeSearch">EDITABLE</property>
-             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Admin_User_PersonForm.uUIDRequired.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
@@ -107,7 +106,6 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Revision</property>
             <property name="Required">true</property>
-            <property name="ModeSearch">EDITABLE</property>
         </field>
         <field name="note">
             <property name="Columns">120</property>
@@ -120,13 +118,19 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Status</property>
-            <property name="ModeSearch">EDITABLE</property>
             <property name="Label">Admin_User_Person/Status.Label</property>
             <property name="Required">true</property>
         </field>
+        <field name="status4search">
+            <property name="Attribute">Status</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Label">Admin_User_Person/Status.Label</property>
+        </field>
         <field name="lastlogin">
             <property name="Attribute">LastLogin</property>
-            <property name="ModeSearch">EDITABLE</property>
         </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>
@@ -229,7 +233,6 @@
             <property name="Columns">40</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">EmailSet</property>
-            <property name="ModeSearch">EDITABLE</property>
             <property name="Order">Email|Primary</property>
         </field>
         <field name="phoneSet" character="Set">
@@ -237,7 +240,6 @@
             <property name="Columns">40</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">PhoneSet</property>
-            <property name="ModeSearch">EDITABLE</property>
             <property name="Order">Phone</property>
         </field>
         <field name="rolesheader" character="Heading">

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2016 The eFaps Team
 
@@ -16,23 +15,24 @@
  limitations under the License.
 
 -->
-
-<ui-search xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>fa4afe80-797e-4dab-9eea-7dd06b5a5d15</uuid>
+    <uuid>0c4f6686-5c85-4c33-bbd3-115a1f03e393</uuid>
     <file-application>eFaps-Kernel</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Common_Search</name>
-        <default>
-            <command>Admin_User_PersonSearch</command>
-        </default>
-        <childs>
-            <child>Admin_User_AbstractSearch</child>
-            <child>Admin_DataModel_AbstractSearch</child>
-            <child>Admin_Access_AbstractSearch</child>
-            <child>Admin_UI_AbstractSearch</child>
-            <child>Admin_Program_AbstractSearch</child>
-        </childs>
+        <name>Admin_Event_DefinitionSearch</name>
+        <icon>Admin_Event_DefinitionImage</icon>
+        <access>
+            <role>Administration</role>
+        </access>
+        <target>
+            <form>Admin_Event_DefinitionForm</form>
+            <table>Admin_Event_DefinitionTable</table>
+            <evaluate program="org.efaps.esjp.common.uisearch.Search">
+                <property name="Type">Admin_Event_Definition</property>
+            </evaluate>
+        </target>
+        <property name="TargetMode">search</property>
     </definition>
-</ui-search>
+</ui-command>
