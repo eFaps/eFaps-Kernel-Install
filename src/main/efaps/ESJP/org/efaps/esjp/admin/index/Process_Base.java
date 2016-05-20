@@ -117,11 +117,15 @@ public abstract class Process_Base
         final AnalyzerProvider analyzerProvider = new AnalyzerProvider();
         for (final Entry<Long, Map<Type, List<Instance>>> entry : instanceMap.entrySet()) {
             for (final String language : KernelConfigurations.INDEXLANG.get()) {
-                final Directory directory = dirProvider.getDirectory(entry.getKey(), language);
+                final Directory directory = dirProvider.getDirectory(entry.getKey(), language,
+                                DirectoryProvider.INDEXPATH);
+                final Directory taxonomyDirectory = dirProvider.getDirectory(entry.getKey(), language,
+                                DirectoryProvider.TAXONOMYPATH);
                 final Analyzer analyzer = analyzerProvider.getAnalyzer(null, language);
                 for (final Entry<Type, List<Instance>> subentry : entry.getValue().entrySet()) {
                     final IndexContext indexContext = new IndexContext()
                                     .setDirectory(directory)
+                                    .setTaxonomyDirectory(taxonomyDirectory)
                                     .setAnalyzer(analyzer)
                                     .setLanguage(language)
                                     .setCompanyId(entry.getKey());
@@ -162,13 +166,18 @@ public abstract class Process_Base
                 final InstanceQuery query = queryBldr.getQuery();
                 final List<Instance> instances = query.executeWithoutAccessCheck();
                 for (final String language : KernelConfigurations.INDEXLANG.get()) {
-                    final Directory directory = dirProvider.getDirectory(compInst.getId(), language);
+                    final Directory directory = dirProvider.getDirectory(compInst.getId(), language,
+                                    DirectoryProvider.INDEXPATH);
+                    final Directory taxonomyDirectory = dirProvider.getDirectory(compInst.getId(), language,
+                                    DirectoryProvider.TAXONOMYPATH);
+
                     final Analyzer analyzer = analyzerProvider.getAnalyzer(null, language);
                     final IndexContext indexContext = new IndexContext()
-                        .setDirectory(directory)
-                        .setAnalyzer(analyzer)
-                        .setLanguage(language)
-                        .setCompanyId(compInst.getId());
+                                    .setDirectory(directory)
+                                    .setTaxonomyDirectory(taxonomyDirectory)
+                                    .setAnalyzer(analyzer)
+                                    .setLanguage(language)
+                                    .setCompanyId(compInst.getId());
                     Indexer.index(indexContext, instances);
                 }
             }

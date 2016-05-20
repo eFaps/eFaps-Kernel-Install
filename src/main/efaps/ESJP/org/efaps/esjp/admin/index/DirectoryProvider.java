@@ -32,4 +32,10 @@ public class DirectoryProvider
     extends DirectoryProvider_Base
 {
 
+    /** The Constant INDEXPATH. */
+    public static final String INDEXPATH = DirectoryProvider_Base.INDEXPATH;
+
+    /** The Constant TAXONOMYPATH. */
+    public static final String TAXONOMYPATH = DirectoryProvider_Base.TAXONOMYPATH;
+
 }

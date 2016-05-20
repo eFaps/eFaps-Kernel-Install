@@ -39,11 +39,26 @@ public abstract class DirectoryProvider_Base
     implements IDirectoryProvider
 {
 
+    /** The Constant INDEXPATH. */
+    protected static final String INDEXPATH = "index";
+
+    /** The Constant TAXONOMYPATH. */
+    protected static final String TAXONOMYPATH = "taxonomy";
+
     @Override
     public Directory getDirectory()
         throws EFapsException
     {
-        return getDirectory(Context.getThreadContext().getCompany().getId(), Context.getThreadContext().getLanguage());
+        return getDirectory(Context.getThreadContext().getCompany().getId(), Context.getThreadContext().getLanguage(),
+                        DirectoryProvider.INDEXPATH);
+    }
+
+    @Override
+    public Directory getTaxonomyDirectory()
+        throws EFapsException
+    {
+        return getDirectory(Context.getThreadContext().getCompany().getId(), Context.getThreadContext().getLanguage(),
+                        DirectoryProvider.TAXONOMYPATH);
     }
 
     /**
@@ -51,11 +66,13 @@ public abstract class DirectoryProvider_Base
      *
      * @param _companyId the _company id
      * @param _language the _language
+     * @param _path the _path
      * @return the directory
      * @throws EFapsException the e faps exception
      */
     public Directory getDirectory(final Long _companyId,
-                                  final String _language)
+                                  final String _language,
+                                  final String _path)
         throws EFapsException
     {
         final Directory ret;
@@ -63,11 +80,12 @@ public abstract class DirectoryProvider_Base
 
             final String basefolder = KernelConfigurations.INDEXBASEFOLDER.get();
             final File base = new File(basefolder, String.valueOf(_companyId));
-            final File folder = new File(base, _language);
-            if (!folder.exists()) {
-                folder.mkdirs();
+            final File folder1 = new File(base, _language);
+            final File folder2 = new File(folder1, _path);
+            if (!folder2.exists()) {
+                folder2.mkdirs();
             }
-            ret = FSDirectory.open(folder.toPath());
+            ret = FSDirectory.open(folder2.toPath());
         } catch (final IOException e) {
             throw new EFapsException(DirectoryProvider.class, "");
         }
