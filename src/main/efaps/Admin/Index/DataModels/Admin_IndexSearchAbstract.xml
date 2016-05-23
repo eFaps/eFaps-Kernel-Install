@@ -48,6 +48,13 @@
             <sqlcolumn>NAME</sqlcolumn>
         </attribute>
         <attribute>
+            <name>Config</name>
+            <type>BitEnum</type>
+            <className>org.efaps.admin.index.SearchConfig</className>
+            <sqltable>Admin_IndexSearchSQLTable</sqltable>
+            <sqlcolumn>CONFIG</sqlcolumn>
+        </attribute>
+        <attribute>
             <name>Creator</name>
             <type>CreatorLink</type>
             <sqltable>Admin_IndexSearchSQLTable</sqltable>

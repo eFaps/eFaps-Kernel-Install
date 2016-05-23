@@ -43,6 +43,7 @@ public class CIAdminIndex
         }
 
         public final CIAttribute Name = new CIAttribute(this, "Name");
+        public final CIAttribute Config = new CIAttribute(this, "Config");
         public final CIAttribute Creator = new CIAttribute(this, "Creator");
         public final CIAttribute Created = new CIAttribute(this, "Created");
         public final CIAttribute Modifier = new CIAttribute(this, "Modifier");

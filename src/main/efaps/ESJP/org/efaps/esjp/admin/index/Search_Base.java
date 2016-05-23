@@ -16,6 +16,7 @@
  */
 package org.efaps.esjp.admin.index;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,10 +29,13 @@ import org.apache.commons.lang3.EnumUtils;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.index.ISearch;
 import org.efaps.admin.index.Indexer;
+import org.efaps.admin.index.SearchConfig;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIAdminIndex;
 import org.efaps.esjp.db.InstanceUtils;
@@ -69,6 +73,9 @@ public abstract class Search_Base
     /** The result fields. */
     private Map<String, String> resultLabels;
 
+    /** The configs. */
+    private List<SearchConfig> configs;
+
     /**
      * Inits the.
      */
@@ -79,6 +86,8 @@ public abstract class Search_Base
                 this.initialized = true;
                 this.resultFields = new LinkedHashMap<>();
                 this.resultLabels = new HashMap<>();
+                this.configs = new ArrayList<>();
+
                 // this should be replaced by an actual evaluation of which one
                 // of the searches should be used
                 final QueryBuilder indxQueryBldr = new QueryBuilder(CIAdminIndex.IndexSearch);
@@ -89,6 +98,14 @@ public abstract class Search_Base
                     searchInst = searches.get(0);
                 }
                 if (InstanceUtils.isValid(searchInst)) {
+                    final PrintQuery print = new CachedPrintQuery(searchInst, Search.CACHEKEY);
+                    print.addAttribute(CIAdminIndex.IndexSearch.Config);
+                    print.execute();
+
+                    if(print.getAttribute(CIAdminIndex.IndexSearch.Config) != null) {
+                        this.configs = print.getAttribute(CIAdminIndex.IndexSearch.Config);
+                    }
+
                     final QueryBuilder queryBldr = new QueryBuilder(CIAdminIndex.IndexSearchResultField);
                     queryBldr.addWhereAttrEqValue(CIAdminIndex.IndexSearchResultField.SearchLink, searchInst);
                     queryBldr.addOrderByAttributeAsc(CIAdminIndex.IndexSearchResultField.Priority);
@@ -150,5 +167,13 @@ public abstract class Search_Base
     {
         init();
         return this.resultLabels;
+    }
+
+    @Override
+    public List<SearchConfig> getConfigs()
+        throws EFapsException
+    {
+        init();
+        return this.configs;
     }
 }
