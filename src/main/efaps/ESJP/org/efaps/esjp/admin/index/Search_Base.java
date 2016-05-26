@@ -107,10 +107,9 @@ public abstract class Search_Base
                     final PrintQuery print = new CachedPrintQuery(searchInst, Search.CACHEKEY);
                     print.addAttribute(CIAdminIndex.IndexSearch.Config, CIAdminIndex.IndexSearch.Name);
                     print.execute();
-
+                    this.name = print.getAttribute(CIAdminIndex.IndexSearch.Name);
                     if (print.getAttribute(CIAdminIndex.IndexSearch.Config) != null) {
                         this.configs = print.getAttribute(CIAdminIndex.IndexSearch.Config);
-                        this.name = print.getAttribute(CIAdminIndex.IndexSearch.Name);
                     }
 
                     final QueryBuilder queryBldr = new QueryBuilder(CIAdminIndex.IndexSearchResultField);

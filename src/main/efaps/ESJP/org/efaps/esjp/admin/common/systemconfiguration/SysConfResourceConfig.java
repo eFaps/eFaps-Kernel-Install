@@ -62,6 +62,7 @@ public final class SysConfResourceConfig
     static {
         ATTRS.add(KernelConfigurations.INDEXBASEFOLDER);
         ATTRS.add(KernelConfigurations.INDEXLANG);
+        ATTRS.add(KernelConfigurations.INDEXQUERYBLDR);
     }
 
     /**

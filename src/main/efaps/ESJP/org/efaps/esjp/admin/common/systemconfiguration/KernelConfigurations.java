@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.efaps.admin.EFapsSystemConfiguration;
+import org.efaps.esjp.admin.index.LucenceQueryBuilder;
 
 /**
  * Add additional System Configuration attributes that belongto the kernel but
@@ -45,6 +46,13 @@ public final class KernelConfigurations
                     .key("org.efaps.kernel.index.Languages")
                     .defaultValue(new ArrayList<String>(Arrays.asList(new String[] { "en", "es" })))
                     .description("List of languages the indexes willbe created for.");
+
+    /** See description. */
+    public static final StringSysConfAttribute INDEXQUERYBLDR = new StringSysConfAttribute()
+                    .sysConfUUID(EFapsSystemConfiguration.UUID)
+                    .key("org.efaps.kernel.index.QueryBuilder")
+                    .defaultValue(LucenceQueryBuilder.class.getName())
+                    .description("Class name of the class invoked to build Lucene Queries.");
 
     /**
      * Instantiates a new kernel configurations.
