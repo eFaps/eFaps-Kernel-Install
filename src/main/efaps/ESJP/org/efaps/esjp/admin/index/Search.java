@@ -33,4 +33,8 @@ public class Search
 {
     /** The Constant CACHEKEY. */
     public static final String CACHEKEY = Search_Base.CACHEKEY;
+
+    /** The Constant serialVersionUID. */
+    private static final long serialVersionUID = 1L;
+
 }

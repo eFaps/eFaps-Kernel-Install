@@ -53,9 +53,12 @@ import org.slf4j.LoggerFactory;
 public abstract class Search_Base
     implements ISearch
 {
-
     /** The Constant CACHEKEY. */
     protected static final String CACHEKEY = Search.class.getName() + ".CacheKey";
+
+    /** The Constant serialVersionUID. */
+    private static final long serialVersionUID = 1L;
+
     /**
      * Logging instance used in this class.
      */
@@ -75,6 +78,9 @@ public abstract class Search_Base
 
     /** The configs. */
     private List<SearchConfig> configs;
+
+    /** The name. */
+    private String name;
 
     /**
      * Inits the.
@@ -99,11 +105,12 @@ public abstract class Search_Base
                 }
                 if (InstanceUtils.isValid(searchInst)) {
                     final PrintQuery print = new CachedPrintQuery(searchInst, Search.CACHEKEY);
-                    print.addAttribute(CIAdminIndex.IndexSearch.Config);
+                    print.addAttribute(CIAdminIndex.IndexSearch.Config, CIAdminIndex.IndexSearch.Name);
                     print.execute();
 
-                    if(print.getAttribute(CIAdminIndex.IndexSearch.Config) != null) {
+                    if (print.getAttribute(CIAdminIndex.IndexSearch.Config) != null) {
                         this.configs = print.getAttribute(CIAdminIndex.IndexSearch.Config);
+                        this.name = print.getAttribute(CIAdminIndex.IndexSearch.Name);
                     }
 
                     final QueryBuilder queryBldr = new QueryBuilder(CIAdminIndex.IndexSearchResultField);
@@ -175,5 +182,12 @@ public abstract class Search_Base
     {
         init();
         return this.configs;
+    }
+
+    @Override
+    public String getName()
+    {
+        init();
+        return this.name;
     }
 }
