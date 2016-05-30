@@ -20,6 +20,9 @@
 
 package org.efaps.esjp.common.uiform;
 
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -36,6 +39,7 @@ import java.util.UUID;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Dimension;
@@ -1369,6 +1373,55 @@ public abstract class Field_Base
         ret.put(ReturnValues.VALUES, positions);
         return ret;
     }
+
+    /**
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @return Return containing Html Snipplet
+     * @throws EFapsException on error
+     */
+    public Return getOptionList4DateTime(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
+        final String dateFieldType = getProperty(_parameter,"DateFieldType", "YEAR");
+        switch (dateFieldType) {
+            case "MONTH":
+                for (final Month month : Month.values()) {
+                    final DropDownPosition pos = getDropDownPosition(_parameter, month.getValue(),
+                                    month.getDisplayName(TextStyle.FULL, Context.getThreadContext().getLocale()));
+                    pos.setSelected(month.getValue() == new DateTime().getMonthOfYear());
+                    positions.add(pos);
+                }
+                break;
+            case "YEAR":
+            default:
+                final String fromStr = getProperty(_parameter, "From", "-10");
+                final String toStr = getProperty(_parameter, "To", "+10");
+                LocalDate start;
+                if (StringUtils.isNumeric(fromStr)) {
+                    start = LocalDate.of(Integer.parseInt(fromStr), 1, 1);
+                } else {
+                    start = LocalDate.now().plusYears(Integer.parseInt(fromStr));
+                }
+                LocalDate end;
+                if (StringUtils.isNumeric(toStr)) {
+                    end = LocalDate.of(Integer.parseInt(toStr), 1, 1);
+                } else {
+                    end = LocalDate.now().plusYears(Integer.parseInt(toStr));
+                }
+                while (start.isBefore(end)) {
+                    final DropDownPosition pos = getDropDownPosition(_parameter, start.getYear(), start.getYear());
+                    pos.setSelected(start.getYear() == new DateTime().getYear());
+                    positions.add(pos);
+                    start = start.plusYears(1);
+                }
+                break;
+        }
+        final Return ret = new Return();
+        ret.put(ReturnValues.VALUES, positions);
+        return ret;
+    }
+
 
     /**
      * @param _parameter    Parameter as passed from the eFaps API

@@ -33,8 +33,10 @@ import java.util.UUID;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.collections4.SetUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -53,6 +55,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.file.FileUtil;
 import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.update.schema.program.jasperreport.JasperReportImporter.FakeQueryExecuterFactory;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
@@ -152,7 +155,7 @@ public abstract class StandartReport_Base
         final Return ret = new Return();
         final StringBuilder html = new StringBuilder();
         final Instance reportInst;
-        if (_parameter.getInstance() != null
+        if (InstanceUtils.isValid(_parameter.getInstance())
                         && _parameter.getInstance().getType().isKindOf(CIAdminProgram.JasperReport)) {
             reportInst = _parameter.getInstance();
         } else {
@@ -207,7 +210,12 @@ public abstract class StandartReport_Base
         if (html.length() == 0) {
             html.append("&nbsp;");
         }
-        ret.put(ReturnValues.SNIPLETT, html.toString());
+        final IUIValue uiObject = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+        if (org.efaps.admin.ui.field.Field.Display.HIDDEN.equals(uiObject.getDisplay())) {
+            ret.put(ReturnValues.SNIPLETT, "<input type=\"hidden\">");
+        } else {
+            ret.put(ReturnValues.SNIPLETT, html.toString());
+        }
         return ret;
     }
 
@@ -224,7 +232,7 @@ public abstract class StandartReport_Base
         throws EFapsException
     {
         final Instance instance = _parameter.getInstance();
-        if (instance != null && instance.getType().isKindOf(CIAdminProgram.JasperReport)) {
+        if (InstanceUtils.isValid(instance) && instance.getType().isKindOf(CIAdminProgram.JasperReport)) {
             final PrintQuery print = new PrintQuery(instance);
             print.addAttribute(CIAdminProgram.JasperReport.Name);
             print.execute();
@@ -249,6 +257,9 @@ public abstract class StandartReport_Base
                     break;
                 case "java.lang.Long":
                     obj = Long.valueOf(value);
+                    break;
+                case "java.lang.Boolean":
+                    obj = BooleanUtils.toBoolean(value);
                     break;
                 default:
                     obj = value;
