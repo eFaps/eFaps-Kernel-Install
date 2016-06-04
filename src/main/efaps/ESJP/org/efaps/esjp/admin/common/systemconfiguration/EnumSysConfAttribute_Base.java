@@ -60,8 +60,14 @@ public abstract class EnumSysConfAttribute_Base<E extends Enum<E>>
     public E get()
         throws EFapsException
     {
-        final String val = SystemConfiguration.get(getSysConfUUID()).getAttributeValue(getKey());
-        return EnumUtils.getEnum(this.clazz, val);
+        E ret;
+        if (SystemConfiguration.get(getSysConfUUID()).containsAttributeValue(getKey())) {
+            final String val = SystemConfiguration.get(getSysConfUUID()).getAttributeValue(getKey());
+            ret = EnumUtils.getEnum(this.clazz, val);
+        } else {
+            ret = getDefaultValue();
+        }
+        return ret;
     }
 
     @Override
