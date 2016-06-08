@@ -22,13 +22,13 @@ package org.efaps.esjp.admin.user;
 
 import java.util.Locale;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
-import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -57,14 +57,14 @@ public class LocaleUI
     public Return get4Edit(final Parameter _parameter) throws EFapsException
     {
         final Return retVal = new Return();
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
 
         final TargetMode mode = (TargetMode) _parameter.get(ParameterValues.ACCESSMODE);
-        Locale locale;
+        final Locale locale;
         if (mode.equals(TargetMode.CREATE)) {
             locale = Locale.getDefault();
         } else {
-            final String localeStr = (String) fieldValue.getValue();
+            final String localeStr = (String) fieldValue.getObject();
             final String[] countries = localeStr.split("_");
             if (countries.length == 2) {
                 locale = new Locale(countries[0], countries[1]);

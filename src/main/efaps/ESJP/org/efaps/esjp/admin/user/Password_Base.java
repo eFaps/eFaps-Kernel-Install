@@ -27,7 +27,7 @@ import javax.security.auth.login.LoginException;
 
 import org.efaps.admin.EFapsSystemConfiguration;
 import org.efaps.admin.KernelSettings;
-import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -143,9 +143,9 @@ public abstract class Password_Base
     public Return getFieldValueUI(final Parameter _parameter)
     {
         final StringBuilder ret = new StringBuilder();
-        final FieldValue fieldvalue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final IUIValue fieldvalue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
 
-        final TargetMode mode = fieldvalue.getTargetMode();
+        final TargetMode mode = (TargetMode) _parameter.get(ParameterValues.ACCESSMODE);
 
         final Return retVal = new Return();
 
@@ -242,8 +242,10 @@ public abstract class Password_Base
     /**
      * If a user is member of the roles 'Admin_User_ModifyUsers' or 'Administration'
      * he can set the password.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @return true if has teh right to set password, else false
+     * @throws EFapsException the e faps exception
      */
     protected boolean hasSetPwdAccess(final Parameter _parameter)
         throws EFapsException

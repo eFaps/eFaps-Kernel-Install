@@ -30,7 +30,6 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.common.SystemConfiguration;
-import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -161,10 +160,10 @@ public abstract class SystemConf_Base
                                                   final List<DropDownPosition> _values)
                                                       throws EFapsException
             {
-                final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+                final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
                 for (final DropDownPosition dropPos : _values) {
-                    if (fieldValue != null && fieldValue.getValue() != null
-                                    && fieldValue.getValue().equals(dropPos.getValue())) {
+                    if (fieldValue != null && fieldValue.getObject() != null
+                                    && fieldValue.getObject().equals(dropPos.getValue())) {
                         dropPos.setSelected(true);
                         break;
                     }

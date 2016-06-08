@@ -26,7 +26,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -69,8 +69,8 @@ public abstract class Group_Base
         final Return ret = new Return();
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final boolean setSessionVar = "true".equalsIgnoreCase((String) properties.get("SetSessionVariable"));
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        final Object value = fieldValue.getValue();
+        final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+        final Object value = fieldValue.getObject();
 
         final List<DropDownPosition> dropDownList = new ArrayList<DropDownPosition>();
         for (final Long groupId : Context.getThreadContext().getPerson().getGroups()) {
@@ -136,7 +136,7 @@ public abstract class Group_Base
                         || Context.getThreadContext().getPerson().getGroups().size() > 1) {
             access  = true;
         }
-        if ((!inverse && access) || (inverse && !access)) {
+        if (!inverse && access || inverse && !access) {
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;

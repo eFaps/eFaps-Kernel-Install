@@ -31,7 +31,6 @@ import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.datamodel.ui.UIValue;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
@@ -107,6 +106,13 @@ public abstract class DimensionUI_Base
         return retVal;
     }
 
+    /**
+     * Add2 query bldr.
+     *
+     * @param _parameter the _parameter
+     * @param _queryBldr the _query bldr
+     * @throws EFapsException the e faps exception
+     */
     protected void add2QueryBldr(final Parameter _parameter,
                                  final QueryBuilder _queryBldr)
         throws EFapsException
@@ -123,35 +129,36 @@ public abstract class DimensionUI_Base
     protected void setSelectedValue(final Parameter _parameter)
         throws EFapsException
     {
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        _parameter.get(ParameterValues.UIOBJECT);
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         if (_parameter.get(ParameterValues.ACCESSMODE).equals(TargetMode.CREATE)
                         && properties.containsKey("Default")) {
-            fieldValue.setValue(properties.get("Default"));
+            //fieldValue. Value(properties.get("Default"));
         }
 
     }
 
+    /**
+     * Execute4 base uo m.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
     @SuppressWarnings("unchecked")
     public Return execute4BaseUoM(final Parameter _parameter)
         throws EFapsException
     {
         final Return ret = new Return();
         final Object tmp = _parameter.get(ParameterValues.UIOBJECT);
-        Attribute attribute;
-        // just for backward compatibility
-        if (tmp instanceof FieldValue) {
-            final FieldValue fieldValue = (FieldValue) tmp;
-            attribute = fieldValue.getAttribute();
-        } else {
-            final UIValue fieldValue = (UIValue) tmp;
-            attribute = fieldValue.getAttribute();
-        }
+
+        final UIValue fieldValue = (UIValue) tmp;
+        final Attribute attribute = fieldValue.getAttribute();
 
         Map<Attribute, Map<Object, Object>> values;
         if (Context.getThreadContext().containsRequestAttribute(RangesValue_Base.REQUESTCACHEKEY)) {
-            values = (Map<Attribute, Map<Object, Object>>)
-                            Context.getThreadContext().getRequestAttribute(RangesValue_Base.REQUESTCACHEKEY);
+            values = (Map<Attribute, Map<Object, Object>>) Context.getThreadContext()
+                            .getRequestAttribute(RangesValue_Base.REQUESTCACHEKEY);
         } else {
             values = new HashMap<Attribute, Map<Object, Object>>();
             Context.getThreadContext().setRequestAttribute(RangesValue_Base.REQUESTCACHEKEY, values);
@@ -199,15 +206,9 @@ public abstract class DimensionUI_Base
                 order.put(strVal, multi.getCurrentInstance().getId());
             }
             @SuppressWarnings("rawtypes")
-            Map retmap;
-            if (_parameter.get(ParameterValues.UIOBJECT) instanceof FieldValue) {
-                retmap = tmpMap;
-                setSelectedValue(_parameter);
-            } else {
-                retmap = new LinkedHashMap<Long, String>();
-                for (final Entry<String, Long> entry : order.entrySet()) {
-                    retmap.put(entry.getValue(), entry.getKey());
-                }
+            final Map retmap = new LinkedHashMap<Long, String>();
+            for (final Entry<String, Long> entry : order.entrySet()) {
+                retmap.put(entry.getValue(), entry.getKey());
             }
             values.put(attribute, retmap);
             ret.put(ReturnValues.VALUES, retmap);

@@ -17,7 +17,7 @@
 
 package org.efaps.esjp.db;
 
-import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -78,9 +78,9 @@ public class Store
     public Return getResourceFieldValueUI(final Parameter _parameter)
     {
         final StringBuilder ret = new StringBuilder();
-        final FieldValue fieldvalue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final IUIValue fieldvalue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
 
-        final TargetMode mode = fieldvalue.getTargetMode();
+        final TargetMode mode = (TargetMode) _parameter.get(ParameterValues.ACCESSMODE);
 
         final Return retVal = new Return();
 

@@ -29,7 +29,8 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.datamodel.ui.IUIValue;
+import org.efaps.admin.datamodel.ui.UIValue;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -77,7 +78,7 @@ public class ConnectEventToAbstract
     public Return getEventTypesUI(final Parameter _parameter)
         throws EFapsException
     {
-        final FieldValue fieldvalue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final UIValue fieldvalue = (UIValue) _parameter.get(ParameterValues.UIOBJECT);
         final TargetMode mode = fieldvalue.getTargetMode();
 
         final Instance callInstance = _parameter.getCallInstance();
@@ -157,8 +158,8 @@ public class ConnectEventToAbstract
     public Return getProgramsUI(final Parameter _parameter)
         throws EFapsException
     {
-        final FieldValue fieldvalue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        final TargetMode mode = fieldvalue.getTargetMode();
+        final IUIValue fieldvalue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+        final TargetMode mode = (TargetMode) _parameter.get(ParameterValues.ACCESSMODE);
 
         long selectedId = 0;
         if (mode.equals(TargetMode.EDIT)) {

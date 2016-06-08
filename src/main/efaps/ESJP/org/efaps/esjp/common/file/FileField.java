@@ -22,10 +22,10 @@ package org.efaps.esjp.common.file;
 
 import java.util.Map;
 
-import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -105,8 +105,8 @@ public class FileField
      */
     public final Return getFieldValueUI(final Parameter _parameter)
     {
-        final FieldValue fieldvalue =
-                          (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final IUIValue fieldvalue =
+                          (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         final Field field = fieldvalue.getField();
         final Map<?, ?> properties  = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final StringBuilder ret = new StringBuilder();

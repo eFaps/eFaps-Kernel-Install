@@ -47,9 +47,7 @@ import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Status.StatusGroup;
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.datamodel.ui.IUIValue;
-import org.efaps.admin.datamodel.ui.UIInterface;
 import org.efaps.admin.datamodel.ui.UIValue;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
@@ -61,6 +59,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.api.ui.IOption;
+import org.efaps.api.ui.IUserInterface;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -220,7 +219,7 @@ public abstract class Field_Base
         final String value = props.containsKey("value") ? (String) props.get("value") : "true";
 
         html.append("<input type=\"checkbox\" name=\"").append(uiValue.getField().getName()).append("\" ")
-                        .append(UIInterface.EFAPSTMPTAG).append(" value=\"").append(value).append("\" ");
+                        .append(IUserInterface.EFAPSTMPTAG).append(" value=\"").append(value).append("\" ");
         if (checked) {
             html.append(" checked=\"checked\" ");
         }
@@ -282,7 +281,7 @@ public abstract class Field_Base
                 for (final Entry<Integer, String> value : values.entrySet()) {
                     html.append("<input type=\"checkbox\" name=\"").append(uiValue.getField().getName())
                         .append("\" ")
-                        .append(UIInterface.EFAPSTMPTAG).append(" value=\"").append(value.getValue()).append("\" ");
+                        .append(IUserInterface.EFAPSTMPTAG).append(" value=\"").append(value.getValue()).append("\" ");
                     if ("true".equals(checkeds.get(value.getKey()))) {
                         html.append(" checked=\"checked\" ");
                     }
@@ -581,127 +580,59 @@ public abstract class Field_Base
     public Return getTypeDropDownFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        StringBuilder html = new StringBuilder();
+        final StringBuilder html = new StringBuilder();
 
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         if (Display.EDITABLE.equals(uiValue.getDisplay())) {
-            if (properties.containsKey("Types")) {
-                html = tobeRemoved(_parameter);
-            } else {
-                final String selected = (String) properties.get("SelectedType");
-                final boolean includeAbstract = "true".equalsIgnoreCase((String) properties.get("IncludeAbstract"));
-                final Map<Integer, String> types = analyseProperty(_parameter, "Type");
-                final Map<Integer, String> excludeTypes = analyseProperty(_parameter, "ExcludeType");
+            final String selected = (String) properties.get("SelectedType");
+            final boolean includeAbstract = "true".equalsIgnoreCase((String) properties.get("IncludeAbstract"));
+            final Map<Integer, String> types = analyseProperty(_parameter, "Type");
+            final Map<Integer, String> excludeTypes = analyseProperty(_parameter, "ExcludeType");
 
-                if (!types.isEmpty()) {
-                    final Set<Type> excludes = new HashSet<Type>();
-                    if (!excludeTypes.isEmpty()) {
-                        for (final Entry<Integer, String> entryExclude : excludeTypes.entrySet()) {
-                            final Type type4Exclude = Type.get(entryExclude.getValue());
-                            if (type4Exclude != null) {
-                                excludes.add(type4Exclude);
-                            }
+            if (!types.isEmpty()) {
+                final Set<Type> excludes = new HashSet<Type>();
+                if (!excludeTypes.isEmpty()) {
+                    for (final Entry<Integer, String> entryExclude : excludeTypes.entrySet()) {
+                        final Type type4Exclude = Type.get(entryExclude.getValue());
+                        if (type4Exclude != null) {
+                            excludes.add(type4Exclude);
                         }
                     }
-                    final Type selectedType = selected != null && !selected.isEmpty() ? Type.get(selected) : null;
-
-                    final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
-                    for (final Entry<Integer, String> entryType  : types.entrySet()) {
-                        final Set<Type> typeList = getTypeList(_parameter, Type.get(entryType.getValue()));
-                        for (final Type type : typeList) {
-                            if (!excludes.contains(type) && (!type.isAbstract() || includeAbstract)) {
-                                final DropDownPosition pos = new DropDownPosition(type.getId(), type.getLabel(),
-                                                type.getLabel());
-                                positions.add(pos);
-                                if (type.equals(selectedType)) {
-                                    pos.setSelected(true);
-                                }
-                            }
-                        }
-                    }
-                    Collections.sort(positions, new Comparator<DropDownPosition>() {
-
-                        @SuppressWarnings("unchecked")
-                        @Override
-                        public int compare(final DropDownPosition _o1,
-                                           final DropDownPosition _o2)
-                        {
-                            return _o1.getOrderValue().compareTo(_o2.getOrderValue());
-                        }
-                    });
-                    html.append(getDropDownField(_parameter, positions));
                 }
+                final Type selectedType = selected != null && !selected.isEmpty() ? Type.get(selected) : null;
+
+                final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
+                for (final Entry<Integer, String> entryType  : types.entrySet()) {
+                    final Set<Type> typeList = getTypeList(_parameter, Type.get(entryType.getValue()));
+                    for (final Type type : typeList) {
+                        if (!excludes.contains(type) && (!type.isAbstract() || includeAbstract)) {
+                            final DropDownPosition pos = new DropDownPosition(type.getId(), type.getLabel(),
+                                            type.getLabel());
+                            positions.add(pos);
+                            if (type.equals(selectedType)) {
+                                pos.setSelected(true);
+                            }
+                        }
+                    }
+                }
+                Collections.sort(positions, new Comparator<DropDownPosition>() {
+
+                    @SuppressWarnings("unchecked")
+                    @Override
+                    public int compare(final DropDownPosition _o1,
+                                       final DropDownPosition _o2)
+                    {
+                        return _o1.getOrderValue().compareTo(_o2.getOrderValue());
+                    }
+                });
+                html.append(getDropDownField(_parameter, positions));
             }
         }
+
         final Return ret = new Return();
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
-    }
-
-    /**
-     * @deprecated will be removed
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return Return containing Html Snipplet
-     * @throws EFapsException on error
-     */
-    @Deprecated
-    private StringBuilder tobeRemoved(final Parameter _parameter)
-        throws EFapsException
-    {
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        Field_Base.LOG.warn("Form: '{}' uses deprecated API definition in Field. {} ",
-                        fieldValue.getField().getCollection().getName(),
-                        fieldValue.getField().getName());
-
-        final StringBuilder html = new StringBuilder();
-
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String typesStr = (String) props.get("Types");
-        final String selected = (String) props.get("SelectedType");
-        final boolean includeAbstract = "true".equalsIgnoreCase((String) props.get("IncludeAbstract"));
-        final String excludeTypesStr = (String) props.get("ExcludeTypes");
-
-        if (typesStr != null && !typesStr.isEmpty()) {
-            final Set<Type>excludes = new HashSet<Type>();
-            if (excludeTypesStr != null && !excludeTypesStr.isEmpty()) {
-                final String[] excludesStr = excludeTypesStr.split(";");
-                for (final String typeStr  : excludesStr) {
-                    final Type type = Type.get(typeStr);
-                    if (type != null) {
-                        excludes.add(type);
-                    }
-                }
-            }
-            final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
-            final String[] types = typesStr.split(";");
-            final Type selType = selected != null && !selected.isEmpty() ? Type.get(selected) : null;
-            for (final String typeStr  : types) {
-                final Set<Type> typeList = getTypeList(_parameter, Type.get(typeStr));
-                for (final Type type : typeList) {
-                    if (!excludes.contains(type) && (!type.isAbstract() || includeAbstract)) {
-                        final DropDownPosition pos = new DropDownPosition(type.getId(), type.getLabel(),
-                                        type.getLabel());
-                        positions.add(pos);
-                        if (type.equals(selType)) {
-                            pos.setSelected(true);
-                        }
-                    }
-                }
-            }
-            Collections.sort(positions, new Comparator<DropDownPosition>() {
-
-                @SuppressWarnings("unchecked")
-                @Override
-                public int compare(final DropDownPosition _o1,
-                                   final DropDownPosition _o2)
-                {
-                    return _o1.getOrderValue().compareTo(_o2.getOrderValue());
-                }
-            });
-            html.append(getDropDownField(_parameter, positions));
-        }
-        return html;
     }
 
     /**
@@ -863,29 +794,9 @@ public abstract class Field_Base
                 queryBldr.addWhereAttrEqValue(parts[0], parts[1]);
             }
 
-            if (containsProperty(_parameter, "Stati")) {
-                // TODO remove old stuff
-                final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-                final String statiStr = String.valueOf(getProperty(_parameter, "Stati"));
-                final String[] statiAr = statiStr.split(";");
-                Field_Base.LOG.warn("Form: '{}' uses deprecated API definition in Field. {} ",
-                                fieldValue.getField().getCollection().getName(),
-                                fieldValue.getField().getName());
-                final List<Object> statusList = new ArrayList<Object>();
-                for (final String stati : statiAr) {
-                    final Status status = Status.find(getProperty(_parameter, "StatusGroup"), stati);
-                    if (status != null) {
-                        statusList.add(status.getId());
-                    }
-                }
-                if (!statusList.isEmpty()) {
-                    queryBldr.addWhereAttrEqValue(type.getStatusAttribute().getName(), statusList.toArray());
-                }
-            } else {
-                final List<Status> statusList = getStatusListFromProperties(_parameter);
-                if (!statusList.isEmpty()) {
-                    queryBldr.addWhereAttrEqValue(type.getStatusAttribute().getName(), statusList.toArray());
-                }
+            final List<Status> statusList = getStatusListFromProperties(_parameter);
+            if (!statusList.isEmpty()) {
+                queryBldr.addWhereAttrEqValue(type.getStatusAttribute().getName(), statusList.toArray());
             }
 
             add2QueryBuilder4List(_parameter, queryBldr);
@@ -1078,7 +989,7 @@ public abstract class Field_Base
             fieldName = "eFapsDropDown";
         }
         html.append("<select name=\"").append(fieldName)
-            .append("\" size=\"1\"").append(UIInterface.EFAPSTMPTAG).append(">");
+            .append("\" size=\"1\"").append(IUserInterface.EFAPSTMPTAG).append(">");
         for (final DropDownPosition value : _values) {
             html.append("<option value=\"").append(value.getValue()).append("\"");
             if (value.isSelected()) {
@@ -1383,7 +1294,7 @@ public abstract class Field_Base
         throws EFapsException
     {
         final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
-        final String dateFieldType = getProperty(_parameter,"DateFieldType", "YEAR");
+        final String dateFieldType = getProperty(_parameter, "DateFieldType", "YEAR");
         switch (dateFieldType) {
             case "MONTH":
                 for (final Month month : Month.values()) {
@@ -1403,7 +1314,7 @@ public abstract class Field_Base
                 } else {
                     start = LocalDate.now().plusYears(Integer.parseInt(fromStr));
                 }
-                LocalDate end;
+                final LocalDate end;
                 if (StringUtils.isNumeric(toStr)) {
                     end = LocalDate.of(Integer.parseInt(toStr), 1, 1);
                 } else {
@@ -1550,12 +1461,8 @@ public abstract class Field_Base
 
         multi.execute();
         Object dbValue = null;
-        final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
-        if (uiObject instanceof FieldValue) {
-            dbValue = ((FieldValue) uiObject).getValue();
-        } else if (uiObject instanceof UIValue) {
-            dbValue = ((UIValue) uiObject).getDbValue();
-        }
+        final IUIValue uiObject = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+        dbValue = ((UIValue) uiObject).getDbValue();
 
         final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
         boolean selected = false;

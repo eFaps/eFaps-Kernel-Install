@@ -24,8 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.efaps.admin.datamodel.ui.FieldValue;
-import org.efaps.admin.datamodel.ui.UIInterface;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -33,6 +32,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.api.ui.IUserInterface;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
 
@@ -62,19 +62,19 @@ public abstract class LocalStorage_Base
     {
         final Return ret = new Return();
         final StringBuilder html = new StringBuilder();
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         html.append("<script type=\"text/javascript\" ><!--/*--><![CDATA[/*><!--*/\n")
                         .append(store(_parameter)).append("\n")
                         .append(retrieve(_parameter)).append("\n")
                         .append("/*-->]]>*/</script>\n")
                         .append("<input type=\"button\" name=\"").append(fieldValue.getField().getName() + 1)
-                        .append("\" ").append(UIInterface.EFAPSTMPTAG)
+                        .append("\" ").append(IUserInterface.EFAPSTMPTAG)
                         .append(" onclick= \"storage()\"")
                         .append(" value=\"").append(DBProperties
                                         .getProperty(fieldValue.getField().getLabel()
                                                         + ".storage", "es")).append("\" ").append("/>")
                         .append("<input type=\"button\" name=\"").append(fieldValue.getField().getName() + 2)
-                        .append("\" ").append(UIInterface.EFAPSTMPTAG)
+                        .append("\" ").append(IUserInterface.EFAPSTMPTAG)
                         .append(" onclick= \"retrieve()\" ")
                         .append(" value=\"").append(DBProperties
                                         .getProperty(fieldValue.getField().getLabel()
@@ -96,7 +96,7 @@ public abstract class LocalStorage_Base
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final List<String[]> storageFields = new ArrayList<String[]>();
 
-        final FieldValue fieldLocalStorage = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final IUIValue fieldLocalStorage = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
 
         final String formUUID = fieldLocalStorage.getField().getCollection().getUUID().toString();
 
@@ -192,7 +192,7 @@ public abstract class LocalStorage_Base
         final List<String[]> positionFields = new ArrayList<String[]>();
         final List<String[]> formFields = new ArrayList<String[]>();
 
-        final FieldValue fieldLocalStorage = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final IUIValue fieldLocalStorage = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
 
         final String formUUID = fieldLocalStorage.getField().getCollection().getUUID().toString();
 

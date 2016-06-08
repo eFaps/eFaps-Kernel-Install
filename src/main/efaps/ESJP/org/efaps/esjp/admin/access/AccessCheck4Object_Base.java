@@ -41,7 +41,7 @@ import org.efaps.admin.access.AccessSet;
 import org.efaps.admin.access.AccessType;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -170,7 +170,7 @@ public abstract class AccessCheck4Object_Base
                 stmt = con.getConnection().createStatement();
                 final ResultSet rs = stmt.executeQuery(cmd.toString());
                 if (rs.next()) {
-                    ret = (rs.getLong(1) > 0) ? true : false;
+                    ret = rs.getLong(1) > 0 ? true : false;
                 }
                 rs.close();
             } finally {
@@ -182,7 +182,7 @@ public abstract class AccessCheck4Object_Base
         } catch (final SQLException e) {
             AbstractAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
         } finally {
-            if ((con != null) && con.isOpened()) {
+            if (con != null && con.isOpened()) {
                 con.abort();
             }
         }
@@ -239,7 +239,7 @@ public abstract class AccessCheck4Object_Base
         for (final Object instance : _instances) {
             final Instance inst = (Instance) instance;
             if (inst != null && inst.isValid()) {
-                List<Long> ids;
+                final List<Long> ids;
                 if (typeid2objectids.containsKey(inst.getType().getId())) {
                     ids = typeid2objectids.get(inst.getType().getId());
                 } else {
@@ -302,7 +302,7 @@ public abstract class AccessCheck4Object_Base
         } catch (final SQLException e) {
             AbstractAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
         } finally {
-            if ((con != null) && con.isOpened()) {
+            if (con != null && con.isOpened()) {
                 con.abort();
             }
             for (final Object inst : _instances) {
@@ -419,7 +419,6 @@ public abstract class AccessCheck4Object_Base
         return getCreate().execute(_parameter);
     }
 
-
     /**
      * @param _parameter Parameter as passed from the eFaps API
      * @return Return containing Html Snipplet
@@ -429,7 +428,7 @@ public abstract class AccessCheck4Object_Base
         throws EFapsException
     {
         final StringBuilder html = new StringBuilder();
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         final Instance instance = _parameter.getCallInstance();
 
         final Properties props = getProperties(_parameter);
@@ -455,10 +454,10 @@ public abstract class AccessCheck4Object_Base
             }
         }
 
-        html.append("<select name=\"").append(fieldValue.getField().getName()).append("\" size=\"1\">");
+        html.append("<select name=\"").append(uiValue.getField().getName()).append("\" size=\"1\">");
         for (final Entry<String, Long> entry : values.entrySet()) {
             html.append("<option value=\"").append(entry.getValue()).append("\" ");
-            if (entry.getValue().equals(fieldValue.getValue())) {
+            if (entry.getValue().equals(uiValue.getObject())) {
                 html.append("selected=\"selected\"");
             }
             html.append("/>").append(entry.getKey()).append("</option>");
@@ -501,7 +500,7 @@ public abstract class AccessCheck4Object_Base
                 }
             }
             final QueryBuilder attrQueryBldr = new QueryBuilder(CIAdminUser.Person2Role);
-            attrQueryBldr.addWhereAttrEqValue(CIAdminUser.Person2Role.UserToLink , tmp.toArray());
+            attrQueryBldr.addWhereAttrEqValue(CIAdminUser.Person2Role.UserToLink, tmp.toArray());
             final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIAdminUser.Person2Role.UserFromLink);
             queryBldr.addWhereAttrInQuery(CIAdminUser.Abstract.ID, attrQuery);
             queryBldr.addWhereAttrMatchValue(CIAdminUser.Abstract.Name, input + "*").setIgnoreCase(true);
@@ -571,8 +570,8 @@ public abstract class AccessCheck4Object_Base
         final String grps = props.getProperty(Type.get(typeId).getName() + ".Group.Default4Delete");
         final String roles = props.getProperty(Type.get(typeId).getName() + ".Role.Default4Delete");
 
-        if ((pers != null && !pers.isEmpty()) || (grps != null && !grps.isEmpty())
-                        || (roles != null && !roles.isEmpty())) {
+        if (pers != null && !pers.isEmpty() || grps != null && !grps.isEmpty()
+                        || roles != null && !roles.isEmpty()) {
             final QueryBuilder queryBldr = new QueryBuilder(CIAdminAccess.Access4Object);
             queryBldr.addWhereAttrEqValue(CIAdminAccess.Access4Object.TypeId, typeId);
             queryBldr.addWhereAttrEqValue(CIAdminAccess.Access4Object.ObjectId, objectId);
