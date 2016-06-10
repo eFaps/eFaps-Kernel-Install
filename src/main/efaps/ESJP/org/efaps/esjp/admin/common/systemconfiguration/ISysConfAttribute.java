@@ -43,10 +43,12 @@ public interface ISysConfAttribute
      *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _value the _value
+     * @param _fieldName the field name
      * @return the JS node
      * @throws EFapsException the efaps exception
      */
     CharSequence getHtml(final Parameter _parameter,
-                        final Object _value)
+                         final Object _value,
+                         final String _fieldName)
         throws EFapsException;
 }

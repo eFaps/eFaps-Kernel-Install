@@ -71,10 +71,11 @@ public abstract class ListSysConfAttribute_Base
 
     @Override
     public CharSequence getHtml(final Parameter _parameter,
-                                final Object _value)
+                                final Object _value,
+                                final String _fieldName)
     {
         final StringBuilder ret = new StringBuilder()
-                        .append("<textarea rows=\"5\" cols=\"80\" name=\"value\">");
+                        .append("<textarea rows=\"5\" cols=\"80\" name=\"").append(_fieldName).append("\">");
         if (_value != null) {
             ret.append(StringEscapeUtils.escapeHtml4((String) _value));
         } else if (getDefaultValue() != null && !getDefaultValue().isEmpty()) {

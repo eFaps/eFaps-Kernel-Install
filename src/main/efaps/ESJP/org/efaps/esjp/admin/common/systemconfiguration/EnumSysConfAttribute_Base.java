@@ -60,7 +60,7 @@ public abstract class EnumSysConfAttribute_Base<E extends Enum<E>>
     public E get()
         throws EFapsException
     {
-        E ret;
+        final E ret;
         if (SystemConfiguration.get(getSysConfUUID()).containsAttributeValue(getKey())) {
             final String val = SystemConfiguration.get(getSysConfUUID()).getAttributeValue(getKey());
             ret = EnumUtils.getEnum(this.clazz, val);
@@ -72,7 +72,8 @@ public abstract class EnumSysConfAttribute_Base<E extends Enum<E>>
 
     @Override
     public CharSequence getHtml(final Parameter _parameter,
-                                final Object _value)
+                                final Object _value,
+                                final String _fieldName)
     {
         E val = null;
         if (_value != null) {
@@ -80,7 +81,7 @@ public abstract class EnumSysConfAttribute_Base<E extends Enum<E>>
         }
         final StringBuilder ret = new StringBuilder();
         for (final E e :  EnumUtils.getEnumList(this.clazz)) {
-            ret.append("<label tag=\"rem\"><input type=\"radio\" name=\"value\" value=\"")
+            ret.append("<label tag=\"rem\"><input type=\"radio\" name=\"").append(_fieldName).append("\" value=\"")
                 .append(e).append("\"");
             if (e.equals(val)) {
                 ret.append(" checked=\"checked\" ");

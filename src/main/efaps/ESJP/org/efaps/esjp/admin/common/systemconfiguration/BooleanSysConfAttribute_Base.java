@@ -62,17 +62,20 @@ public abstract class BooleanSysConfAttribute_Base
 
     @Override
     public CharSequence getHtml(final Parameter _parameter,
-                                  final Object _value)
+                                final Object _value,
+                                final String _fieldName)
     {
         boolean val = getDefaultValue();
         if (_value != null) {
             val = Boolean.parseBoolean((String) _value);
         }
         final StringBuilder ret = new StringBuilder()
-                    .append("<label tag=\"rem\"><input type=\"radio\" name=\"value\" value=\"true\"")
+                    .append("<label tag=\"rem\"><input type=\"radio\" name=\"")
+                        .append(_fieldName).append("\" value=\"true\"")
                     .append(val ? " checked=\"checked\" "  : "")
                     .append(" >true</label>")
-                    .append("<br tag=\"rem\"><label tag=\"rem\"><input type=\"radio\" name=\"value\" ")
+                    .append("<br tag=\"rem\"><label tag=\"rem\"><input type=\"radio\" name=\"")
+                        .append(_fieldName).append("\" ")
                     .append(!val ? " checked=\"checked\" "  : "")
                     .append("value=\"false\">false</label>");
         return ret;

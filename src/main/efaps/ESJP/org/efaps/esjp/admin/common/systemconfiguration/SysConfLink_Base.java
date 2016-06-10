@@ -50,10 +50,11 @@ public abstract class SysConfLink_Base
 
     @Override
     public CharSequence getHtml(final Parameter _parameter,
-                                final Object _value)
+                                final Object _value,
+                                final String _fieldName)
     {
         final StringBuilder ret = new StringBuilder()
-                        .append("<input type=\"text\" name=\"value\" size=\"70\"");
+                        .append("<input type=\"text\" name=\"").append(_fieldName).append("\" size=\"70\"");
         if (_value != null) {
             ret.append(" value=\"").append(StringEscapeUtils.escapeHtml4((String) _value)).append("\"");
         }

@@ -154,12 +154,12 @@ public abstract class SystemConf_Base
     {
         final Field field = new Field()
         {
-
             @Override
-            public StringBuilder getDropDownField(final Parameter _parameter,
+            public void updatePositionList(final Parameter _parameter,
                                                   final List<DropDownPosition> _values)
                                                       throws EFapsException
             {
+                super.updatePositionList(_parameter, _values);
                 final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
                 for (final DropDownPosition dropPos : _values) {
                     if (fieldValue != null && fieldValue.getObject() != null
@@ -169,10 +169,9 @@ public abstract class SystemConf_Base
                     }
                 }
                 _values.set(0, new DropDownPosition("0", "--"));
-                return super.getDropDownField(_parameter, _values);
             }
         };
-        return field.dropDownFieldValue(_parameter);
+        return field.getOptionListFieldValue(_parameter);
     }
 
     /**
@@ -296,12 +295,15 @@ public abstract class SystemConf_Base
         }
 
         final Map<String, Object> map = new HashMap<String, Object>();
-
+        final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         final CharSequence node;
         if (attr == null) {
-            node = "<textarea rows=\"5\" name=\"value\"></textarea>";
+            node = StringEscapeUtils.escapeEcmaScript(
+                            new PropertiesSysConfAttribute().getHtml(_parameter, null,
+                                            uiValue.getField().getName()).toString());
         } else {
-            node = StringEscapeUtils.escapeEcmaScript(attr.getHtml(_parameter, null).toString());
+            node = StringEscapeUtils.escapeEcmaScript(attr.getHtml(_parameter, null,
+                            uiValue.getField().getName()).toString());
             if (attr instanceof AbstractSysConfAttribute_Base) {
                 map.put("description", StringEscapeUtils.escapeEcmaScript(
                                 ((AbstractSysConfAttribute_Base<?, ?>) attr).getDescription()));
@@ -357,7 +359,6 @@ public abstract class SystemConf_Base
                 print.execute();
                 final String uuid = print.getSelect(sel);
                 final String key = print.getAttribute(CIAdminCommon.SystemConfigurationAbstract.Key);
-                final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
 
                 ISysConfAttribute attr = isLink
                                 ? SysConfResourceConfig.getResourceConfig().getLink(uuid, key)
@@ -368,9 +369,14 @@ public abstract class SystemConf_Base
                                   : SysConfResourceConfig.getResourceConfig().getAttribute(uuid,
                                                   key.substring(0, key.length() - 2));
                 }
-
+                final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
                 if (attr != null) {
-                    ret.put(ReturnValues.SNIPLETT, attr.getHtml(_parameter, fieldValue.getObject()).toString());
+                    ret.put(ReturnValues.SNIPLETT, attr.getHtml(_parameter, uiValue.getObject(),
+                                    uiValue.getField().getName()).toString());
+                } else {
+                    ret.put(ReturnValues.SNIPLETT, new PropertiesSysConfAttribute()
+                                    .getHtml(_parameter, uiValue.getObject(),
+                                                    uiValue.getField().getName()).toString());
                 }
             }
         }

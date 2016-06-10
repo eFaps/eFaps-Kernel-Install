@@ -47,11 +47,17 @@
         <field name="value">
             <property name="Columns">70</property>
             <property name="Rows">5</property>
+            <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Value</property>
             <property name="Required">true</property>
-            <property name="ModeSearch">EDITABLE</property>
+        </field>
+        <field name="value4edit">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Attribute">Value</property>
+            <property name="Required">true</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.admin.common.systemconfiguration.SystemConf"
                 method="valueFieldValue"
                 name="Admin_Common_SystemConfigurationAttributeForm.value.UI_FIELD_VALUE"
@@ -76,6 +82,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger program="org.efaps.esjp.admin.common.systemconfiguration.SystemConf"
                 method="dropDownFieldValue"
                 name="Admin_Common_SystemConfigurationAttributeForm.companyLink.UI_FIELD_VALUE"

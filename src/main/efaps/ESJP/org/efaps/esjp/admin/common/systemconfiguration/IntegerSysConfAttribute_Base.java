@@ -63,10 +63,11 @@ public abstract class IntegerSysConfAttribute_Base
 
     @Override
     public CharSequence getHtml(final Parameter _parameter,
-                                final Object _value)
+                                final Object _value,
+                                final String _fieldName)
     {
         final StringBuilder ret = new StringBuilder()
-                        .append("<input type=\"number\" name=\"value\" size=\"5\"");
+                        .append("<input type=\"number\" name=\"").append(_fieldName).append("\" size=\"5\"");
         if (_value != null || getDefaultValue() != null) {
             ret.append(" value=\"").append(StringEscapeUtils.escapeHtml4(
                             _value == null
