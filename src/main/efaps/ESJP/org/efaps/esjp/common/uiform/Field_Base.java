@@ -236,83 +236,6 @@ public abstract class Field_Base
     }
 
     /**
-     * Render a multiples checkbox.<br>
-     * Properties:
-     * <table>
-     *  <tr><th>Property</th><th>Description</th><th>Value</th></tr>
-     *  <tr><td>Checked</td><td>Map contains values String.</td><td>
-     *  <table>
-     *  <tr><td>Checked</td><td>(true/false).</td></tr>
-     *  <tr><td>Checked01</td><td>(true/false).</td></tr>
-     *  </table>
-     *  </td></tr>
-     *  <tr><td>Value</td><td>Map contains values String.</td><td>
-     *  <table>
-     *  <tr><td>Value</td><td>Value used to input.</td></tr>
-     *  <tr><td>Value01</td><td>Value used to input.</td></tr>
-     *  </table>
-     *  </td></tr>
-     *  <tr><td>Comment</td><td>Map contains values String.</td><td>
-     *  <table>
-     *  <tr><td>Comment</td><td>DBProperties.</td></tr>
-     *  <tr><td>Comment01</td><td>DBProperties</td></tr>
-     *  </table>
-     *  </td></tr>
-     *  <tr><td>JavaScript</td><td>To generated javaScript to all inputs.</td><td>false.</td></tr>
-     * </table>
-     *
-     * @param _parameter Parameter as passed from the EFaps API.
-     * @return SNIPPLET to string.
-     * @throws EFapsException on error.
-     */
-    public Return multiCheckboxFieldValue(final Parameter _parameter)
-        throws EFapsException
-    {
-        final StringBuilder html = new StringBuilder();
-        final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
-        final Map<Integer, String> checkeds = analyseProperty(_parameter, "Checked");
-        final Map<Integer, String> values = analyseProperty(_parameter, "Value");
-        final Map<Integer, String> comments = analyseProperty(_parameter, "Comment");
-        final boolean jS = "true".equals(getProperty(_parameter, "JavaScript"));
-
-        if (Display.EDITABLE.equals(uiValue.getDisplay())) {
-            if (!comments.isEmpty() && !values.isEmpty() && !checkeds.isEmpty()
-                            && values.size() == comments.size()) {
-                for (final Entry<Integer, String> value : values.entrySet()) {
-                    html.append("<input type=\"checkbox\" name=\"").append(uiValue.getField().getName())
-                        .append("\" ")
-                        .append(IUserInterface.EFAPSTMPTAG).append(" value=\"").append(value.getValue()).append("\" ");
-                    if ("true".equals(checkeds.get(value.getKey()))) {
-                        html.append(" checked=\"checked\" ");
-                    }
-                    if (jS) {
-                        html.append("onClick=\"require(['dojo/query', 'dojo/dom'], function(query, dom){")
-                            .append("query('input', event.currentTarget.parentNode).forEach(function(node){")
-                            .append("if (event.currentTarget == node) {")
-                            .append("node.checked = true;")
-                            .append("} else {")
-                            .append("node.checked = false;")
-                            .append("}")
-                            .append("});")
-                            .append("})\" ");
-                    }
-                    if (!value.getValue().isEmpty()) {
-                        html.append(">")
-                            .append(DBProperties.getProperty(comments.get(value.getKey())))
-                            .append("</input>");
-                    } else {
-                        html.append("/>");
-                    }
-                }
-            }
-        }
-
-        final Return ret = new Return();
-        ret.put(ReturnValues.SNIPLETT, html.toString());
-        return ret;
-    }
-
-    /**
      * @param _parameter    Parameter as passed by the eFaps API
      * @return  Return containing snipplet
      * @throws EFapsException on error
@@ -534,7 +457,7 @@ public abstract class Field_Base
     public Return getStatusDropDownFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        final StringBuilder html = new StringBuilder();
+        new StringBuilder();
         final String statusGroupStr = getProperty(_parameter, "StatusGroup");
         final StatusGroup statusGroup;
         if (isUUID(statusGroupStr)) {
@@ -562,13 +485,7 @@ public abstract class Field_Base
             }
         });
         final Return ret = new Return();
-
-        if (_parameter.get(ParameterValues.UIOBJECT) instanceof UIValue) {
-            ret.put(ReturnValues.VALUES, positions);
-        } else {
-            html.append(getDropDownField(_parameter, positions));
-            ret.put(ReturnValues.SNIPLETT, html.toString());
-        }
+        ret.put(ReturnValues.VALUES, positions);
         return ret;
     }
 
