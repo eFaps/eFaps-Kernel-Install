@@ -1027,15 +1027,12 @@ public abstract class Field_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        _parameter.get(ParameterValues.ACCESSMODE);
         final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         final TargetMode mode = (TargetMode) _parameter.get(ParameterValues.ACCESSMODE);
-        final StringBuilder html = new StringBuilder();
-
+        final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
         if ((TargetMode.EDIT.equals(mode) || TargetMode.CREATE.equals(mode))
                         && uiValue.getField().isEditableDisplay(mode)
                         && !uiValue.getDisplay().equals(Display.NONE)) {
-            final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
             if (uiValue.getObject() != null) {
                 final UoM uomValue = Dimension.getUoM((Long) uiValue.getObject());
                 if (uomValue != null) {
@@ -1072,16 +1069,8 @@ public abstract class Field_Base
                     return _o1.getOrderValue().compareTo(_o2.getOrderValue());
                 }
             });
-            html.append(getDropDownField(_parameter, positions));
-        }  else {
-            if (uiValue.getObject() != null) {
-                final UoM uomValue = Dimension.getUoM((Long) uiValue.getObject());
-                if (uomValue != null) {
-                    html.append(uomValue.getName());
-                }
-            }
         }
-        ret.put(ReturnValues.SNIPLETT, html.toString());
+        ret.put(ReturnValues.VALUES, positions);
         return ret;
     }
 
