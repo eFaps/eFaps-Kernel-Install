@@ -28,6 +28,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.RandomStringUtils;
@@ -483,18 +484,20 @@ public abstract class AbstractCommon_Base
     }
 
     /**
+     * Gets the query bldr from properties.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _props properties the QueryBuilder is wanted form
-     * @param _key  key to be used
+     * @param _prefix the prefix
      * @return QueryBuilder
      * @throws EFapsException on error
      */
     protected QueryBuilder getQueryBldrFromProperties(final Parameter _parameter,
                                                       final Properties _props,
-                                                      final String _key)
+                                                      final String _prefix)
         throws EFapsException
     {
-        return getQueryBldrFromProperties(_parameter, _props, _key, 0);
+        return getQueryBldrFromProperties(_parameter, _props, _prefix, 0);
     }
 
     /**
@@ -502,29 +505,22 @@ public abstract class AbstractCommon_Base
      *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _props properties the QueryBuilder is wanted form
-     * @param _key  key to be used
+     * @param _prefix the prefix
      * @param _offSet the offset
      * @return QueryBuilder
      * @throws EFapsException on error
      */
     protected QueryBuilder getQueryBldrFromProperties(final Parameter _parameter,
                                                       final Properties _props,
-                                                      final String _key,
+                                                      final String _prefix,
                                                       final int _offSet)
         throws EFapsException
     {
-        final Map<Object, Object> properties = new HashMap<>();
-        final String key = _key == null ? null : _key + ".";
-        for (final Entry<Object, Object> entry : _props.entrySet()) {
-            if (_key != null) {
-                if (entry.getKey().toString().startsWith(key)) {
-                    properties.put(entry.getKey().toString().replace(key, ""), entry.getValue());
-                }
-            } else {
-                properties.put(entry.getKey(), entry.getValue());
-            }
-        }
-        final Parameter parameter = ParameterUtil.clone(_parameter, ParameterValues.PROPERTIES, properties);
+        final Properties props = getProperties4Prefix(_props, _prefix, true);
+        final Map<Object, Object> propsMap = props.entrySet().stream().collect(
+                        Collectors.toMap(e -> e.getKey().toString(),
+                                         e -> e.getValue().toString()));
+        final Parameter parameter = ParameterUtil.clone(_parameter, ParameterValues.PROPERTIES, propsMap);
         return getQueryBldrFromPropertiesInternal(parameter, _offSet);
     }
 
@@ -845,5 +841,44 @@ public abstract class AbstractCommon_Base
         {
         };
         return cm.getQueryBldrFromProperties(parameter, _properties);
+    }
+
+    /**
+     * Gets the properties4 prefix.
+     *
+     * @param _properties the properties
+     * @param _prefix the prefix
+     * @return the properties4 prefix
+     */
+    protected static Properties getProperties4Prefix(final Properties _properties,
+                                                     final String _prefix){
+        return getProperties4Prefix(_properties, _prefix, false);
+    }
+
+    /**
+     * Gets the properties4 prefix.
+     *
+     * @param _properties the properties
+     * @param _prefix the prefix
+     * @param _exclude exclude the property if it not starts with the prefix
+     * @return the properties4 prefix
+     */
+    protected static Properties getProperties4Prefix(final Properties _properties,
+                                                     final String _prefix,
+                                                     final boolean _exclude){
+        final Properties ret = new Properties();
+        final String key = _prefix == null ? null : _prefix + ".";
+        for (final Entry<Object, Object> entry : _properties.entrySet()) {
+            if (_prefix != null) {
+                if (entry.getKey().toString().startsWith(key)) {
+                    ret.put(entry.getKey().toString().replace(key, ""), entry.getValue());
+                } else if (!_exclude) {
+                    ret.put(entry.getKey(), entry.getValue());
+                }
+            } else {
+                ret.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return ret;
     }
 }
