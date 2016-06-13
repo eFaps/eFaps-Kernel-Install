@@ -295,15 +295,13 @@ public abstract class SystemConf_Base
         }
 
         final Map<String, Object> map = new HashMap<String, Object>();
-        final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+        final String fieldName = _parameter.getParameters().containsKey("value") ? "value" : "value4edit";
         final CharSequence node;
         if (attr == null) {
             node = StringEscapeUtils.escapeEcmaScript(
-                            new PropertiesSysConfAttribute().getHtml(_parameter, null,
-                                            uiValue.getField().getName()).toString());
+                            new PropertiesSysConfAttribute().getHtml(_parameter, null, fieldName).toString());
         } else {
-            node = StringEscapeUtils.escapeEcmaScript(attr.getHtml(_parameter, null,
-                            uiValue.getField().getName()).toString());
+            node = StringEscapeUtils.escapeEcmaScript(attr.getHtml(_parameter, null, fieldName).toString());
             if (attr instanceof AbstractSysConfAttribute_Base) {
                 map.put("description", StringEscapeUtils.escapeEcmaScript(
                                 ((AbstractSysConfAttribute_Base<?, ?>) attr).getDescription()));
