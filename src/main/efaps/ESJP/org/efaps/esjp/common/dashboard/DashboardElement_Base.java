@@ -29,6 +29,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.ci.CIAdminProgram;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
@@ -103,15 +104,17 @@ public abstract class DashboardElement_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final IUIValue value = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
-        if (value.getObject() instanceof String) {
-            ret.put(ReturnValues.VALUES, value.getObject());
-        } else {
-            final PrintQuery print = new PrintQuery(Instance.get(CIAdminProgram.Java.getType(), (Long) value
-                            .getObject()));
-            print.addAttribute(CIAdminProgram.Java.Name);
-            print.execute();
-            ret.put(ReturnValues.VALUES, print.getAttribute(CIAdminProgram.Java.Name));
+        if (TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
+            final IUIValue value = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+            if (value.getObject() instanceof String) {
+                ret.put(ReturnValues.VALUES, value.getObject());
+            } else {
+                final PrintQuery print = new PrintQuery(Instance.get(CIAdminProgram.Java.getType(), (Long) value
+                                .getObject()));
+                print.addAttribute(CIAdminProgram.Java.Name);
+                print.execute();
+                ret.put(ReturnValues.VALUES, print.getAttribute(CIAdminProgram.Java.Name));
+            }
         }
         return ret;
     }
