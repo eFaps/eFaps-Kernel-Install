@@ -1033,7 +1033,7 @@ public abstract class Field_Base
         if ((TargetMode.EDIT.equals(mode) || TargetMode.CREATE.equals(mode))
                         && uiValue.getField().isEditableDisplay(mode)
                         && !uiValue.getDisplay().equals(Display.NONE)) {
-            if (uiValue.getObject() != null) {
+            if (uiValue.getObject() != null && uiValue.getObject() instanceof Long) {
                 final UoM uomValue = Dimension.getUoM((Long) uiValue.getObject());
                 if (uomValue != null) {
                     final Dimension dim = uomValue.getDimension();
