@@ -1029,48 +1029,62 @@ public abstract class Field_Base
         final Return ret = new Return();
         final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         final TargetMode mode = (TargetMode) _parameter.get(ParameterValues.ACCESSMODE);
-        final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
-        if ((TargetMode.EDIT.equals(mode) || TargetMode.CREATE.equals(mode))
-                        && uiValue.getField().isEditableDisplay(mode)
-                        && !uiValue.getDisplay().equals(Display.NONE)) {
-            if (uiValue.getObject() != null && uiValue.getObject() instanceof Long) {
-                final UoM uomValue = Dimension.getUoM((Long) uiValue.getObject());
-                if (uomValue != null) {
-                    final Dimension dim = uomValue.getDimension();
-                    for (final UoM uom : dim.getUoMs()) {
-                        final DropDownPosition position = getDropDownPosition(_parameter, uom.getId(), uom.getName());
-                        positions.add(position);
-                        position.setSelected(uomValue.equals(uom));
+
+        if ((TargetMode.EDIT.equals(mode) || TargetMode.CREATE.equals(mode)) && uiValue.getField().isEditableDisplay(
+                        mode)) {
+            if (uiValue.getDisplay().equals(Display.EDITABLE)) {
+                final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
+                if (uiValue.getObject() != null && uiValue.getObject() instanceof Long) {
+                    final UoM uomValue = Dimension.getUoM((Long) uiValue.getObject());
+                    if (uomValue != null) {
+                        final Dimension dim = uomValue.getDimension();
+                        for (final UoM uom : dim.getUoMs()) {
+                            final DropDownPosition position = getDropDownPosition(_parameter, uom.getId(), uom
+                                            .getName());
+                            positions.add(position);
+                            position.setSelected(uomValue.equals(uom));
+                        }
+                    }
+                } else {
+                    final Map<Integer, String> dimensions = analyseProperty(_parameter, "Dimension");
+                    for (final String dimension : dimensions.values()) {
+                        final Dimension dim;
+                        if (isUUID(dimension)) {
+                            dim = Dimension.get(UUID.fromString(dimension));
+                        } else {
+                            dim = Dimension.get(dimension);
+                        }
+                        for (final UoM uom : dim.getUoMs()) {
+                            final DropDownPosition position = getDropDownPosition(_parameter, uom.getId(), uom
+                                            .getName());
+                            positions.add(position);
+                            position.setSelected(dim.getBaseUoM().equals(uom));
+                        }
                     }
                 }
-            } else {
-                final Map<Integer, String> dimensions = analyseProperty(_parameter, "Dimension");
-                for (final String dimension : dimensions.values()) {
-                    final Dimension dim;
-                    if (isUUID(dimension)) {
-                        dim = Dimension.get(UUID.fromString(dimension));
-                    } else {
-                        dim = Dimension.get(dimension);
+                Collections.sort(positions, new Comparator<DropDownPosition>()
+                {
+
+                    @SuppressWarnings("unchecked")
+                    @Override
+                    public int compare(final DropDownPosition _o1,
+                                       final DropDownPosition _o2)
+                    {
+                        return _o1.getOrderValue().compareTo(_o2.getOrderValue());
                     }
-                    for (final UoM uom : dim.getUoMs()) {
-                        final DropDownPosition position = getDropDownPosition(_parameter, uom.getId(), uom.getName());
-                        positions.add(position);
-                        position.setSelected(dim.getBaseUoM().equals(uom));
+                });
+                if (!positions.isEmpty()) {
+                    ret.put(ReturnValues.VALUES, positions);
+                }
+            } else {
+                if (uiValue.getObject() != null && uiValue.getObject() instanceof Long) {
+                    final UoM uomValue = Dimension.getUoM((Long) uiValue.getObject());
+                    if (uomValue != null) {
+                        ret.put(ReturnValues.VALUES, uomValue.getName());
                     }
                 }
             }
-            Collections.sort(positions, new Comparator<DropDownPosition>()
-            {
-                @SuppressWarnings("unchecked")
-                @Override
-                public int compare(final DropDownPosition _o1,
-                                   final DropDownPosition _o2)
-                {
-                    return _o1.getOrderValue().compareTo(_o2.getOrderValue());
-                }
-            });
         }
-        ret.put(ReturnValues.VALUES, positions);
         return ret;
     }
 
