@@ -23,10 +23,9 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Common_History_LogForm</name>
-        <!-- fields -->
         <field name="log">
             <property name="HideLabel">true</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">SNIPPLET</property>
             <property name="ModeView">READONLY</property>
             <trigger program="org.efaps.esjp.common.history.History"
                 method="getLogFieldValue"
