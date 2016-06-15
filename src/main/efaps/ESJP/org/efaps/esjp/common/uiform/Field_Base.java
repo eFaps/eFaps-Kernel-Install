@@ -665,20 +665,6 @@ public abstract class Field_Base
     }
 
     /**
-     * Get an empty dropdown.
-     * @param _parameter    Parameter as passed from the eFaps API
-     * @return Return containing Html Snipplet
-     * @throws EFapsException on error
-     */
-    public Return emptyDropDownFieldValue(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return ret = new Return();
-        ret.put(ReturnValues.SNIPLETT, getDropDownField(_parameter, new ArrayList<DropDownPosition>()).toString());
-        return ret;
-    }
-
-    /**
      * @param _parameter    Parameter as passed from the eFaps API
      * @param _listType     Type of Lit to be rendered
      * @return Return containing Html Snipplet
