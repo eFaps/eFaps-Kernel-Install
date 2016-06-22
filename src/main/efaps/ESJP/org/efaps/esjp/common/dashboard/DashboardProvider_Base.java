@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.api.ui.IDashboard;
 import org.efaps.api.ui.IDashboardProvider;
+import org.efaps.db.Context;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CICommon;
@@ -39,7 +40,7 @@ public abstract class DashboardProvider_Base
     implements IDashboardProvider
 {
 
-    /** */
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -47,18 +48,20 @@ public abstract class DashboardProvider_Base
         throws EFapsException
     {
         final List<IDashboard> ret = new ArrayList<>();
-        final QueryBuilder queryBldr = new QueryBuilder(CICommon.DashboardDefault);
-        queryBldr.addOrderByAttributeAsc(CICommon.DashboardDefault.Weight);
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.setEnforceSorted(true);
-        multi.addAttribute(CICommon.DashboardDefault.Title);
-        multi.execute();
-        while (multi.next()) {
-            final String title = multi.getAttribute(CICommon.DashboardDefault.Title);
-            final Dashboard dashboard = new Dashboard();
-            dashboard.setTitle(title);
-            dashboard.setDashboardInst(multi.getCurrentInstance());
-            ret.add(dashboard);
+        if (Context.getThreadContext().getCompany() != null) {
+            final QueryBuilder queryBldr = new QueryBuilder(CICommon.DashboardDefault);
+            queryBldr.addOrderByAttributeAsc(CICommon.DashboardDefault.Weight);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.setEnforceSorted(true);
+            multi.addAttribute(CICommon.DashboardDefault.Title);
+            multi.execute();
+            while (multi.next()) {
+                final String title = multi.getAttribute(CICommon.DashboardDefault.Title);
+                final Dashboard dashboard = new Dashboard();
+                dashboard.setTitle(title);
+                dashboard.setDashboardInst(multi.getCurrentInstance());
+                ret.add(dashboard);
+            }
         }
         return ret;
     }
