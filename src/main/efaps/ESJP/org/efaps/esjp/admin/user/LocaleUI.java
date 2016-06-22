@@ -20,10 +20,11 @@
 
 package org.efaps.esjp.admin.user;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
 
 import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.event.Parameter;
@@ -33,6 +34,8 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
+import org.efaps.esjp.common.uiform.Field;
+import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.util.EFapsException;
 
 /**
@@ -54,54 +57,54 @@ public class LocaleUI
      * @return Return containing a drop down
      * @throws EFapsException on error
      */
-    public Return get4Edit(final Parameter _parameter) throws EFapsException
+    public Return get4Edit(final Parameter _parameter)
+        throws EFapsException
     {
         final Return retVal = new Return();
-        final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+        final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
 
         final TargetMode mode = (TargetMode) _parameter.get(ParameterValues.ACCESSMODE);
-        final Locale locale;
+        final String localeStr;
         if (mode.equals(TargetMode.CREATE)) {
-            locale = Locale.getDefault();
+            localeStr = Locale.getDefault().toString();
         } else {
-            final String localeStr = (String) fieldValue.getObject();
-            final String[] countries = localeStr.split("_");
-            if (countries.length == 2) {
-                locale = new Locale(countries[0], countries[1]);
-            } else  if (countries.length == 3) {
-                locale = new Locale(countries[0], countries[1], countries[2]);
-            } else {
-                locale = new Locale(localeStr);
-            }
+            localeStr = (String) uiValue.getObject();
         }
-        retVal.put(ReturnValues.SNIPLETT, getField(locale, fieldValue.getField().getName()));
+        retVal.put(ReturnValues.VALUES, getValues(_parameter, localeStr));
         return retVal;
     }
 
     /**
-     * Method to build a drop down field for html containing all locales.
+     * Method to build a drop down field for html containing all timezone.
      *
-     * @param _locale       actual selected Locale
-     * @param _fieldName    Name of the field
-     * @return Html with drop down
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _currentChrono the current chrono
+     * @return StringBuilder with drop down
+     * @throws EFapsException on error
      */
-    private String getField(final Locale _locale, final String _fieldName)
+    private List<DropDownPosition> getValues(final Parameter _parameter,
+                                             final String _currentLocale)
+        throws EFapsException
     {
-        final StringBuilder ret = new StringBuilder();
-        ret.append("<select size=\"1\" name=\"").append(_fieldName).append("\">");
-        final Map<String, Locale> values = new TreeMap<String, Locale>();
+        final List<DropDownPosition> ret = new ArrayList<DropDownPosition>();
+        final Field field = new Field();
         for (final Locale locale : Locale.getAvailableLocales()) {
-            values.put(locale.getDisplayName(), locale);
+            final DropDownPosition val = field.getDropDownPosition(_parameter, locale.toString(), locale
+                            .getDisplayName());
+            val.setSelected(locale.toString().equals(_currentLocale));
+            ret.add(val);
         }
-        for (final Entry<String, Locale> entry : values.entrySet()) {
-            ret.append("<option");
-            if (_locale.equals(entry.getValue())) {
-                ret.append(" selected=\"selected\" ");
+        Collections.sort(ret, new Comparator<DropDownPosition>()
+        {
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public int compare(final DropDownPosition _arg0,
+                               final DropDownPosition _arg1)
+            {
+                return _arg0.getOrderValue().compareTo(_arg1.getOrderValue());
             }
-            ret.append(" value=\"").append(entry.getValue()).append("\">").append(entry.getKey())
-                .append("</option>");
-        }
-        ret.append("</select>");
-        return ret.toString();
+        });
+        return ret;
     }
 }

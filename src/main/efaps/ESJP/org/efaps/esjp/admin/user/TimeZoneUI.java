@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.admin.user;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
-import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -31,9 +30,10 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIAdminUser;
-import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
+import org.efaps.esjp.common.uiform.Field;
+import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTimeZone;
 
@@ -41,12 +41,10 @@ import org.joda.time.DateTimeZone;
  * ESJP is used to get the value, and to render the fields for timezone.
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("122112fd-9bd8-4855-8948-6837272195eb")
 @EFapsApplication("eFaps-Kernel")
 public class TimeZoneUI
-    implements EventExecution
 {
 
     /**
@@ -57,23 +55,23 @@ public class TimeZoneUI
      * @return Return containing the timezone
      * @throws EFapsException on error
      */
-    public Return execute(final Parameter _parameter)
+    public Return getTimeZoneFieldValue(final Parameter _parameter)
         throws EFapsException
     {
         final Return retVal = new Return();
 
         final Instance instance = (Instance) _parameter.get(ParameterValues.CALL_INSTANCE);
         // set a default value
-        String actualTz = "UTC";
+        String currentTz = "UTC";
 
         if (instance != null && instance.getType().getUUID().equals(CIAdminUser.Person.uuid)) {
             final PrintQuery print = new PrintQuery(instance);
             print.addAttribute(CIAdminUser.Person.TimeZone);
             if (print.execute()) {
-                actualTz = print.<String>getAttribute(CIAdminUser.Person.TimeZone);
+                currentTz = print.<String>getAttribute(CIAdminUser.Person.TimeZone);
             }
         }
-        retVal.put(ReturnValues.SNIPLETT, getField(actualTz));
+        retVal.put(ReturnValues.VALUES, getValues(_parameter, currentTz));
         return retVal;
     }
 
@@ -88,42 +86,42 @@ public class TimeZoneUI
     public Return get4Setting(final Parameter _parameter)
         throws EFapsException
     {
-
         final Return retVal = new Return();
-        retVal.put(ReturnValues.SNIPLETT,
-                        getField(Context.getThreadContext().getTimezone().getID()));
-
+        retVal.put(ReturnValues.VALUES, getValues(_parameter, null));
         return retVal;
     }
 
     /**
      * Method to build a drop down field for html containing all timezone.
      *
-     * @param _actualTz actual timezone
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _currentTz the current tz
      * @return StringBuilder with drop down
+     * @throws EFapsException on error
      */
-    private StringBuilder getField(final String _actualTz)
+    private List<DropDownPosition> getValues(final Parameter _parameter,
+                                             final String _currentTz)
+        throws EFapsException
     {
-        final StringBuilder ret = new StringBuilder();
-
+        final List<DropDownPosition> ret = new ArrayList<DropDownPosition>();
         final Set<?> timezoneIds = DateTimeZone.getAvailableIDs();
-        final TreeSet<String> sortedTimeZoneIds = new TreeSet<String>();
-
-        for (final Object id : timezoneIds) {
-            sortedTimeZoneIds.add((String) id);
+        final Field field = new Field();
+        for (final Object timezoneId : timezoneIds) {
+            final DropDownPosition val = field.getDropDownPosition(_parameter, timezoneId, timezoneId);
+            val.setSelected(timezoneId.equals(_currentTz));
+            ret.add(val);
         }
+        Collections.sort(ret, new Comparator<DropDownPosition>()
+        {
 
-        ret.append("<select size=\"1\" name=\"TimeZone4Edit\">");
-        for (final String tzId : sortedTimeZoneIds) {
-            ret.append("<option");
-            if (_actualTz.equals(tzId)) {
-                ret.append(" selected=\"selected\" ");
+            @SuppressWarnings("unchecked")
+            @Override
+            public int compare(final DropDownPosition _arg0,
+                               final DropDownPosition _arg1)
+            {
+                return _arg0.getOrderValue().compareTo(_arg1.getOrderValue());
             }
-            ret.append(" value=\"").append(tzId).append("\">")
-                            .append(tzId).append("</option>");
-        }
-
-        ret.append("</select>");
+        });
         return ret;
     }
 }

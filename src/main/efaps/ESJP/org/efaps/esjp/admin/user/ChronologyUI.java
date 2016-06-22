@@ -20,6 +20,11 @@
 
 package org.efaps.esjp.admin.user;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -31,6 +36,8 @@ import org.efaps.ci.CIAdminUser;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
+import org.efaps.esjp.common.uiform.Field;
+import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.util.ChronologyType;
 import org.efaps.util.EFapsException;
 
@@ -54,6 +61,7 @@ public class ChronologyUI
      * @return Return containing the timezone
      * @throws EFapsException on error
      */
+    @Override
     public Return execute(final Parameter _parameter)
         throws EFapsException
     {
@@ -69,8 +77,7 @@ public class ChronologyUI
                 actualChrono = print.<String>getAttribute(CIAdminUser.Person.Chronology);
             }
         }
-        retVal.put(ReturnValues.SNIPLETT,
-                        ChronologyType.getByKey(actualChrono).getLabel());
+        retVal.put(ReturnValues.SNIPLETT, ChronologyType.getByKey(actualChrono).getLabel());
 
         return retVal;
     }
@@ -98,9 +105,8 @@ public class ChronologyUI
                 actualChrono = print.<String>getAttribute(CIAdminUser.Person.Chronology);
             }
         }
-        retVal.put(ReturnValues.SNIPLETT, getField(actualChrono));
+        retVal.put(ReturnValues.VALUES, getValues(_parameter, actualChrono));
         return retVal;
-
     }
 
     /**
@@ -114,37 +120,43 @@ public class ChronologyUI
     public Return get4Setting(final Parameter _parameter)
         throws EFapsException
     {
-
         final Return retVal = new Return();
-        final String actualChrono = Context.getThreadContext()
-                                    .getPerson().getChronologyType().getKey();
-        retVal.put(ReturnValues.SNIPLETT,
-                        getField(actualChrono));
-
+        final String actualChrono = Context.getThreadContext().getPerson().getChronologyType().getKey();
+        retVal.put(ReturnValues.VALUES, getValues(_parameter, actualChrono));
         return retVal;
     }
 
     /**
-     * Method to build a drop down field for html containing all chronology.
+     * Method to build a drop down field for html containing all timezone.
      *
-     * @param _actualChrono actual selected chronology
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _currentChrono the current chrono
      * @return StringBuilder with drop down
+     * @throws EFapsException on error
      */
-    private StringBuilder getField(final String _actualChrono)
+    private List<DropDownPosition> getValues(final Parameter _parameter,
+                                             final String _currentChrono)
+        throws EFapsException
     {
-        final StringBuilder ret = new StringBuilder();
-
-        ret.append("<select size=\"1\" name=\"Chronology4Edit\">");
+        final List<DropDownPosition> ret = new ArrayList<DropDownPosition>();
+        final Field field = new Field();
         for (final ChronologyType chronoType : ChronologyType.values()) {
-            ret.append("<option");
-            if (_actualChrono.equals(chronoType.getKey())) {
-                ret.append(" selected=\"selected\" ");
-            }
-            ret.append(" value=\"").append(chronoType.getKey()).append("\">")
-                            .append(chronoType.getLabel()).append("</option>");
+            final DropDownPosition val = field.getDropDownPosition(_parameter, chronoType.getKey(), chronoType
+                            .getLabel());
+            val.setSelected(chronoType.getKey().equals(_currentChrono));
+            ret.add(val);
         }
+        Collections.sort(ret, new Comparator<DropDownPosition>()
+        {
 
-        ret.append("</select>");
+            @SuppressWarnings("unchecked")
+            @Override
+            public int compare(final DropDownPosition _arg0,
+                               final DropDownPosition _arg1)
+            {
+                return _arg0.getOrderValue().compareTo(_arg1.getOrderValue());
+            }
+        });
         return ret;
     }
 }
