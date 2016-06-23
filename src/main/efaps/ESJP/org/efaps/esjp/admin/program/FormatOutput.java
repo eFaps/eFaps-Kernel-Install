@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.admin.program;
@@ -58,6 +55,7 @@ public class FormatOutput
      * @throws EFapsException on error
      * @return Return with value for field
      */
+    @Override
     public Return execute(final Parameter _parameter)
         throws EFapsException
     {
@@ -77,7 +75,7 @@ public class FormatOutput
     {
         final Return ret = new Return();
 
-        final Instance instance = _parameter.getCallInstance();
+        final Instance instance = _parameter.getInstance();
 
         final Checkout checkout = new Checkout(instance);
         final InputStream ins = checkout.execute();
@@ -160,7 +158,7 @@ public class FormatOutput
     {
         final Return ret = new Return();
 
-        final Instance instance = _parameter.getCallInstance();
+        final Instance instance = _parameter.getInstance();
 
         final Checkout checkout = new Checkout(instance);
         final InputStream ins = checkout.execute();
@@ -201,7 +199,7 @@ public class FormatOutput
         throws EFapsException
     {
         final Return ret = new Return();
-        final Instance instance = _parameter.getCallInstance();
+        final Instance instance = _parameter.getInstance();
         final Checkout checkout = new Checkout(instance);
         final InputStream ins = checkout.execute();
         final BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
@@ -239,7 +237,7 @@ public class FormatOutput
         throws EFapsException
     {
         final Return ret = new Return();
-        Instance instance = _parameter.getCallInstance();
+        Instance instance = _parameter.getInstance();
         if (instance.getType().getUUID().equals(CIAdminProgram.Wiki.uuid)) {
             final QueryBuilder queryBldr = new QueryBuilder(CIAdminProgram.WikiCompiled);
             queryBldr.addWhereAttrEqValue(CIAdminProgram.WikiCompiled.ProgramLink, instance.getId());

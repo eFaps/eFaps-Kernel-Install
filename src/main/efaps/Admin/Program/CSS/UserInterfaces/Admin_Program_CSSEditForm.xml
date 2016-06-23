@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
   Copyright 2003 - 2016 The eFaps Team
 
@@ -16,21 +14,24 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
--->
 
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>b0156ec7-02d4-4dfa-8a0f-ec17fc4f079d</uuid>
+    <uuid>57115d81-ad71-4296-a73f-3390454ca281</uuid>
     <file-application>eFaps-Kernel</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Program_CSSTree</name>
-        <target>
-            <menu>Admin_Program_CSSTree_Menu</menu>
-            <form>Admin_Program_CSSForm</form>
-        </target>
-        <type>Admin_Program_CSS</type>
-        <property name="Target">content</property>
-        <property name="TargetMode">view</property>
+        <name>Admin_Program_CSSEditForm</name>
+        <field name="css">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="HideLabel">true</property>
+            <property name="Columns">140</property>
+            <property name="Rows">80</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_FIELD_VALUE" method="getCSSFieldValue"
+                name="Admin_Program_CSSEditForm.css.UI_FIELD_VALUE"
+                program="org.efaps.esjp.admin.program.CSS" />
+        </field>
     </definition>
-</ui-menu>
+</ui-form>
