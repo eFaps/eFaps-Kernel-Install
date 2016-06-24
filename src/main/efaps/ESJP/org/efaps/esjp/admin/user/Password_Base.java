@@ -13,11 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
-
 
 package org.efaps.esjp.admin.user;
 
@@ -27,14 +23,12 @@ import javax.security.auth.login.LoginException;
 
 import org.efaps.admin.EFapsSystemConfiguration;
 import org.efaps.admin.KernelSettings;
-import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.user.Role;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
@@ -51,7 +45,6 @@ import org.slf4j.LoggerFactory;
  * Esjp responsible for update, verification of passwords.
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("508bc197-d6ee-4a3c-9f93-60a0e52ebe93")
 @EFapsApplication("eFaps-Kernel")
@@ -132,32 +125,6 @@ public abstract class Password_Base
             ret.put(ReturnValues.VALUES, "Admin_User_PwdChgForm/Password.validateFormUI.unequal");
         }
         return ret;
-    }
-
-    /**
-     * This method is called first to render simple inputfields.
-     *
-     * @param _parameter Parameter as passed from eFaps to esjp
-     * @return Return
-     */
-    public Return getFieldValueUI(final Parameter _parameter)
-    {
-        final StringBuilder ret = new StringBuilder();
-        final IUIValue fieldvalue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
-
-        final TargetMode mode = (TargetMode) _parameter.get(ParameterValues.ACCESSMODE);
-
-        final Return retVal = new Return();
-
-        if (mode.equals(TargetMode.CREATE)) {
-            final String fieldName = fieldvalue.getField().getName();
-            ret.append("<br/>&nbsp;").append("<input name=\"").append(fieldName).append(
-                            "\" type=\"password\" size=\"20\">").append("&nbsp;<br/><br/>");
-        }
-        if (ret != null) {
-            retVal.put(ReturnValues.SNIPLETT, ret);
-        }
-        return retVal;
     }
 
     /**
