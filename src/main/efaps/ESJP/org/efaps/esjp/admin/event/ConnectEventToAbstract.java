@@ -46,7 +46,6 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
-import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
@@ -198,12 +197,9 @@ public class ConnectEventToAbstract
                 return _o1.getOrderValue().compareTo(_o2.getOrderValue());
             }
         });
-        final StringBuilder ret = new StringBuilder();
-        ret.append(new Field().getDropDownField(_parameter, positions));
-
         // and return the string
         final Return retVal = new Return();
-        retVal.put(ReturnValues.SNIPLETT, ret);
+        retVal.put(ReturnValues.VALUES, positions);
         return retVal;
     }
 

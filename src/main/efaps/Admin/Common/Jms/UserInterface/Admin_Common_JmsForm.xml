@@ -49,6 +49,7 @@
             <property name="Required">true</property>
             <property name="Label">Admin_Event_Definition/JavaProg.Label</property>
             <property name="ModeView">NONE</property>
+            <property name="UIType">DROPDOWN</property>
             <trigger event="UI_FIELD_VALUE"
                 method="getProgramsUI"
                  name="Admin_Common_JmsForm.esjp4NotView"
