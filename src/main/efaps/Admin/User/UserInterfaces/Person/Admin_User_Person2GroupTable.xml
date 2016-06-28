@@ -43,20 +43,13 @@
             <property name="ModeSearch">READONLY</property>
         </field>
         <field name="note">
-            <property name="Attribute">linkto[UserFromLink].attribute[Note]</property>
+            <property name="Select">linkto[UserFromLink].attribute[Note]</property>
             <property name="Label">Admin_User_Abstract/Note.Label</property>
         </field>
         <field name="status">
             <property name="Select">linkto[UserFromLink].attribute[Status]</property>
             <property name="Label">Admin_User_Person/Status.Label</property>
             <property name="FilterType">PICKLIST</property>
-        </field>
-        <field name="buttonOpenInNewWindow">
-            <icon>eFapsActionNewWindow</icon>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Target">popup</property>
-            <property name="SortAble">false</property>
-            <property name="Width">15px</property>
         </field>
     </definition>
 </ui-table>
