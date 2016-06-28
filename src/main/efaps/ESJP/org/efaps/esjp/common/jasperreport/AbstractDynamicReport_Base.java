@@ -902,7 +902,7 @@ public abstract class AbstractDynamicReport_Base
     public String getHtmlSnipplet(final Parameter _parameter)
         throws EFapsException
     {
-        return getHtml(_parameter, true);
+        return "<div class=\"eFapsJR\">" + getHtml(_parameter, true) + "</div>";
     }
 
     /**
