@@ -30,7 +30,7 @@
         <name>Admin_Common_DBPropertiesForm</name>
         <!-- fields -->
         <field name="key">
-            <property name="Columns">40</property>
+            <property name="Width">70</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Key</property>
@@ -38,7 +38,7 @@
             <property name="ModeSearch">EDITABLE</property>
         </field>
         <field name="default">
-            <property name="Columns">40</property>
+            <property name="Width">70</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Default</property>
