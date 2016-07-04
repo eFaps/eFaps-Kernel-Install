@@ -497,13 +497,11 @@ public abstract class Field_Base
     public Return getTypeDropDownFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        final StringBuilder html = new StringBuilder();
-
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final Return ret = new Return();
         final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         if (Display.EDITABLE.equals(uiValue.getDisplay())) {
-            final String selected = (String) properties.get("SelectedType");
-            final boolean includeAbstract = "true".equalsIgnoreCase((String) properties.get("IncludeAbstract"));
+            final String selected = getProperty(_parameter, "SelectedType");
+            final boolean includeAbstract = "true".equalsIgnoreCase(getProperty(_parameter, "IncludeAbstract"));
             final Map<Integer, String> types = analyseProperty(_parameter, "Type");
             final Map<Integer, String> excludeTypes = analyseProperty(_parameter, "ExcludeType");
 
@@ -543,12 +541,9 @@ public abstract class Field_Base
                         return _o1.getOrderValue().compareTo(_o2.getOrderValue());
                     }
                 });
-                html.append(getDropDownField(_parameter, positions));
+                ret.put(ReturnValues.VALUES, positions);
             }
         }
-
-        final Return ret = new Return();
-        ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
     }
 
