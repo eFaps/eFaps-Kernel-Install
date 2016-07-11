@@ -199,9 +199,9 @@ public abstract class AccessCheck4Object_Base
                                                  final AccessType _accessType)
         throws EFapsException
     {
-        final Map<Instance, Boolean> ret = new HashMap<Instance, Boolean>();
-        final List<Instance> simpleAccess = new ArrayList<Instance>();
-        final List<Instance> objectAccess = new ArrayList<Instance>();
+        final Map<Instance, Boolean> ret = new HashMap<>();
+        final List<Instance> simpleAccess = new ArrayList<>();
+        final List<Instance> objectAccess = new ArrayList<>();
 
         for (final Object instance : _instances) {
             final Instance inst = (Instance) instance;
@@ -233,9 +233,9 @@ public abstract class AccessCheck4Object_Base
                                                      final AccessType _accessType)
         throws EFapsException
     {
-        final Map<Instance, Boolean> ret = new HashMap<Instance, Boolean>();
+        final Map<Instance, Boolean> ret = new HashMap<>();
         final StringBuilder cmd = new StringBuilder();
-        final Map<Long, List<Long>> typeid2objectids = new HashMap<Long, List<Long>>();
+        final Map<Long, List<Long>> typeid2objectids = new HashMap<>();
         for (final Object instance : _instances) {
             final Instance inst = (Instance) instance;
             if (inst != null && inst.isValid()) {
@@ -243,7 +243,7 @@ public abstract class AccessCheck4Object_Base
                 if (typeid2objectids.containsKey(inst.getType().getId())) {
                     ids = typeid2objectids.get(inst.getType().getId());
                 } else {
-                    ids = new ArrayList<Long>();
+                    ids = new ArrayList<>();
                     typeid2objectids.put(inst.getType().getId(), ids);
                 }
                 ids.add(inst.getId());
@@ -281,7 +281,7 @@ public abstract class AccessCheck4Object_Base
             cmd.append(",").append(group);
         }
         cmd.append(")");
-        final Set<Instance> instan = new HashSet<Instance>();
+        final Set<Instance> instan = new HashSet<>();
         ConnectionResource con = null;
         try {
             con = context.getConnectionResource();
@@ -395,7 +395,7 @@ public abstract class AccessCheck4Object_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final List<Instance> instances = new ArrayList<Instance>();
+        final List<Instance> instances = new ArrayList<>();
         final QueryBuilder queryBldr = new QueryBuilder(CIAdminAccess.Access4Object);
         queryBldr.addWhereAttrEqValue(CIAdminAccess.Access4Object.TypeId, _parameter.getInstance().getType().getId());
         queryBldr.addWhereAttrEqValue(CIAdminAccess.Access4Object.ObjectId, _parameter.getInstance().getId());
@@ -433,7 +433,7 @@ public abstract class AccessCheck4Object_Base
 
         final Properties props = getProperties(_parameter);
         String accessSets = null;
-        final Map<String, Long> values = new TreeMap<String, Long>();
+        final Map<String, Long> values = new TreeMap<>();
         if (props != null && instance != null && instance.isValid()) {
             accessSets = props.getProperty(instance.getType().getName() + ".AccessSets");
         }
@@ -478,10 +478,10 @@ public abstract class AccessCheck4Object_Base
     {
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
 
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
+        final List<Map<String, String>> list = new ArrayList<>();
+        final Map<String, Map<String, String>> tmpMap = new TreeMap<>();
         final Properties props = getProperties(_parameter);
-        final Instance instance = _parameter.getInstance();
+        final Instance instance = _parameter.getCallInstance();
         String persInRoles = null;
         String rolesAsList = null;
         if (props != null && instance != null && instance.isValid()) {
@@ -492,7 +492,7 @@ public abstract class AccessCheck4Object_Base
         final QueryBuilder queryBldr = new QueryBuilder(CIAdminUser.Person);
 
         if (persInRoles != null) {
-            final List<Object>tmp = new ArrayList<Object>();
+            final List<Object>tmp = new ArrayList<>();
             for (final String role : persInRoles.split(";")) {
                 final Role aType = Role.get(role);
                 if (aType != null) {
@@ -510,7 +510,7 @@ public abstract class AccessCheck4Object_Base
             multi.execute();
             while (multi.next()) {
                 final String name = multi.<String>getAttribute(CIAdminUser.Abstract.Name);
-                final Map<String, String> map = new HashMap<String, String>();
+                final Map<String, String> map = new HashMap<>();
                 map.put("eFapsAutoCompleteKEY", ((Long) multi.getCurrentInstance().getId()).toString());
                 map.put("eFapsAutoCompleteVALUE", name);
                 map.put("eFapsAutoCompleteCHOICE", name + " - " + multi.getCurrentInstance().getType().getLabel());
@@ -521,7 +521,7 @@ public abstract class AccessCheck4Object_Base
             for (final String roleName : rolesAsList.split(";")) {
                 final Role role = Role.get(roleName);
                 if (role != null) {
-                    final Map<String, String> map = new HashMap<String, String>();
+                    final Map<String, String> map = new HashMap<>();
                     map.put("eFapsAutoCompleteKEY", ((Long) role.getId()).toString());
                     map.put("eFapsAutoCompleteVALUE", role.getName());
                     map.put("eFapsAutoCompleteCHOICE", role.getName() + " - "

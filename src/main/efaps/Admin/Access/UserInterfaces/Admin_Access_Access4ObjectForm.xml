@@ -43,6 +43,7 @@
             <property name="Required">true</property>
             <property name="Attribute">AccessSetLink</property>
             <property name="Label">Admin_Access_Access4Object.accessSet.Label</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4Object"
                 method="getAccessSetDropDownFieldValue"
                 name="Admin_Access_Access4ObjectForm.accessSet.UI_FIELD_VALUE"
