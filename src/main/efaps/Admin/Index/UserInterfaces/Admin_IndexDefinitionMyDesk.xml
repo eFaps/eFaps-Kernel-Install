@@ -26,11 +26,13 @@
             <role>Administration</role>
         </access>
         <target>
+            <menu>Admin_IndexDefinitionMyDesk_Menu</menu>
             <table>Admin_IndexDefinitionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Admin_IndexDefinition</property>
             </evaluate>
         </target>
         <property name="TargetMode">view</property>
+        <property name="TargetShowCheckBoxes">true</property>
     </definition>
 </ui-command>

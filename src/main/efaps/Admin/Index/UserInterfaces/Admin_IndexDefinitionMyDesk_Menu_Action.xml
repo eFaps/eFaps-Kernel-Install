@@ -14,24 +14,16 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
 -->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>bebeebd9-c702-4864-9ba3-1d9b749220b4</uuid>
+    <uuid>72fb91d0-cef0-468f-950d-728023459fd8</uuid>
     <file-application>eFaps-Kernel</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_IndexDefinitionTree_Fields</name>
-        <target>
-            <menu>Admin_IndexDefinitionTree_Fields_Menu</menu>
-            <table>Admin_IndexFieldTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Admin_IndexField</property>
-                <property name="LinkFrom">DefinitionLink</property>
-            </evaluate>
-        </target>
-        <property name="TargetMode">view</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <name>Admin_IndexDefinitionMyDesk_Menu_Action</name>
+        <childs>
+            <child>Admin_IndexDefinitionMyDesk_Menu_Action_Delete</child>
+        </childs>
     </definition>
-</ui-command>
+</ui-menu>
