@@ -16,10 +16,6 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          tmo
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
  Original Author: Mark James (mjames at gmail.com)
  Original Name:   group.png
                   link.png
@@ -36,7 +32,7 @@
 
   <uuid>a21f1427-3979-4ab6-9183-cd501b8a9d5e</uuid>
   <file-application>eFaps-Kernel</file-application>
-  
+
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Admin_User_Group+Add+Image</name>

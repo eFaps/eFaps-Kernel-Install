@@ -137,7 +137,7 @@ public class RevisionUtil
                 multi.addAttribute(CIAdmin.Abstract.Name);
                 multi.execute();
                 boolean update = false;
-                String name = "NEWELEMENT";
+                String name = "NEWELEMENT: " +  item.getUuid();
                 if (multi.next()) {
                     final String revision = multi.getSelect(selRevision);
                     final DateTime revDate = multi.getSelect(selRevDate);

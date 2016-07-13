@@ -78,12 +78,6 @@
                 <property name="Attribute">org.efaps.kernel.RequirePersonUUID</property>
             </trigger>
         </field>
-        <field name="revision">
-            <property name="Columns">20</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="Attribute">Revision</property>
-            <property name="Required">true</property>
-        </field>
         <field name="LastName">
             <property name="Columns">40</property>
             <property name="ModeCreate">EDITABLE</property>

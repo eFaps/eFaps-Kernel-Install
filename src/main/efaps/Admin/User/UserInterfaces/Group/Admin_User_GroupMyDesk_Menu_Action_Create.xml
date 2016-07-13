@@ -16,35 +16,24 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          tmo
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>8b684dcb-5597-43ce-b42f-ea4fedabede7</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_User_GroupMyDesk_Menu_Action_Create</name>
-    <icon>Admin_User_Group+Add+Image</icon>
-    <!-- target definitions -->
-    <target>
-      <form>Admin_User_AbstractForm</form>
-      <execute program="org.efaps.esjp.common.uiform.Create"/>
-    </target>
-    <!-- properties -->
-    <property name="Target">modal</property>
-    <property name="TargetCreateType">Admin_User_Group</property>
-    <property name="TargetMode">create</property>
-    <property name="WindowHeight">250</property>
-    <property name="WindowWidth">560</property>
-  </definition>
-
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>8b684dcb-5597-43ce-b42f-ea4fedabede7</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_User_GroupMyDesk_Menu_Action_Create</name>
+        <icon>Admin_User_Group+Add+Image</icon>
+        <target>
+            <form>Admin_User_AbstractForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Create" />
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Admin_User_Group</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">250</property>
+        <property name="WindowWidth">560</property>
+    </definition>
 </ui-command>

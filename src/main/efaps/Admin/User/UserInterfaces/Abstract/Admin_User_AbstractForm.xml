@@ -65,12 +65,11 @@
             </trigger>
         </field>
         <field name="revision">
-            <property name="Columns">20</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="Attribute">Revision</property>
-            <property name="Required">true</property>
-            <property name="ModeSearch">EDITABLE</property>
+            <property name="SelectAlternateOID">linkto[RevisionLink].oid</property>
+            <property name="MsgPhrase">Admin_Common_ApplicationRevisionMsgPhrase</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Admin_Common_ApplicationRevision.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="note">
             <property name="Columns">120</property>

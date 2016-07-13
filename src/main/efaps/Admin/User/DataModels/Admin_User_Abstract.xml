@@ -59,12 +59,13 @@
             <sqlcolumn>UUID</sqlcolumn>
         </attribute>
         <attribute>
-            <name>Revision</name>
-            <type>String</type>
+            <name>RevisionLink</name>
+            <type>Link</type>
+            <typelink>Admin_Common_ApplicationRevision</typelink>
             <sqltable>Admin_User_AbstractSQLTable</sqltable>
-            <sqlcolumn>REVISION</sqlcolumn>
+            <sqlcolumn>REVISIONID</sqlcolumn>
         </attribute>
-         <attribute>
+        <attribute>
             <name>Note</name>
             <type>String</type>
             <sqltable>Admin_User_AbstractSQLTable</sqltable>

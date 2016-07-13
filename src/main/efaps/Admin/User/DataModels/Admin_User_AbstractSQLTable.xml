@@ -16,8 +16,6 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
-
 -->
 
 <datamodel-sqltable xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -33,8 +31,8 @@
             <column name="TYPEID"     type="INTEGER"                      not-null="true"/>
             <column name="NAME"       type="STRING_SHORT" length="128"    not-null="true"/>
             <column name="UUID"       type="STRING_SHORT" length="128"/>
-            <column name="REVISION"   type="STRING_SHORT" length="40"/>
             <column name="NOTE"       type="STRING_SHORT" length="255"/>
+            <column name="REVISIONID" type="INTEGER" />
             <column name="STATUS"     type="BOOLEAN"                     />
             <column name="CREATOR"    type="INTEGER"                      not-null="true"/>
             <column name="CREATED"    type="DATETIME"                     not-null="true"/>
@@ -52,8 +50,8 @@
             <column name="TYPEID"     type="INTEGER"                      not-null="true"/>
             <column name="NAME"       type="STRING_SHORT" length="128"    not-null="true"/>
             <column name="UUID"       type="STRING_SHORT" length="128"/>
-            <column name="REVISION"   type="STRING_SHORT" length="40"/>
             <column name="NOTE"       type="STRING_SHORT" length="255"/>
+            <column name="REVISIONID" type="INTEGER" />
             <column name="STATUS"     type="BOOLEAN"                     />
             <column name="CREATOR"    type="INTEGER"                      not-null="true"/>
             <column name="CREATED"    type="DATETIME"                     not-null="true"/>

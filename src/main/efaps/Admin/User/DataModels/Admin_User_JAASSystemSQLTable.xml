@@ -16,27 +16,20 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
-
 -->
 
-<datamodel-sqltable xmlns="http://www.efaps.org/xsd"
-                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-sqltable xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
   <uuid>1f84b7ce-cc40-4453-a58c-97a3aca0e5a8</uuid>
   <file-application>eFaps-Kernel</file-application>
-  
-  <!-- JAAS systems -->
   <definition>
     <version-expression>(version==2) || (version==latest)</version-expression>
     <name>Admin_User_JAASSystemSQLTable</name>
     <database>
       <table-name>T_USERJAASSYSTEM</table-name>
-      <!-- columns -->
       <column name="NAME"                   type="STRING_SHORT" length="128"    not-null="true"/>
       <column name="UUID"                   type="STRING_SHORT" length="128"/>
-      <column name="REVISION"               type="STRING_SHORT" length="40"/>
+      <column name="REVISIONID" type="INTEGER" />
       <column name="CREATOR"                type="INTEGER"                      not-null="true"/>
       <column name="CREATED"                type="DATETIME"                     not-null="true"/>
       <column name="MODIFIER"               type="INTEGER"                      not-null="true"/>
@@ -86,7 +79,7 @@
       <!-- columns -->
       <column name="NAME"                   type="STRING_SHORT" length="128"    not-null="true"/>
       <column name="UUID"                   type="STRING_SHORT" length="128"/>
-      <column name="REVISION"               type="STRING_SHORT" length="40"/>
+      <column name="REVISIONID" type="INTEGER" />
       <column name="CREATOR"                type="INTEGER"                      not-null="true"/>
       <column name="CREATED"                type="DATETIME"                     not-null="true"/>
       <column name="MODIFIER"               type="INTEGER"                      not-null="true"/>
@@ -124,5 +117,4 @@
       </sql>
      </database>
   </definition>
-
 </datamodel-sqltable>

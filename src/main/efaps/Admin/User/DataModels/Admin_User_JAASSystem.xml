@@ -26,7 +26,7 @@
 
     <uuid>28e45c59-946d-4502-94b9-58a1bf23ab88</uuid>
     <file-application>eFaps-Kernel</file-application>
-    
+
     <definition>
         <version-expression>(version==3) || (version==latest)</version-expression>
         <name>Admin_User_JAASSystem</name>
@@ -56,10 +56,11 @@
             <sqlcolumn>UUID</sqlcolumn>
         </attribute>
         <attribute>
-            <name>Revision</name>
-            <type>String</type>
+            <name>RevisionLink</name>
+            <type>Link</type>
+            <typelink>Admin_Common_ApplicationRevision</typelink>
             <sqltable>Admin_User_JAASSystemSQLTable</sqltable>
-            <sqlcolumn>REVISION</sqlcolumn>
+            <sqlcolumn>REVISIONID</sqlcolumn>
         </attribute>
         <attribute>
             <name>Creator</name>
