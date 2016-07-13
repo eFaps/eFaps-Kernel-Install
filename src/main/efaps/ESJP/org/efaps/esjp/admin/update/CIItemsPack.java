@@ -14,10 +14,11 @@
  * limitations under the License.
  *
  */
-package org.efaps.esjp.admin.util;
+
+
+package org.efaps.esjp.admin.update;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -27,6 +28,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +42,9 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIAdmin;
 import org.efaps.ci.CIAdminCommon;
+import org.efaps.ci.CIAdminUser;
+import org.efaps.ci.CIType;
+import org.efaps.db.Context;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
@@ -56,19 +61,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 /**
- * The Class RevisionUtil.
+ * TODO comment!
  *
  * @author The eFaps Team
  */
 @EFapsUUID("ae1aac5a-5c81-44f3-9e8d-ca66f71fab1f")
 @EFapsApplication("eFaps-Kernel")
-public class RevisionUtil
+public class CIItemsPack
 {
-
     /**
      * Logger for this class.
      */
-    private static final Logger LOG = LoggerFactory.getLogger(RevisionUtil.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CIItemsPack.class);
 
     /**
      * Check revisions.
@@ -78,13 +82,12 @@ public class RevisionUtil
      * @throws EFapsException on error
      * @throws InstallationException on error
      */
-    public Return checkRevisions(final Parameter _parameter)
+    public Return execute(final Parameter _parameter)
         throws EFapsException, InstallationException
     {
-
-        try (final FileInputStream in = new FileInputStream(new File(
-                        "/home/janmoxter/git/FonPeru/install/target/CIItems.tar"));
-                        final TarArchiveInputStream tarInput = new TarArchiveInputStream(in);) {
+        final Context context = Context.getThreadContext();
+        final Context.FileParameter fileItem = context.getFileParameters().get("pack");
+        try (final TarArchiveInputStream tarInput = new TarArchiveInputStream(fileItem.getInputStream());) {
 
             File tmpfld = AppConfigHandler.get().getTempFolder();
             if (tmpfld == null) {
@@ -119,57 +122,25 @@ public class RevisionUtil
             mapper.registerModule(new JodaModule());
             final List<RevItem> items = mapper.readValue(new File(json.toURI()), mapper.getTypeFactory()
                             .constructCollectionType(List.class, RevItem.class));
-            int i = 1;
-            for (final RevItem item : items) {
-                LOG.info("Checking Item {} / {}: {}", i, items.size(), item);
 
-                final QueryBuilder queryBldr = new QueryBuilder(CIAdmin.Abstract);
-                queryBldr.addWhereAttrEqValue(CIAdmin.Abstract.UUID, item.getUuid());
-                final MultiPrintQuery multi = queryBldr.getPrint();
-                final SelectBuilder selRevision = SelectBuilder.get().linkto(CIAdmin.Abstract.RevisionLink).attribute(
-                                CIAdminCommon.ApplicationRevision.Revision);
-                final SelectBuilder selRevDate = SelectBuilder.get().linkto(CIAdmin.Abstract.RevisionLink).attribute(
-                                CIAdminCommon.ApplicationRevision.Date);
-                final SelectBuilder selApp = SelectBuilder.get().linkto(CIAdmin.Abstract.RevisionLink).linkto(
-                                CIAdminCommon.ApplicationRevision.ApplicationLink).attribute(
-                                                CIAdminCommon.Application.Name);
-                multi.addSelect(selRevision, selApp, selRevDate);
-                multi.addAttribute(CIAdmin.Abstract.Name);
-                multi.execute();
-                boolean update = false;
-                String name = "NEWELEMENT: " +  item.getUuid();
-                if (multi.next()) {
-                    final String revision = multi.getSelect(selRevision);
-                    final DateTime revDate = multi.getSelect(selRevDate);
-                    final String app = multi.getSelect(selApp);
-                    name = multi.getAttribute(CIAdmin.Abstract.Name);
-                    LOG.info("Found obj: {}, type: {}, name: {},  app: {}, date: {}, revision: {} ",
-                                    multi.getCurrentInstance().getOid(),
-                                    multi.getCurrentInstance().getType().getName(),
-                                    name, app, revDate, revision);
-                    if (!item.getApplication().equals(app)) {
-                        LOG.warn("Different Application: {} - {}", item.getApplication(), app);
-                        update = true;
-                    }
-                    if (!item.getRevision().equals(revision)) {
-                        LOG.warn("Different Revision: {} - {}", item.getRevision(), revision);
-                        update = true;
-                    }
-                } else {
-                    LOG.warn("Could not find item: {} ", item);
-                    update = true;
-                }
-                if (update) {
-                    final InstallFile installFile = new InstallFile()
-                                    .setName(name)
-                                    .setURL(files.get(item.getUuid() + ".xml"))
-                                    .setType("install-xml")
-                                    .setRevision(item.getRevision())
-                                    .setDate(item.getDate());
-                    installFiles.add(installFile);
-                }
+            installFiles.addAll(getInstallFiles(files, items, CIAdmin.Abstract));
+            installFiles.addAll(getInstallFiles(files, items, CIAdminUser.Abstract));
+
+            final Iterator<RevItem> iter = items.iterator();
+            int i = 0;
+            while (iter.hasNext()) {
+                final RevItem item = iter.next();
+                LOG.info("Adding unfound Item {} / {}: {}", i, items.size(), item);
+                final InstallFile installFile = new InstallFile()
+                            .setName("NEWELEMENT: " + item.getUuid())
+                            .setURL(files.get(item.getUuid() + ".xml"))
+                            .setType("install-xml")
+                            .setRevision(item.getRevision())
+                            .setDate(item.getDate());
+                installFiles.add(installFile);
                 i++;
             }
+
             Collections.sort(installFiles, new Comparator<InstallFile>()
             {
 
@@ -196,6 +167,77 @@ public class RevisionUtil
             LOG.error("Catched", e);
         }
         return new Return();
+    }
+
+
+    /**
+     * Gets the install files.
+     *
+     * @param _files the files
+     * @param _items the items
+     * @param _ciType the ci type
+     * @return the install files
+     * @throws EFapsException on error
+     */
+    private List<InstallFile> getInstallFiles(final Map<String, URL> _files,
+                                              final List<RevItem> _items,
+                                              final CIType _ciType)
+        throws EFapsException
+    {
+        final List<InstallFile> ret = new ArrayList<>();
+        final Iterator<RevItem> iter = _items.iterator();
+        int i = 0;
+        while (iter.hasNext()) {
+            final RevItem item = iter.next();
+            LOG.info("Checking Item {} / {}: {}", i, _items.size(), item);
+
+            final QueryBuilder queryBldr = new QueryBuilder(_ciType);
+            queryBldr.addWhereAttrEqValue(CIAdmin.Abstract.UUID, item.getUuid());
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selRevision = SelectBuilder.get().linkto(CIAdmin.Abstract.RevisionLink)
+                            .attribute(CIAdminCommon.ApplicationRevision.Revision);
+            final SelectBuilder selRevDate = SelectBuilder.get().linkto(CIAdmin.Abstract.RevisionLink)
+                            .attribute(CIAdminCommon.ApplicationRevision.Date);
+            final SelectBuilder selApp = SelectBuilder.get().linkto(CIAdmin.Abstract.RevisionLink)
+                            .linkto(CIAdminCommon.ApplicationRevision.ApplicationLink)
+                            .attribute(CIAdminCommon.Application.Name);
+            multi.addSelect(selRevision, selApp, selRevDate);
+            multi.addAttribute(CIAdmin.Abstract.Name);
+            multi.execute();
+            boolean update = false;
+
+            if (multi.next()) {
+                final String revision = multi.getSelect(selRevision);
+                final DateTime revDate = multi.getSelect(selRevDate);
+                final String app = multi.getSelect(selApp);
+                final String name = multi.getAttribute(CIAdmin.Abstract.Name);
+                LOG.info("Found obj: {}, type: {}, name: {},  app: {}, date: {}, revision: {} ",
+                                multi.getCurrentInstance().getOid(),
+                                multi.getCurrentInstance().getType().getName(), name,
+                                app, revDate, revision);
+                if (!item.getApplication().equals(app)) {
+                    LOG.warn("Different Application: {} - {}", item.getApplication(), app);
+                    update = true;
+                }
+                if (!item.getRevision().equals(revision)) {
+                    LOG.warn("Different Revision: {} - {}", item.getRevision(), revision);
+                    update = true;
+                }
+
+                if (update) {
+                    final InstallFile installFile = new InstallFile()
+                                .setName(name)
+                                .setURL(_files.get(item.getUuid()+ ".xml"))
+                                .setType("install-xml")
+                                .setRevision(item.getRevision())
+                                .setDate(item.getDate());
+                    ret.add(installFile);
+                }
+                iter.remove();
+            }
+            i++;
+        }
+        return ret;
     }
 
     /**
