@@ -21,13 +21,13 @@
     <file-application>eFaps-Kernel</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Common_Update_CIItemsPack</name>
+        <name>Common_Update_UpdatePack</name>
         <access>
             <role>Administration</role>
         </access>
         <target>
-            <form>Common_Update_CIItemsPackForm</form>
-            <execute program="org.efaps.esjp.admin.update.CIItemsPack" > </execute>
+            <form>Common_Update_UpdatePackForm</form>
+            <execute program="org.efaps.esjp.admin.update.UpdatePack" />
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>

@@ -23,7 +23,7 @@
     <file-application>eFaps-Kernel</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Common_Update_CIItemsPackForm</name>
+        <name>Common_Update_UpdatePackForm</name>
         <field name="pack">
             <property name="UIType">UPLOAD</property>
             <property name="ModeCreate">EDITABLE</property>

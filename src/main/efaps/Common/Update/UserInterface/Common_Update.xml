@@ -25,7 +25,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Common_Update</name>
         <childs>
-            <child>Common_Update_CIItemsPack</child>
+            <child>Common_Update_UpdatePack</child>
         </childs>
     </definition>
 </ui-menu>

@@ -34,6 +34,8 @@ import java.util.Map;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
+import org.apache.commons.compress.compressors.gzip.GzipUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.efaps.admin.AppConfigHandler;
 import org.efaps.admin.event.Parameter;
@@ -42,6 +44,7 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIAdmin;
 import org.efaps.ci.CIAdminCommon;
+import org.efaps.ci.CIAdminProgram;
 import org.efaps.ci.CIAdminUser;
 import org.efaps.ci.CIType;
 import org.efaps.db.Context;
@@ -49,6 +52,7 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.rest.Update;
+import org.efaps.update.FileType;
 import org.efaps.update.Install;
 import org.efaps.update.Install.InstallFile;
 import org.efaps.update.util.InstallationException;
@@ -67,12 +71,12 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
  */
 @EFapsUUID("ae1aac5a-5c81-44f3-9e8d-ca66f71fab1f")
 @EFapsApplication("eFaps-Kernel")
-public class CIItemsPack
+public class UpdatePack
 {
     /**
      * Logger for this class.
      */
-    private static final Logger LOG = LoggerFactory.getLogger(CIItemsPack.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UpdatePack.class);
 
     /**
      * Check revisions.
@@ -87,7 +91,12 @@ public class CIItemsPack
     {
         final Context context = Context.getThreadContext();
         final Context.FileParameter fileItem = context.getFileParameters().get("pack");
-        try (final TarArchiveInputStream tarInput = new TarArchiveInputStream(fileItem.getInputStream());) {
+        final boolean compress = GzipUtils.isCompressedFilename(fileItem.getName());
+
+        try (
+                final TarArchiveInputStream tarInput = new TarArchiveInputStream(
+                    compress ? new GzipCompressorInputStream(fileItem.getInputStream()) : fileItem.getInputStream());
+            ) {
 
             File tmpfld = AppConfigHandler.get().getTempFolder();
             if (tmpfld == null) {
@@ -107,7 +116,8 @@ public class CIItemsPack
             while (currentEntry != null) {
                 final byte[] bytess = new byte[(int) currentEntry.getSize()];
                 tarInput.read(bytess);
-                final File file = new File(dateFolder, currentEntry.getName());
+                final File file = new File(dateFolder.getAbsolutePath() + "/" + currentEntry.getName());
+                file.getParentFile().mkdirs();
                 final FileOutputStream output = new FileOutputStream(file);
                 output.write(bytess);
                 output.close();
@@ -132,9 +142,9 @@ public class CIItemsPack
                 final RevItem item = iter.next();
                 LOG.info("Adding unfound Item {} / {}: {}", i, items.size(), item);
                 final InstallFile installFile = new InstallFile()
-                            .setName("NEWELEMENT: " + item.getUuid())
-                            .setURL(files.get(item.getUuid() + ".xml"))
-                            .setType("install-xml")
+                            .setName(item.getName4InstallFile())
+                            .setURL(item.getURL(files))
+                            .setType(item.getFileType().getType())
                             .setRevision(item.getRevision())
                             .setDate(item.getDate());
                 installFiles.add(installFile);
@@ -191,9 +201,7 @@ public class CIItemsPack
             final RevItem item = iter.next();
             LOG.info("Checking Item {} / {}: {}", i, _items.size(), item);
 
-            final QueryBuilder queryBldr = new QueryBuilder(_ciType);
-            queryBldr.addWhereAttrEqValue(CIAdmin.Abstract.UUID, item.getUuid());
-            final MultiPrintQuery multi = queryBldr.getPrint();
+            final MultiPrintQuery multi = getQueryBldr(item, _ciType).getPrint();
             final SelectBuilder selRevision = SelectBuilder.get().linkto(CIAdmin.Abstract.RevisionLink)
                             .attribute(CIAdminCommon.ApplicationRevision.Revision);
             final SelectBuilder selRevDate = SelectBuilder.get().linkto(CIAdmin.Abstract.RevisionLink)
@@ -226,16 +234,45 @@ public class CIItemsPack
 
                 if (update) {
                     final InstallFile installFile = new InstallFile()
-                                .setName(name)
-                                .setURL(_files.get(item.getUuid()+ ".xml"))
-                                .setType("install-xml")
+                                .setName(item.getName4InstallFile(name))
+                                .setURL(item.getURL(_files))
+                                .setType(item.getFileType().getType())
                                 .setRevision(item.getRevision())
                                 .setDate(item.getDate());
                     ret.add(installFile);
                 }
                 iter.remove();
             }
+
             i++;
+        }
+        return ret;
+    }
+
+    /**
+     * Gets the query bldr.
+     *
+     * @param _item the item
+     * @param _ciType the ci type
+     * @return the query bldr
+     * @throws EFapsException on error
+     */
+    private QueryBuilder getQueryBldr(final RevItem _item,
+                                      final CIType _ciType)
+        throws EFapsException
+    {
+        QueryBuilder ret = null;
+        switch (_item.getFileType()) {
+            case XML:
+                ret = new QueryBuilder(_ciType);
+                ret.addWhereAttrEqValue(CIAdmin.Abstract.UUID, _item.getIdentifier());
+                break;
+            case JAVA:
+                ret = new QueryBuilder(CIAdminProgram.Java);
+                ret.addWhereAttrEqValue(CIAdminProgram.Java.Name, _item.getIdentifier());
+                break;
+            default:
+                break;
         }
         return ret;
     }
@@ -248,8 +285,11 @@ public class CIItemsPack
     public static class RevItem
     {
 
-        /** The uuid. */
-        private String uuid;
+        /** The file type. */
+        private FileType fileType;
+
+        /** The identifier. */
+        private String identifier;
 
         /** The application. */
         private String application;
@@ -261,10 +301,23 @@ public class CIItemsPack
         private DateTime date;
 
         /**
-         * Instantiates a new rev item.
+         * Gets the file type.
+         *
+         * @return the file type
          */
-        public RevItem()
+        public FileType getFileType()
         {
+            return this.fileType;
+        }
+
+        /**
+         * Sets the file type.
+         *
+         * @param _fileType the new file type
+         */
+        public void setFileType(final FileType _fileType)
+        {
+            this.fileType = _fileType;
         }
 
         /**
@@ -278,36 +331,6 @@ public class CIItemsPack
         }
 
         /**
-         * Getter method for the instance variable {@link #revision}.
-         *
-         * @return value of instance variable {@link #revision}
-         */
-        public String getRevision()
-        {
-            return this.revision;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #uuid}.
-         *
-         * @return value of instance variable {@link #uuid}
-         */
-        public String getUuid()
-        {
-            return this.uuid;
-        }
-
-        /**
-         * Sets the uuid.
-         *
-         * @param _uuid the new uuid
-         */
-        public void setUuid(final String _uuid)
-        {
-            this.uuid = _uuid;
-        }
-
-        /**
          * Sets the application.
          *
          * @param _application the new application
@@ -318,6 +341,16 @@ public class CIItemsPack
         }
 
         /**
+         * Getter method for the instance variable {@link #revision}.
+         *
+         * @return value of instance variable {@link #revision}
+         */
+        public String getRevision()
+        {
+            return this.revision;
+        }
+
+        /**
          * Sets the revision.
          *
          * @param _revision the new revision
@@ -325,6 +358,26 @@ public class CIItemsPack
         public void setRevision(final String _revision)
         {
             this.revision = _revision;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #identifier}.
+         *
+         * @return value of instance variable {@link #identifier}
+         */
+        public String getIdentifier()
+        {
+            return this.identifier;
+        }
+
+        /**
+         * Sets the identifier.
+         *
+         * @param _identifier the new identifier
+         */
+        public void setIdentifier(final String _identifier)
+        {
+            this.identifier = _identifier;
         }
 
         /**
@@ -345,6 +398,65 @@ public class CIItemsPack
         public void setDate(final DateTime _date)
         {
             this.date = _date;
+        }
+
+        /**
+         * Gets the name 4 install file.
+         *
+         * @return the name 4 install file
+         */
+        public String getName4InstallFile()
+        {
+            final String ret;
+            switch (getFileType()) {
+                case JAVA:
+                    ret = getIdentifier() + ".java";
+                    break;
+                default:
+                    ret = getIdentifier();
+                    break;
+            }
+            return  ret;
+        }
+
+        /**
+         * Gets the name 4 install file.
+         *
+         * @param _name the name
+         * @return the name 4 install file
+         */
+        public String getName4InstallFile(final String _name)
+        {
+            final String ret;
+            switch (getFileType()) {
+                case JAVA:
+                    ret = getIdentifier() + ".java";
+                    break;
+                default:
+                    ret = _name;
+                    break;
+            }
+            return  ret;
+        }
+
+        /**
+         * Gets the url.
+         *
+         * @param _files the files
+         * @return the url
+         */
+        public URL getURL(final Map<String, URL> _files)
+        {
+            final URL ret;
+            switch (getFileType()) {
+                case JAVA:
+                    ret = _files.get(getIdentifier().replaceAll("\\.", "/") + ".java");
+                    break;
+                default:
+                    ret = _files.get(getIdentifier());
+                    break;
+            }
+            return  ret;
         }
 
         @Override
