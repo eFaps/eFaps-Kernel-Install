@@ -246,7 +246,7 @@ public abstract class Field_Base
         final Return ret = new Return();
         final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
         if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((IUIValue) uiObject).getDisplay())) {
-            final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
+            final List<DropDownPosition> positions = new ArrayList<>();
             final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
             final Map<Integer, String> values = analyseProperty(_parameter, "Value");
             for (final String value : values.values()) {
@@ -388,7 +388,7 @@ public abstract class Field_Base
         if (fieldValue != null) {
             final Object value = fieldValue.getObject();
             if (value instanceof List) {
-                final List<Classification> clazzes = new ArrayList<Classification>();
+                final List<Classification> clazzes = new ArrayList<>();
                 for (final Object val : (List<?>) value) {
                     clazzes.add((Classification) val);
                 }
@@ -401,7 +401,7 @@ public abstract class Field_Base
                         html.append(seperator);
                     }
                     if (clazzSeq) {
-                        final Map<Integer, String> map = new TreeMap<Integer, String>();
+                        final Map<Integer, String> map = new TreeMap<>();
                         int cont = 99;
                         while (clazz != null) {
                             if (cont == 99) {
@@ -422,7 +422,7 @@ public abstract class Field_Base
             } else if (value instanceof Classification) {
                 Classification clazz = (Classification) value;
                 if (clazzSeq) {
-                    final Map<Integer, String> map = new TreeMap<Integer, String>();
+                    final Map<Integer, String> map = new TreeMap<>();
                     int cont = 99;
                     while (clazz != null) {
                         if (cont == 99) {
@@ -465,7 +465,7 @@ public abstract class Field_Base
         } else {
             statusGroup = Status.get(statusGroupStr);
         }
-        final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
+        final List<DropDownPosition> positions = new ArrayList<>();
         if ("true".equalsIgnoreCase(getProperty(_parameter, "AddWildcard4Search"))) {
             positions.add(getDropDownPosition(_parameter, "*", "*"));
         }
@@ -506,7 +506,7 @@ public abstract class Field_Base
             final Map<Integer, String> excludeTypes = analyseProperty(_parameter, "ExcludeType");
 
             if (!types.isEmpty()) {
-                final Set<Type> excludes = new HashSet<Type>();
+                final Set<Type> excludes = new HashSet<>();
                 if (!excludeTypes.isEmpty()) {
                     for (final Entry<Integer, String> entryExclude : excludeTypes.entrySet()) {
                         final Type type4Exclude = Type.get(entryExclude.getValue());
@@ -517,7 +517,7 @@ public abstract class Field_Base
                 }
                 final Type selectedType = selected != null && !selected.isEmpty() ? Type.get(selected) : null;
 
-                final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
+                final List<DropDownPosition> positions = new ArrayList<>();
                 for (final Entry<Integer, String> entryType  : types.entrySet()) {
                     final Set<Type> typeList = getTypeList(_parameter, Type.get(entryType.getValue()));
                     for (final Type type : typeList) {
@@ -560,8 +560,8 @@ public abstract class Field_Base
         final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         if (Display.EDITABLE.equals(uiValue.getDisplay())) {
             final Map<Integer, String> rootClasses = analyseProperty(_parameter, "Classification");
-            final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
-            final Set<Classification> clazzList = new HashSet<Classification>();
+            final List<DropDownPosition> positions = new ArrayList<>();
+            final Set<Classification> clazzList = new HashSet<>();
             for (final String clazzName : rootClasses.values()) {
                 final Classification clazz;
                 if (isUUID(clazzName)) {
@@ -629,7 +629,7 @@ public abstract class Field_Base
     protected List<Classification> getChildClassifications(final Classification _parent)
         throws CacheReloadException
     {
-        final List<Classification> ret = new ArrayList<Classification>();
+        final List<Classification> ret = new ArrayList<>();
         for (final Classification child : _parent.getChildClassifications()) {
             ret.addAll(getChildClassifications(child));
             ret.add(child);
@@ -735,7 +735,7 @@ public abstract class Field_Base
                 dbValue = ((IUIValue) uiObject).getObject();
             }
 
-            final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
+            final List<DropDownPosition> values = new ArrayList<>();
             boolean selected = false;
             while (multi.next()) {
                 final Object value;
@@ -975,6 +975,9 @@ public abstract class Field_Base
             final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
             Context.getThreadContext().setSessionAttribute(fieldValue.getField().getName(),
                         _parameter.getParameterValues("selectedRow"));
+        } else if ("true".equalsIgnoreCase(getProperty(_parameter, "RemoveSessionAttr"))) {
+            final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+            Context.getThreadContext().removeSessionAttribute(fieldValue.getField().getName());
         }
         return new Return();
     }
@@ -1014,7 +1017,7 @@ public abstract class Field_Base
         if ((TargetMode.EDIT.equals(mode) || TargetMode.CREATE.equals(mode)) && uiValue.getField().isEditableDisplay(
                         mode)) {
             if (uiValue.getDisplay().equals(Display.EDITABLE)) {
-                final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
+                final List<DropDownPosition> positions = new ArrayList<>();
                 if (uiValue.getObject() != null && uiValue.getObject() instanceof Long) {
                     final UoM uomValue = Dimension.getUoM((Long) uiValue.getObject());
                     if (uomValue != null) {
@@ -1154,7 +1157,7 @@ public abstract class Field_Base
     public Return getOptionList4Properties(final Parameter _parameter)
         throws EFapsException
     {
-        final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
+        final List<DropDownPosition> positions = new ArrayList<>();
         final int selected;
         if (containsProperty(_parameter, "Selected")) {
             selected = Integer.parseInt(getProperty(_parameter, "Selected"));
@@ -1194,7 +1197,7 @@ public abstract class Field_Base
     public Return getOptionList4DateTime(final Parameter _parameter)
         throws EFapsException
     {
-        final List<DropDownPosition> positions = new ArrayList<DropDownPosition>();
+        final List<DropDownPosition> positions = new ArrayList<>();
         final String dateFieldType = getProperty(_parameter, "DateFieldType", "YEAR");
         switch (dateFieldType) {
             case "MONTH":
@@ -1243,7 +1246,7 @@ public abstract class Field_Base
     public Return getOptionList4Enum(final Parameter _parameter)
         throws EFapsException
     {
-        final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
+        final List<DropDownPosition> values = new ArrayList<>();
         final String enumName = getProperty(_parameter, "Enum");
         if (enumName != null) {
             final boolean orderByOrdinal = "true".equalsIgnoreCase(getProperty(_parameter, "OrderByOrdinal"));
@@ -1365,7 +1368,7 @@ public abstract class Field_Base
         final IUIValue uiObject = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         dbValue = ((UIValue) uiObject).getDbValue();
 
-        final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
+        final List<DropDownPosition> values = new ArrayList<>();
         boolean selected = false;
         while (multi.next()) {
             final Object value;
