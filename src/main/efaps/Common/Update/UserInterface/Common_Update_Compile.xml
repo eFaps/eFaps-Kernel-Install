@@ -14,19 +14,23 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
-
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>8aa833fb-a873-4dc1-8fa4-333fa21dc88b</uuid>
+    <uuid>66c57f2e-0e97-4011-a541-ce7405cab952</uuid>
     <file-application>eFaps-Kernel</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Common_Update</name>
-        <childs>
-            <child>Common_Update_UpdatePack</child>
-            <child>Common_Update_Compile</child>
-        </childs>
+        <name>Common_Update_Compile</name>
+        <access>
+            <role>Administration</role>
+        </access>
+        <target>
+            <form>Common_Update_CompileForm</form>
+            <execute program="org.efaps.esjp.admin.update.Compile" />
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetMode">create</property>
+        <property name="NoUpdateAfterCOMMAND">true</property>
     </definition>
-</ui-menu>
+</ui-command>
