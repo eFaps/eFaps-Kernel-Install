@@ -102,6 +102,12 @@ public abstract class SystemConf_Base
         final String systemConfigurationUUID = getProperty(_parameter, "SystemConfigurationUUID");
         if (systemConfigurationUUID != null) {
             final SystemConfiguration config = SystemConfiguration.get(UUID.fromString(systemConfigurationUUID));
+            // check if must be still created
+            if (config != null && config.getObjectAttributeValue(_parameter.getInstance()) == null
+                            && "true".equalsIgnoreCase(getProperty(_parameter, "LazyCreate"))) {
+                addObjectAttribute(UUID.fromString(systemConfigurationUUID), _parameter.getInstance(), "");
+            }
+
             if (config != null && config.getObjectAttributeValue(_parameter.getInstance()) != null) {
                 final String fieldName = getProperty(_parameter, "FieldName");
                 final QueryBuilder queryBldr = new QueryBuilder(CIAdminCommon.SystemConfigurationObjectAttribute);
@@ -188,7 +194,7 @@ public abstract class SystemConf_Base
         final boolean isLink = "true".equalsIgnoreCase(getProperty(_parameter, "SysConfLink"));
         final List<Map<String, String>> list = new ArrayList<>();
         if (input != null && !input.isEmpty()) {
-            final Map<String, String> map = new HashMap<String, String>();
+            final Map<String, String> map = new HashMap<>();
             map.put("eFapsAutoCompleteKEY", input);
             map.put("eFapsAutoCompleteVALUE", input);
             list.add(map);
@@ -236,14 +242,14 @@ public abstract class SystemConf_Base
                 }
             });
             for (final ISysConfAttribute attr : attrs) {
-                final Map<String, String> map = new HashMap<String, String>();
+                final Map<String, String> map = new HashMap<>();
                 map.put("eFapsAutoCompleteKEY", attr.getKey());
                 map.put("eFapsAutoCompleteVALUE", attr.getKey());
                 list.add(map);
                 if (attr instanceof IConcatenate && ((IConcatenate) attr).isConcatenate()) {
                     for (int i = 1; i < 100; i++) {
                         final String keyTmp = attr.getKey() + String.format("%02d", i);
-                        final Map<String, String> map2 = new HashMap<String, String>();
+                        final Map<String, String> map2 = new HashMap<>();
                         map2.put("eFapsAutoCompleteKEY", keyTmp);
                         map2.put("eFapsAutoCompleteVALUE", keyTmp);
                         list.add(map2);
@@ -294,7 +300,7 @@ public abstract class SystemConf_Base
                                           key.substring(0, key.length() - 2));
         }
 
-        final Map<String, Object> map = new HashMap<String, Object>();
+        final Map<String, Object> map = new HashMap<>();
         final String fieldName = _parameter.getParameters().containsKey("value") ? "value" : "value4edit";
         final CharSequence node;
         if (attr == null) {
