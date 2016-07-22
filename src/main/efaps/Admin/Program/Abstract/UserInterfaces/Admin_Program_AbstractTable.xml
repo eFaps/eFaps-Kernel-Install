@@ -39,6 +39,10 @@
             <property name="Label">Admin_Program_Abstract/Name.Label</property>
             <property name="Width">2</property>
         </field>
+         <field name="name">
+            <property name="Attribute">UUID</property>
+            <property name="Label">Admin_Program_Abstract/UUID.Label</property>
+        </field>
         <field name="revision">
             <property name="ModeSearch">READONLY</property>
             <property name="SelectAlternateOID">linkto[RevisionLink].oid</property>

@@ -36,6 +36,7 @@ import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.efaps.admin.AppConfigHandler;
 import org.efaps.admin.event.Parameter;
@@ -271,6 +272,18 @@ public class UpdatePack
                 ret = new QueryBuilder(CIAdminProgram.Java);
                 ret.addWhereAttrEqValue(CIAdminProgram.Java.Name, _item.getIdentifier());
                 break;
+            case CSS:
+                ret = new QueryBuilder(CIAdminProgram.CSS);
+                ret.addWhereAttrEqValue(CIAdminProgram.CSS.Name, _item.getIdentifier());
+                break;
+            case JS:
+                ret = new QueryBuilder(CIAdminProgram.JavaScript);
+                ret.addWhereAttrEqValue(CIAdminProgram.JavaScript.Name, _item.getIdentifier());
+                break;
+            case JRXML:
+                ret = new QueryBuilder(CIAdminProgram.JasperReport);
+                ret.addWhereAttrEqValue(CIAdminProgram.JasperReport.UUID, _item.getIdentifier());
+                break;
             default:
                 break;
         }
@@ -451,6 +464,15 @@ public class UpdatePack
             switch (getFileType()) {
                 case JAVA:
                     ret = _files.get(getIdentifier().replaceAll("\\.", "/") + ".java");
+                    break;
+                case CSS:
+                    ret = _files.get(StringUtils.removeEnd(getIdentifier(), ".css").replaceAll("\\.", "/") + ".css");
+                    break;
+                case JS:
+                    ret = _files.get(StringUtils.removeEnd(getIdentifier(), ".js").replaceAll("\\.", "/") + ".js");
+                    break;
+                case JRXML:
+                    ret = _files.get(getIdentifier() + ".jrxml");
                     break;
                 default:
                     ret = _files.get(getIdentifier());
