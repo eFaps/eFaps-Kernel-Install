@@ -20,15 +20,14 @@
 
 -->
 
-<dbproperties xmlns="http://www.efaps.org/xsd"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>72811e2e-a0e6-4c92-b197-cd011ac48ce8</uuid>
-  <bundle name="eFaps-Admin-Common-Property" sequence="1"/>
-  <resource>
-    <type>Properties</type>
-    <language></language>
-    <file>Admin_Common_Property.properties</file>
-  </resource>
+<dbproperties xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>72811e2e-a0e6-4c92-b197-cd011ac48ce8</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <bundle name="eFaps-Admin-Common-Property" sequence="1" />
+    <resource>
+        <type>Properties</type>
+        <language></language>
+        <file>Admin_Common_Property.properties</file>
+    </resource>
 </dbproperties>

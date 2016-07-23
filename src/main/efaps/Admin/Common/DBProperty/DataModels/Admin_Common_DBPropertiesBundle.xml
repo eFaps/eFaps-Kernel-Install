@@ -64,5 +64,12 @@
             <sqltable>Admin_Common_DBPropertiesBundleSQLTable</sqltable>
             <sqlcolumn>CACHEONSTART</sqlcolumn>
         </attribute>
+        <attribute>
+            <name>RevisionLink</name>
+            <type>Link</type>
+            <typelink>Admin_Common_ApplicationRevision</typelink>
+            <sqltable>Admin_Common_DBPropertiesBundleSQLTable</sqltable>
+            <sqlcolumn>REVISIONID</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>

@@ -20,6 +20,7 @@
 <dbproperties xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>119b7b8d-79aa-4bf2-a302-1b8494248a0e</uuid>
+    <file-application>eFaps-Kernel</file-application>
     <bundle name="eFaps-Admin-Common-MsgPhrase" sequence="1" />
     <resource>
         <type>Properties</type>

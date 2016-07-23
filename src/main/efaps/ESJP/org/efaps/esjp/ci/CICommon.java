@@ -412,4 +412,23 @@ public class CICommon
         public final CIAttribute Creator = new CIAttribute(this, "Creator");
         public final CIAttribute Created = new CIAttribute(this, "Created");
     }
+
+
+    public static final _DBPropertiesBundle DBPropertiesBundle = new _DBPropertiesBundle("03c51ba4-00a6-47ac-b987-270308fe68d8");
+
+    public static class _DBPropertiesBundle
+        extends CIType
+    {
+
+        protected _DBPropertiesBundle(final String _uuid)
+        {
+            super(_uuid);
+        }
+
+        public final CIAttribute Name = new CIAttribute(this, "Name");
+        public final CIAttribute UUID = new CIAttribute(this, "UUID");
+        public final CIAttribute Sequence = new CIAttribute(this, "Sequence");
+        public final CIAttribute CacheOnStart = new CIAttribute(this, "CacheOnStart");
+        public final CIAttribute RevisionLink = new CIAttribute(this, "RevisionLink");
+    }
 }

@@ -52,6 +52,7 @@ import org.efaps.db.Context;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.ci.CICommon;
 import org.efaps.rest.Update;
 import org.efaps.update.FileType;
 import org.efaps.update.Install;
@@ -136,6 +137,7 @@ public class UpdatePack
 
             installFiles.addAll(getInstallFiles(files, items, CIAdmin.Abstract));
             installFiles.addAll(getInstallFiles(files, items, CIAdminUser.Abstract));
+            installFiles.addAll(getInstallFiles(files, items, CICommon.DBPropertiesBundle));
 
             final Iterator<RevItem> iter = items.iterator();
             int i = 0;

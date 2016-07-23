@@ -20,10 +20,10 @@
 
 -->
 
-<dbproperties xmlns="http://www.efaps.org/xsd"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<dbproperties xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>b456ce9e-55b9-44ca-b5ac-3c17218b8611</uuid>
+    <file-application>eFaps-Kernel</file-application>
     <bundle name="eFaps-Admin-Common-QuartzTrigger" sequence="1" />
     <resource>
         <type>Properties</type>

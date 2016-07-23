@@ -16,21 +16,16 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
-
 -->
 
-<dbproperties xmlns="http://www.efaps.org/xsd"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>94935b4b-219c-4d66-a19f-220aa89a6ce3</uuid>
-
-  <bundle name="eFaps-Admin-Integration-Servlet" sequence="1"/>
-  <resource>
-    <type>Properties</type>
-    <language></language>
-    <file>Admin_Integration_Servlet.properties</file>
-  </resource>
-
+<dbproperties xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>94935b4b-219c-4d66-a19f-220aa89a6ce3</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <bundle name="eFaps-Admin-Integration-Servlet" sequence="1" />
+    <resource>
+        <type>Properties</type>
+        <language></language>
+        <file>Admin_Integration_Servlet.properties</file>
+    </resource>
 </dbproperties>

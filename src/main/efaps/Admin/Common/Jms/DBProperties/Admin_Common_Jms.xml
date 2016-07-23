@@ -16,13 +16,15 @@
 
 
 
---><dbproperties xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<dbproperties xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>b3333531-1c7e-4f08-8471-19a32cb7d8f5</uuid>
-    <bundle name="eFaps-Admin-Common-Jms" sequence="1"/>
+    <file-application>eFaps-Kernel</file-application>
+    <bundle name="eFaps-Admin-Common-Jms" sequence="1" />
     <resource>
         <type>Properties</type>
-        <language/>
+        <language />
         <file>Admin_Common_Jms.properties</file>
     </resource>
 </dbproperties>

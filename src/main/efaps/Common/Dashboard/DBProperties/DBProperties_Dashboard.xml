@@ -18,6 +18,7 @@
 <dbproperties xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>bcabbaa1-d073-44b0-8d49-6d02764f7437</uuid>
+    <file-application>eFaps-Kernel</file-application>
     <bundle name="eFaps-Common-Dashboard" sequence="1" />
     <resource>
         <type>Properties</type>

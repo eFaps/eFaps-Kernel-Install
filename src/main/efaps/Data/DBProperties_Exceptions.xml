@@ -20,11 +20,10 @@
 
 -->
 
-<dbproperties xmlns="http://www.efaps.org/xsd"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<dbproperties xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>bd3c0d5b-86bb-4a5e-8127-044088726576</uuid>
+    <file-application>eFaps-Kernel</file-application>
     <bundle name="eFaps-Data-Exceptions" sequence="1" />
     <resource>
         <type>Properties</type>

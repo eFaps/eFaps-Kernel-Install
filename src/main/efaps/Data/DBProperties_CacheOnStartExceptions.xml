@@ -20,6 +20,7 @@
 <dbproperties xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>eb451f60-19e3-49b6-91d9-c22ac6f0bb8c</uuid>
+    <file-application>eFaps-Kernel</file-application>
     <bundle name="eFaps-Exceptions-CacheOnStart" sequence="1" cacheOnStart="true" />
     <resource>
         <type>Properties</type>

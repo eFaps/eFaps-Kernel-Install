@@ -20,10 +20,10 @@
 
 -->
 
-<dbproperties xmlns="http://www.efaps.org/xsd"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<dbproperties xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>a74d28d9-abff-4676-979f-075e43543550</uuid>
+    <file-application>eFaps-Kernel</file-application>
     <bundle name="eFaps-Admin-DataModel" sequence="1" />
     <resource>
         <type>Properties</type>
