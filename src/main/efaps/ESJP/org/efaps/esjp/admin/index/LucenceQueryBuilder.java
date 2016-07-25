@@ -18,12 +18,16 @@
 
 package org.efaps.esjp.admin.index;
 
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
  */
+@EFapsApplication("eFaps-Kernel")
+@EFapsUUID("4d59787c-b5fa-4f7c-8b16-868ab70a32f0")
 public class LucenceQueryBuilder
     extends LucenceQueryBuilder_Base
 {

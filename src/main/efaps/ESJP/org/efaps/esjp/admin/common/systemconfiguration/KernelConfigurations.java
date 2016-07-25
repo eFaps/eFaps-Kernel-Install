@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.efaps.admin.EFapsSystemConfiguration;
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.esjp.admin.index.LucenceQueryBuilder;
 
 /**
@@ -30,6 +32,8 @@ import org.efaps.esjp.admin.index.LucenceQueryBuilder;
  *
  * @author The eFaps Team
  */
+@EFapsApplication("eFaps-Kernel")
+@EFapsUUID("7b4c9ebc-abec-4b02-a6e4-c03a7e4370b4")
 public final class KernelConfigurations
 {
 
@@ -44,7 +48,7 @@ public final class KernelConfigurations
     public static final ListSysConfAttribute INDEXLANG = new ListSysConfAttribute()
                     .sysConfUUID(EFapsSystemConfiguration.UUID)
                     .key("org.efaps.kernel.index.Languages")
-                    .defaultValue(new ArrayList<String>(Arrays.asList(new String[] { "en", "es" })))
+                    .defaultValue(new ArrayList<>(Arrays.asList(new String[] { "en", "es" })))
                     .description("List of languages the indexes willbe created for.");
 
     /** See description. */

@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.ci;
 
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIAttribute;
 import org.efaps.ci.CIType;
 
@@ -27,8 +26,11 @@ import org.efaps.ci.CIType;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+
  */
+@EFapsApplication("eFaps-Kernel")
+@EFapsUUID("79b051da-f4c5-4ff5-9420-635ca91c7e49")
+//CHECKSTYLE:OFF
 public class CIAdmin
 {
 

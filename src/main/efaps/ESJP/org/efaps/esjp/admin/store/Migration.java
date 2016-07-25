@@ -36,6 +36,8 @@ import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Checkin;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
@@ -47,8 +49,9 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
+@EFapsApplication("eFaps-Kernel")
+@EFapsUUID("39d09f31-03e1-4a81-8a9a-fc46c654e5d0")
 public class Migration
 {
     /**

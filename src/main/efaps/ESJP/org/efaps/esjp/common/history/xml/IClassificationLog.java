@@ -17,11 +17,16 @@
 
 package org.efaps.esjp.common.history.xml;
 
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
+
 /**
  * TODO comment!
  *
  * @author The eFaps Team
  */
+@EFapsApplication("eFaps-Kernel")
+@EFapsUUID("af4764d0-36e5-4ae5-99d4-96f63af069ac")
 public interface IClassificationLog
 {
 
@@ -30,7 +35,7 @@ public interface IClassificationLog
      *
      * @return value of instance variable {@link #classificationInstance}
      */
-    public ClassInstObj getClassInstObj();
+    ClassInstObj getClassInstObj();
 
     /**
      * Setter method for instance variable {@link #classificationInstance}.
@@ -38,6 +43,6 @@ public interface IClassificationLog
      * @param _classificationInstance value for instance variable
      *            {@link #classificationInstance}
      */
-    public void setClassInstObj(final ClassInstObj _classificationInstance);
+    void setClassInstObj(final ClassInstObj _classificationInstance);
 
 }

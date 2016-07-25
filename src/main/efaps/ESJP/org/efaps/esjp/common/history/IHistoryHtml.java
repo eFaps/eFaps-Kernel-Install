@@ -20,6 +20,8 @@
 
 package org.efaps.esjp.common.history;
 
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.EFapsException;
 
 /**
@@ -28,6 +30,8 @@ import org.efaps.util.EFapsException;
  * @author The eFaps Team
  * @version $Id$
  */
+@EFapsApplication("eFaps-Kernel")
+@EFapsUUID("8f61fc90-229c-4cc6-a793-206202548155")
 public interface IHistoryHtml
 {
 

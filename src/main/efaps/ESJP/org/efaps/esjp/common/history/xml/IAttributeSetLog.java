@@ -17,11 +17,16 @@
 
 package org.efaps.esjp.common.history.xml;
 
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
+
 /**
  * TODO comment!
  *
  * @author The eFaps Team
  */
+@EFapsApplication("eFaps-Kernel")
+@EFapsUUID("92655a65-c84e-4c4d-b8d6-7fc485f0e0c9")
 public interface IAttributeSetLog
 {
 

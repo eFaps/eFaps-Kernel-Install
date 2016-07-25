@@ -20,6 +20,8 @@
 
 package org.efaps.esjp.ci;
 
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIAttribute;
 import org.efaps.ci.CIStatus;
 import org.efaps.ci.CIType;
@@ -28,8 +30,9 @@ import org.efaps.ci.CIType;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
+@EFapsApplication("eFaps-Kernel")
+@EFapsUUID("7b433f18-ee16-4f40-bd31-4061e542bec2")
 // CHECKSTYLE:OFF
 public class CICommon
 {

@@ -29,6 +29,8 @@ import org.apache.lucene.document.DateTools;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.index.Indexer;
 import org.efaps.admin.index.Indexer.Dimension;
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.json.index.result.DimValue;
 import org.joda.time.DateTime;
 
@@ -37,6 +39,8 @@ import org.joda.time.DateTime;
  *
  * @author The eFaps Team
  */
+@EFapsApplication("eFaps-Kernel")
+@EFapsUUID("0f617c3b-47ea-4b8f-8faa-133007b83c59")
 public abstract class LucenceQueryBuilder_Base
 {
 

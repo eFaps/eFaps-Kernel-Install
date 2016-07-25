@@ -23,6 +23,8 @@ package org.efaps.esjp.admin.user;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.util.EFapsException;
 
@@ -30,11 +32,22 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ *
  */
+@EFapsApplication("eFaps-Kernel")
+@EFapsUUID("8b1fb5cf-7e7e-41c2-b248-1a0705a43f56")
 public class Company
 {
-    public Return accessCheck(final Parameter _parameter) throws EFapsException
+
+    /**
+     * Access check.
+     *
+     * @param _parameter the parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
+    public Return accessCheck(final Parameter _parameter)
+        throws EFapsException
     {
         final Return ret = new Return();
         if (Context.getThreadContext().getPerson().getCompanies().size() > 1) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
 package org.efaps.esjp.common.jasperreport;
 
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 
 
@@ -28,20 +27,22 @@ import org.efaps.db.Instance;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
+@EFapsApplication("eFaps-Kernel")
+@EFapsUUID("a2fcf326-26cf-4005-8328-94959742f99f")
 public class InstanceDataSource
     extends InstanceDataSource_Base
 {
 
     /**
-     * @param _instance
+     * Instantiates a new instance data source.
+     *
+     * @param _instance the instance
+     * @param _jasperReport the jasper report
      */
     public InstanceDataSource(final Instance _instance,
                               final String _jasperReport)
     {
         super(_instance, _jasperReport);
-        // TODO Auto-generated constructor stub
     }
-
 }
