@@ -35,6 +35,13 @@
             <property name="Label">Admin_DataModel_Type/UUID.Label</property>
             <property name="ModeSearch">READONLY</property>
         </field>
+        <field name="revision">
+            <property name="SelectAlternateOID">linkto[UILink].linkto[RevisionLink].oid</property>
+            <property name="MsgPhrase">Admin_Common_ApplicationRevisionMsgPhrase</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Admin_Common_ApplicationRevision.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
         <field name="parentType">
             <property name="SelectAlternateOID">linkto[ParentType].oid</property>
             <property name="Select">linkto[ParentType].attribute[Name]</property>
