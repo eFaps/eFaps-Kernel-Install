@@ -36,7 +36,7 @@
             <property name="ModeSearch">READONLY</property>
         </field>
         <field name="revision">
-            <property name="SelectAlternateOID">linkto[UILink].linkto[RevisionLink].oid</property>
+            <property name="SelectAlternateOID">linkto[RevisionLink].oid</property>
             <property name="MsgPhrase">Admin_Common_ApplicationRevisionMsgPhrase</property>
             <property name="HRef">TREE</property>
             <property name="Label">Admin_Common_ApplicationRevision.Label</property>
