@@ -16,17 +16,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
-
 -->
 
-<ui-table xmlns="http://www.efaps.org/xsd"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>0ccfc727-5db5-4976-a0b8-4c6705cfbcbd</uuid>
     <file-application>eFaps-Kernel</file-application>
-    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_User_AbstractTable</name>
@@ -52,6 +47,13 @@
             <property name="Label">Admin_User_Abstract/Status.Label</property>
             <property name="FilterType">PickList</property>
             <property name="ModeSearch">READONLY</property>
+        </field>
+        <field name="revision">
+            <property name="SelectAlternateOID">linkto[RevisionLink].oid</property>
+            <property name="MsgPhrase">Admin_Common_ApplicationRevisionShortMsgPhrase</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Admin_Common_ApplicationRevision.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
