@@ -28,9 +28,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
@@ -47,6 +49,7 @@ import org.efaps.ci.CIAdmin;
 import org.efaps.ci.CIAdminCommon;
 import org.efaps.ci.CIAdminProgram;
 import org.efaps.ci.CIAdminUser;
+import org.efaps.ci.CIAdminUserInterface;
 import org.efaps.ci.CIType;
 import org.efaps.db.Context;
 import org.efaps.db.MultiPrintQuery;
@@ -127,17 +130,19 @@ public class UpdatePack
                 currentEntry = tarInput.getNextTarEntry();
             }
 
-            final List<InstallFile> installFiles = new ArrayList<>();
+            final Map<RevItem, InstallFile> installFiles = new HashMap<>();
 
             final URL json = files.get("revisions.json");
             final ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JodaModule());
             final List<RevItem> items = mapper.readValue(new File(json.toURI()), mapper.getTypeFactory()
                             .constructCollectionType(List.class, RevItem.class));
+            final List<RevItem> allItems = new ArrayList<>();
+            allItems.addAll(items);
 
-            installFiles.addAll(getInstallFiles(files, items, CIAdmin.Abstract));
-            installFiles.addAll(getInstallFiles(files, items, CIAdminUser.Abstract));
-            installFiles.addAll(getInstallFiles(files, items, CICommon.DBPropertiesBundle));
+            installFiles.putAll(getInstallFiles(files, items, CIAdmin.Abstract));
+            installFiles.putAll(getInstallFiles(files, items, CIAdminUser.Abstract));
+            installFiles.putAll(getInstallFiles(files, items, CICommon.DBPropertiesBundle));
 
             final Iterator<RevItem> iter = items.iterator();
             int i = 0;
@@ -150,11 +155,50 @@ public class UpdatePack
                             .setType(item.getFileType().getType())
                             .setRevision(item.getRevision())
                             .setDate(item.getDate());
-                installFiles.add(installFile);
+                installFiles.put(item, installFile);
                 i++;
             }
 
-            Collections.sort(installFiles, new Comparator<InstallFile>()
+            // check if a object that depends on another object must be added to the update
+            final Map<String, String> depenMap = getDependendMap();
+            final Set<String> tobeAdded= new HashSet<>();
+            for (final RevItem item : installFiles.keySet()) {
+                if (depenMap.containsKey(item.getIdentifier())) {
+                    tobeAdded.add(depenMap.get(item.getIdentifier()));
+                }
+            }
+            if (!tobeAdded.isEmpty()) {
+                // check if the object to be added is already part ot the list
+                for (final RevItem item : installFiles.keySet()) {
+                    final Iterator<String> tobeiter = tobeAdded.iterator();
+                    while (tobeiter.hasNext()) {
+                        final String ident = tobeiter.next();
+                        if (item.getIdentifier().equals(ident)) {
+                            tobeiter.remove();
+                        }
+                    }
+                }
+            }
+            if (!tobeAdded.isEmpty()) {
+                i = 0;
+                // add the objects to the list taht are missing
+                for (final RevItem item : allItems) {
+                    if (tobeAdded.contains(item.getIdentifier())) {
+                        LOG.info("Adding releated Item {} / {}: {}", i, tobeAdded.size(), item);
+                        final InstallFile installFile = new InstallFile()
+                                .setName(item.getName4InstallFile())
+                                .setURL(item.getURL(files))
+                                .setType(item.getFileType().getType())
+                                .setRevision(item.getRevision())
+                                .setDate(item.getDate());
+                        installFiles.put(item, installFile);
+                        i++;
+                    }
+                }
+            }
+
+            final List<InstallFile> installFileList = new ArrayList<>(installFiles.values());
+            Collections.sort(installFileList, new Comparator<InstallFile>()
             {
 
                 @Override
@@ -167,7 +211,7 @@ public class UpdatePack
 
             if (!installFiles.isEmpty()) {
                 final Install install = new Install(true);
-                for (final InstallFile installFile : installFiles) {
+                for (final InstallFile installFile : installFileList) {
                     LOG.info("...Adding to Update: '{}' ", installFile.getName());
                     install.addFile(installFile);
                 }
@@ -182,6 +226,29 @@ public class UpdatePack
         return new Return();
     }
 
+    /**
+     * Gets the dependend map.
+     *
+     * @return the dependend map
+     * @throws EFapsException the e faps exception
+     */
+    private Map<String, String> getDependendMap()
+        throws EFapsException
+    {
+        final Map<String, String> ret = new HashMap<>();
+        final QueryBuilder queryBldr = new QueryBuilder(CIAdminUserInterface.Menu2Command);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder selFromUUID = SelectBuilder.get().linkto(CIAdminUserInterface.Menu2Command.FromMenu)
+                        .attribute(CIAdminUserInterface.Menu.UUID);
+        final SelectBuilder selToUUID = SelectBuilder.get().linkto(CIAdminUserInterface.Menu2Command.ToCommand)
+                        .attribute(CIAdminUserInterface.Command.UUID);
+        multi.addSelect(selFromUUID, selToUUID);
+        multi.executeWithoutAccessCheck();
+        while (multi.next()) {
+            ret.put(multi.<String>getSelect(selFromUUID), multi.<String>getSelect(selToUUID));
+        }
+        return ret;
+    }
 
     /**
      * Gets the install files.
@@ -192,12 +259,12 @@ public class UpdatePack
      * @return the install files
      * @throws EFapsException on error
      */
-    private List<InstallFile> getInstallFiles(final Map<String, URL> _files,
-                                              final List<RevItem> _items,
-                                              final CIType _ciType)
+    private Map<RevItem, InstallFile> getInstallFiles(final Map<String, URL> _files,
+                                                      final List<RevItem> _items,
+                                                      final CIType _ciType)
         throws EFapsException
     {
-        final List<InstallFile> ret = new ArrayList<>();
+        final Map<RevItem ,InstallFile> ret = new HashMap<>();
         final Iterator<RevItem> iter = _items.iterator();
         int i = 0;
         while (iter.hasNext()) {
@@ -216,7 +283,6 @@ public class UpdatePack
             multi.addAttribute(CIAdmin.Abstract.Name);
             multi.execute();
             boolean update = false;
-
             if (multi.next()) {
                 final String revision = multi.getSelect(selRevision);
                 final DateTime revDate = multi.getSelect(selRevDate);
@@ -242,11 +308,10 @@ public class UpdatePack
                                 .setType(item.getFileType().getType())
                                 .setRevision(item.getRevision())
                                 .setDate(item.getDate());
-                    ret.add(installFile);
+                    ret.put(item, installFile);
                 }
                 iter.remove();
             }
-
             i++;
         }
         return ret;
