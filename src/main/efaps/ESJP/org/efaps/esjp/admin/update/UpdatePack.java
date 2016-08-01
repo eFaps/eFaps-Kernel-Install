@@ -161,7 +161,7 @@ public class UpdatePack
 
             // check if a object that depends on another object must be added to the update
             final Map<String, String> depenMap = getDependendMap();
-            final Set<String> tobeAdded= new HashSet<>();
+            final Set<String> tobeAdded = new HashSet<>();
             for (final RevItem item : installFiles.keySet()) {
                 if (depenMap.containsKey(item.getIdentifier())) {
                     tobeAdded.add(depenMap.get(item.getIdentifier()));
@@ -180,7 +180,7 @@ public class UpdatePack
                 }
             }
             if (!tobeAdded.isEmpty()) {
-                i = 0;
+                i = 1;
                 // add the objects to the list taht are missing
                 for (final RevItem item : allItems) {
                     if (tobeAdded.contains(item.getIdentifier())) {
