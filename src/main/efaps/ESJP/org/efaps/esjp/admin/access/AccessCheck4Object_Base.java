@@ -25,6 +25,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -35,11 +37,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import org.efaps.admin.EFapsSystemConfiguration;
-import org.efaps.admin.KernelSettings;
 import org.efaps.admin.access.AccessSet;
 import org.efaps.admin.access.AccessType;
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.event.Parameter;
@@ -48,6 +47,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.user.AbstractUserObject;
 import org.efaps.admin.user.Group;
 import org.efaps.admin.user.Person;
 import org.efaps.admin.user.Role;
@@ -63,8 +63,15 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.transaction.ConnectionResource;
+import org.efaps.esjp.admin.common.systemconfiguration.KernelConfigurations;
+import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.esjp.common.uiform.Create;
+import org.efaps.esjp.common.uiform.Field;
+import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.util.EFapsException;
+import org.efaps.util.UUIDUtil;
+import org.efaps.util.cache.CacheReloadException;
 
 
 /**
@@ -326,36 +333,27 @@ public abstract class AccessCheck4Object_Base
     {
         boolean ret = false;
         final AccessType accessType = (AccessType) _parameter.get(ParameterValues.ACCESSTYPE);
-        //create
+        // create
         if (accessType.getUUID().equals(UUID.fromString("1dd13a42-e04f-4bce-85cf-3931ae94267f"))) {
             ret = true;
         } else {
-            final Properties props = getProperties(_parameter);
-            final String persStr = props.getProperty(_instance.getType().getName() + ".Person.SimpleAccess4Type");
-            final String roleStr = props.getProperty(_instance.getType().getName() + ".Role.SimpleAccess4Type");
-            final String groupStr = props.getProperty(_instance.getType().getName() + ".Group.SimpleAccess4Type");
-            if (persStr != null) {
-                for (final String pers : persStr.split(";")) {
-                    final Person person = Person.get(pers);
-                    if (person != null && Context.getThreadContext().getPerson().hasChildPerson(person)) {
+            final Properties properties = PropertiesUtil.getProperties4Prefix(getProperties(_parameter),
+                            _instance.getType().getName());
+
+            final Map<Integer, String> users = PropertiesUtil.analyseProperty(properties, "SimpleAccess4Type.User", 0);
+            for (final Entry<Integer, String> entry : users.entrySet()) {
+                final AbstractUserObject userObj = getUserObject(entry.getValue());
+                if (userObj != null) {
+                    if (userObj instanceof Person
+                                    && Context.getThreadContext().getPerson().hasChildPerson((Person) userObj)) {
                         ret = true;
                         break;
-                    }
-                }
-            }
-            if (roleStr != null && !ret) {
-                for (final String pers : roleStr.split(";")) {
-                    final Role role = Role.get(pers);
-                    if (role != null && Context.getThreadContext().getPerson().isAssigned(role)) {
+                    } else if (userObj instanceof Role
+                                    && Context.getThreadContext().getPerson().isAssigned((Role) userObj)) {
                         ret = true;
                         break;
-                    }
-                }
-            }
-            if (groupStr != null && !ret) {
-                for (final String pers : groupStr.split(";")) {
-                    final Group group = Group.get(pers);
-                    if (group != null && Context.getThreadContext().getPerson().isAssigned(group)) {
+                    } else if (userObj instanceof Group
+                                    && Context.getThreadContext().getPerson().isAssigned((Group) userObj)) {
                         ret = true;
                         break;
                     }
@@ -364,7 +362,6 @@ public abstract class AccessCheck4Object_Base
         }
         return ret;
     }
-
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
@@ -427,44 +424,47 @@ public abstract class AccessCheck4Object_Base
     public Return getAccessSetDropDownFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        final StringBuilder html = new StringBuilder();
         final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         final Instance instance = _parameter.getCallInstance();
-
-        final Properties props = getProperties(_parameter);
-        String accessSets = null;
-        final Map<String, Long> values = new TreeMap<>();
-        if (props != null && instance != null && instance.isValid()) {
-            accessSets = props.getProperty(instance.getType().getName() + ".AccessSets");
-        }
-        if (accessSets != null) {
-            for (final String accessSet :  accessSets.split(";")) {
-                final AccessSet set = AccessSet.get(accessSet);
-                if (set != null) {
-                    values.put(set.getName(), set.getId());
+        final List<DropDownPosition> values = new ArrayList<>();
+        if (InstanceUtils.isValid(instance)) {
+            final Properties properties = PropertiesUtil.getProperties4Prefix(getProperties(_parameter),
+                            instance.getType().getName());
+            final Map<Integer, String> accessSets = PropertiesUtil.analyseProperty(properties, "Grant.AccessSet", 0);
+            for (final String accessSetStr : accessSets.values()) {
+                final AccessSet accessSet = getAccessSet(accessSetStr);
+                if (accessSet != null) {
+                    values.add(new Field().getDropDownPosition(_parameter, accessSet.getId(), accessSet.getName())
+                                    .setSelected(Long.valueOf(accessSet.getId()).equals(uiValue.getObject())));
                 }
             }
-        } else {
+        }
+        if (values.isEmpty()) {
             final QueryBuilder queryBldr = new QueryBuilder(CIAdminAccess.AccessSet);
             final MultiPrintQuery multi = queryBldr.getPrint();
             multi.addAttribute(CIAdminAccess.AccessSet.Name);
             multi.execute();
             while (multi.next()) {
-                values.put(multi.<String>getAttribute("Name"), multi.getCurrentInstance().getId());
+                values.add(new Field().getDropDownPosition(_parameter, multi.getCurrentInstance().getId(),
+                                multi.<String>getAttribute(CIAdminAccess.AccessSet.Name))
+                                .setSelected(Long.valueOf(multi.getCurrentInstance().getId())
+                                                .equals(uiValue.getObject())));
             }
         }
+        Collections.sort(values, new Comparator<DropDownPosition>()
+        {
 
-        html.append("<select name=\"").append(uiValue.getField().getName()).append("\" size=\"1\">");
-        for (final Entry<String, Long> entry : values.entrySet()) {
-            html.append("<option value=\"").append(entry.getValue()).append("\" ");
-            if (entry.getValue().equals(uiValue.getObject())) {
-                html.append("selected=\"selected\"");
+            @SuppressWarnings("unchecked")
+            @Override
+            public int compare(final DropDownPosition _o1,
+                               final DropDownPosition _o2)
+            {
+                return _o1.getOrderValue().compareTo(_o2.getOrderValue());
             }
-            html.append("/>").append(entry.getKey()).append("</option>");
-        }
-        html.append("</select>");
+        });
+
         final Return ret = new Return();
-        ret.put(ReturnValues.SNIPLETT, html.toString());
+        ret.put(ReturnValues.VALUES, values);
         return ret;
     }
 
@@ -480,29 +480,26 @@ public abstract class AccessCheck4Object_Base
 
         final List<Map<String, String>> list = new ArrayList<>();
         final Map<String, Map<String, String>> tmpMap = new TreeMap<>();
-        final Properties props = getProperties(_parameter);
+
         final Instance instance = _parameter.getCallInstance();
-        String persInRoles = null;
-        String rolesAsList = null;
-        if (props != null && instance != null && instance.isValid()) {
-            persInRoles = props.getProperty(instance.getType().getName() + ".Person.InRole");
-            rolesAsList = props.getProperty(instance.getType().getName() + ".Role.AsList");
-        }
-
-        final QueryBuilder queryBldr = new QueryBuilder(CIAdminUser.Person);
-
-        if (persInRoles != null) {
-            final List<Object>tmp = new ArrayList<>();
-            for (final String role : persInRoles.split(";")) {
-                final Role aType = Role.get(role);
-                if (aType != null) {
-                    tmp.add(aType.getId());
+        if (InstanceUtils.isValid(instance)) {
+            final Properties properties = PropertiesUtil.getProperties4Prefix(getProperties(_parameter),
+                            instance.getType().getName());
+            final Map<Integer, String> inRoles = PropertiesUtil.analyseProperty(properties, "Grant.Person.InRole", 0);
+            final Set<Long> roleIds = new HashSet<>();
+            for (final String inRole : inRoles.values()) {
+                final AbstractUserObject role = getUserObject(inRole);
+                if (role != null && role instanceof Role) {
+                    roleIds.add(role.getId());
                 }
             }
-            final QueryBuilder attrQueryBldr = new QueryBuilder(CIAdminUser.Person2Role);
-            attrQueryBldr.addWhereAttrEqValue(CIAdminUser.Person2Role.UserToLink, tmp.toArray());
-            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIAdminUser.Person2Role.UserFromLink);
-            queryBldr.addWhereAttrInQuery(CIAdminUser.Abstract.ID, attrQuery);
+            final QueryBuilder queryBldr = new QueryBuilder(CIAdminUser.Person);
+            if (!roleIds.isEmpty()) {
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAdminUser.Person2Role);
+                attrQueryBldr.addWhereAttrEqValue(CIAdminUser.Person2Role.UserToLink, roleIds.toArray());
+                final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIAdminUser.Person2Role.UserFromLink);
+                queryBldr.addWhereAttrInQuery(CIAdminUser.Abstract.ID, attrQuery);
+            }
             queryBldr.addWhereAttrMatchValue(CIAdminUser.Abstract.Name, input + "*").setIgnoreCase(true);
             queryBldr.addWhereAttrEqValue(CIAdminUser.Abstract.Status, true);
             final MultiPrintQuery multi = queryBldr.getPrint();
@@ -511,22 +508,29 @@ public abstract class AccessCheck4Object_Base
             while (multi.next()) {
                 final String name = multi.<String>getAttribute(CIAdminUser.Abstract.Name);
                 final Map<String, String> map = new HashMap<>();
-                map.put("eFapsAutoCompleteKEY", ((Long) multi.getCurrentInstance().getId()).toString());
+                map.put("eFapsAutoCompleteKEY", String.valueOf(multi.getCurrentInstance().getId()));
                 map.put("eFapsAutoCompleteVALUE", name);
                 map.put("eFapsAutoCompleteCHOICE", name + " - " + multi.getCurrentInstance().getType().getLabel());
                 tmpMap.put(name, map);
             }
-        }
-        if (rolesAsList != null) {
-            for (final String roleName : rolesAsList.split(";")) {
-                final Role role = Role.get(roleName);
-                if (role != null) {
+
+            final Map<Integer, String> users = PropertiesUtil.analyseProperty(properties, "Grant.User", 0);
+            for (final String user : users.values()) {
+                final AbstractUserObject userObj = getUserObject(user);
+                if (userObj != null) {
+                    String typeLabel = "";
+                    if (userObj instanceof Role) {
+                        typeLabel = CIAdminUser.RoleAbstract.getType().getLabel();
+                    } else if (userObj instanceof Group) {
+                        typeLabel = CIAdminUser.Group.getType().getLabel();
+                    } else if (userObj instanceof Person) {
+                        typeLabel = CIAdminUser.Person.getType().getLabel();
+                    }
                     final Map<String, String> map = new HashMap<>();
-                    map.put("eFapsAutoCompleteKEY", ((Long) role.getId()).toString());
-                    map.put("eFapsAutoCompleteVALUE", role.getName());
-                    map.put("eFapsAutoCompleteCHOICE", role.getName() + " - "
-                                    + CIAdminUser.RoleAbstract.getType().getLabel());
-                    tmpMap.put(role.getName(), map);
+                    map.put("eFapsAutoCompleteKEY", String.valueOf(userObj.getId()));
+                    map.put("eFapsAutoCompleteVALUE", userObj.getName());
+                    map.put("eFapsAutoCompleteCHOICE", userObj.getName() + " - " + typeLabel);
+                    tmpMap.put(userObj.getName(), map);
                 }
             }
         }
@@ -537,20 +541,7 @@ public abstract class AccessCheck4Object_Base
     }
 
     /**
-     * @param _parameter Parameter as passed by the eFaps API
-     * @return Return containing
-     * @throws EFapsException on error
-     */
-    public Return checkAccess4Grant(final Parameter _parameter)
-        throws EFapsException
-    {
-        _parameter.put(ParameterValues.ACCESSTYPE,
-                        AccessType.getAccessType(UUID.fromString("89362f2b-7a93-4133-8262-0b2925e285cb")));
-        return new SimpleAccessCheckOnType().execute(_parameter);
-    }
-
-
-    /**
+     * On delete of a Access4Object check if ti is permitted to delete the laste one.
      * @param _parameter    Paramater as passed by the eFasp API
      * @return  new Return
      * @throws EFapsException on error
@@ -558,101 +549,78 @@ public abstract class AccessCheck4Object_Base
     public Return deleteOverrideTrigger(final Parameter _parameter)
         throws EFapsException
     {
-        final Properties props = getProperties(_parameter);
-        boolean delete = false;
         final PrintQuery print = new PrintQuery(_parameter.getInstance());
-        print.addAttribute("ObjectId", "TypeId");
+        print.addAttribute(CIAdminAccess.Access4Object.ObjectId, CIAdminAccess.Access4Object.TypeId);
         print.execute();
-        final Long typeId = print.<Long>getAttribute("TypeId");
-        final Long objectId = print.<Long>getAttribute("ObjectId");
+        final Long typeId = print.getAttribute(CIAdminAccess.Access4Object.TypeId);
+        final Long objectId = print.getAttribute(CIAdminAccess.Access4Object.ObjectId);
 
-        final String pers = props.getProperty(Type.get(typeId).getName() + ".Person.Default4Delete");
-        final String grps = props.getProperty(Type.get(typeId).getName() + ".Group.Default4Delete");
-        final String roles = props.getProperty(Type.get(typeId).getName() + ".Role.Default4Delete");
+        final Properties properties = PropertiesUtil.getProperties4Prefix(getProperties(_parameter),
+                        Type.get(typeId).getName());
+        final Map<Integer, String> users = PropertiesUtil.analyseProperty(properties, "Delete.User", 0);
+        final Map<Integer, String> sets = PropertiesUtil.analyseProperty(properties, "Delete.AccessSet", 0);
 
-        if (pers != null && !pers.isEmpty() || grps != null && !grps.isEmpty()
-                        || roles != null && !roles.isEmpty()) {
+        new Delete(_parameter.getInstance()).executeWithoutTrigger();
+
+        // if a defintion exists ensure that they are set
+        if (!users.isEmpty()) {
             final QueryBuilder queryBldr = new QueryBuilder(CIAdminAccess.Access4Object);
             queryBldr.addWhereAttrEqValue(CIAdminAccess.Access4Object.TypeId, typeId);
             queryBldr.addWhereAttrEqValue(CIAdminAccess.Access4Object.ObjectId, objectId);
             final InstanceQuery query = queryBldr.getQuery();
-            final List<Instance> list = query.execute();
-
-            if (list.size() < 2) {
-                insertOnDelete(_parameter, pers, Person.class, typeId, objectId);
-                insertOnDelete(_parameter, grps, Group.class, typeId, objectId);
-                insertOnDelete(_parameter, roles, Role.class, typeId, objectId);
-            } else {
-                delete = true;
+            // if the deleted access was the last add the defaults
+            if (query.execute().isEmpty()) {
+                for (final Entry<Integer, String> entry : users.entrySet()) {
+                    final AbstractUserObject userObj = getUserObject(entry.getValue());
+                    final AccessSet accessSet = getAccessSet(sets.get(entry.getKey()));
+                    if (userObj != null && accessSet != null) {
+                        insertAccess4Object(_parameter, _parameter.getInstance(), userObj.getId(), accessSet.getId());
+                    }
+                }
             }
-        } else {
-            delete = true;
-        }
-        if (delete) {
-            new Delete(_parameter.getInstance()).executeWithoutTrigger();
         }
         return new Return();
     }
 
-
     /**
-     * @param _parameter    Parameter as passed by the eFaps API
-     * @param _pers         Person
-     * @param _class        class
-     * @param _typeId       id of the type
-     * @param _objectId     id of the object
-     * @throws EFapsException on error
+     * Delete override trigger for object.
+     * On deletion of the object remove all access4object and
+     * - if a delete accessobject is defined add this one
+     * - if no defined delete object
+     * @param _parameter the parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
      */
-    protected void insertOnDelete(final Parameter _parameter,
-                                     final String _pers,
-                                     final Class<?> _class,
-                                     final Long _typeId,
-                                     final Long _objectId)
+    public Return deleteOverrideTrigger4Object(final Parameter _parameter)
         throws EFapsException
     {
-        boolean del = false;
-        if (_pers != null && !_pers.isEmpty()) {
-            final String[] perAr = _pers.split(";");
-            for (int i = 0; i < perAr.length; i = i + 2) {
-                Long persId = null;
-                if (_class.isAssignableFrom(Person.class)) {
-                    final Person aPers = Person.get(perAr[i]);
-                    if (aPers != null) {
-                        persId = aPers.getId();
-                    }
-                } else if (_class.isAssignableFrom(Group.class)) {
-                    final Group aPers = Group.get(perAr[i]);
-                    if (aPers != null) {
-                        persId = aPers.getId();
-                    }
-                } else if (_class.isAssignableFrom(Role.class)) {
-                    final Role aPers = Role.get(perAr[i]);
-                    if (aPers != null) {
-                        persId = aPers.getId();
-                    }
-                }
-                final AccessSet accSet = AccessSet.get(perAr[i + 1]);
-                if (persId != null && accSet != null) {
-                    final QueryBuilder queryBldr = new QueryBuilder(Type.get(UUID
-                                    .fromString("98d9b606-b1aa-4ae1-9f30-2cba0d99453b")));
-                    queryBldr.addWhereAttrEqValue("TypeId", _typeId);
-                    queryBldr.addWhereAttrEqValue("ObjectId", _objectId);
-                    queryBldr.addWhereAttrEqValue("PersonLink", persId);
-                    queryBldr.addWhereAttrEqValue("AccessSetLink", accSet.getId());
-                    final InstanceQuery query = queryBldr.getQuery();
-                    if (query.execute().isEmpty()) {
-                        insertAccess4Object(_parameter, Instance.get(Type.get(_typeId), _objectId), persId,
-                                        accSet.getId());
-                        del = true;
-                    }
-                } else {
-                    del = true;
+
+        final QueryBuilder queryBldr = new QueryBuilder(CIAdminAccess.Access4Object);
+        queryBldr.addWhereAttrEqValue(CIAdminAccess.Access4Object.TypeId, _parameter.getInstance().getType().getId());
+        queryBldr.addWhereAttrEqValue(CIAdminAccess.Access4Object.ObjectId, _parameter.getInstance().getId());
+        final InstanceQuery query = queryBldr.getQuery();
+        query.execute();
+        while (query.next()) {
+            new Delete(query.getCurrentValue()).executeWithoutTrigger();
+        }
+
+        final Properties properties = PropertiesUtil.getProperties4Prefix(getProperties(_parameter),
+                        _parameter.getInstance().getType().getName());
+        final Map<Integer, String> users = PropertiesUtil.analyseProperty(properties, "Delete.User", 0);
+        final Map<Integer, String> sets = PropertiesUtil.analyseProperty(properties, "Delete.AccessSet", 0);
+
+        if (users.isEmpty()) {
+            new Delete(_parameter.getInstance()).executeWithoutTrigger();
+        } else {
+            for (final Entry<Integer, String> entry : users.entrySet()) {
+                final AbstractUserObject userObj = getUserObject(entry.getValue());
+                final AccessSet accessSet = getAccessSet(sets.get(entry.getKey()));
+                if (userObj != null && accessSet != null) {
+                    insertAccess4Object(_parameter, _parameter.getInstance(), userObj.getId(), accessSet.getId());
                 }
             }
         }
-        if (del) {
-            new Delete(_parameter.getInstance()).executeWithoutTrigger();
-        }
+        return new Return();
     }
 
     /**
@@ -690,8 +658,79 @@ public abstract class AccessCheck4Object_Base
     protected Properties getProperties(final Parameter _parameter)
         throws EFapsException
     {
-        final SystemConfiguration config = EFapsSystemConfiguration.get();
-        return config.getAttributeValueAsProperties(KernelSettings.ACCESS4OBJECT, true);
+        return KernelConfigurations.ACCESS4OBJECT.get();
+    }
+
+    /**
+     * Insert access for object trigger. Shoul be executed on after
+     * insert of the object.
+     *
+     * @param _parameter the parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
+    public Return insertPostTrigger4Object(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance objInst = _parameter.getInstance();
+        final Properties properties = PropertiesUtil.getProperties4Prefix(getProperties(_parameter),
+                        objInst.getType().getName());
+        // check if the creator must be added
+        if (properties.containsKey("Insert.AccessSet4Creator")) {
+            final AccessSet accessSet = getAccessSet(properties.getProperty("Insert.AccessSet4Creator"));
+            if (accessSet != null) {
+                insertAccess4Object(_parameter, objInst, Context.getThreadContext().getPersonId(), accessSet.getId());
+            }
+        }
+
+        final Map<Integer, String> users = PropertiesUtil.analyseProperty(properties, "Insert.User", 0);
+        final Map<Integer, String> sets = PropertiesUtil.analyseProperty(properties, "Insert.AccessSet", 0);
+        for (final Entry<Integer, String> entry : users.entrySet()) {
+            final AbstractUserObject userObj = getUserObject(entry.getValue());
+            final AccessSet accessSet = getAccessSet(sets.get(entry.getKey()));
+            if (userObj != null && accessSet != null) {
+                insertAccess4Object(_parameter, objInst, userObj.getId(), accessSet.getId());
+            }
+        }
+        return new Return();
+    }
+
+    /**
+     * Gets the access set.
+     *
+     * @param _key the key
+     * @return the access set
+     * @throws CacheReloadException the cache reload exception
+     */
+    protected AccessSet getAccessSet(final String _key)
+        throws CacheReloadException
+    {
+        AccessSet ret;
+        if (UUIDUtil.isUUID(_key)) {
+            ret = AccessSet.get(UUID.fromString(_key));
+        } else {
+            ret = AccessSet.get(_key);
+        }
+        return ret;
+    }
+
+    /**
+     * Gets the user object.
+     *
+     * @param _key the key
+     * @return the user object
+     * @throws EFapsException the e faps exception
+     */
+    protected AbstractUserObject getUserObject(final String _key)
+        throws EFapsException
+    {
+        AbstractUserObject ret;
+        if (UUIDUtil.isUUID(_key)) {
+            ret = AbstractUserObject.getUserObject(UUID.fromString(_key));
+        } else {
+            ret = AbstractUserObject.getUserObject(_key);
+        }
+        return ret;
     }
 
     /**

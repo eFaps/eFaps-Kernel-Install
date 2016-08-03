@@ -16,21 +16,14 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
-
 -->
-
-<datamodel-type xmlns="http://www.efaps.org/xsd"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>98d9b606-b1aa-4ae1-9f30-2cba0d99453b</uuid>
     <file-application>eFaps-Kernel</file-application>
-    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Access_Access4Object</name>
-        <!-- attributes -->
         <attribute>
             <name>OID</name>
             <type>OID</type>
@@ -93,13 +86,9 @@
             <sqltable>Admin_Access_Access4ObjectSQLTable</sqltable>
             <sqlcolumn>MODIFIED</sqlcolumn>
         </attribute>
-
-        <trigger program="org.efaps.esjp.admin.access.AccessCheck4Object"
-            method="deleteOverrideTrigger"
-            name="Admin_Access_Access4Object.DELETE_OVERRIDE"
-            event="DELETE_OVERRIDE"/>
+        <trigger program="org.efaps.esjp.admin.access.AccessCheck4Object" method="deleteOverrideTrigger"
+            name="Admin_Access_Access4Object.DELETE_OVERRIDE" event="DELETE_OVERRIDE" />
     </definition>
-
     <definition>
         <version-expression>(version==3)</version-expression>
         <name>Admin_Access_Access4Object</name>
@@ -166,5 +155,5 @@
             <sqltable>Admin_Access_Access4ObjectSQLTable</sqltable>
             <sqlcolumn>MODIFIED</sqlcolumn>
         </attribute>
-   </definition>
+    </definition>
 </datamodel-type>

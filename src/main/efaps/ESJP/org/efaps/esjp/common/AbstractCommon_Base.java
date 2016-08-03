@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -48,6 +47,7 @@ import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.util.EFapsException;
 import org.efaps.util.UUIDUtil;
 import org.efaps.util.cache.CacheReloadException;
@@ -157,26 +157,7 @@ public abstract class AbstractCommon_Base
                                                    final int _offset)
         throws EFapsException
     {
-        final Map<Integer, String> ret = new TreeMap<Integer, String>();
-        final Map<?, ?> properties = getPropertiesMapInternal(_parameter);
-        // test for basic
-        final int start = _offset == 0 ? 1 : _offset;
-        if (_offset == 0 && properties.containsKey(_key)) {
-            ret.put(0, String.valueOf(properties.get(_key)));
-        }
-        String formatStr = "%02d";
-        if (start > 99) {
-            formatStr = "%03d";
-        }
-        for (int i = start; i < start + 100; i++) {
-            final String nameTmp = _key + String.format(formatStr, i);
-            if (properties.containsKey(nameTmp)) {
-                ret.put(i, String.valueOf(properties.get(nameTmp)));
-            } else {
-                break;
-            }
-        }
-        return ret;
+        return PropertiesUtil.analyseProperty(_parameter, _key, _offset);
     }
 
     /**
@@ -193,13 +174,7 @@ public abstract class AbstractCommon_Base
                                  final String _defaultValue)
         throws EFapsException
     {
-        final String ret;
-        if (containsProperty(_parameter, _key)) {
-            ret = getProperty(_parameter, _key);
-        } else {
-            ret  = _defaultValue;
-        }
-        return ret;
+        return PropertiesUtil.getProperty(_parameter, _key, _defaultValue);
     }
 
     /**
@@ -214,13 +189,7 @@ public abstract class AbstractCommon_Base
                                  final String _key)
         throws EFapsException
     {
-        String ret = null;
-        final Map<?, ?> properties = getPropertiesMapInternal(_parameter);
-        // test for basic
-        if (properties.containsKey(_key)) {
-            ret = String.valueOf(properties.get(_key));
-        }
-        return ret;
+        return PropertiesUtil.getProperty(_parameter, _key);
     }
 
     /**
@@ -235,40 +204,7 @@ public abstract class AbstractCommon_Base
                                        final String _key)
         throws EFapsException
     {
-        final Map<?, ?> properties = getPropertiesMapInternal(_parameter);
-        return properties.containsKey(_key);
-    }
-
-    /**
-     * Get the properties map. Reads first the Map from
-     * <code>ParameterValues.PROPERTIES</code> and than
-     * checks for overwrite by a SystenConfiguration.
-     *
-     * @param _parameter the _parameter
-     * @return the properties map internal
-     * @throws EFapsException the e faps exception
-     */
-    @SuppressWarnings("unchecked")
-    private Map<?, ?> getPropertiesMapInternal(final Parameter _parameter)
-        throws EFapsException
-    {
-        Map<Object, Object> ret = (Map<Object, Object>) _parameter.get(ParameterValues.PROPERTIES);
-        if (ret != null && ret.containsKey("PropertiesConfig")) {
-            final String config = (String) ret.get("PropertiesConfig");
-            final SystemConfiguration sysConf;
-            if (isUUID(config)) {
-                sysConf = SystemConfiguration.get(UUID.fromString(config));
-            } else {
-                sysConf = SystemConfiguration.get(config);
-            }
-            if (sysConf != null) {
-                final Properties props = sysConf
-                                .getAttributeValueAsProperties((String) ret.get("PropertiesConfigAttribute"));
-                ret = (Map<Object, Object>) _parameter.get(ParameterValues.PROPERTIES);
-                ret.putAll(props);
-            }
-        }
-        return ret;
+        return PropertiesUtil.containsProperty(_parameter, _key);
     }
 
     /**
@@ -284,7 +220,7 @@ public abstract class AbstractCommon_Base
                                     final Type _type)
         throws CacheReloadException
     {
-        final Set<Type> ret = new HashSet<Type>();
+        final Set<Type> ret = new HashSet<>();
         ret.add(_type);
         for (final Type child : _type.getChildTypes()) {
             ret.addAll(getTypeList(_parameter, child));
@@ -410,8 +346,8 @@ public abstract class AbstractCommon_Base
                                                        final int _offset)
         throws EFapsException
     {
-        final Set<Status> ret = new HashSet<Status>();
-        final Set<Status> negateList = new HashSet<Status>();
+        final Set<Status> ret = new HashSet<>();
+        final Set<Status> negateList = new HashSet<>();
         final Map<Integer, String> statusGroupMap = analyseProperty(_parameter, "StatusGroup", _offset);
         // no statusGroup was set, try to get it from the instance
         if (statusGroupMap.isEmpty()) {
@@ -467,7 +403,7 @@ public abstract class AbstractCommon_Base
             }
         }
         ret.removeAll(negateList);
-        return new ArrayList<Status>(ret);
+        return new ArrayList<>(ret);
     }
 
     /**
@@ -516,10 +452,10 @@ public abstract class AbstractCommon_Base
                                                       final int _offSet)
         throws EFapsException
     {
-        final Properties props = getProperties4Prefix(_props, _prefix, true);
+        final Properties props = PropertiesUtil.getProperties4Prefix(_props, _prefix, true);
         final Map<Object, Object> propsMap = props.entrySet().stream().collect(
                         Collectors.toMap(e -> e.getKey().toString(),
-                                         e -> e.getValue().toString()));
+                            e -> e.getValue().toString()));
         final Parameter parameter = ParameterUtil.clone(_parameter, ParameterValues.PROPERTIES, propsMap);
         return getQueryBldrFromPropertiesInternal(parameter, _offSet);
     }
@@ -584,7 +520,7 @@ public abstract class AbstractCommon_Base
         final Map<Integer, String> expands = analyseProperty(_parameter, "ExpandChildTypes", _offset);
         boolean first = true;
         boolean multiple = false;
-        final List<Type> excludes = new ArrayList<Type>();
+        final List<Type> excludes = new ArrayList<>();
         for (final Entry<Integer, String> typeEntry : types.entrySet()) {
             final Type type;
             String typeStr = typeEntry.getValue();
@@ -636,7 +572,7 @@ public abstract class AbstractCommon_Base
 
         if (ret != null) {
             if (!excludes.isEmpty()) {
-                final List<Long> typeIds = new ArrayList<Long>();
+                final List<Long> typeIds = new ArrayList<>();
                 for (final Type type : excludes) {
                     for (final Type exType :  getTypeList(_parameter, type)) {
                         typeIds.add(exType.getId());
@@ -677,7 +613,7 @@ public abstract class AbstractCommon_Base
             if (multiple && linkFroms.size() > 1) {
                 final QueryBuilder attrQueryBldr = new QueryBuilder(ret.getType());
                 attrQueryBldr.setOr(true);
-                final Set<List<String>> added = new HashSet<List<String>>();
+                final Set<List<String>> added = new HashSet<>();
                 for (final Entry<Integer, String> entry : linkFroms.entrySet()) {
                     if (types.containsKey(entry.getKey())) {
                         final String typeStr = types.get(entry.getKey());
@@ -841,44 +777,5 @@ public abstract class AbstractCommon_Base
         {
         };
         return cm.getQueryBldrFromProperties(parameter, _properties);
-    }
-
-    /**
-     * Gets the properties4 prefix.
-     *
-     * @param _properties the properties
-     * @param _prefix the prefix
-     * @return the properties4 prefix
-     */
-    protected static Properties getProperties4Prefix(final Properties _properties,
-                                                     final String _prefix){
-        return getProperties4Prefix(_properties, _prefix, false);
-    }
-
-    /**
-     * Gets the properties4 prefix.
-     *
-     * @param _properties the properties
-     * @param _prefix the prefix
-     * @param _exclude exclude the property if it not starts with the prefix
-     * @return the properties4 prefix
-     */
-    protected static Properties getProperties4Prefix(final Properties _properties,
-                                                     final String _prefix,
-                                                     final boolean _exclude){
-        final Properties ret = new Properties();
-        final String key = _prefix == null ? null : _prefix + ".";
-        for (final Entry<Object, Object> entry : _properties.entrySet()) {
-            if (_prefix != null) {
-                if (entry.getKey().toString().startsWith(key)) {
-                    ret.put(entry.getKey().toString().replace(key, ""), entry.getValue());
-                } else if (!_exclude) {
-                    ret.put(entry.getKey(), entry.getValue());
-                }
-            } else {
-                ret.put(entry.getKey(), entry.getValue());
-            }
-        }
-        return ret;
     }
 }

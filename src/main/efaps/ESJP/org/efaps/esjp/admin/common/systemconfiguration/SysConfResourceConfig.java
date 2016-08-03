@@ -60,6 +60,7 @@ public final class SysConfResourceConfig
     /** The attrs. */
     private static Set<ISysConfAttribute> ATTRS = new HashSet<>();
     static {
+        ATTRS.add(KernelConfigurations.ACCESS4OBJECT);
         ATTRS.add(KernelConfigurations.INDEXBASEFOLDER);
         ATTRS.add(KernelConfigurations.INDEXLANG);
         ATTRS.add(KernelConfigurations.INDEXQUERYBLDR);
@@ -346,18 +347,6 @@ public final class SysConfResourceConfig
 
         attr = new PropertiesSysConfAttribute()
                         .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
-                        .key(KernelSettings.ACCESS4OBJECT)
-                        .concatenate(true)
-                        .description("Archives_ArchiveRoot.Role.AsList=Role1;Role2\n"
-                                        + " Archives_ArchiveRoot.Role.SimpleAccess4Type=Archives_Admin\n"
-                                        + " Archives_ArchiveRoot.AccessSets=Archives_Modifier\n"
-                                        + " Archives_ArchiveNode.ParentAttribute=ParentLink\n"
-                                        + " Archives_ArchiveFile.ParentAttribute=ParentLink");
-        LOG.info("    Add Attribute: {}", attr);
-        attrs.add(attr);
-
-        attr = new PropertiesSysConfAttribute()
-                        .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
                         .key(KernelSettings.PROFILES4UPDATE)
                         .concatenate(true)
                         .description("   Profiles to be applied on update if not specified explicitly.\n"
@@ -397,6 +386,7 @@ public final class SysConfResourceConfig
                         .defaultValue(Search.class.getName())
                         .description("ClassName of the class used for getting the Search. Must implement\n"
                                         + " org.efaps.admin.index.ISearch.");
+        LOG.info("    Add Attribute: {}", attr);
         attrs.add(attr);
 
         /** See description. */
@@ -406,10 +396,11 @@ public final class SysConfResourceConfig
                         .defaultValue("AND")
                         .description("The default operator for the QueryParser Can be 'AND' or 'OR'. Default is set\n"
                                         + " to 'AND' for eFaps.");
+        LOG.info("    Add Attribute: {}", attr);
         attrs.add(attr);
 
-
         for (final ISysConfAttribute attrTmp : ATTRS) {
+            LOG.info("    Add Attribute: {}", attrTmp);
             attrs.add(attrTmp);
         }
     }

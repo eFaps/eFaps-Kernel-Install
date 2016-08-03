@@ -16,36 +16,26 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
-
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
-
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>dd31f60d-5696-46b7-8483-5459882de0ef</uuid>
     <file-application>eFaps-Kernel</file-application>
-    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Access_Access4Object</name>
-        <!-- target definitions -->
         <target>
             <menu>Admin_Access_Access4Object_Menu</menu>
             <table>Admin_Access_Access4ObjectTable</table>
             <evaluate program="org.efaps.esjp.admin.access.AccessCheck4Object"
-                method="access4ObjectMultiprint"/>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4Object"
-                method="checkAccess4Grant"
+                method="access4ObjectMultiprint" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="check4InstanceAccess"
                 name="Admin_Access_Access4Object.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK"/>
+                event="UI_ACCESSCHECK" >
+                <property name="AccessType">GRANT</property>
+            </trigger>
         </target>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
         <property name="TargetShowCheckBoxes">true</property>

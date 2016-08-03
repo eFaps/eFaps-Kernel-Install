@@ -36,25 +36,44 @@ import org.efaps.esjp.admin.index.LucenceQueryBuilder;
 @EFapsUUID("7b4c9ebc-abec-4b02-a6e4-c03a7e4370b4")
 public final class KernelConfigurations
 {
+    /** The base. */
+    public static final String  BASE = "org.efaps.kernel.";
+
+    /** See description. */
+    public static final PropertiesSysConfAttribute ACCESS4OBJECT = new PropertiesSysConfAttribute()
+                    .sysConfUUID(EFapsSystemConfiguration.UUID)
+                    .key(BASE + "AccessCheck4Object")
+                    .concatenate(true)
+                    .description("Properties to configure the Access for Object mechanism.\n"
+                                    + "TYPE.Grant.AccessSet: PropertyMap, UUID or name\n"
+                                    + "TYPE.Grant.Person.InRole: PropertyMap, UUID or name\n"
+                                    + "TYPE.Grant.User: PropertyMap, UUID or name\n"
+                                    + "TYPE.Insert.AccessSet4Creator: AccesSet to be assigned for the creator\n"
+                                    + "TYPE.Insert.User: PropertyMap, UUID or name\n"
+                                    + "TYPE.Insert.AccessSet: PropertyMap Map, UUID or name\n"
+                                    + "TYPE.SimpleAccess4Type.User: PropertyMap, UUID or name\n"
+                                    + "TYPE.Delete.User: PropertyMap, UUID or name\n"
+                                    + "TYPE.Delete.AccessSet: PropertyMap, UUID or name"
+                                    );
 
     /** See description. */
     public static final StringSysConfAttribute INDEXBASEFOLDER = new StringSysConfAttribute()
                     .sysConfUUID(EFapsSystemConfiguration.UUID)
-                    .key("org.efaps.kernel.index.Basefolder")
+                    .key(BASE + "index.Basefolder")
                     .defaultValue("/eFaps/index")
                     .description("The base folder where the different indexes will be stored in.");
 
     /** See description. */
     public static final ListSysConfAttribute INDEXLANG = new ListSysConfAttribute()
                     .sysConfUUID(EFapsSystemConfiguration.UUID)
-                    .key("org.efaps.kernel.index.Languages")
+                    .key(BASE + "index.Languages")
                     .defaultValue(new ArrayList<>(Arrays.asList(new String[] { "en", "es" })))
                     .description("List of languages the indexes willbe created for.");
 
     /** See description. */
     public static final StringSysConfAttribute INDEXQUERYBLDR = new StringSysConfAttribute()
                     .sysConfUUID(EFapsSystemConfiguration.UUID)
-                    .key("org.efaps.kernel.index.QueryBuilder")
+                    .key(BASE + "index.QueryBuilder")
                     .defaultValue(LucenceQueryBuilder.class.getName())
                     .description("Class name of the class invoked to build Lucene Queries.");
 
