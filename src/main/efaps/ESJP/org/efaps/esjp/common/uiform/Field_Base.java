@@ -806,7 +806,7 @@ public abstract class Field_Base
                                 DBProperties.getProperty(getProperty(_parameter, "emptyValue"))));
             }
 
-            if (orderSel != null) {
+            if (!BooleanUtils.toBoolean(getProperty(_parameter, "NoSort"))) {
                 Collections.sort(values, new Comparator<DropDownPosition>() {
                     @SuppressWarnings("unchecked")
                     @Override
@@ -1439,7 +1439,7 @@ public abstract class Field_Base
                             DBProperties.getProperty(getProperty(_parameter, "EmptyValue"))));
         }
 
-        if (orderSel != null) {
+        if (!BooleanUtils.toBoolean(getProperty(_parameter, "NoSort"))) {
             Collections.sort(values, new Comparator<DropDownPosition>()
             {
 
