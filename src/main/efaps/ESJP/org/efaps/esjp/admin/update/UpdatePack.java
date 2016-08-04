@@ -172,7 +172,7 @@ public class UpdatePack
                 }
             });
 
-            final List<InstallFile> dependendFileList = new ArrayList<>(installFiles.values());
+            final List<InstallFile> dependendFileList = new ArrayList<>();
             // check if a object that depends on another object must be added to the update
             final Map<String, String> depenMap = getDependendMap();
             final Set<String> tobeAdded = new HashSet<>();
