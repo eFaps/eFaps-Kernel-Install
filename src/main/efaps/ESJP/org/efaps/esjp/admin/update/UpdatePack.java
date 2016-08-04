@@ -150,7 +150,7 @@ public class UpdatePack
             int i = 0;
             while (iter.hasNext()) {
                 final RevItem item = iter.next();
-                LOG.info("Adding unfound Item {} / {}: {}", i, items.size(), item);
+                LOG.info("Adding unfound Item {} / {}: {}", i, items.size(), item.getIdentifier());
                 final InstallFile installFile = new InstallFile()
                             .setName(item.getName4InstallFile())
                             .setURL(item.getURL(files))
@@ -172,7 +172,7 @@ public class UpdatePack
                 }
             });
 
-
+            final List<InstallFile> dependendFileList = new ArrayList<>(installFiles.values());
             // check if a object that depends on another object must be added to the update
             final Map<String, String> depenMap = getDependendMap();
             final Set<String> tobeAdded = new HashSet<>();
@@ -205,15 +205,24 @@ public class UpdatePack
                                 .setType(item.getFileType().getType())
                                 .setRevision(item.getRevision())
                                 .setDate(item.getDate());
-                        installFileList.add(installFile);
+                        dependendFileList.add(installFile);
                         i++;
                     }
                 }
             }
 
-            if (!installFiles.isEmpty()) {
+            if (!installFileList.isEmpty()) {
                 final Install install = new Install(true);
                 for (final InstallFile installFile : installFileList) {
+                    LOG.info("...Adding to Update: '{}' ", installFile.getName());
+                    install.addFile(installFile);
+                }
+                install.updateLatest(null);
+            }
+            if (!dependendFileList.isEmpty()) {
+                LOG.info("Update for related Items");
+                final Install install = new Install(true);
+                for (final InstallFile installFile : dependendFileList) {
                     LOG.info("...Adding to Update: '{}' ", installFile.getName());
                     install.addFile(installFile);
                 }
@@ -271,7 +280,7 @@ public class UpdatePack
         int i = 0;
         while (iter.hasNext()) {
             final RevItem item = iter.next();
-            LOG.info("Checking Item {} / {}: {}", i, _items.size(), item);
+            LOG.info("Checking Item {} / {}: {}", i, _items.size(), item.getIdentifier());
 
             final MultiPrintQuery multi = getQueryBldr(item, _ciType).getPrint();
             final SelectBuilder selRevision = SelectBuilder.get().linkto(CIAdmin.Abstract.RevisionLink)
