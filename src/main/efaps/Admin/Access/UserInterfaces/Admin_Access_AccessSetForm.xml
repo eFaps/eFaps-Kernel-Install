@@ -20,62 +20,60 @@
 -->
 
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <uuid>cfcd0da1-3188-480c-b494-1ffde2b7984a</uuid>
-  <file-application>eFaps-Kernel</file-application>
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>cfcd0da1-3188-480c-b494-1ffde2b7984a</uuid>
+    <file-application>eFaps-Kernel</file-application>
     <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Admin_Access_AccessSetForm</name>
-    <!-- fields -->
-    <field name="name">
-      <property name="Columns">20</property>
-      <property name="ModeCreate">EDITABLE</property>
-      <property name="ModeEdit">EDITABLE</property>
-      <property name="Attribute">Name</property>
-      <property name="Required">true</property>
-      <property name="ModeSearch">EDITABLE</property>
-    </field>
-    <field name="uuid">
-      <property name="ModeCreate">EDITABLE</property>
-      <property name="Attribute">UUID</property>
-      <property name="Required">true</property>
-      <property name="ModeSearch">EDITABLE</property>
-    </field>
-    <field name="revision">
-      <property name="Columns">20</property>
-      <property name="ModeCreate">EDITABLE</property>
-      <property name="ModeEdit">EDITABLE</property>
-      <property name="Attribute">Revision</property>
-      <property name="Required">true</property>
-      <property name="ModeSearch">EDITABLE</property>
-    </field>
-    <field name="createGroup" character="Group">
-      <property name="GroupCount">2</property>
-    </field>
-    <field name="creator">
-       <property name="SelectAlternateOID">linkto[Creator].oid</property>
-      <property name="Attribute">Creator</property>
-      <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-      <property name="ModeSearch">EDITABLE</property>
-      <property name="ShowTypeIcon">true</property>
-    </field>
-    <field name="created">
-      <property name="Attribute">Created</property>
-      <property name="ModeSearch">EDITABLE</property>
-    </field>
-    <field name="modifyGroup" character="Group">
-      <property name="GroupCount">2</property>
-    </field>
-    <field name="modifier">
-       <property name="SelectAlternateOID">linkto[Modifier].oid</property>
-      <property name="Attribute">Modifier</property>
-      <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-      <property name="ModeSearch">EDITABLE</property>
-      <property name="ShowTypeIcon">true</property>
-    </field>
-    <field name="modified">
-      <property name="Attribute">Modified</property>
-      <property name="ModeSearch">EDITABLE</property>
-    </field>
-  </definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Admin_Access_AccessSetForm</name>
+        <field name="name">
+            <property name="Columns">20</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">Name</property>
+            <property name="Required">true</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+        <field name="uuid">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Attribute">UUID</property>
+            <property name="Required">true</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+        <field name="revision">
+            <property name="SelectAlternateOID">linkto[RevisionLink].oid</property>
+            <property name="MsgPhrase">Admin_Common_ApplicationRevisionMsgPhrase</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Admin_Common_ApplicationRevision.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="createGroup" character="Group">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="creator">
+            <property name="SelectAlternateOID">linkto[Creator].oid</property>
+            <property name="Attribute">Creator</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="created">
+            <property name="Attribute">Created</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+        <field name="modifyGroup" character="Group">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="modifier">
+            <property name="SelectAlternateOID">linkto[Modifier].oid</property>
+            <property name="Attribute">Modifier</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="modified">
+            <property name="Attribute">Modified</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+    </definition>
 </ui-form>

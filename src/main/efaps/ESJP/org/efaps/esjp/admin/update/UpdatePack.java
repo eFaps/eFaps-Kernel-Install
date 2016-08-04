@@ -46,6 +46,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIAdmin;
+import org.efaps.ci.CIAdminAccess;
 import org.efaps.ci.CIAdminCommon;
 import org.efaps.ci.CIAdminProgram;
 import org.efaps.ci.CIAdminUser;
@@ -142,6 +143,7 @@ public class UpdatePack
 
             installFiles.putAll(getInstallFiles(files, items, CIAdmin.Abstract));
             installFiles.putAll(getInstallFiles(files, items, CIAdminUser.Abstract));
+            installFiles.putAll(getInstallFiles(files, items, CIAdminAccess.AccessSet));
             installFiles.putAll(getInstallFiles(files, items, CICommon.DBPropertiesBundle));
 
             final Iterator<RevItem> iter = items.iterator();
@@ -158,6 +160,18 @@ public class UpdatePack
                 installFiles.put(item, installFile);
                 i++;
             }
+
+            final List<InstallFile> installFileList = new ArrayList<>(installFiles.values());
+            Collections.sort(installFileList, new Comparator<InstallFile>()
+            {
+                @Override
+                public int compare(final InstallFile _installFile0,
+                                   final InstallFile _installFile1)
+                {
+                    return _installFile0.getName().compareTo(_installFile1.getName());
+                }
+            });
+
 
             // check if a object that depends on another object must be added to the update
             final Map<String, String> depenMap = getDependendMap();
@@ -191,23 +205,11 @@ public class UpdatePack
                                 .setType(item.getFileType().getType())
                                 .setRevision(item.getRevision())
                                 .setDate(item.getDate());
-                        installFiles.put(item, installFile);
+                        installFileList.add(installFile);
                         i++;
                     }
                 }
             }
-
-            final List<InstallFile> installFileList = new ArrayList<>(installFiles.values());
-            Collections.sort(installFileList, new Comparator<InstallFile>()
-            {
-
-                @Override
-                public int compare(final InstallFile _installFile0,
-                                   final InstallFile _installFile1)
-                {
-                    return _installFile0.getName().compareTo(_installFile1.getName());
-                }
-            });
 
             if (!installFiles.isEmpty()) {
                 final Install install = new Install(true);
@@ -264,7 +266,7 @@ public class UpdatePack
                                                       final CIType _ciType)
         throws EFapsException
     {
-        final Map<RevItem ,InstallFile> ret = new HashMap<>();
+        final Map<RevItem, InstallFile> ret = new HashMap<>();
         final Iterator<RevItem> iter = _items.iterator();
         int i = 0;
         while (iter.hasNext()) {

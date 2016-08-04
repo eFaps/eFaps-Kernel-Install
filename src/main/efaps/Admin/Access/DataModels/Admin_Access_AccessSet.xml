@@ -16,22 +16,17 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
-
 -->
 
 <datamodel-type xmlns="http://www.efaps.org/xsd"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>40aa4ff1-4786-4169-9a34-b6fd9d8a75f1</uuid>
     <file-application>eFaps-Kernel</file-application>
-    
     <definition>
         <version-expression>(version==3) || (version==latest)</version-expression>
         <name>Admin_Access_AccessSet</name>
         <purpose GeneralInstance="false" />
-        <!-- attributes -->
         <attribute>
             <name>OID</name>
             <type>OID</type>
@@ -57,10 +52,11 @@
             <sqlcolumn>UUID</sqlcolumn>
         </attribute>
         <attribute>
-            <name>Revision</name>
-            <type>String</type>
+            <name>RevisionLink</name>
+            <type>Link</type>
+            <typelink>Admin_Common_ApplicationRevision</typelink>
             <sqltable>Admin_Access_AccessSetSQLTable</sqltable>
-            <sqlcolumn>REVISION</sqlcolumn>
+            <sqlcolumn>REVISIONID</sqlcolumn>
         </attribute>
         <attribute>
             <name>Creator</name>

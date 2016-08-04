@@ -16,21 +16,15 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
-
 -->
 
-<ui-table xmlns="http://www.efaps.org/xsd"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>6f1a84d5-a63e-4531-96f8-1bc407b6e3b8</uuid>
     <file-application>eFaps-Kernel</file-application>
-    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Access_AccessSetTable</name>
-        <!-- fields -->
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
@@ -42,16 +36,12 @@
             <property name="Label">Admin_Access_AccessSet/UUID.Label</property>
         </field>
         <field name="revision">
-            <property name="Attribute">Revision</property>
-            <property name="Label">Admin_Access_AccessSet/Revision.Label</property>
-        </field>
-        <field name="buttonOpenInNewWindow">
-            <icon>eFapsActionNewWindow</icon>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Target">popup</property>
-            <property name="SortAble">false</property>
-            <property name="Width">15px</property>
+            <property name="ModeSearch">READONLY</property>
+            <property name="SelectAlternateOID">linkto[RevisionLink].oid</property>
+            <property name="MsgPhrase">Admin_Common_ApplicationRevisionShortMsgPhrase</property>
+            <property name="Label">Admin_Common_ApplicationRevision.Label</property>
+            <property name="HRef">true</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>
-
 </ui-table>
