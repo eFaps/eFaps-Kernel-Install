@@ -311,6 +311,10 @@ public class UpdatePack
                     LOG.warn("Different Revision: {} - {}", item.getRevision(), revision);
                     update = true;
                 }
+                if (!update && item.getDate().isAfter(revDate)) {
+                    LOG.warn("Different Date: {} - {}", item.getDate(), revDate);
+                    update = true;
+                }
 
                 if (update) {
                     final InstallFile installFile = new InstallFile()
