@@ -1476,6 +1476,7 @@ public abstract class Field_Base
 
         final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
         queryBldr.addWhereAttrMatchValue(searchAttribute, input + "*").setIgnoreCase(true);
+
         final MultiPrintQuery multi = queryBldr.getPrint();
 
         String select4VALUE = null;
@@ -1510,6 +1511,16 @@ public abstract class Field_Base
             map.put("eFapsAutoCompleteCHOICE", choiceVal);
             list.add(map);
         }
+        Collections.sort(list, new Comparator<Map<String, String>>()
+        {
+
+            @Override
+            public int compare(final Map<String, String> _arg0,
+                               final Map<String, String> _arg1)
+            {
+                return _arg0.get("eFapsAutoCompleteCHOICE").compareTo(_arg1.get("eFapsAutoCompleteCHOICE"));
+            }
+        });
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
