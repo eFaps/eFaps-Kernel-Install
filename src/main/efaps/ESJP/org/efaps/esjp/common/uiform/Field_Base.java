@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -1457,6 +1458,63 @@ public abstract class Field_Base
         ret.put(ReturnValues.VALUES, values);
         return ret;
     }
+
+    /**
+     * Auto complete.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return autoComplete(final Parameter _parameter) throws EFapsException
+    {
+        final List<Map<String, String>> list = new ArrayList<>();
+        final String input = (String) _parameter.get(ParameterValues.OTHERS);
+
+        final String searchAttribute = getProperty(_parameter, "SearchAttribute");
+        final String select4KEY = getProperty(_parameter, "Select4KEY", "attribute[OID]");
+
+        final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
+        queryBldr.addWhereAttrMatchValue(searchAttribute, input + "*").setIgnoreCase(true);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+
+        String select4VALUE = null;
+        String phrase4VALUE = null;
+        if (containsProperty(_parameter, "Select4VALUE")) {
+            select4VALUE = getProperty(_parameter, "Select4VALUE");
+            multi.addSelect(select4VALUE);
+        } else if (containsProperty(_parameter, "Phrase4VALUE")) {
+            phrase4VALUE = getProperty(_parameter, "Phrase4VALUE");
+            multi.addPhrase("Phrase4VALUE", phrase4VALUE);
+        }
+        String select4CHOICE = select4VALUE;
+        String phrase4CHOICE = phrase4VALUE;
+        if (containsProperty(_parameter, "Select4CHOICE")) {
+            select4CHOICE = getProperty(_parameter, "Select4CHOICE");
+            multi.addSelect(select4VALUE);
+        } else if (containsProperty(_parameter, "Phrase4CHOICE")) {
+            phrase4CHOICE = getProperty(_parameter, "Phrase4CHOICE");
+            multi.addPhrase("Phrase4CHOICE", phrase4CHOICE);
+        }
+        multi.addSelect(select4KEY);
+        multi.execute();
+        while (multi.next()) {
+            final String keyVal = multi.getSelect(select4KEY);
+            final String valueVal = select4VALUE == null ? multi.getPhrase("Phrase4VALUE")
+                            : multi.getSelect(select4VALUE);
+            final String choiceVal = select4CHOICE == null ? multi.getPhrase("Phrase4CHOICE")
+                            : multi.getSelect(select4CHOICE);
+            final Map<String, String> map = new HashMap<>();
+            map.put("eFapsAutoCompleteKEY", keyVal);
+            map.put("eFapsAutoCompleteVALUE", valueVal);
+            map.put("eFapsAutoCompleteCHOICE", choiceVal);
+            list.add(map);
+        }
+        final Return retVal = new Return();
+        retVal.put(ReturnValues.VALUES, list);
+        return retVal;
+    }
+
 
     /**
      * A position in a dropdown.
