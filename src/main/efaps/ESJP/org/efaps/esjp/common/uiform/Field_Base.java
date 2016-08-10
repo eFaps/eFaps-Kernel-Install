@@ -1492,11 +1492,16 @@ public abstract class Field_Base
         String phrase4CHOICE = phrase4VALUE;
         if (containsProperty(_parameter, "Select4CHOICE")) {
             select4CHOICE = getProperty(_parameter, "Select4CHOICE");
-            multi.addSelect(select4VALUE);
         } else if (containsProperty(_parameter, "Phrase4CHOICE")) {
             phrase4CHOICE = getProperty(_parameter, "Phrase4CHOICE");
+        }
+
+        if (select4CHOICE != null) {
+            multi.addSelect(select4CHOICE);
+        } else if (phrase4CHOICE != null) {
             multi.addPhrase("Phrase4CHOICE", phrase4CHOICE);
         }
+
         multi.addSelect(select4KEY);
         multi.execute();
         while (multi.next()) {
