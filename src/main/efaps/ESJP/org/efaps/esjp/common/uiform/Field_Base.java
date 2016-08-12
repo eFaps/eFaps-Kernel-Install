@@ -1238,7 +1238,6 @@ public abstract class Field_Base
         return ret;
     }
 
-
     /**
      * @param _parameter    Parameter as passed from the eFaps API
      * @return Return containing Html Snipplet
@@ -1256,27 +1255,33 @@ public abstract class Field_Base
 
                 if (enumClazz.isEnum()) {
                     final Object[] consts = enumClazz.getEnumConstants();
-                    final Integer ordinal;
+                    Integer selected = -1;
 
                     final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
                     if (uiObject instanceof IUIValue && ((IUIValue) uiObject).getObject() != null) {
-                        ordinal = (Integer) ((IUIValue) uiObject).getObject();
-                    } else {
-                        ordinal = -1;
-                    }
-                    if (org.efaps.admin.ui.field.Field.Display.EDITABLE
-                                    .equals(((IUIValue) uiObject).getDisplay())) {
-                        int i = 0;
+                        selected = (Integer) ((IUIValue) uiObject).getObject();
+                    } else if (containsProperty(_parameter, "DefaultValue")) {
+                        final String defaultValue = getProperty(_parameter, "DefaultValue");
                         for (final Object con : consts) {
-                            final String label = DBProperties.getProperty(enumName + "." + con.toString());
-                            final DropDownPosition pos = new DropDownPosition(i, label, orderByOrdinal
-                                            ? new Integer(i) : label);
+                            if (((Enum<?>) con).name().equals(defaultValue)) {
+                                selected = ((Enum<?>) con).ordinal();
+                                break;
+                            }
+                        }
+                    }
+                    if (org.efaps.admin.ui.field.Field.Display.EDITABLE.equals(((IUIValue) uiObject).getDisplay())) {
+                        for (final Object con : consts) {
+                            final Enum<?> enumVal = (Enum<?>) con;
+                            final Integer ordinal = enumVal.ordinal();
+                            final String label = DBProperties.getProperty(enumName + "." + enumVal.name());
+                            final DropDownPosition pos = new DropDownPosition(ordinal, label, orderByOrdinal ? ordinal
+                                            : label);
                             values.add(pos);
-                            pos.setSelected(i == ordinal);
-                            i++;
+                            pos.setSelected(ordinal == selected);
                         }
                         Collections.sort(values, new Comparator<DropDownPosition>()
                         {
+
                             @SuppressWarnings("unchecked")
                             @Override
                             public int compare(final DropDownPosition _o1,
