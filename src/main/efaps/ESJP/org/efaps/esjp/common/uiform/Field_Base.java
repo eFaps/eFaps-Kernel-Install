@@ -61,12 +61,15 @@ import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.api.ui.IOption;
 import org.efaps.api.ui.IUserInterface;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.common.AbstractCommon;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
@@ -193,6 +196,43 @@ public abstract class Field_Base
         if (key != null) {
             ret.put(ReturnValues.VALUES, BooleanUtils.toBoolean(key));
         }
+        return ret;
+    }
+
+    /**
+     * Gets a lazy field value. "Very Slow!!"
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the lazy field value
+     * @throws EFapsException on error
+     */
+    public Return getLazyFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        Object value = null;
+        final Instance instance = _parameter.getInstance();
+        if (InstanceUtils.isValid(instance)) {
+            final Map<Integer, String> types = analyseProperty(_parameter, "Type");
+            final Map<Integer, String> selects = analyseProperty(_parameter, "Select");
+            for (final Entry<Integer, String> entry : types.entrySet()) {
+                Type type;
+                if (isUUID(entry.getValue())) {
+                    type = Type.get(UUID.fromString(entry.getValue()));
+                } else {
+                    type = Type.get(entry.getValue());
+                }
+                if (instance.getType().isKindOf(type)) {
+                    final String select = selects.get(entry.getKey());
+                    final PrintQuery print = CachedPrintQuery.get4Request(instance);
+                    print.addSelect(select);
+                    print.execute();
+                    value = print.getSelect(select);
+                    break;
+                }
+            }
+        }
+        ret.put(ReturnValues.VALUES, value);
         return ret;
     }
 
