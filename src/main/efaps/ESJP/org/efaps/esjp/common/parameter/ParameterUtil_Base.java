@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -34,7 +31,6 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("628e963d-33a3-4a0f-ac22-ed71ca76d48a")
 @EFapsApplication("eFaps-Kernel")
@@ -86,24 +82,54 @@ public abstract class ParameterUtil_Base
         @SuppressWarnings("unchecked")
         Map<Object, Object> properties = (Map<Object, Object>) _parameter.get(ParameterValues.PROPERTIES);
         if (properties == null) {
-            properties = new HashMap<Object, Object>();
+            properties = new HashMap<>();
         }
         properties.put(_key, _value);
         _parameter.put(ParameterValues.PROPERTIES, properties);
     }
 
     /**
+     * Sets the parameter values.
+     *
+     * @param _parameter Paramter as passed by the eFaps API
+     * @param _key      Key of the property
+     * @param _idx the idx
+     * @param _value the value
+     */
+    protected static void setParameterValue(final Parameter _parameter,
+                                            final String _key,
+                                            final int _idx,
+                                            final String _value)
+    {
+        Map<String, String[]> map = _parameter.getParameters();
+        if (map == null) {
+            map = new HashMap<>();
+            _parameter.put(ParameterValues.PARAMETERS, map);
+        }
+        final String[] values;
+        if (map.containsKey(_key)) {
+            values = map.get(_key);
+        } else {
+            values =  new String[_idx + 1];
+            map.put(_key, values);
+        }
+        values[_idx] = _value;
+    }
+
+    /**
+     * Sets the parameter values.
+     *
      * @param _parameter Paramter as passed by the eFaps API
      * @param _key      Key of the property
      * @param _values    value of the property
      */
-    protected static void setParmeterValue(final Parameter _parameter,
-                                           final String _key,
-                                           final String... _values)
+    protected static void setParameterValues(final Parameter _parameter,
+                                             final String _key,
+                                             final String... _values)
     {
         Map<String, String[]> map = _parameter.getParameters();
         if (map == null) {
-            map = new HashMap<String, String[]>();
+            map = new HashMap<>();
             _parameter.put(ParameterValues.PARAMETERS, map);
         }
         map.put(_key, _values);

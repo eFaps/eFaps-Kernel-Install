@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -32,7 +29,6 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("395d1934-0fed-480b-ae66-8367ac72348a")
 @EFapsApplication("eFaps-Kernel")
@@ -65,15 +61,33 @@ public class ParameterUtil
     }
 
     /**
+     * Sets the parameter values.
+     *
      * @param _parameter Paramter as passed by the eFaps API
      * @param _key      Key of the property
      * @param _values    value of the property
      */
-    public static void setParmeterValue(final Parameter _parameter,
-                                        final String _key,
-                                        final String... _values)
+    public static void setParameterValues(final Parameter _parameter,
+                                          final String _key,
+                                          final String... _values)
     {
-        ParameterUtil_Base.setParmeterValue(_parameter, _key, _values);
+        ParameterUtil_Base.setParameterValues(_parameter, _key, _values);
+    }
+
+    /**
+     * Sets the parameter value.
+     *
+     * @param _parameter Paramter as passed by the eFaps API
+     * @param _key      Key of the property
+     * @param _idx the idx
+     * @param _value the value
+     */
+    public static void setParameterValue(final Parameter _parameter,
+                                          final String _key,
+                                          final int _idx,
+                                          final String _value)
+    {
+        ParameterUtil_Base.setParameterValue(_parameter, _key, _idx, _value);
     }
 
     /**
