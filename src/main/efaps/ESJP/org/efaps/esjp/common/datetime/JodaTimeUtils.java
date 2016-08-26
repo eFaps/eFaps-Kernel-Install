@@ -54,6 +54,7 @@ public final class JodaTimeUtils
     extends AbstractCommon
 {
 
+    /** The Constant QUARTERS. */
     private static final DurationFieldType QUARTERS = new DurationFieldType("quarters")
     {
 
@@ -69,6 +70,7 @@ public final class JodaTimeUtils
         }
     };
 
+    /** The Constant HALFYEARS. */
     private static final DurationFieldType HALFYEARS = new DurationFieldType("halfyear")
     {
 
@@ -84,6 +86,7 @@ public final class JodaTimeUtils
         }
     };
 
+    /** The Constant DECADES. */
     private static final DurationFieldType DECADES = new DurationFieldType("decades")
     {
 
@@ -96,6 +99,7 @@ public final class JodaTimeUtils
         }
     };
 
+    /** The Constant CENTURIES. */
     private static final DurationFieldType CENTURIES = new DurationFieldType("centuries")
     {
 
@@ -108,6 +112,7 @@ public final class JodaTimeUtils
         }
     };
 
+    /** The Constant QUARTEROFYEAR. */
     // DateTimeFields
     private static final DateTimeFieldType QUARTEROFYEAR = new DateTimeFieldType("quarterOfYear")
     {
@@ -134,6 +139,7 @@ public final class JodaTimeUtils
         }
     };
 
+    /** The Constant HALFYEAROFYEAR. */
     private static final DateTimeFieldType HALFYEAROFYEAR = new DateTimeFieldType("halfYearOfYear")
     {
 
@@ -159,6 +165,7 @@ public final class JodaTimeUtils
         }
     };
 
+    /** The Constant MONTHOFQUARTER. */
     private static final DateTimeFieldType MONTHOFQUARTER = new DateTimeFieldType("monthOfQuarter")
     {
 
@@ -184,6 +191,7 @@ public final class JodaTimeUtils
         }
     };
 
+    /** The Constant MONTHOFHALFYEAR. */
     private static final DateTimeFieldType MONTHOFHALFYEAR = new DateTimeFieldType("monthOfHalfYear")
     {
 
@@ -209,6 +217,7 @@ public final class JodaTimeUtils
         }
     };
 
+    /** The Constant WEEKOFMONTH. */
     private static final DateTimeFieldType WEEKOFMONTH = new DateTimeFieldType("weekOfMonth")
     {
 
@@ -234,6 +243,7 @@ public final class JodaTimeUtils
         }
     };
 
+    /** The Constant DECADEOFCENTURY. */
     private static final DateTimeFieldType DECADEOFCENTURY = new DateTimeFieldType("decadeOfCentury")
     {
 
@@ -258,6 +268,7 @@ public final class JodaTimeUtils
         }
     };
 
+    /** The Constant YEAROFDECADE. */
     private static final DateTimeFieldType YEAROFDECADE = new DateTimeFieldType("yearOfDecade")
     {
 
@@ -449,6 +460,8 @@ public final class JodaTimeUtils
                     case LASTDAYOFMONTH:
                         ret = ret.dayOfMonth().withMaximumValue();
                         break;
+                    case WITHDAYOFYEAR:
+                        ret = ret.withDayOfYear(Integer.valueOf(strValue));
                     default:
                         break;
                 }
