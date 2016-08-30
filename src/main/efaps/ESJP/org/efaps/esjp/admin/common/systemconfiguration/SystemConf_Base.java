@@ -174,7 +174,7 @@ public abstract class SystemConf_Base
                         break;
                     }
                 }
-                _values.set(0, new DropDownPosition("0", "--"));
+                _values.add(0, new DropDownPosition("0", "--"));
             }
         };
         return field.getOptionListFieldValue(_parameter);
