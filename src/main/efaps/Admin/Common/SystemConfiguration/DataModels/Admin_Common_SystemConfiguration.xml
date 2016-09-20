@@ -16,21 +16,16 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
-
 -->
 
-<datamodel-type xmlns="http://www.efaps.org/xsd"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>5fecab1b-f4a8-447d-ad64-cf5965fe5d3b</uuid>
     <file-application>eFaps-Kernel</file-application>
-    
     <definition>
         <version-expression>(version==3) || (version==latest)</version-expression>
         <name>Admin_Common_SystemConfiguration</name>
         <parent>Admin_Abstract</parent>
-        <purpose GeneralInstance="false" />
+        <purpose history="true" />
     </definition>
 </datamodel-type>

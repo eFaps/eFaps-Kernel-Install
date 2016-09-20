@@ -16,17 +16,13 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
-
 -->
 
-<datamodel-type xmlns="http://www.efaps.org/xsd"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>21c731b4-e717-47dd-92a3-9a6cf731b164</uuid>
     <file-application>eFaps-Kernel</file-application>
-        <description>Used to define an attribute for this Configuration that can be accesed by a key.</description>
+    <description>Used to define an attribute for this Configuration that can be accesed by a key.</description>
     <definition>
         <version-expression>(version==3) || (version==latest)</version-expression>
         <name>Admin_Common_SystemConfigurationAttribute</name>
@@ -38,5 +34,25 @@
             <sqltable>Admin_Common_SystemConfigurationSQLTable</sqltable>
             <sqlcolumn>ABSTRACTID</sqlcolumn>
         </attribute>
+        <trigger program="org.efaps.esjp.common.history.InsertRelatedHistoryTrigger"
+            name="Admin_Common_SystemConfigurationAttribute.INSERT_POST"
+            event="INSERT_POST">
+            <property name="Select4HistoryInstance">linkto[Link].instance</property>
+            <property name="IgnoreAttribute01">Link</property>
+            <property name="SelectAttribute01">CompanyLink</property>
+            <property name="Select01">linkto[CompanyLink].attribute[Name]</property>
+        </trigger>
+        <trigger program="org.efaps.esjp.common.history.UpdateRelatedHistoryTrigger"
+            name="Admin_Common_SystemConfigurationAttribute.UPDATE_POST"
+            event="UPDATE_POST">
+            <property name="Select4HistoryInstance">linkto[Link].instance</property>
+            <property name="SelectAttribute01">CompanyLink</property>
+            <property name="Select01">linkto[CompanyLink].attribute[Name]</property>
+        </trigger>
+        <trigger program="org.efaps.esjp.common.history.DeleteRelatedHistoryTrigger"
+            name="Admin_Common_SystemConfigurationAttribute.DELETE_PRE"
+            event="DELETE_PRE">
+            <property name="Select4HistoryInstance">linkto[Link].instance</property>
+        </trigger>
     </definition>
 </datamodel-type>

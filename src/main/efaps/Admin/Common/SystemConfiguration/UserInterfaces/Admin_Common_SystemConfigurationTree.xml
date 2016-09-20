@@ -18,29 +18,24 @@
 
 -->
 
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>54b3c1dc-2ad7-4d8e-8866-0fd08cd5a0ab</uuid>
     <file-application>eFaps-Kernel</file-application>
-    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Common_SystemConfigurationTree</name>
-        <!-- targets -->
         <target>
             <menu>Admin_Common_SystemConfigurationTree_Menu</menu>
             <form>Admin_Common_SystemConfigurationForm</form>
         </target>
-        <!-- type tree for -->
         <type>Admin_Common_SystemConfiguration</type>
         <childs>
             <child>Admin_Common_SystemConfigurationTree_Attributes</child>
             <child>Admin_Common_SystemConfigurationTree_Links</child>
             <child>Admin_Common_SystemConfigurationTree_ObjectAttribute</child>
+            <child>Common_History_ObjectTree_HistoryLog</child>
         </childs>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>
