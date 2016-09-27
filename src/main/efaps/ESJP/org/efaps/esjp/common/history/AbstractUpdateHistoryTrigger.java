@@ -31,7 +31,6 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("e901089f-6d8e-45cd-8944-87c2258b07fe")
 @EFapsApplication("eFaps-Kernel")

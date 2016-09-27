@@ -70,21 +70,47 @@ public abstract class AbstractUpdateHistoryTrigger_Base
      * @param _parameter the _parameter
      * @param _instance the _instance
      * @return the attributes
-     * @throws EFapsException the e faps exception
+     * @throws EFapsException the eFaps exception
      */
     protected List<AttributeValue> getAttributes(final Parameter _parameter,
                                                  final Instance _instance)
         throws EFapsException
     {
         final List<AttributeValue> ret = new ArrayList<>();
-        final Map<?, ?> values = (Map<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
+        @SuppressWarnings("unchecked")
+        final Map<Object, Object> values = (Map<Object, Object>) _parameter.get(ParameterValues.NEW_VALUES);
         if (values != null) {
+            final Collection<String> always = analyseProperty(_parameter, "AlwaysAttribute").values();
             final BidiMap<Integer, String> selectAttributes = new DualHashBidiMap<>(analyseProperty(_parameter,
                             "SelectAttribute"));
-            final Map<Integer, String> selects = analyseProperty(_parameter, "Select");
             final BidiMap<Integer, String> phraseAttributes = new DualHashBidiMap<>(analyseProperty(_parameter,
                             "PhraseAttribute"));
+            final Map<Integer, String> selects = analyseProperty(_parameter, "Select");
             final Map<Integer, String> phrases = analyseProperty(_parameter, "Phrase");
+
+            // ensure that their is a value for the always Attributes
+            for (final String attrName : always) {
+                boolean exists = false;
+                for (final Entry<?, ?> entry : values.entrySet()) {
+                    if (((Attribute) entry.getKey()).getName().equals(attrName)) {
+                        exists = true;
+                        break;
+                    }
+                }
+                if (!exists) {
+                    Object value = null;
+                    // if no select or phrase is given add the value her also
+                    if (!selectAttributes.containsValue(attrName)
+                                    && !phraseAttributes.containsValue(attrName)) {
+                        final PrintQuery print = new PrintQuery(_instance);
+                        print.addAttribute(attrName);
+                        print.executeWithoutAccessCheck();
+                        value = print.getAttribute(attrName);
+                    }
+                    values.put(_instance.getType().getAttributes().get(attrName), value);
+                }
+            }
+
             final Collection<String> ignore = analyseProperty(_parameter, "IgnoreAttribute").values();
 
             for (final Entry<?, ?> entry : values.entrySet()) {
@@ -166,6 +192,8 @@ public abstract class AbstractUpdateHistoryTrigger_Base
                                 } else {
                                     attrValue.setValue(tmpObj);
                                 }
+                            } else {
+                                attrValue.setValue(obj);
                             }
                         }
                     }

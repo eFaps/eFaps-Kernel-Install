@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,11 @@
 
 package org.efaps.esjp.common.history;
 
+import java.util.HashMap;
+
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
@@ -51,6 +54,11 @@ public abstract class DeleteRelatedHistoryTrigger_Base
         instObj.setTypeUUID(relInst.getType().getUUID());
 
         ((IRelatedLog) _log).setRelatedInstObj(instObj);
+
+        if (_parameter.get(ParameterValues.NEW_VALUES) == null) {
+            _parameter.put(ParameterValues.NEW_VALUES, new HashMap<>());
+        }
+        ((IRelatedLog) _log).getRelatedInstObj().getAttributes().addAll(getAttributes(_parameter, relInst));
     }
 
     /**

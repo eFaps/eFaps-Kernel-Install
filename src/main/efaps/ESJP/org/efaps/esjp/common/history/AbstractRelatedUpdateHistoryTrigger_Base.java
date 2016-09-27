@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,7 @@ public abstract class AbstractRelatedUpdateHistoryTrigger_Base
      */
     public static final String HISEL = "Select4HistoryInstance";
 
+    /** The history instance. */
     private Instance historyInstance;
 
     /**
@@ -60,7 +61,7 @@ public abstract class AbstractRelatedUpdateHistoryTrigger_Base
 
         ((IRelatedLog) _log).setRelatedInstObj(instObj);
 
-        ((IRelatedLog) _log).getRelatedInstObj().getAttributes() .addAll(getAttributes(_parameter, relInst));
+        ((IRelatedLog) _log).getRelatedInstObj().getAttributes().addAll(getAttributes(_parameter, relInst));
     }
 
     /**

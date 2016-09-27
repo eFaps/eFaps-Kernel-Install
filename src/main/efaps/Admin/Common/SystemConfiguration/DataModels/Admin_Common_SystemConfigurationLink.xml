@@ -38,6 +38,7 @@
             name="Admin_Common_SystemConfigurationLink.INSERT_POST"
             event="INSERT_POST">
             <property name="Select4HistoryInstance">linkto[Link].instance</property>
+            <property name="AlwaysAttribute01">Key</property>
             <property name="IgnoreAttribute01">Link</property>
             <property name="SelectAttribute01">CompanyLink</property>
             <property name="Select01">linkto[CompanyLink].attribute[Name]</property>
@@ -46,6 +47,7 @@
             name="Admin_Common_SystemConfigurationLink.UPDATE_POST"
             event="UPDATE_POST">
             <property name="Select4HistoryInstance">linkto[Link].instance</property>
+            <property name="AlwaysAttribute01">Key</property>
             <property name="SelectAttribute01">CompanyLink</property>
             <property name="Select01">linkto[CompanyLink].attribute[Name]</property>
         </trigger>
@@ -53,6 +55,7 @@
             name="Admin_Common_SystemConfigurationLink.DELETE_PRE"
             event="DELETE_PRE">
             <property name="Select4HistoryInstance">linkto[Link].instance</property>
+            <property name="AlwaysAttribute01">Key</property>
         </trigger>
     </definition>
 </datamodel-type>
