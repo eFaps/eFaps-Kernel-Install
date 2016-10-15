@@ -29,7 +29,6 @@ import java.util.UUID;
 
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Attribute;
-import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.UIValue;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
@@ -101,17 +100,16 @@ public abstract class RangesValue_Base
             cachedValues = (Map<Attribute, List<IOption>>)
                             Context.getThreadContext().getRequestAttribute(RangesValue.REQUESTCACHEKEY);
         } else {
-            cachedValues = new HashMap<Attribute, List<IOption>>();
+            cachedValues = new HashMap<>();
             Context.getThreadContext().setRequestAttribute(RangesValue.REQUESTCACHEKEY, cachedValues);
         }
 
         if (cachedValues.containsKey(attribute)) {
             ret.put(ReturnValues.VALUES, cachedValues.get(attribute));
         } else {
-            final String type = getProperty(_parameter, "Type");
             final String value = getProperty(_parameter, "Value");
 
-            final QueryBuilder queryBldr = new QueryBuilder(Type.get(type));
+            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
             add2QueryBldr(_parameter, queryBldr);
             final MultiPrintQuery multi = queryBldr.getPrint();
             ValueList list = null;
