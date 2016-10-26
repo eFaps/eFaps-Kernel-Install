@@ -173,20 +173,22 @@ public abstract class Edit_Base
         throws EFapsException
     {
         String ret = null;
-        final List<FieldSet> fieldsets = new ArrayList<FieldSet>();
+        final List<FieldSet> fieldsets = new ArrayList<>();
         final List<FieldTable> fieldTables;
         if (_fieldTables == null) {
-            fieldTables = new ArrayList<FieldTable>();
+            fieldTables = new ArrayList<>();
         } else {
             fieldTables = _fieldTables;
         }
 
-        final List<Field> fields = new ArrayList<Field>();
+        final List<Field> fields = new ArrayList<>();
 
         final PrintQuery print = new PrintQuery(_instance);
         for (final Field field : _form.getFields()) {
             if (field instanceof FieldSet) {
-                fieldsets.add((FieldSet) field);
+                if (field.hasAccess((TargetMode) _parameter.get(ParameterValues.ACCESSMODE), _instance)) {
+                    fieldsets.add((FieldSet) field);
+                }
             } else if (field instanceof FieldTable && field.isEditableDisplay(TargetMode.EDIT)) {
                 fieldTables.add((FieldTable) field);
             } else if (field instanceof FieldClassification) {
@@ -439,7 +441,7 @@ public abstract class Edit_Base
                     for (int i = 0; i < idArray.length; i++) {
                         final String oid = idmap.get(idArray[i]);
                         // in case of new
-                        Update update;
+                        final Update update;
                         if (oid == null) {
                             update = new Insert(set);
                             update.add(set.getAttribute(setName), _instance.getId());
@@ -488,7 +490,7 @@ public abstract class Edit_Base
         final List<?> classifications = (List<?>) _parameter.get(ParameterValues.CLASSIFICATIONS);
         final Classification classType = (Classification) Type.get(_classifcationName.split(";")[0]);
 
-        final Map<Classification, Map<String, Object>> clas2values = new HashMap<Classification, Map<String, Object>>();
+        final Map<Classification, Map<String, Object>> clas2values = new HashMap<>();
         // get the already existing classifications
         final QueryBuilder relQueryBldr = new QueryBuilder(classType.getClassifyRelationType());
         relQueryBldr.addWhereAttrEqValue(classType.getRelLinkAttributeName(), _instance.getId());
@@ -499,14 +501,14 @@ public abstract class Edit_Base
         while (relMulti.next()) {
             final Long typeid = relMulti.<Long>getAttribute(classType.getRelTypeAttributeName());
             final Classification subClassType = (Classification) Type.get(typeid);
-            final Map<String, Object> values = new HashMap<String, Object>();
+            final Map<String, Object> values = new HashMap<>();
             clas2values.put(subClassType, values);
 
             final QueryBuilder subQueryBldr = new QueryBuilder(subClassType);
             subQueryBldr.addWhereAttrEqValue(subClassType.getLinkAttributeName(), _instance.getId());
             final MultiPrintQuery subMulti = subQueryBldr.getPrint();
 
-            final List<Field> fields = new ArrayList<Field>();
+            final List<Field> fields = new ArrayList<>();
             final Form form = Form.getTypeForm(subClassType);
             for (final Field field : form.getFields()) {
                 final String attrName = field.getAttribute();
@@ -546,7 +548,7 @@ public abstract class Edit_Base
 
                     final Insert classInsert = new Insert(classification);
                     classInsert.add(classification.getLinkAttributeName(), ((Long) _instance.getId()).toString());
-                    final List<FieldSet> fieldsets = new ArrayList<FieldSet>();
+                    final List<FieldSet> fieldsets = new ArrayList<>();
                     new HashSet<>();
                     for (final Field field : form.getFields()) {
                         if (field instanceof FieldSet) {
@@ -568,12 +570,14 @@ public abstract class Edit_Base
                     updateFieldSets(_parameter, classInsert.getInstance(), fieldsets);
                 } else {
                     final Map<String, Object> values = clas2values.get(classification);
-                    final List<FieldSet> fieldsets = new ArrayList<FieldSet>();
+                    final List<FieldSet> fieldsets = new ArrayList<>();
                     final Update update = new Update((String) values.get("OID"));
                     boolean execUpdate = false;
                     for (final Field field : form.getFields()) {
                         if (field instanceof FieldSet) {
-                            fieldsets.add((FieldSet) field);
+                            if (field.hasAccess((TargetMode) _parameter.get(ParameterValues.ACCESSMODE), _instance)) {
+                                fieldsets.add((FieldSet) field);
+                            }
                         } else {
                             final String attrName = field.getAttribute();
                             if (attrName != null && (field.isEditableDisplay(TargetMode.EDIT)
@@ -654,15 +658,15 @@ public abstract class Edit_Base
         throws EFapsException
     {
         final Map<?, ?> oids = (Map<?, ?>) _parameter.get(ParameterValues.OIDMAP4UI);
-        final Map<Type, Set<String>> exist = new HashMap<Type, Set<String>>();
-        final Map<Type, String> type2LinkAttr = new HashMap<Type, String>();
+        final Map<Type, Set<String>> exist = new HashMap<>();
+        final Map<Type, String> type2LinkAttr = new HashMap<>();
         for (final RowUpdate row : _rows) {
             if (oids.containsKey(row.getRowId())) {
                 Set<String> set;
                 if (exist.containsKey(row.getType())) {
                     set = exist.get(row.getType());
                 } else {
-                    set = new HashSet<String>();
+                    set = new HashSet<>();
                     exist.put(row.getType(), set);
                     type2LinkAttr.put(row.getType(), row.getLinkAttrName());
                 }
@@ -746,7 +750,7 @@ public abstract class Edit_Base
                                               final List<FieldTable> _fieldTables)
         throws CacheReloadException
     {
-        final List<RowUpdate> rows = new ArrayList<RowUpdate>();
+        final List<RowUpdate> rows = new ArrayList<>();
         boolean deleteAll = false;
         if (_parameter.getParameterValues("eFapsTRID") == null) {
             deleteAll = true;
@@ -924,7 +928,7 @@ public abstract class Edit_Base
         /**
          * Values in this row.
          */
-        private final Map<String, Object> values = new HashMap<String, Object>();
+        private final Map<String, Object> values = new HashMap<>();
 
         /**
          * Name of the link attribute.
