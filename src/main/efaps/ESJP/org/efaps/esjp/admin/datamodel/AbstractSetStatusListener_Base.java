@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.admin.datamodel;
@@ -34,14 +31,13 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("aeb223a6-912b-4a6d-8cb7-b04d83d2cd66")
 @EFapsApplication("eFaps-Kernel")
 public abstract class AbstractSetStatusListener_Base
     implements ISetStatusListener
 {
-
+    /** The status. */
     private final Set<Status> status = new HashSet<>();
 
     @Override
@@ -56,11 +52,14 @@ public abstract class AbstractSetStatusListener_Base
     }
 
     /**
-     * @param _parameter
-     * @param _instance
-     * @param _status
+     * After.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _instance the instance
+     * @param _status the status
+     * @throws EFapsException on error
      */
-    abstract public void after(final Parameter _parameter,
+    public abstract void after(final Parameter _parameter,
                                final Instance _instance,
                                final Status _status)
         throws EFapsException;
