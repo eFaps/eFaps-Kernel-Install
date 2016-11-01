@@ -25,6 +25,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
+import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.util.EFapsException;
 
 /**
@@ -35,6 +36,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("aeb223a6-912b-4a6d-8cb7-b04d83d2cd66")
 @EFapsApplication("eFaps-Kernel")
 public abstract class AbstractSetStatusListener_Base
+    extends AbstractCommon
     implements ISetStatusListener
 {
     /** The status. */
@@ -46,7 +48,7 @@ public abstract class AbstractSetStatusListener_Base
                                final Status _status)
         throws EFapsException
     {
-        if (this.status.contains(_status)) {
+        if (getStatus().contains(_status)) {
             after(_parameter, _instance, _status);
         }
     }
@@ -74,8 +76,10 @@ public abstract class AbstractSetStatusListener_Base
      * Getter method for the instance variable {@link #status}.
      *
      * @return value of instance variable {@link #status}
+     * @throws EFapsException on error
      */
     public Set<Status> getStatus()
+        throws EFapsException
     {
         return this.status;
     }
