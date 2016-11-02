@@ -87,19 +87,21 @@ public abstract class Process_Base
             keys.add(cachEntry.getKey());
             final Instance inst = Instance.get(cachEntry.getValue());
             if (inst.getType().isCompanyDependent()) {
+                LOG.debug("Checking instance to be added {}", inst);
                 final PrintQuery print = new PrintQuery(inst);
                 print.addAttribute(inst.getType().getCompanyAttribute());
-                print.executeWithoutAccessCheck();
-                final Company company = print.getAttribute(inst.getType().getCompanyAttribute());
-                final Map<Type, List<Instance>> subMap = instanceMap.get(company.getId());
-                final List<Instance> instances;
-                if (subMap.containsKey(inst.getType())) {
-                    instances = subMap.get(inst.getType());
-                } else {
-                    instances = new ArrayList<>();
-                    subMap.put(inst.getType(), instances);
+                if (print.executeWithoutAccessCheck()) {
+                    final Company company = print.getAttribute(inst.getType().getCompanyAttribute());
+                    final Map<Type, List<Instance>> subMap = instanceMap.get(company.getId());
+                    final List<Instance> instances;
+                    if (subMap.containsKey(inst.getType())) {
+                        instances = subMap.get(inst.getType());
+                    } else {
+                        instances = new ArrayList<>();
+                        subMap.put(inst.getType(), instances);
+                    }
+                    instances.add(inst);
                 }
-                instances.add(inst);
             } else {
                 for (final Entry<Long, Map<Type, List<Instance>>> entry : instanceMap.entrySet()) {
                     final List<Instance> instances;
