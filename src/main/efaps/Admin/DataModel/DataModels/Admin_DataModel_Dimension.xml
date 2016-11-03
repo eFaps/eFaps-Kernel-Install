@@ -25,7 +25,6 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>e3a45e2e-bed9-4be0-a4a2-890acac3a669</uuid>
     <file-application>eFaps-Kernel</file-application>
-    
     <definition>
         <version-expression>(version==3) || (version==latest)</version-expression>
         <name>Admin_DataModel_Dimension</name>
@@ -36,35 +35,30 @@
             <sqltable>Admin_DataModel_DimensionSQLTable</sqltable>
             <sqlcolumn>ID</sqlcolumn>
         </attribute>
-
         <attribute>
             <name>ID</name>
             <type>Long</type>
             <sqltable>Admin_DataModel_DimensionSQLTable</sqltable>
             <sqlcolumn>ID</sqlcolumn>
         </attribute>
-
         <attribute>
             <name>Name</name>
             <type>String</type>
             <sqltable>Admin_DataModel_DimensionSQLTable</sqltable>
             <sqlcolumn>NAME</sqlcolumn>
         </attribute>
-
         <attribute>
             <name>Description</name>
             <type>String</type>
             <sqltable>Admin_DataModel_DimensionSQLTable</sqltable>
             <sqlcolumn>DESCR</sqlcolumn>
         </attribute>
-
         <attribute>
             <name>UUID</name>
             <type>String</type>
             <sqltable>Admin_DataModel_DimensionSQLTable</sqltable>
             <sqlcolumn>UUID</sqlcolumn>
         </attribute>
-
         <attribute>
             <name>BaseUoM</name>
             <type>Link</type>
@@ -72,7 +66,6 @@
             <sqltable>Admin_DataModel_DimensionSQLTable</sqltable>
             <sqlcolumn>BASEUOM</sqlcolumn>
         </attribute>
-
         <attribute>
             <name>Creator</name>
             <type>CreatorLink</type>

@@ -16,16 +16,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
-
 -->
 
-<datamodel-type xmlns="http://www.efaps.org/xsd"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>af2a5069-6ee8-40c4-8f8e-80a11565869d</uuid>
     <file-application>eFaps-Kernel</file-application>
-    
     <definition>
         <version-expression>(version==3) || (version==latest)</version-expression>
         <name>Admin_DataModel_UoM</name>
@@ -54,6 +50,18 @@
             <type>String</type>
             <sqltable>Admin_DataModel_UoMSQLTable</sqltable>
             <sqlcolumn>NAME</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Symbol</name>
+            <type>String</type>
+            <sqltable>Admin_DataModel_UoMSQLTable</sqltable>
+            <sqlcolumn>SYMBOL</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>CommonCode</name>
+            <type>String</type>
+            <sqltable>Admin_DataModel_UoMSQLTable</sqltable>
+            <sqlcolumn>CODE</sqlcolumn>
         </attribute>
         <attribute>
             <name>Numerator</name>
