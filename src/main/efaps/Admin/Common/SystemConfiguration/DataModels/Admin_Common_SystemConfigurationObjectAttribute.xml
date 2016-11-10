@@ -24,7 +24,7 @@
     <file-application>eFaps-Kernel</file-application>
     <description>Used to link an object to this Configuration that can be accesed by the OID of this object and contains a value.</description>
     <definition>
-        <version-expression>(version==3) || (version==latest)</version-expression>
+        <version-expression>(version==latest)</version-expression>
         <name>Admin_Common_SystemConfigurationObjectAttribute</name>
         <parent>Admin_Common_SystemConfigurationAbstract</parent>
         <attribute>
@@ -54,5 +54,17 @@
             event="DELETE_PRE">
             <property name="Select4HistoryInstance">linkto[Link].instance</property>
         </trigger>
+    </definition>
+    <definition>
+        <version-expression>(version==3)</version-expression>
+        <name>Admin_Common_SystemConfigurationObjectAttribute</name>
+        <parent>Admin_Common_SystemConfigurationAbstract</parent>
+        <attribute>
+            <name>Link</name>
+            <type>Link</type>
+            <typelink>Admin_Common_SystemConfiguration</typelink>
+            <sqltable>Admin_Common_SystemConfigurationSQLTable</sqltable>
+            <sqlcolumn>ABSTRACTID</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>

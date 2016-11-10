@@ -24,7 +24,7 @@
     <file-application>eFaps-Kernel</file-application>
     <description>Used to link an object to this Configuration that can be accesed by a key.</description>
     <definition>
-        <version-expression>(version==3) || (version==latest)</version-expression>
+        <version-expression>(version==latest)</version-expression>
         <name>Admin_Common_SystemConfigurationLink</name>
         <parent>Admin_Common_SystemConfigurationAbstract</parent>
         <attribute>
@@ -57,5 +57,17 @@
             <property name="Select4HistoryInstance">linkto[Link].instance</property>
             <property name="AlwaysAttribute01">Key</property>
         </trigger>
+    </definition>
+    <definition>
+        <version-expression>(version==3)</version-expression>
+        <name>Admin_Common_SystemConfigurationLink</name>
+        <parent>Admin_Common_SystemConfigurationAbstract</parent>
+        <attribute>
+            <name>Link</name>
+            <type>Link</type>
+            <typelink>Admin_Common_SystemConfiguration</typelink>
+            <sqltable>Admin_Common_SystemConfigurationSQLTable</sqltable>
+            <sqlcolumn>ABSTRACTID</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>
