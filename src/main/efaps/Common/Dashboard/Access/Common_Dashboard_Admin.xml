@@ -2,7 +2,7 @@
 
 <!--
 
-  Copyright 2003 - 2015 The eFaps Team
+  Copyright 2003 - 2016 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -23,8 +23,8 @@
     <uuid>27a7c2cd-0e4d-45c8-a429-159f296ba1da</uuid>
     <file-application>eFaps-Kernel</file-application>
     <definition>
-        <version-expression>(version==4) || (version==latest)</version-expression>
-        <name>DashboardAdmin</name>
+        <version-expression>(version==latest)</version-expression>
+        <name>Common_Dashboard_Admin</name>
         <access-type>create</access-type>
         <access-type>read</access-type>
         <access-type>show</access-type>
