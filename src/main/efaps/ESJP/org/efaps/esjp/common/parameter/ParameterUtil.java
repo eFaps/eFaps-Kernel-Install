@@ -36,6 +36,16 @@ public class ParameterUtil
     extends ParameterUtil_Base
 {
     /**
+     * New instance.
+     *
+     * @return the parameter
+     */
+    public static Parameter instance()
+    {
+        return ParameterUtil_Base.instance();
+    }
+
+    /**
      * Clone the Parameter by making a new Parameter. This does not clone
      * all the values. It makes a clone for the map for PARAMETERS, PROPERTIES
      * @param _parameter Paramter as passed by the eFaps API

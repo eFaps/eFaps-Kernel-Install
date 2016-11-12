@@ -38,6 +38,19 @@ public abstract class ParameterUtil_Base
 {
 
     /**
+     * New instance.
+     *
+     * @return the parameter
+     */
+    protected static Parameter instance()
+    {
+        final Parameter ret = new Parameter();
+        ret.put(ParameterValues.PROPERTIES,  new HashMap<>());
+        ret.put(ParameterValues.PARAMETERS,  new HashMap<>());
+        return ret;
+    }
+
+    /**
      * Clone the Parameter by making a new Parameter. This does not clone
      * all the values. It makes a clone for the map for PARAMETERS, PROPERTIES
      * @param _parameter Paramter as passed by the eFaps API
