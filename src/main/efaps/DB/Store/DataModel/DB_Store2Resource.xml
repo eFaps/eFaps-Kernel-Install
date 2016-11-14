@@ -20,32 +20,27 @@
 
 -->
 
-<datamodel-type xmlns="http://www.efaps.org/xsd"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>34be8b90-a753-45d5-98a7-78c1bcc34b72</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  
-  <definition>
-    <version-expression>(version==3) || (version==latest)</version-expression>
-    <name>DB_Store2Resource</name>
-    <parent>Admin_UI_Abstract2Abstract</parent>
-    <!-- attributes -->
-    <attribute>
-      <name>From</name>
-      <type>Link</type>
-      <typelink>DB_Store</typelink>
-      <sqltable>Admin_Common_Abstract2AbstractSQLTable</sqltable>
-      <sqlcolumn>FROMID</sqlcolumn>
-    </attribute>
-    <attribute>
-      <name>To</name>
-      <type>Link</type>
-      <typelink>DB_Resource</typelink>
-      <sqltable>Admin_Common_Abstract2AbstractSQLTable</sqltable>
-      <sqlcolumn>TOID</sqlcolumn>
-    </attribute>
-  </definition>
-
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>34be8b90-a753-45d5-98a7-78c1bcc34b72</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <definition>
+        <version-expression>(version==3) || (version==latest)</version-expression>
+        <name>DB_Store2Resource</name>
+        <parent>Admin_UI_Abstract2Abstract</parent>
+        <attribute>
+            <name>From</name>
+            <type>Link</type>
+            <typelink>DB_Store</typelink>
+            <sqltable>Admin_Common_Abstract2AbstractSQLTable</sqltable>
+            <sqlcolumn>FROMID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>To</name>
+            <type>Link</type>
+            <typelink>DB_Resource</typelink>
+            <sqltable>Admin_Common_Abstract2AbstractSQLTable</sqltable>
+            <sqlcolumn>TOID</sqlcolumn>
+        </attribute>
+    </definition>
 </datamodel-type>

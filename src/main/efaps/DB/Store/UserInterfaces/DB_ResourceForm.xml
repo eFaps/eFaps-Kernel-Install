@@ -16,18 +16,15 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
-
 -->
 
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>6ecfeeb7-9644-4ad9-acb3-986f612673a2</uuid>
     <file-application>eFaps-Kernel</file-application>
-        <definition>
+    <definition>
         <version-expression>(version==latest)</version-expression>
         <name>DB_ResourceForm</name>
-        <!-- fields -->
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="ShowTypeIcon">true</property>
@@ -37,14 +34,6 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Name</property>
-            <property name="Required">true</property>
-            <property name="ModeSearch">EDITABLE</property>
-        </field>
-        <field name="revision">
-            <property name="Columns">20</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="Attribute">Revision</property>
             <property name="Required">true</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>

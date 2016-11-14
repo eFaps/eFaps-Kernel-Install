@@ -18,30 +18,22 @@
 
 -->
 
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>9d6d1be0-0b54-49f4-80d0-19c5a827048b</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>DB_ResourceTree</name>
-    <!-- targets -->
-    <target>
-      <menu>DB_ResourceTree_Menu</menu>
-      <form>DB_ResourceForm</form>
-    </target>
-    <!-- type tree for -->
-    <type>DB_Resource</type>
-    <!-- childs -->
-    <childs>
-      <child>Admin_Common_AbstractTree_Properties</child>
-    </childs>
-    <!-- properties -->
-    <property name="Target">content</property>
-    <property name="TargetMode">view</property>
-  </definition>
-
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>9d6d1be0-0b54-49f4-80d0-19c5a827048b</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>DB_ResourceTree</name>
+        <target>
+            <menu>DB_ResourceTree_Menu</menu>
+            <form>DB_ResourceForm</form>
+        </target>
+        <type>DB_Resource</type>
+        <childs>
+            <child>Admin_Common_AbstractTree_Properties</child>
+        </childs>
+        <property name="Target">content</property>
+        <property name="TargetMode">view</property>
+    </definition>
 </ui-menu>
