@@ -26,6 +26,7 @@ import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.access.AccessTypeEnums;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Attribute;
@@ -545,7 +546,7 @@ public abstract class AccessCheck4UI_Base
                         }
                     }
                 }
-                if (access == null && inverse || access && !inverse) {
+                if (BooleanUtils.isFalse(access) && inverse || access && !inverse) {
                     ret.put(ReturnValues.TRUE, true);
                 }
             }
@@ -575,7 +576,7 @@ public abstract class AccessCheck4UI_Base
             final Resource resource = Store.get(instance.getType().getStoreId()).getResource(instance);
             access = resource.exists();
         }
-        if (access == null && inverse || access && !inverse) {
+        if (BooleanUtils.isFalse(access) && inverse || access && !inverse) {
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
@@ -604,7 +605,7 @@ public abstract class AccessCheck4UI_Base
                 break;
             }
         }
-        if (access == null && inverse || access && !inverse) {
+        if (BooleanUtils.isFalse(access) && inverse || access && !inverse) {
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
