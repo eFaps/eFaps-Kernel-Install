@@ -85,6 +85,20 @@ public class ParameterUtil
     }
 
     /**
+     * Adds the parameter values.
+     *
+     * @param _parameter Paramter as passed by the eFaps API
+     * @param _key      Key of the property
+     * @param _values    value of the property
+     */
+    public static void addParameterValues(final Parameter _parameter,
+                                          final String _key,
+                                          final String... _values)
+    {
+        ParameterUtil_Base.addParameterValues(_parameter, _key, _values);
+    }
+
+    /**
      * Sets the parameter value.
      *
      * @param _parameter Paramter as passed by the eFaps API

@@ -21,6 +21,7 @@ package org.efaps.esjp.common.parameter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
@@ -146,6 +147,27 @@ public abstract class ParameterUtil_Base
             _parameter.put(ParameterValues.PARAMETERS, map);
         }
         map.put(_key, _values);
+    }
+
+    /**
+     * Adds the parameter values.
+     *
+     * @param _parameter Paramter as passed by the eFaps API
+     * @param _key      Key of the property
+     * @param _values    value of the property
+     */
+    protected static void addParameterValues(final Parameter _parameter,
+                                             final String _key,
+                                             final String... _values)
+    {
+        final Map<String, String[]> map = _parameter.getParameters();
+        if (map == null) {
+            ParameterUtil.setParameterValues(_parameter, _key, _values);
+        } else {
+            final String[] current = ParameterUtil.getParameterValues(_parameter, _key);
+            final String[] values = ArrayUtils.addAll(current, _values);
+            map.put(_key, values);
+        }
     }
 
     /**
