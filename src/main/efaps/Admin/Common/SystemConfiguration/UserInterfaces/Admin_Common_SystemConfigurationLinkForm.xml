@@ -92,5 +92,10 @@
                 <property name="Select">attribute[Name]</property>
             </trigger>
         </field>
+        <field name="appKey">
+            <property name="Attribute">AppKey</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+        </field>
     </definition>
 </ui-form>

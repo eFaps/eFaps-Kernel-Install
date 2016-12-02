@@ -16,21 +16,15 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
-
 -->
 
-<ui-table xmlns="http://www.efaps.org/xsd"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>9cf4379d-a7f6-4393-846b-a9cce013d61a</uuid>
     <file-application>eFaps-Kernel</file-application>
-    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Common_SystemConfigurationAttributeTable</name>
-        <!-- fields -->
         <field name="name">
             <property name="Attribute">Key</property>
             <property name="Label">Admin_Common_SystemConfigurationAttribute/Key.Label</property>
@@ -48,6 +42,10 @@
         <field name="companyLink">
             <property name="Select">linkto[CompanyLink].attribute[Name]</property>
             <property name="Label">Admin_Common_SystemConfigurationAttribute/CompanyLink.Label</property>
+        </field>
+        <field name="appKey">
+            <property name="Attribute">AppKey</property>
+            <property name="Label">Admin_Common_SystemConfigurationAttribute/AppKey.Label</property>
         </field>
     </definition>
 </ui-table>

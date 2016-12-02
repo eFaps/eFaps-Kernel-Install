@@ -30,9 +30,10 @@
             <column name="TYPEID"       type="INTEGER"                      not-null="true" />
             <column name="ABSTRACTID"   type="INTEGER"                      not-null="true" />
             <column name="KEY"          type="STRING_SHORT" length="128"    not-null="true" />
-            <column name="VALUE"        type="STRING_LONG"  length="2048"   not-null="true" />
+            <column name="VALUE"        type="CLOB"                         not-null="true" />
             <column name="DESCR"        type="STRING_SHORT" length="1024" />
             <column name="COMPANYID"    type="INTEGER" />
+            <column name="APPKEY"       type="STRING_SHORT" length="64" />
             <column name="CREATOR"      type="INTEGER"                      not-null="true" />
             <column name="CREATED"      type="DATETIME"                     not-null="true" />
             <column name="MODIFIER"     type="INTEGER"                      not-null="true" />
@@ -49,9 +50,10 @@
             <column name="TYPEID"       type="INTEGER"                      not-null="true" />
             <column name="ABSTRACTID"   type="INTEGER"                      not-null="true" />
             <column name="KEY"          type="STRING_SHORT" length="128"    not-null="true" />
-            <column name="VALUE"        type="STRING_LONG"  length="2048"   not-null="true" />
+            <column name="VALUE"        type="CLOB"                         not-null="true" />
             <column name="DESCR"        type="STRING_SHORT" length="1024" />
             <column name="COMPANYID"    type="INTEGER" />
+            <column name="APPKEY"       type="STRING_SHORT" length="64" />
             <column name="CREATOR"      type="INTEGER"                      not-null="true" />
             <column name="CREATED"      type="DATETIME"                     not-null="true" />
             <column name="MODIFIER"     type="INTEGER"                      not-null="true" />
