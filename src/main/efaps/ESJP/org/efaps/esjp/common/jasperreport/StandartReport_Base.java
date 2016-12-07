@@ -116,7 +116,7 @@ public abstract class StandartReport_Base
     /**
      * Parameter map that will be passed to the jasper FillManager.
      */
-    private final Map<String, Object> jrParameters = new HashMap<String, Object>();
+    private final Map<String, Object> jrParameters = new HashMap<>();
 
     /**
      * The name for the returned file.
@@ -712,5 +712,19 @@ public abstract class StandartReport_Base
         {
             return this.extension;
         }
+    }
+
+    /**
+     * The Enum JasperMime.
+     *
+     */
+    public enum JasperActivation
+    {
+
+        /** The oncreate. */
+        ONCREATE,
+
+        /** The onedit. */
+        ONEDIT;
     }
 }

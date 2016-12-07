@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.common.SystemConfiguration;
@@ -48,6 +49,9 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.common.AbstractCommon;
+import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.esjp.common.uiform.Create;
+import org.efaps.esjp.common.uiform.Edit;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.util.EFapsException;
 
@@ -400,5 +404,43 @@ public abstract class SystemConf_Base
         final String pwd = _parameter.getParameterValue("masterPassword");
         SystemConfiguration.getPBEConfig().setPassword(pwd);
         return new Return();
+    }
+
+    /**
+     * Edits the attribute.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return editAttribute(final Parameter _parameter)
+        throws EFapsException
+    {
+        if (ArrayUtils.isEmpty(_parameter.getParameterValues("value4edit"))) {
+            ParameterUtil.setParameterValues(_parameter, "value4edit", "");
+        } else if (ArrayUtils.isNotEmpty(_parameter.getParameterValues("value4edit"))
+                        && _parameter.getParameterValues("value4edit").length > 1) {
+            final String value = StringUtils.join(_parameter.getParameterValues("value4edit"), "\n");
+            ParameterUtil.setParameterValues(_parameter, "value4edit", value);
+        }
+        return new Edit().execute(_parameter);
+    }
+
+    /**
+     * Creates the attribute.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return createAttribute(final Parameter _parameter)
+        throws EFapsException
+    {
+        if (ArrayUtils.isNotEmpty(_parameter.getParameterValues("value"))
+                        && _parameter.getParameterValues("value").length > 1) {
+            final String value = StringUtils.join(_parameter.getParameterValues("value"), "\n");
+            ParameterUtil.setParameterValues(_parameter, "value", value);
+        }
+        return new Create().execute(_parameter);
     }
 }

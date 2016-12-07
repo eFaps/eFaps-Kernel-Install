@@ -27,7 +27,7 @@
         <name>Admin_Common_SystemConfigurationTree_Attributes_Menu_Action_Create</name>
         <target>
             <form>Admin_Common_SystemConfigurationAttributeForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Create" />
+            <execute program="org.efaps.esjp.admin.common.systemconfiguration.SystemConf" method="createAttribute" />
         </target>
         <property name="Target">modal</property>
         <property name="TargetCreateType">Admin_Common_SystemConfigurationAttribute</property>

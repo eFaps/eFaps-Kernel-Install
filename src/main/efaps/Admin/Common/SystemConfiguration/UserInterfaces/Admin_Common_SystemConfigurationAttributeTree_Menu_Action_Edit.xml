@@ -27,7 +27,7 @@
         <name>Admin_Common_SystemConfigurationAttributeTree_Menu_Action_Edit</name>
         <target>
             <form>Admin_Common_SystemConfigurationAttributeForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit" />
+            <execute program="org.efaps.esjp.admin.common.systemconfiguration.SystemConf" method="editAttribute" />
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>

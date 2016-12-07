@@ -401,12 +401,17 @@ public abstract class AccessCheck4UI_Base
 
             final Map<Integer, String> propAttrs = analyseProperty(_parameter, "PropertiesAttribute");
             final Map<Integer, String> propKeys = analyseProperty(_parameter, "PropertiesKey");
+            final Map<Integer, String> propValues = analyseProperty(_parameter, "PropertiesValue");
             for (final Entry<Integer, String> entry : propAttrs.entrySet()) {
                 final Properties props = config.getAttributeValueAsProperties(entry.getValue(), true);
                 final String propKey = propKeys.get(entry.getKey());
                 final String propKeyValue = props.getProperty(propKey.startsWith("!") ? propKey.substring(1) : propKey);
-                access = propKey.startsWith("!") ? !Boolean.parseBoolean(propKeyValue)
-                                : Boolean.parseBoolean(propKeyValue);
+                if (propValues.containsKey(entry.getKey())) {
+                    access = propValues.get(entry.getKey()).equals(propKeyValue);
+                } else {
+                    access = propKey.startsWith("!") ? !Boolean.parseBoolean(propKeyValue)
+                                    : Boolean.parseBoolean(propKeyValue);
+                }
                 if (access) {
                     break;
                 }
