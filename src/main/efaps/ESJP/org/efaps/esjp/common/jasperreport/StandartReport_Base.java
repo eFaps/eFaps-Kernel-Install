@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,7 +89,6 @@ import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 
-// TODO: Auto-generated Javadoc
 /**
  * "Mime" as property in the calling command, or "mime" as parameter from a
  * form. Command overrules!
@@ -265,7 +264,7 @@ public abstract class StandartReport_Base
                     obj = value;
                     break;
             }
-            this.jrParameters.put(jrParameter.getName(), obj);
+            getJrParameters().put(jrParameter.getName(), obj);
         }
         return execute(_parameter);
     }
@@ -279,11 +278,11 @@ public abstract class StandartReport_Base
     protected void add2ReportParameter(final Parameter _parameter)
         throws EFapsException
     {
-        this.jrParameters.put(JRParameter.REPORT_LOCALE, Context.getThreadContext().getLocale());
-        this.jrParameters.put(JRParameter.REPORT_RESOURCE_BUNDLE, new EFapsResourceBundle());
+        getJrParameters().put(JRParameter.REPORT_LOCALE, Context.getThreadContext().getLocale());
+        getJrParameters().put(JRParameter.REPORT_RESOURCE_BUNDLE, new EFapsResourceBundle());
 
         final Instance inst = _parameter.getInstance();
-        if (inst != null && inst.isValid()) {
+        if (!getJrParameters().containsKey(ParameterValues.INSTANCE.name()) && inst != null && inst.isValid()) {
             getJrParameters().put(ParameterValues.INSTANCE.name(), inst);
         }
 
@@ -420,13 +419,13 @@ public abstract class StandartReport_Base
                     final Method method = clazz.getMethod("init",
                                     new Class[] { JasperReport.class, Parameter.class, JRDataSource.class, Map.class });
                     dataSource = (IeFapsDataSource) clazz.newInstance();
-                    method.invoke(dataSource, jasperReport, _parameter, null, this.jrParameters);
+                    method.invoke(dataSource, jasperReport, _parameter, null, getJrParameters());
                 }
                 if (dataSource != null) {
-                    this.jrParameters.put("EFAPS_SUBREPORT", new SubReportContainer(_parameter, dataSource,
-                                    this.jrParameters));
+                    getJrParameters().put("EFAPS_SUBREPORT", new SubReportContainer(_parameter, dataSource,
+                                    getJrParameters()));
                 }
-                final ReportRunner runner = new ReportRunner(ctx, jasperReport, this.jrParameters, dataSource);
+                final ReportRunner runner = new ReportRunner(ctx, jasperReport, getJrParameters(), dataSource);
                 final Thread t = new Thread(runner);
                 t.setContextClassLoader(EFapsClassLoader.getInstance());
                 t.start();
@@ -440,7 +439,7 @@ public abstract class StandartReport_Base
                     setFileName(getProperty(_parameter, "FileName"));
                     // last chance search in the jasper Parameters
                     if (getFileName() == null) {
-                        setFileName((String) this.jrParameters.get("FileName"));
+                        setFileName((String) getJrParameters().get("FileName"));
                     }
                 }
                 final JasperPrint print = runner.getJasperPrint();
