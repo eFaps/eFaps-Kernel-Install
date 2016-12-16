@@ -13,48 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev: 9459 $
- * Last Changed:    $Date: 2016-05-17 15:09:07 -0500 (vie, 17 may 2016) $
- * Last Changed By: $Author: jorge.cueva@moxter.net $
  */
 
 package org.efaps.esjp.common.uitable;
 
-import java.util.List;
-
-import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
-import org.efaps.admin.program.esjp.EFapsNoUpdate;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.db.Instance;
-import org.efaps.db.QueryBuilder;
-import org.efaps.util.EFapsException;
 
 /**
- * This class will be replaced by the MultiPrint in Webapp-install. It serves as
- * a placeholder to be able to link to the esjp during a first time
- * installation.
+ * This class must be replaced for customization, therefore it is left empty.
+ * Functional description can be found in the related "<code>_Base</code>"
+ * class.
  *
  * @author The eFaps Team
- * @version $Id: MultiPrint.java 9459 2016-05-17 20:09:07Z
- *          jorge.cueva@moxter.net $
  */
 @EFapsUUID("cbab3ae6-fe28-4604-838c-4c6d260156fb")
 @EFapsApplication("eFaps-Kernel")
-@EFapsNoUpdate
 public class MultiPrint
+    extends MultiPrint_Base
 {
-
-    public List<Instance> getInstances(final Parameter _parameter)
-        throws EFapsException
-    {
-        return null;
-    }
-
-    protected void add2QueryBldr(final Parameter _parameter,
-                                 final QueryBuilder _queryBldr)
-        throws EFapsException
-    {
-
-    }
 }
