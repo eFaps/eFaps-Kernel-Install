@@ -18,16 +18,19 @@
 package org.efaps.esjp.common.uitable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
@@ -49,6 +52,7 @@ import org.efaps.api.ui.IFilter;
 import org.efaps.api.ui.IFilterList;
 import org.efaps.api.ui.IListFilter;
 import org.efaps.api.ui.IMapFilter;
+import org.efaps.api.ui.IOption;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -250,30 +254,66 @@ public abstract class MultiPrint_Base
     {
         boolean ret = false;
         if (_filter instanceof IListFilter) {
-            if (ArrayUtils.isNotEmpty(((IListFilter) _filter).getValues())) {
-                _queryBldr.addWhereAttrEqValue(Field.get(_filter.getFieldId()).getAttribute(), ((IListFilter) _filter)
-                                .getValues());
-                ret = true;
-            }
-        } else {
-            final List<Status> filters = new ArrayList<>();
-            final String defaultvalues = Field.get(_filter.getFieldId()).getFilter().getDefaultValue();
-            if (defaultvalues != null && !defaultvalues.isEmpty()) {
-                final String[] defaultAr = defaultvalues.split(";");
-                final Attribute attr = _type.getStatusAttribute();
-                final Type statusgrp = attr.getLink();
-                final List<Status> status = getStatus4Type(statusgrp);
-                for (final String defaultv : defaultAr) {
-                    for (final Status statusTmp : status) {
-                        if (defaultv.equals(statusTmp.getKey())) {
-                            filters.add(statusTmp);
+            final IListFilter listFilter = ((IListFilter) _filter);
+            if (CollectionUtils.isNotEmpty(listFilter)) {
+                final Set<Object> filter = new HashSet<>();
+                for (final IOption obj : listFilter) {
+                    if (obj != null && obj.isSelected()) {
+                        if (obj.getValue() instanceof Object[]) {
+                            CollectionUtils.addAll(filter, (Object[]) obj.getValue());
+                        } else {
+                            filter.add(obj.getValue());
                         }
                     }
                 }
-            }
-            if (!filters.isEmpty()) {
-                _queryBldr.addWhereAttrEqValue(Field.get(_filter.getFieldId()).getAttribute(), filters.toArray());
+                if (!filter.isEmpty()) {
+                    _queryBldr.addWhereAttrEqValue(Field.get(listFilter.getFieldId()).getAttribute(), filter.toArray());
+                }
                 ret = true;
+            } else {
+                final List<Status> filters = new ArrayList<>();
+                final String defaultvalues = Field.get(listFilter.getFieldId()).getFilter().getDefaultValue();
+                final String[] defaultAr = (defaultvalues != null && !defaultvalues.isEmpty())
+                                ? defaultvalues.split(";") : new String[0];
+                final Attribute attr = _type.getStatusAttribute();
+                final Type statusgrp = attr.getLink();
+                final List<Status> status = getStatus4Type(statusgrp);
+                final Map<String, StatusOption> options = new HashMap<>();
+                for (final Status statusTmp : status) {
+                    boolean selected = false;
+                    for (final String defaultv : defaultAr) {
+                        if (defaultv.equals(statusTmp.getKey())) {
+                            filters.add(statusTmp);
+                            selected = true;
+                        }
+                    }
+                    StatusOption option;
+                    if (options.containsKey(statusTmp.getKey())) {
+                        option = options.get(statusTmp.getKey());
+                    } else {
+                        option = new StatusOption();
+                        options.put(statusTmp.getKey(), option);
+                    }
+                    option.setSelected(selected);
+                    option.addStatus(statusTmp);
+                }
+                final List<StatusOption> optionList = new ArrayList<>(options.values());
+                Collections.sort(optionList, new Comparator<StatusOption>()
+                {
+
+                    @Override
+                    public int compare(final StatusOption _arg0,
+                                       final StatusOption _arg1)
+                    {
+                        return _arg0.getLabel().compareTo(_arg1.getLabel());
+                    }
+                });
+                listFilter.addAll(optionList);
+                if (!filters.isEmpty()) {
+                    _queryBldr.addWhereAttrEqValue(Field.get(listFilter.getFieldId()).getAttribute(), filters
+                                    .toArray());
+                    ret = true;
+                }
             }
         }
         return ret;
@@ -318,15 +358,14 @@ public abstract class MultiPrint_Base
     {
         boolean ret = false;
         if (_filter instanceof IListFilter) {
-            final List<?> list = Arrays.asList(((IListFilter) _filter).getValues());
+            final IListFilter listFilter = (IListFilter) _filter;
             final Set<Classification> filters = new HashSet<>();
             final Set<Classification> remove = new HashSet<>();
-            for (final Object obj : list) {
+            for (final IOption obj : listFilter) {
                 if (obj != null) {
-                    filters.add((Classification) Type.get((UUID) obj));
+                    filters.add((Classification) Type.get((UUID) obj.getValue()));
                 }
             }
-
             for (final Classification clazz : filters) {
                 for (final Classification child : clazz.getChildClassifications()) {
                     if (filters.contains(child)) {
@@ -720,5 +759,68 @@ public abstract class MultiPrint_Base
             }
         }
         return ret;
+    }
+
+    public static class StatusOption
+        implements IOption
+    {
+
+        /** The Constant serialVersionUID. */
+        private static final long serialVersionUID = 1L;
+
+        /** The selected. */
+        private boolean selected;
+
+        /** The ids. */
+        private final Set<Long> ids = new HashSet<>();
+
+        @Override
+        public String getLabel()
+        {
+            final Set<String> names = new TreeSet<>();
+            for (final Long id : this.ids) {
+                try {
+                    names.add(Status.get(id).getLabel());
+                } catch (final CacheReloadException e) {
+                    MultiPrint_Base.LOG.error("Catched ", e);
+                }
+            }
+            return StringUtils.join(names, ", ");
+        }
+
+        @Override
+        public Object getValue()
+        {
+            return this.ids.toArray();
+        }
+
+        @Override
+        public boolean isSelected()
+        {
+            return this.selected;
+        }
+
+        /**
+         * Sets the selected.
+         *
+         * @param _selected the new selected
+         */
+        public StatusOption setSelected(final boolean _selected)
+        {
+            this.selected = _selected;
+            return this;
+        }
+
+        /**
+         * Adds the status.
+         *
+         * @param _status the status
+         * @return the status option
+         */
+        public StatusOption addStatus(final Status _status)
+        {
+            this.ids.add(_status.getId());
+            return this;
+        }
     }
 }
