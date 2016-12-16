@@ -435,7 +435,7 @@ public abstract class MultiPrint_Base
         final IUIProvider uiProvider = attr.getAttributeType().getUIProvider();
 
         if (_filter instanceof IMapFilter) {
-            final Map<?, ?> inner = (IMapFilter) _filter;
+            final Map<String, Object> inner = (IMapFilter) _filter;
             final String from = (String) inner.get("from");
             final String to = (String) inner.get("to");
             // Date or DateTime
@@ -446,6 +446,8 @@ public abstract class MultiPrint_Base
                     final DateTime[] dates = (DateTime[]) getFilter(Field.get(_filter.getFieldId()));
                     dateFrom = dates[0];
                     dateTo = dates[1];
+                    inner.put("from", dateFrom.toString());
+                    inner.put("to", dateTo.toString());
                 } else {
                     dateFrom = DateTimeUtil.translateFromUI(from).minusSeconds(1);
                     dateTo = DateTimeUtil.translateFromUI(to).plusDays(1);
