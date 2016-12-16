@@ -254,7 +254,7 @@ public abstract class MultiPrint_Base
     {
         boolean ret = false;
         if (_filter instanceof IListFilter) {
-            final IListFilter listFilter = ((IListFilter) _filter);
+            final IListFilter listFilter = (IListFilter) _filter;
             if (CollectionUtils.isNotEmpty(listFilter)) {
                 final Set<Object> filter = new HashSet<>();
                 for (final IOption obj : listFilter) {
@@ -287,7 +287,7 @@ public abstract class MultiPrint_Base
                             selected = true;
                         }
                     }
-                    StatusOption option;
+                    final StatusOption option;
                     if (options.containsKey(statusTmp.getKey())) {
                         option = options.get(statusTmp.getKey());
                     } else {
