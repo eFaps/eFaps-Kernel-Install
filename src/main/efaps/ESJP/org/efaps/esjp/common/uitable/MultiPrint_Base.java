@@ -761,6 +761,10 @@ public abstract class MultiPrint_Base
         return ret;
     }
 
+    /**
+     * The Class StatusOption.
+     *
+     */
     public static class StatusOption
         implements IOption
     {
@@ -804,6 +808,7 @@ public abstract class MultiPrint_Base
          * Sets the selected.
          *
          * @param _selected the new selected
+         * @return the status option
          */
         public StatusOption setSelected(final boolean _selected)
         {
