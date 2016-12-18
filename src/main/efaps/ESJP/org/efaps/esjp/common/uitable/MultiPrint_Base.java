@@ -504,6 +504,9 @@ public abstract class MultiPrint_Base
                     if (filter != null) {
                         addMatch(_parameter, _queryBldr, _attrName, inner, filter);
                     } else {
+                        if (inner.isEmpty()) {
+                            inner.put("ignoreCase", Boolean.TRUE);
+                        }
                         ret = false;
                     }
                 }
