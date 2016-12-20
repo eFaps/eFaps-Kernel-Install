@@ -434,4 +434,24 @@ public class CICommon
         public final CIAttribute CacheOnStart = new CIAttribute(this, "CacheOnStart");
         public final CIAttribute RevisionLink = new CIAttribute(this, "RevisionLink");
     }
+
+
+    public static final _TagAbstract TagAbstract = new _TagAbstract("66c3778c-e890-40ac-81fb-c155521f9a20");
+
+    public static class _TagAbstract
+        extends CIType
+    {
+
+        protected _TagAbstract(final String _uuid)
+        {
+            super(_uuid);
+        }
+
+        public final CIAttribute ObjectID = new CIAttribute(this, "ObjectID");
+        public final CIAttribute Creator = new CIAttribute(this, "Creator");
+        public final CIAttribute Created = new CIAttribute(this, "Created");
+        public final CIAttribute Modifier = new CIAttribute(this, "Modifier");
+        public final CIAttribute Modified = new CIAttribute(this, "Modified");
+    }
+
 }
