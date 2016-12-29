@@ -1333,7 +1333,7 @@ public abstract class Field_Base
                     }
                 }
             } catch (final ClassNotFoundException e) {
-                LOG.error("ClassNotFoundException", e);
+                Field_Base.LOG.error("ClassNotFoundException", e);
             }
         }
         final Return ret = new Return();
@@ -1365,7 +1365,7 @@ public abstract class Field_Base
                     }
                 }
             } catch (final ClassNotFoundException e) {
-                LOG.error("ClassNotFoundException", e);
+                Field_Base.LOG.error("ClassNotFoundException", e);
             }
         }
         return ret;

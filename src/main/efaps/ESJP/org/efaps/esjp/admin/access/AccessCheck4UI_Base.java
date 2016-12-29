@@ -51,6 +51,7 @@ import org.efaps.db.store.Resource;
 import org.efaps.db.store.Store;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.update.AppDependency;
 import org.efaps.update.util.InstallationException;
 import org.efaps.util.EFapsException;
@@ -100,115 +101,84 @@ public abstract class AccessCheck4UI_Base
     public Return check4Status(final Parameter _parameter)
         throws EFapsException
     {
-        Return ret = new Return();
-        final boolean createStatus = containsProperty(_parameter, "Check4CreateStatus");
-        if (!containsProperty(_parameter, "Status") && !createStatus) {
-            ret = toBeRemoved(_parameter);
-        } else {
-            final Instance orgInstance = _parameter.getInstance();
-            if (orgInstance != null) {
-                Instance instance = null;
-
-                final String select4Instance = getProperty(_parameter, "Select4Instance");
-                boolean clone = false;
-                if (select4Instance != null) {
-                    final PrintQuery print = new CachedPrintQuery(orgInstance, getRequestKey())
-                                    .setLifespanUnit(TimeUnit.SECONDS).setLifespan(30);
-                    print.addSelect(select4Instance);
-                    print.executeWithoutAccessCheck();
-                    final Object obj = print.getSelect(select4Instance);
-                    if (obj instanceof Instance) {
-                        instance = (Instance) obj;
-                    } else {
-                        AccessCheck4UI_Base.LOG.error("UI_ACCESSCHECK Event for Cmd '{}' is not "
-                                        + "returning an instance for 'Select4Instance'", getCmd(_parameter).getName());
-                    }
-                    clone  = true;
-                } else {
-                    instance = orgInstance;
-                }
-
-                final Long statusID;
-                if (instance != null && instance.isValid() && instance.getType().isCheckStatus()) {
-                    final Attribute statusAttr = instance.getType().getStatusAttribute();
-                    final PrintQuery print = new CachedPrintQuery(instance, getRequestKey())
-                                    .setLifespanUnit(TimeUnit.SECONDS).setLifespan(30);
-                    print.addAttribute(statusAttr);
-                    print.executeWithoutAccessCheck();
-                    statusID = print.<Long>getAttribute(statusAttr);
-                } else {
-                    statusID = null;
-                    AccessCheck4UI_Base.LOG.error("UI_ACCESSCHECK Event for Cmd '{}' is executed on"
-                                    + " type that does not depend on Status.", getCmd(_parameter).getName());
-                }
-
-                if (statusID != null) {
-                    final Parameter para = clone
-                                    ? ParameterUtil.clone(_parameter, ParameterValues.INSTANCE, instance) : _parameter;
-                    final List<Status> statusList = getStatusListFromProperties(para);
-                    if (createStatus) {
-                        // Commons-Configuration
-                        final SystemConfiguration config = SystemConfiguration.get(UUID
-                                        .fromString("9ac2673a-18f9-41ba-b9be-5b0980bdf6f3"));
-                        if (config != null) {
-                            final Properties properties = config.getAttributeValueAsProperties(
-                                            "org.efaps.commons.DocumentStatus4Create", true);
-                            final String key = properties.getProperty(instance.getType().getName() + ".Status");
-                            if (key != null) {
-                                final Status status = Status.find(
-                                                instance.getType().getStatusAttribute().getLink().getUUID(), key);
-                                if (status != null) {
-                                    statusList.clear();
-                                    statusList.add(status);
-                                }
-                            }
-                        }
-                    }
-
-                    for (final Status status : statusList) {
-                        if (status != null && statusID.equals(status.getId())) {
-                            ret.put(ReturnValues.TRUE, true);
-                            break;
-                        }
-                    }
-                }
-            }
+        final Return ret = new Return();
+        if (check4Status(_parameter, _parameter.getInstance())) {
+            ret.put(ReturnValues.TRUE, true);
         }
         return ret;
     }
 
     /**
-     * Will be removed!!!!.
+     * Check for status.
      *
-     * @param _parameter Parameter as passed from eFaps to an esjp
-     * @throws EFapsException never
-     * @return Return with true if access is granted
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _instance the instance
+     * @return true, if successful
+     * @throws EFapsException on error
      */
-    private Return toBeRemoved(final Parameter _parameter)
+    protected boolean check4Status(final Parameter _parameter,
+                                   final Instance _instance)
         throws EFapsException
     {
-        AccessCheck4UI_Base.LOG.warn("Cmd '{}' uses deprecated API for ACCESSCHEFCK.", getCmd(_parameter).getName());
-        final Return ret = new Return();
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String statiStr = (String) props.get("Stati");
-        final Instance instance = _parameter.getInstance();
-        if (instance != null && instance.getType().isCheckStatus() && statiStr != null && statiStr.length() > 0) {
-            final Attribute statusAttr = instance.getType().getStatusAttribute();
-            final PrintQuery print = new PrintQuery(instance);
-            print.addAttribute(statusAttr);
-            if (print.execute()) {
-                final Long statusID = print.<Long> getAttribute(statusAttr);
-                final String[] stati = statiStr.split(",");
-                for (final String status : stati) {
-                    final String statusGrpStr = (String) props.get("StatusGroup");
-                    final Status stat;
-                    if (statusGrpStr != null && !statusGrpStr.isEmpty()) {
-                        stat = Status.find(statusGrpStr, status.trim());
-                    } else {
-                        stat = Status.find(statusAttr.getLink().getUUID(), status.trim());
+        boolean ret = false;
+        final boolean createStatus = containsProperty(_parameter, "Check4CreateStatus");
+        if (InstanceUtils.isValid(_instance)) {
+            Instance instance = null;
+            final String select4Instance = getProperty(_parameter, "Select4Instance");
+            if (select4Instance != null) {
+                final PrintQuery print = new CachedPrintQuery(_instance, getRequestKey())
+                                .setLifespanUnit(TimeUnit.SECONDS).setLifespan(30);
+                print.addSelect(select4Instance);
+                print.executeWithoutAccessCheck();
+                final Object obj = print.getSelect(select4Instance);
+                if (obj instanceof Instance) {
+                    instance = (Instance) obj;
+                } else {
+                    AccessCheck4UI_Base.LOG.error("UI_ACCESSCHECK Event for Cmd '{}' is not "
+                                    + "returning an instance for 'Select4Instance'", getCmd(_parameter).getName());
+                }
+            } else {
+                instance = _instance;
+            }
+
+            final Long statusID;
+            if (instance != null && instance.isValid() && instance.getType().isCheckStatus()) {
+                final Attribute statusAttr = instance.getType().getStatusAttribute();
+                final PrintQuery print = new CachedPrintQuery(instance, getRequestKey())
+                                .setLifespanUnit(TimeUnit.SECONDS).setLifespan(30);
+                print.addAttribute(statusAttr);
+                print.executeWithoutAccessCheck();
+                statusID = print.<Long>getAttribute(statusAttr);
+            } else {
+                statusID = null;
+                AccessCheck4UI_Base.LOG.error("UI_ACCESSCHECK Event for Cmd '{}' is executed on"
+                                + " type that does not depend on Status.", getCmd(_parameter).getName());
+            }
+
+            if (statusID != null) {
+                final Parameter para = ParameterUtil.clone(_parameter, ParameterValues.INSTANCE, instance);
+                final List<Status> statusList = getStatusListFromProperties(para);
+                if (createStatus) {
+                    // Commons-Configuration
+                    final SystemConfiguration config = SystemConfiguration.get(UUID
+                                    .fromString("9ac2673a-18f9-41ba-b9be-5b0980bdf6f3"));
+                    if (config != null) {
+                        final Properties properties = config.getAttributeValueAsProperties(
+                                        "org.efaps.commons.DocumentStatus4Create", true);
+                        final String key = properties.getProperty(instance.getType().getName() + ".Status");
+                        if (key != null) {
+                            final Status status = Status.find(
+                                            instance.getType().getStatusAttribute().getLink().getUUID(), key);
+                            if (status != null) {
+                                statusList.clear();
+                                statusList.add(status);
+                            }
+                        }
                     }
-                    if (stat != null && statusID.equals(stat.getId())) {
-                        ret.put(ReturnValues.TRUE, true);
+                }
+                for (final Status status : statusList) {
+                    if (status != null && statusID.equals(status.getId())) {
+                        ret = true;
                         break;
                     }
                 }
@@ -459,7 +429,7 @@ public abstract class AccessCheck4UI_Base
                 }
             }
         } else {
-            LOG.error("Wrong configuration");
+            AccessCheck4UI_Base.LOG.error("Wrong configuration");
         }
         return ret;
     }
@@ -551,7 +521,7 @@ public abstract class AccessCheck4UI_Base
                         }
                     }
                 }
-                if (BooleanUtils.isFalse(access) && inverse || access && !inverse) {
+                if (BooleanUtils.isFalse(access) && inverse || BooleanUtils.isTrue(access) && !inverse) {
                     ret.put(ReturnValues.TRUE, true);
                 }
             }
@@ -581,7 +551,7 @@ public abstract class AccessCheck4UI_Base
             final Resource resource = Store.get(instance.getType().getStoreId()).getResource(instance);
             access = resource.exists();
         }
-        if (BooleanUtils.isFalse(access) && inverse || access && !inverse) {
+        if (BooleanUtils.isFalse(access) && inverse || BooleanUtils.isTrue(access) && !inverse) {
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
@@ -610,7 +580,33 @@ public abstract class AccessCheck4UI_Base
                 break;
             }
         }
-        if (BooleanUtils.isFalse(access) && inverse || access && !inverse) {
+        if (BooleanUtils.isFalse(access) && inverse || BooleanUtils.isTrue(access) && !inverse) {
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+    /**
+     * Check for selected on status.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return check4SelectedOnStatus(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final boolean inverse = "true".equalsIgnoreCase(getProperty(_parameter, "Inverse"));
+        Boolean access = null;
+        for (final Instance instance : getSelectedInstances(_parameter)) {
+            if (access == null) {
+                access = check4Status(_parameter, instance);
+            } else {
+                access = access && check4Status(_parameter, instance);
+            }
+        }
+        if (BooleanUtils.isFalse(access) && inverse || BooleanUtils.isTrue(access) && !inverse) {
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;

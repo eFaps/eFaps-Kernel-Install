@@ -677,7 +677,6 @@ public abstract class AbstractCommon_Base
                                           final String _key)
         throws EFapsException
     {
-
         return getInstances(_parameter, _key, false);
     }
 
@@ -693,10 +692,35 @@ public abstract class AbstractCommon_Base
                                           final boolean _evalOthers)
         throws EFapsException
     {
+        return getInstances(_parameter, _key, _evalOthers, true);
+    }
+
+    /**
+     * Gets the instances.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _key key the values are
+     * @param _evalOthers consider to get the StringArry from OTHERS
+     * @param _evalSession the eval session
+     * @return List of instances, if not found empty list
+     * @throws EFapsException on error
+     */
+    protected List<Instance> getInstances(final Parameter _parameter,
+                                          final String _key,
+                                          final boolean _evalOthers,
+                                          final boolean _evalSession)
+        throws EFapsException
+    {
         final List<Instance> ret = new ArrayList<>();
         String[] oids = _parameter.getParameterValues(_key);
         if (oids == null && _evalOthers) {
             final Object tmp = _parameter.get(ParameterValues.OTHERS);
+            if (tmp != null && tmp instanceof String[]) {
+                oids = (String[]) tmp;
+            }
+        }
+        if (oids == null && _evalSession) {
+            final Object tmp = Context.getThreadContext().getSessionAttribute(_key);
             if (tmp != null && tmp instanceof String[]) {
                 oids = (String[]) tmp;
             }
