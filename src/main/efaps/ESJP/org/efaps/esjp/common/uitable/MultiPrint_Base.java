@@ -273,7 +273,7 @@ public abstract class MultiPrint_Base
             } else {
                 final List<Status> filters = new ArrayList<>();
                 final String defaultvalues = Field.get(listFilter.getFieldId()).getFilter().getDefaultValue();
-                final String[] defaultAr = (defaultvalues != null && !defaultvalues.isEmpty())
+                final String[] defaultAr = defaultvalues != null && !defaultvalues.isEmpty()
                                 ? defaultvalues.split(";") : new String[0];
                 final Attribute attr = _type.getStatusAttribute();
                 final Type statusgrp = attr.getLink();
@@ -483,16 +483,27 @@ public abstract class MultiPrint_Base
                 DateTime dateTo = null;
                 if (from == null || to == null) {
                     final DateTime[] dates = (DateTime[]) getFilter(Field.get(_filter.getFieldId()));
-                    dateFrom = dates[0];
-                    dateTo = dates[1];
-                    inner.put("from", dateFrom.toString());
-                    inner.put("to", dateTo.toString());
+                    if (dates == null) {
+                        if (Field.get(_filter.getFieldId()).getFilter().isRequired()) {
+                            dateFrom = new DateTime();
+                            dateTo = new DateTime();
+                        }
+                    } else {
+                        dateFrom = dates[0];
+                        dateTo = dates[1];
+                    }
+                    inner.put("from", dateFrom == null ? "" : dateFrom.toString());
+                    inner.put("to", dateTo == null ? "" : dateTo.toString());
                 } else {
                     dateFrom = DateTimeUtil.translateFromUI(from).minusSeconds(1);
                     dateTo = DateTimeUtil.translateFromUI(to).plusDays(1);
                 }
-                _queryBldr.addWhereAttrGreaterValue(_attrName, dateFrom);
-                _queryBldr.addWhereAttrLessValue(_attrName, dateTo);
+                if (dateFrom != null) {
+                    _queryBldr.addWhereAttrGreaterValue(_attrName, dateFrom);
+                }
+                if (dateTo != null) {
+                    _queryBldr.addWhereAttrLessValue(_attrName, dateTo);
+                }
             } else {
                 if (from != null && !from.isEmpty()) {
                     addMatch(_parameter, _queryBldr, _attrName, inner, new String[] { from });
