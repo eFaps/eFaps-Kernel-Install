@@ -378,7 +378,7 @@ public abstract class Field_Base
             final SystemConfiguration config = SystemConfiguration.get(uuid);
             if (config != null) {
                 final IUIValue uiValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
-                final Properties confProps = config.getObjectAttributeValueAsProperties(_parameter.getInstance());
+                final Properties confProps = config.getObjectAttributeValueAsProperties(_parameter.getCallInstance());
                 final List<String> keys = new ArrayList<>(confProps.stringPropertyNames());
                 Collections.sort(keys);
                 if (Display.EDITABLE.equals(uiValue.getDisplay())) {
