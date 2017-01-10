@@ -21,6 +21,7 @@
 package org.efaps.esjp.common.history;
 
 import java.util.Date;
+import java.util.UUID;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
@@ -102,14 +103,16 @@ public abstract class AbstractLoginOutHistory_Base
     }
 
     /**
-     * @param _userName username
+     * Gets the person instance.
+     *
+     * @param _user the user
      * @return instance for the person
      * @throws EFapsException on error
      */
-    protected Instance getPersonInstance(final String _userName)
+    protected Instance getPersonInstance(final String _user)
         throws EFapsException
     {
-        final Person person = Person.get(_userName);
+        final Person person = isUUID(_user) ? Person.get(UUID.fromString(_user)) : Person.get(_user);
         return Instance.get(CIAdminUser.Person.getType(), person.getId());
     }
 
