@@ -87,7 +87,7 @@ public abstract class DirectoryProvider_Base
             }
             ret = FSDirectory.open(folder2.toPath());
         } catch (final IOException e) {
-            throw new EFapsException(DirectoryProvider.class, "");
+            throw new EFapsException(DirectoryProvider.class, "IOException", e);
         }
         return ret;
     }
