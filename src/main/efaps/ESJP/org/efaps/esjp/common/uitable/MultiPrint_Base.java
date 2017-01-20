@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -58,7 +59,9 @@ import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.admin.common.systemconfiguration.KernelConfigurations;
 import org.efaps.esjp.common.AbstractCommon;
+import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
@@ -721,7 +724,9 @@ public abstract class MultiPrint_Base
         throws EFapsException
     {
         Object[] ret = null;
-        final String filter = _field.getFilter().getDefaultValue();
+        final Properties properties = PropertiesUtil.getProperties4Prefix(KernelConfigurations.TABLEFILTERDEFAULT.get(),
+                        _field.getCollection().getName());
+        final String filter = properties.getProperty(_field.getName(), _field.getFilter().getDefaultValue());
         if (filter != null) {
             final String[] parts = filter.split(":");
             final String range = parts[0];

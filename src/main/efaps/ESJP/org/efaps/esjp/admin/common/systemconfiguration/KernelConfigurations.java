@@ -42,7 +42,7 @@ public final class KernelConfigurations
     /** See description. */
     public static final PropertiesSysConfAttribute ACCESS4OBJECT = new PropertiesSysConfAttribute()
                     .sysConfUUID(EFapsSystemConfiguration.UUID)
-                    .key(BASE + "AccessCheck4Object")
+                    .key(KernelConfigurations.BASE + "AccessCheck4Object")
                     .concatenate(true)
                     .description("Properties to configure the Access for Object mechanism.\n"
                                     + "TYPE.Grant.AccessSet: PropertyMap, UUID or name\n"
@@ -59,23 +59,32 @@ public final class KernelConfigurations
     /** See description. */
     public static final StringSysConfAttribute INDEXBASEFOLDER = new StringSysConfAttribute()
                     .sysConfUUID(EFapsSystemConfiguration.UUID)
-                    .key(BASE + "index.Basefolder")
+                    .key(KernelConfigurations.BASE + "index.Basefolder")
                     .defaultValue("/eFaps/index")
                     .description("The base folder where the different indexes will be stored in.");
 
     /** See description. */
     public static final ListSysConfAttribute INDEXLANG = new ListSysConfAttribute()
                     .sysConfUUID(EFapsSystemConfiguration.UUID)
-                    .key(BASE + "index.Languages")
+                    .key(KernelConfigurations.BASE + "index.Languages")
                     .defaultValue(new ArrayList<>(Arrays.asList(new String[] { "en", "es" })))
                     .description("List of languages the indexes willbe created for.");
 
     /** See description. */
     public static final StringSysConfAttribute INDEXQUERYBLDR = new StringSysConfAttribute()
                     .sysConfUUID(EFapsSystemConfiguration.UUID)
-                    .key(BASE + "index.QueryBuilder")
+                    .key(KernelConfigurations.BASE + "index.QueryBuilder")
                     .defaultValue(LucenceQueryBuilder.class.getName())
                     .description("Class name of the class invoked to build Lucene Queries.");
+
+    /** See description. */
+    public static final PropertiesSysConfAttribute TABLEFILTERDEFAULT = new PropertiesSysConfAttribute()
+                    .sysConfUUID(EFapsSystemConfiguration.UUID)
+                    .key(KernelConfigurations.BASE + "FilterDefault4Table")
+                    .concatenate(true)
+                    .description("Possibiility to set the Default Filter Values for Tables. \n"
+                                    + "TABLENAME.FIELDNAME=VALUE\n"
+                                    + "e.g. Accounting_PeriodDocumentSumTable.date=WEEK");
 
     /**
      * Instantiates a new kernel configurations.
