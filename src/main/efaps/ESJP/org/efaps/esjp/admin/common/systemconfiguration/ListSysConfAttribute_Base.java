@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.common.SystemConfiguration;
@@ -85,5 +86,20 @@ public abstract class ListSysConfAttribute_Base
         }
         ret.append("</textarea>");
         return ret;
+    }
+
+    /**
+     * Adds a default value to the properties.
+     *
+     * @param _value the _value
+     * @return the properties sys conf attribute
+     */
+    public ListSysConfAttribute addDefaultValue(final String _value)
+    {
+        if (CollectionUtils.isEmpty(getDefaultValue())) {
+            defaultValue(new ArrayList<>());
+        }
+        getDefaultValue().add(_value);
+        return getThis();
     }
 }
