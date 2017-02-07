@@ -89,13 +89,12 @@ public abstract class Linked2ObjectAccessCheck_Base
                 cmd.append(" and ").append(type.getMainTable().getSqlColType()).append("=").append(type.getId());
             }
             long id = 0;
-            ConnectionResource con = null;
             try {
-                con = Context.getThreadContext().getConnectionResource();
+                final ConnectionResource con = Context.getThreadContext().getConnectionResource();
                 AbstractAccessCheck_Base.LOG.debug("Checking access with: {}", cmd);
                 Statement stmt = null;
                 try {
-                    stmt = con.getConnection().createStatement();
+                    stmt = con.createStatement();
                     final ResultSet rs = stmt.executeQuery(cmd.toString());
                     if (rs.next()) {
                         id = rs.getLong(1);
@@ -106,13 +105,8 @@ public abstract class Linked2ObjectAccessCheck_Base
                         stmt.close();
                     }
                 }
-                con.commit();
             } catch (final SQLException e) {
                 AbstractAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
-            } finally {
-                if ((con != null) && con.isOpened()) {
-                    con.abort();
-                }
             }
             if (id > 0) {
                 final Instance instance = Instance.get(toAttribute.getLink(), id);
@@ -134,7 +128,7 @@ public abstract class Linked2ObjectAccessCheck_Base
                                                  final AccessType _accessType)
         throws EFapsException
     {
-        final Map<Instance, Boolean> ret = new HashMap<Instance, Boolean>();
+        final Map<Instance, Boolean> ret = new HashMap<>();
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final String middleTypeUUID = (String) properties.get("MiddleTypeUUID");
         final String fromAttributeName = (String) properties.get("FromAttribute");
@@ -155,23 +149,22 @@ public abstract class Linked2ObjectAccessCheck_Base
             cmd.append(((Instance) instObj).getId()).append(",");
         }
         cmd.append("0)");
-        final Map<Long, Set<Long>> relMap = new HashMap<Long, Set<Long>>();
-        ConnectionResource con = null;
+        final Map<Long, Set<Long>> relMap = new HashMap<>();
         try {
-            con = Context.getThreadContext().getConnectionResource();
+            final ConnectionResource con = Context.getThreadContext().getConnectionResource();
             AbstractAccessCheck_Base.LOG.debug("Checking access with: {}", cmd);
             Statement stmt = null;
             try {
-                stmt = con.getConnection().createStatement();
+                stmt = con.createStatement();
                 final ResultSet rs = stmt.executeQuery(cmd.toString());
                 while (rs.next()) {
                     final long fromId = rs.getLong(1);
                     final long toId = rs.getLong(2);
-                    Set<Long> froms;
+                    final Set<Long> froms;
                     if (relMap.containsKey(toId)) {
                         froms = relMap.get(toId);
                     } else {
-                        froms = new HashSet<Long>();
+                        froms = new HashSet<>();
                         relMap.put(toId, froms);
                     }
                     froms.add(fromId);
@@ -182,19 +175,14 @@ public abstract class Linked2ObjectAccessCheck_Base
                     stmt.close();
                 }
             }
-            con.commit();
         } catch (final SQLException e) {
             AbstractAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
-        } finally {
-            if ((con != null) && con.isOpened()) {
-                con.abort();
-            }
         }
         final SimpleAccessCheckOnType accessCheck = new SimpleAccessCheckOnType();
 
         for (final Entry<Long, Set<Long>> entry : relMap.entrySet()) {
             final Instance instance = Instance.get(toAttribute.getLink(), entry.getKey());
-            final List<Instance>tmpInsts = new ArrayList<Instance>();
+            final List<Instance>tmpInsts = new ArrayList<>();
             for (final Object instObj : _instances) {
                 if (entry.getValue().contains(((Instance) instObj).getId())) {
                     tmpInsts.add((Instance) instObj);

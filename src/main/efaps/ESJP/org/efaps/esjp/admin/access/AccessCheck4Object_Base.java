@@ -174,7 +174,7 @@ public abstract class AccessCheck4Object_Base
 
             Statement stmt = null;
             try {
-                stmt = con.getConnection().createStatement();
+                stmt = con.createStatement();
                 final ResultSet rs = stmt.executeQuery(cmd.toString());
                 if (rs.next()) {
                     ret = rs.getLong(1) > 0 ? true : false;
@@ -185,17 +185,11 @@ public abstract class AccessCheck4Object_Base
                     stmt.close();
                 }
             }
-            con.commit();
         } catch (final SQLException e) {
             AbstractAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
-        } finally {
-            if (con != null && con.isOpened()) {
-                con.abort();
-            }
         }
         return ret;
     }
-
 
     /**
      * {@inheritDoc}
@@ -294,7 +288,7 @@ public abstract class AccessCheck4Object_Base
             con = context.getConnectionResource();
             Statement stmt = null;
             try {
-                stmt = con.getConnection().createStatement();
+                stmt = con.createStatement();
                 final ResultSet rs = stmt.executeQuery(cmd.toString());
                 while (rs.next()) {
                     instan.add(Instance.get(Type.get(rs.getLong(1)), rs.getLong(2)));
@@ -305,20 +299,15 @@ public abstract class AccessCheck4Object_Base
                     stmt.close();
                 }
             }
-            con.commit();
         } catch (final SQLException e) {
             AbstractAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
         } finally {
-            if (con != null && con.isOpened()) {
-                con.abort();
-            }
             for (final Object inst : _instances) {
                 ret.put((Instance) inst, instan.contains(inst));
             }
         }
         return ret;
     }
-
 
     /**
      * Check if the simple access must be applied.
@@ -705,7 +694,7 @@ public abstract class AccessCheck4Object_Base
     protected AccessSet getAccessSet(final String _key)
         throws CacheReloadException
     {
-        AccessSet ret;
+        final AccessSet ret;
         if (UUIDUtil.isUUID(_key)) {
             ret = AccessSet.get(UUID.fromString(_key));
         } else {
@@ -724,7 +713,7 @@ public abstract class AccessCheck4Object_Base
     protected AbstractUserObject getUserObject(final String _key)
         throws EFapsException
     {
-        AbstractUserObject ret;
+        final AbstractUserObject ret;
         if (UUIDUtil.isUUID(_key)) {
             ret = AbstractUserObject.getUserObject(UUID.fromString(_key));
         } else {

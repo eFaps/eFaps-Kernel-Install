@@ -109,14 +109,14 @@ public abstract class SimpleAccessCheckOnType_Base
 
         final StringBuilder cmd = new StringBuilder();
         cmd.append("select count(*) from T_ACCESSSET2USER ");
-        Type type;
+        final Type type;
         if (_parameter.get(ParameterValues.CLASS) instanceof Classification) {
             type = (Classification) _parameter.get(ParameterValues.CLASS);
         } else {
             type = _instance.getType();
         }
-        final Set<Long> users = new HashSet<Long>();
-        final Set<Role> localRoles = new HashSet<Role>();
+        final Set<Long> users = new HashSet<>();
+        final Set<Role> localRoles = new HashSet<>();
 
         boolean noCompCheck = false;
         if (type.isCheckStatus() && !_accessType.equals(AccessTypeEnums.CREATE.getAccessType())) {
@@ -224,9 +224,9 @@ public abstract class SimpleAccessCheckOnType_Base
                                                  final AccessType _accessType)
         throws EFapsException
     {
-        final Map<Instance, Boolean> ret = new HashMap<Instance, Boolean>();
+        final Map<Instance, Boolean> ret = new HashMap<>();
         final Cache<AccessKey, Boolean> cache = AccessCache.getKeyCache();
-        final List<Instance> checkOnDB = new ArrayList<Instance>();
+        final List<Instance> checkOnDB = new ArrayList<>();
         for (final Object instObj : _instances) {
             final AccessKey accessKey = AccessKey.get((Instance) instObj, _accessType);
             final Boolean access = cache.get(accessKey);
@@ -264,13 +264,13 @@ public abstract class SimpleAccessCheckOnType_Base
                                                      final AccessType _accessType)
         throws EFapsException
     {
-        final Map<Instance, Boolean> accessMap = new HashMap<Instance, Boolean>();
+        final Map<Instance, Boolean> accessMap = new HashMap<>();
         final Context context = Context.getThreadContext();
 
         final Type type = ((Instance) _instances.get(0)).getType();
         if (type.isCheckStatus() || type.isCompanyDependent()) {
-            final Set<Long> users = new HashSet<Long>();
-            final Set<Role> localRoles = new HashSet<Role>();
+            final Set<Long> users = new HashSet<>();
+            final Set<Role> localRoles = new HashSet<>();
             final StringBuilder cmd = new StringBuilder();
             cmd.append("select ").append(type.getMainTable().getSqlTable()).append(".ID ")
                 .append(" from T_ACCESSSET2USER ");
@@ -366,7 +366,7 @@ public abstract class SimpleAccessCheckOnType_Base
                 cmd.append("))");
             }
 
-            final Set<Long> idList = new HashSet<Long>();
+            final Set<Long> idList = new HashSet<>();
 
             ConnectionResource con = null;
             try {
@@ -375,7 +375,7 @@ public abstract class SimpleAccessCheckOnType_Base
                 Statement stmt = null;
                 try {
                     AbstractAccessCheck_Base.LOG.debug("Checking access with: {}", cmd);
-                    stmt = con.getConnection().createStatement();
+                    stmt = con.createStatement();
 
                     final ResultSet rs = stmt.executeQuery(cmd.toString());
 
@@ -389,13 +389,9 @@ public abstract class SimpleAccessCheckOnType_Base
                         stmt.close();
                     }
                 }
-                con.commit();
             } catch (final SQLException e) {
                 AbstractAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
             } finally {
-                if ((con != null) && con.isOpened()) {
-                    con.abort();
-                }
                 for (final Object inst : _instances) {
                     accessMap.put((Instance) inst, idList.contains(((Instance) inst).getId()));
                 }
@@ -430,7 +426,7 @@ public abstract class SimpleAccessCheckOnType_Base
             AbstractAccessCheck_Base.LOG.debug("Checking access with: {}", _cmd);
             Statement stmt = null;
             try {
-                stmt = con.getConnection().createStatement();
+                stmt = con.createStatement();
                 final ResultSet rs = stmt.executeQuery(_cmd.toString());
                 if (rs.next()) {
                     hasAccess = (rs.getLong(1) > 0) ? true : false;
@@ -441,13 +437,8 @@ public abstract class SimpleAccessCheckOnType_Base
                     stmt.close();
                 }
             }
-            con.commit();
         } catch (final SQLException e) {
             AbstractAccessCheck_Base.LOG.error("sql statement '" + _cmd.toString() + "' not executable!", e);
-        } finally {
-            if ((con != null) && con.isOpened()) {
-                con.abort();
-            }
         }
         return hasAccess;
     }

@@ -96,7 +96,7 @@ public abstract class InheritAccessCheck4Object_Base
 
             Statement stmt = null;
             try {
-                stmt = con.getConnection().createStatement();
+                stmt = con.createStatement();
                 final ResultSet rs = stmt.executeQuery(cmd.toString());
                 if (rs.next()) {
                     ret = rs.getLong(1) > 0 ? true : false;
@@ -107,13 +107,8 @@ public abstract class InheritAccessCheck4Object_Base
                     stmt.close();
                 }
             }
-            con.commit();
         } catch (final SQLException e) {
             AbstractAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
-        } finally {
-            if (con != null && con.isOpened()) {
-                con.abort();
-            }
         }
         if (ret) {
             ret = super.getObjectAccess(_parameter, _instance, _accessType);
@@ -201,16 +196,16 @@ public abstract class InheritAccessCheck4Object_Base
         throws EFapsException
     {
         // check if for this objects something is defined, if not go for the parent object
-        final Map<Instance, Boolean> ret = new HashMap<Instance, Boolean>();
+        final Map<Instance, Boolean> ret = new HashMap<>();
         final StringBuilder cmd = new StringBuilder();
-        final Map<Long, List<Long>> typeid2objectids = new HashMap<Long, List<Long>>();
+        final Map<Long, List<Long>> typeid2objectids = new HashMap<>();
         for (final Instance instance : _instances) {
             if (instance != null && instance.isValid()) {
-                List<Long> ids;
+                final List<Long> ids;
                 if (typeid2objectids.containsKey(instance.getType().getId())) {
                     ids = typeid2objectids.get(instance.getType().getId());
                 } else {
-                    ids = new ArrayList<Long>();
+                    ids = new ArrayList<>();
                     typeid2objectids.put(instance.getType().getId(), ids);
                 }
                 ids.add(instance.getId());
@@ -239,13 +234,13 @@ public abstract class InheritAccessCheck4Object_Base
             cmd.append(")) ");
         }
         cmd.append(")");
-        final Set<Instance> instan = new HashSet<Instance>();
+        final Set<Instance> instan = new HashSet<>();
         ConnectionResource con = null;
         try {
             con = Context.getThreadContext().getConnectionResource();
             Statement stmt = null;
             try {
-                stmt = con.getConnection().createStatement();
+                stmt = con.createStatement();
                 final ResultSet rs = stmt.executeQuery(cmd.toString());
                 while (rs.next()) {
                     instan.add(Instance.get(Type.get(rs.getLong(1)), rs.getLong(2)));
@@ -256,15 +251,11 @@ public abstract class InheritAccessCheck4Object_Base
                     stmt.close();
                 }
             }
-            con.commit();
         } catch (final SQLException e) {
             AbstractAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
         } finally {
-            if (con != null && con.isOpened()) {
-                con.abort();
-            }
-            final List<Instance> accessInst = new ArrayList<Instance>();
-            final List<Instance> inheritInst = new ArrayList<Instance>();
+            final List<Instance> accessInst = new ArrayList<>();
+            final List<Instance> inheritInst = new ArrayList<>();
             for (final Instance inst : _instances) {
                 if (instan.contains(inst)) {
                     accessInst.add(inst);
@@ -276,8 +267,8 @@ public abstract class InheritAccessCheck4Object_Base
                 ret.putAll(super.getObjectAccess(_parameter, accessInst, _accessType));
             }
 
-            final List<Instance> simpleAccess = new ArrayList<Instance>();
-            final List<Instance> objectAccess = new ArrayList<Instance>();
+            final List<Instance> simpleAccess = new ArrayList<>();
+            final List<Instance> objectAccess = new ArrayList<>();
             final Map<Instance, Instance> parentInsts = getParentInstances(_parameter, inheritInst, _accessType);
             for (final Instance instance : parentInsts.values()) {
                 if (check4SimpleAccessCheck(_parameter, instance)) {
@@ -286,7 +277,7 @@ public abstract class InheritAccessCheck4Object_Base
                     objectAccess.add(instance);
                 }
             }
-            final Map<Instance, Boolean> tmp = new HashMap<Instance, Boolean>();
+            final Map<Instance, Boolean> tmp = new HashMap<>();
             if (!simpleAccess.isEmpty()) {
                 tmp.putAll(getSimpleAccess4Type(_parameter).checkAccess(_parameter, simpleAccess, _accessType));
             }
@@ -305,8 +296,6 @@ public abstract class InheritAccessCheck4Object_Base
         return ret;
     }
 
-
-
     /**
      * @param _parameter    Parameter as passed by the eFaps API
      * @param _instances    Instances the parent is wanted for
@@ -319,16 +308,16 @@ public abstract class InheritAccessCheck4Object_Base
                                                          final AccessType _accessType)
         throws EFapsException
     {
-        final Map<Instance, Instance> ret = new HashMap<Instance, Instance>();
+        final Map<Instance, Instance> ret = new HashMap<>();
         final Properties props = getProperties(_parameter);
-        final Map<Type, List<Instance>> type2instance = new HashMap<Type, List<Instance>>();
+        final Map<Type, List<Instance>> type2instance = new HashMap<>();
         for (final Instance instance : _instances) {
             if (instance != null && instance.isValid()) {
-                List<Instance> instances;
+                final List<Instance> instances;
                 if (type2instance.containsKey(instance.getType())) {
                     instances = type2instance.get(instance.getType());
                 } else {
-                    instances = new ArrayList<Instance>();
+                    instances = new ArrayList<>();
                     type2instance.put(instance.getType(), instances);
                 }
                 instances.add(instance);
