@@ -100,7 +100,7 @@ public class UpdatePack
         final boolean compress = GzipUtils.isCompressedFilename(fileItem.getName());
 
         try (
-                final TarArchiveInputStream tarInput = new TarArchiveInputStream(
+                TarArchiveInputStream tarInput = new TarArchiveInputStream(
                     compress ? new GzipCompressorInputStream(fileItem.getInputStream()) : fileItem.getInputStream());
             ) {
 
@@ -150,7 +150,7 @@ public class UpdatePack
             int i = 0;
             while (iter.hasNext()) {
                 final RevItem item = iter.next();
-                LOG.info("Adding unfound Item {} / {}: {}", i, items.size(), item.getIdentifier());
+                UpdatePack.LOG.info("Adding unfound Item {} / {}: {}", i, items.size(), item.getIdentifier());
                 final InstallFile installFile = new InstallFile()
                             .setName(item.getName4InstallFile())
                             .setURL(item.getURL(files))
@@ -198,7 +198,7 @@ public class UpdatePack
                 // add the objects to the list taht are missing
                 for (final RevItem item : allItems) {
                     if (tobeAdded.contains(item.getIdentifier())) {
-                        LOG.info("Adding releated Item {} / {}: {}", i, tobeAdded.size(), item);
+                        UpdatePack.LOG.info("Adding releated Item {} / {}: {}", i, tobeAdded.size(), item);
                         final InstallFile installFile = new InstallFile()
                                 .setName(item.getName4InstallFile())
                                 .setURL(item.getURL(files))
@@ -214,25 +214,25 @@ public class UpdatePack
             if (!installFileList.isEmpty()) {
                 final Install install = new Install(true);
                 for (final InstallFile installFile : installFileList) {
-                    LOG.info("...Adding to Update: '{}' ", installFile.getName());
+                    UpdatePack.LOG.info("...Adding to Update: '{}' ", installFile.getName());
                     install.addFile(installFile);
                 }
                 install.updateLatest(null);
             }
             if (!dependendFileList.isEmpty()) {
-                LOG.info("Update for related Items");
+                UpdatePack.LOG.info("Update for related Items");
                 final Install install = new Install(true);
                 for (final InstallFile installFile : dependendFileList) {
-                    LOG.info("...Adding to Update: '{}' ", installFile.getName());
+                    UpdatePack.LOG.info("...Adding to Update: '{}' ", installFile.getName());
                     install.addFile(installFile);
                 }
                 install.updateLatest(null);
             }
-            LOG.info("Terminated update.");
+            UpdatePack.LOG.info("Terminated update.");
         } catch (final IOException e) {
-            LOG.error("Catched", e);
+            UpdatePack.LOG.error("Catched", e);
         } catch (final URISyntaxException e) {
-            LOG.error("Catched", e);
+            UpdatePack.LOG.error("Catched", e);
         }
         return new Return();
     }
@@ -280,7 +280,7 @@ public class UpdatePack
         int i = 0;
         while (iter.hasNext()) {
             final RevItem item = iter.next();
-            LOG.info("Checking Item {} / {}: {}", i, _items.size(), item.getIdentifier());
+            UpdatePack.LOG.info("Checking Item {} / {}: {}", i, _items.size(), item.getIdentifier());
 
             final MultiPrintQuery multi = getQueryBldr(item, _ciType).getPrint();
             final SelectBuilder selRevision = SelectBuilder.get().linkto(CIAdmin.Abstract.RevisionLink)
@@ -292,27 +292,27 @@ public class UpdatePack
                             .attribute(CIAdminCommon.Application.Name);
             multi.addSelect(selRevision, selApp, selRevDate);
             multi.addAttribute(CIAdmin.Abstract.Name);
-            multi.execute();
+            multi.executeWithoutAccessCheck();
             boolean update = false;
             if (multi.next()) {
                 final String revision = multi.getSelect(selRevision);
                 final DateTime revDate = multi.getSelect(selRevDate);
                 final String app = multi.getSelect(selApp);
                 final String name = multi.getAttribute(CIAdmin.Abstract.Name);
-                LOG.info("Found obj: {}, type: {}, name: {},  app: {}, date: {}, revision: {} ",
+                UpdatePack.LOG.info("Found obj: {}, type: {}, name: {},  app: {}, date: {}, revision: {} ",
                                 multi.getCurrentInstance().getOid(),
                                 multi.getCurrentInstance().getType().getName(), name,
                                 app, revDate, revision);
                 if (!item.getApplication().equals(app)) {
-                    LOG.warn("Different Application: {} - {}", item.getApplication(), app);
+                    UpdatePack.LOG.warn("Different Application: {} - {}", item.getApplication(), app);
                     update = true;
                 }
                 if (!item.getRevision().equals(revision)) {
-                    LOG.warn("Different Revision: {} - {}", item.getRevision(), revision);
+                    UpdatePack.LOG.warn("Different Revision: {} - {}", item.getRevision(), revision);
                     update = true;
                 }
                 if (!update && item.getDate().isAfter(revDate)) {
-                    LOG.warn("Different Date: {} - {}", item.getDate(), revDate);
+                    UpdatePack.LOG.warn("Different Date: {} - {}", item.getDate(), revDate);
                     update = true;
                 }
 

@@ -14,20 +14,16 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
-
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>8aa833fb-a873-4dc1-8fa4-333fa21dc88b</uuid>
+    <uuid>bc4083fb-336c-4625-87e1-bba5a93e2f09</uuid>
     <file-application>eFaps-Kernel</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Common_Update</name>
+        <name>Admin_Program_JavaTree_Menu</name>
         <childs>
-            <child>Common_Update_UpdatePack</child>
-            <child>Common_Update_UpdateCIItem</child>
-            <child>Common_Update_Compile</child>
+            <child>Admin_Program_JavaTree_Menu_Action</child>
         </childs>
     </definition>
 </ui-menu>

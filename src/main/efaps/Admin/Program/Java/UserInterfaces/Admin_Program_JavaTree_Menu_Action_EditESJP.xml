@@ -14,20 +14,21 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
-
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>8aa833fb-a873-4dc1-8fa4-333fa21dc88b</uuid>
+    <uuid>1621f2f0-84af-427f-b539-b9d757363f7f</uuid>
     <file-application>eFaps-Kernel</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Common_Update</name>
-        <childs>
-            <child>Common_Update_UpdatePack</child>
-            <child>Common_Update_UpdateCIItem</child>
-            <child>Common_Update_Compile</child>
-        </childs>
+        <name>Admin_Program_JavaTree_Menu_Action_EditESJP</name>
+        <target>
+            <form>Admin_Program_JavaEditForm</form>
+            <execute method="updateCSS" program="org.efaps.esjp.admin.program.CSS" />
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
+        <property name="WindowWidth">1200</property>
+        <property name="WindowHeight">1000</property>
     </definition>
-</ui-menu>
+</ui-command>
