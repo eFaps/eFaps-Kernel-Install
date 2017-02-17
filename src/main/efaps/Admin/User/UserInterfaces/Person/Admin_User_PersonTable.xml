@@ -20,17 +20,13 @@
 
 -->
 
-<ui-table xmlns="http://www.efaps.org/xsd"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>7bfad1dc-3ef2-4ddd-9013-2ac8ec5a8084</uuid>
     <file-application>eFaps-Kernel</file-application>
-    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_User_PersonTable</name>
-        <!-- fields -->
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
@@ -48,6 +44,17 @@
             <property name="Label">Admin_User_Person/FirstName.Label</property>
             <property name="ModeSearch">READONLY</property>
         </field>
+        <field name="uuid">
+            <property name="Attribute">UUID</property>
+            <property name="Label">Admin_User_Person/UUID.Label</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Admin_User_PersonForm.uuid.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="SystemConfig">Kernel-Configuration</property>
+                <property name="Attribute">org.efaps.kernel.RequirePersonUUID</property>
+            </trigger>
+        </field>
         <field name="email">
             <property name="Select">linkfrom[Admin_User_Person:EmailSet#EmailSet].attribute[Email]</property>
             <property name="Label">Admin_User_Person/Email.Label</property>
@@ -61,13 +68,5 @@
             <property name="Label">Admin_User_Person/Status.Label</property>
             <property name="FilterType">PICKLIST</property>
         </field>
-        <field name="buttonOpenInNewWindow">
-            <icon>eFapsActionNewWindow</icon>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Target">popup</property>
-            <property name="SortAble">false</property>
-            <property name="Width">15px</property>
-        </field>
     </definition>
-
 </ui-table>
