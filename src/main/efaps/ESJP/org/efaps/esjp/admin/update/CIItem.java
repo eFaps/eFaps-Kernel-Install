@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.efaps.admin.AppConfigHandler;
 import org.efaps.admin.event.Parameter;
@@ -33,6 +34,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
+import org.efaps.db.Context.FileParameter;
 import org.efaps.rest.Update;
 import org.efaps.update.FileType;
 import org.efaps.update.Install;
@@ -65,16 +67,12 @@ public class CIItem
      * @return the return
      * @throws EFapsException on error
      * @throws InstallationException the installation exception
-     * @throws IOException
+     * @throws IOException Signals that an I/O exception has occurred.
      */
     public Return updateFromFile(final Parameter _parameter)
         throws EFapsException, InstallationException, IOException
     {
-
-        final Context context = Context.getThreadContext();
-        final Context.FileParameter fileItem = context.getFileParameters().get("ciitem");
-
-        CIItem.LOG.info("===Start of Update via REST===");
+        CIItem.LOG.info("===Start of Update via UserInterface===");
         File tmpfld = AppConfigHandler.get().getTempFolder();
         if (tmpfld == null) {
             final File temp = File.createTempFile("eFaps", ".tmp");
@@ -88,38 +86,49 @@ public class CIItem
         final File dateFolder = new File(updateFolder, ((Long) new Date().getTime()).toString());
         dateFolder.mkdirs();
 
-        final List<InstallFile> installFiles = new ArrayList<>();
+        final Map<String, FileParameter> fileParameters = Context.getThreadContext().getFileParameters();
 
-        final InputStream in = fileItem.getInputStream();
-
-        final File file = new File(dateFolder, fileItem.getName());
-
-        final FileOutputStream out = new FileOutputStream(file);
-        final byte[] buf = new byte[1024];
-        int len;
-        while ((len = in.read(buf)) > 0) {
-            out.write(buf, 0, len);
+        final List<FileParameter> fileItems = new ArrayList<>();
+        if (fileParameters.containsKey("ciitem")) {
+            fileItems.add(fileParameters.get("ciitem"));
         }
-        out.close();
-        in.close();
+        int i = 0;
+        while (fileParameters.containsKey("ciitem_" + i)) {
+            fileItems.add(fileParameters.get("ciitem_" + i));
+            i++;
+        }
 
-        final String ending = file.getName().substring(file.getName().lastIndexOf(".") + 1);
+        final List<InstallFile> installFiles = new ArrayList<>();
+        for (final FileParameter fileItem : fileItems) {
+            final InputStream in = fileItem.getInputStream();
 
-        final FileType filetype = FileType.getFileTypeByExtension(ending);
+            final File file = new File(dateFolder, fileItem.getName());
 
-        CIItem.LOG.info("= Receieved: '{}'", file.getName());
+            final FileOutputStream out = new FileOutputStream(file);
+            final byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            out.close();
+            in.close();
 
-        if (filetype != null) {
-            final InstallFile installFile = new InstallFile().setName(file.getName()).setURL(file.toURI().toURL())
-                            .setType(filetype.getType());
+            final String ending = file.getName().substring(file.getName().lastIndexOf(".") + 1);
 
-            installFile.setDate(new DateTime());
-            installFiles.add(installFile);
+            final FileType filetype = FileType.getFileTypeByExtension(ending);
+
+            CIItem.LOG.info("= Receieved: '{}'", file.getName());
+
+            if (filetype != null) {
+                final InstallFile installFile = new InstallFile().setName(file.getName()).setURL(file.toURI().toURL())
+                                .setType(filetype.getType());
+                installFile.setDate(new DateTime());
+                installFiles.add(installFile);
+            }
         }
 
         Collections.sort(installFiles, new Comparator<InstallFile>()
         {
-
             @Override
             public int compare(final InstallFile _installFile0,
                                final InstallFile _installFile1)

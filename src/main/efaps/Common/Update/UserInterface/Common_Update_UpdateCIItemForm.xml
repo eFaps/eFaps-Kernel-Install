@@ -24,7 +24,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Common_Update_UpdateCIItemForm</name>
         <field name="ciitem">
-            <property name="UIType">UPLOAD</property>
+            <property name="UIType">UPLOADMULTIPLE</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="HideLabel">true</property>
         </field>
