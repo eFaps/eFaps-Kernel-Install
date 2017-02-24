@@ -19,6 +19,7 @@
 package org.efaps.esjp.common.help;
 
 import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsListener;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -30,15 +31,15 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  */
 @EFapsUUID("9794280c-0ca5-4882-ad62-c9d6591e145d")
 @EFapsApplication("eFaps-Kernel")
+@EFapsListener
 public class HelpProvider
     extends HelpProvider_Base
 {
 
     /** The cachekey. */
-    public  static String CACHEKEY = HelpProvider_Base.CACHEKEY;
+    public static final String CACHEKEY = HelpProvider_Base.CACHEKEY;
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
-
 
 }
