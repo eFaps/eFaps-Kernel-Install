@@ -34,13 +34,6 @@
             <property name="Required">true</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
-        <field name="revision">
-            <property name="Columns">20</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="Attribute">Revision</property>
-            <property name="Required">true</property>
-            <property name="ModeSearch">EDITABLE</property>
-        </field>
         <field character="Group" name="createGroup">
             <property name="GroupCount">2</property>
         </field>
