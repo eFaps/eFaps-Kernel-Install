@@ -19,23 +19,30 @@ package org.efaps.esjp.common.tag;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.Type;
+import org.efaps.admin.datamodel.attributetype.LinkType;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.CachedMultiPrintQuery;
 import org.efaps.db.Delete;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CICommon;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.db.InstanceUtils;
@@ -51,6 +58,67 @@ import org.efaps.util.EFapsException;
 public abstract class Tag_Base
     extends AbstractCommon
 {
+
+    /**
+     * Tag field value.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return tagFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+
+        final List<Instance> reqInstances = (List<Instance>) _parameter.get(ParameterValues.REQUEST_INSTANCES);
+
+        final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
+        final Map<Instance, Instance> inst2inst = new HashMap<>();
+        if (reqInstances == null) {
+            queryBldr.addWhereAttrEqValue(CICommon.TagAbstract.ObjectID, _parameter.getInstance());
+        } else {
+            if (containsProperty(_parameter, "Select4Instance")) {
+                final String select = getProperty(_parameter, "Select4Instance");
+                final MultiPrintQuery multi = new MultiPrintQuery(reqInstances);
+                multi.addSelect(select);
+                multi.execute();
+                while (multi.next()) {
+                    inst2inst.put(multi.getCurrentInstance(), multi.getSelect(select));
+                }
+                queryBldr.addWhereAttrEqValue(CICommon.TagAbstract.ObjectID, inst2inst.values().toArray());
+            } else {
+                queryBldr.addWhereAttrEqValue(CICommon.TagAbstract.ObjectID, reqInstances.toArray());
+            }
+        }
+        final Map<Instance, String> inst2label = new HashMap<>();
+        final Type relType = queryBldr.getType();
+        Attribute linkAttr = null;
+        for (final Attribute attr : relType.getAttributes(LinkType.class)) {
+            if (attr.getSqlColNames().get(0).equals("OBJECTID")) {
+                linkAttr = attr;
+                break;
+            }
+        }
+        final CachedMultiPrintQuery multi = queryBldr.getCachedPrint4Request();
+        final SelectBuilder selInst = SelectBuilder.get().linkto(linkAttr.getName()).instance();
+        multi.addSelect(selInst);
+        multi.execute();
+        while (multi.next()) {
+            final Instance inst = multi.getSelect(selInst);
+            if (!inst2label.containsKey(inst)) {
+                inst2label.put(inst, multi.getCurrentInstance().getType().getLabel());
+            } else {
+                inst2label.put(inst, inst2label.get(inst) + ", " + multi.getCurrentInstance().getType().getLabel());
+            }
+        }
+        if (inst2inst.isEmpty()) {
+            ret.put(ReturnValues.VALUES, inst2label.get(_parameter.getInstance()));
+        } else {
+            ret.put(ReturnValues.VALUES, inst2label.get(inst2inst.get(_parameter.getInstance())));
+        }
+        return ret;
+    }
 
     /**
      * Check 4 tag.
