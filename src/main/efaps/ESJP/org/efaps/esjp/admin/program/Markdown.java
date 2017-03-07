@@ -36,11 +36,21 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.ci.CIAdminProgram;
+import org.efaps.admin.ui.AbstractCommand;
+import org.efaps.admin.ui.Command;
+import org.efaps.admin.ui.Menu;
+import org.efaps.api.ui.IHelpProvider;
 import org.efaps.db.Checkin;
 import org.efaps.db.Checkout;
+import org.efaps.db.Context;
+import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
 import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.ci.CIAdminProgram;
+import org.efaps.esjp.common.help.HelpProvider;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.util.EFapsException;
 
 /**
@@ -64,26 +74,46 @@ public class Markdown
         throws EFapsException
     {
         final Return ret = new Return();
-        final Instance instance = _parameter.getCallInstance();
-        final Checkout checkout = new Checkout(instance);
-        final InputStream ins = checkout.execute();
-        final StringBuilder strb = new StringBuilder();
-        try {
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(ins, "UTF-8"));
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                strb.append(line).append("\n");
-            }
-        } catch (final IOException e) {
-            throw new EFapsException(CSS.class, "getMarkdownFieldValue.IOException", e);
-        } finally {
-            try {
-                ins.close();
-            } catch (final IOException e) {
-                throw new EFapsException(Markdown.class, "getMarkdownFieldValue.IOException", e);
+        Instance instance = _parameter.getCallInstance();
+        if (instance == null) {
+            final Long cmdId = (Long) Context.getThreadContext().getSessionAttribute(IHelpProvider.class.getName()
+                            + ".CmdId");
+            if (cmdId != null) {
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CIAdminProgram.Markdown2Command);
+                attrQueryBldr.addWhereAttrEqValue(CIAdminProgram.Markdown2Command.ToLink, cmdId);
+
+                final QueryBuilder queryBldr = new QueryBuilder(CIAdminProgram.Markdown);
+                queryBldr.addWhereAttrInQuery(CIAdminProgram.Markdown.ID, attrQueryBldr.getAttributeQuery(
+                                CIAdminProgram.Markdown2Command.FromLink));
+                final InstanceQuery query = queryBldr.getQuery();
+                query.execute();
+                if (query.next()) {
+                    instance = query.getCurrentValue();
+                }
             }
         }
-        ret.put(ReturnValues.VALUES, strb.toString());
+
+        if (InstanceUtils.isValid(instance)) {
+            final Checkout checkout = new Checkout(instance);
+            final InputStream ins = checkout.execute();
+            final StringBuilder strb = new StringBuilder();
+            try {
+                final BufferedReader reader = new BufferedReader(new InputStreamReader(ins, "UTF-8"));
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    strb.append(line).append("\n");
+                }
+            } catch (final IOException e) {
+                throw new EFapsException(CSS.class, "getMarkdownFieldValue.IOException", e);
+            } finally {
+                try {
+                    ins.close();
+                } catch (final IOException e) {
+                    throw new EFapsException(Markdown.class, "getMarkdownFieldValue.IOException", e);
+                }
+            }
+            ret.put(ReturnValues.VALUES, strb.toString());
+        }
         return ret;
     }
 
@@ -114,16 +144,53 @@ public class Markdown
     public Return updateMarkdown(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance instance = _parameter.getInstance();
-        final PrintQuery print = new PrintQuery(instance);
-        print.addAttribute(CIAdminProgram.Abstract.Name);
-        print.execute();
-
         final String markdown = _parameter.getParameterValue("markdown");
         try {
-            final ByteArrayInputStream in = new ByteArrayInputStream(markdown.getBytes("UTF8"));
-            final Checkin checkin = new Checkin(instance);
-            checkin.execute(print.<String>getAttribute(CIAdminProgram.Abstract.Name), in, in.available());
+            Instance instance = _parameter.getInstance();
+            if (instance == null) {
+                final Long cmdId = (Long) Context.getThreadContext().getSessionAttribute(IHelpProvider.class.getName()
+                                + ".CmdId");
+                Context.getThreadContext().removeSessionAttribute(IHelpProvider.class.getName() + ".CmdId");
+                if (cmdId != null) {
+
+                    final QueryBuilder attrQueryBldr = new QueryBuilder(CIAdminProgram.Markdown2Command);
+                    attrQueryBldr.addWhereAttrEqValue(CIAdminProgram.Markdown2Command.ToLink, cmdId);
+
+                    final QueryBuilder queryBldr = new QueryBuilder(CIAdminProgram.Markdown);
+                    queryBldr.addWhereAttrInQuery(CIAdminProgram.Markdown.ID, attrQueryBldr.getAttributeQuery(
+                                    CIAdminProgram.Markdown2Command.FromLink));
+                    final InstanceQuery query = queryBldr.getQuery();
+                    query.execute();
+                    if (query.next()) {
+                        instance = query.getCurrentValue();
+                    } else {
+                        AbstractCommand cmd = Command.get(cmdId);
+                        if (cmd == null) {
+                            cmd = Menu.get(cmdId);
+                        }
+                        final Insert insert = new Insert(CIAdminProgram.Markdown);
+                        insert.add(CIAdminProgram.Markdown.Name, cmd.getName());
+                        insert.execute();
+                        instance = insert.getInstance();
+
+                        final Insert relInsert = new Insert(CIAdminProgram.Markdown2Command);
+                        relInsert.add(CIAdminProgram.Markdown2Command.ToLink, cmdId);
+                        relInsert.add(CIAdminProgram.Markdown2Command.FromLink, instance);
+                        relInsert.execute();
+                    }
+                }
+            }
+            if (InstanceUtils.isValid(instance)) {
+                final PrintQuery print = new PrintQuery(instance);
+                print.addAttribute(org.efaps.ci.CIAdminProgram.Abstract.Name);
+                print.execute();
+                final ByteArrayInputStream in = new ByteArrayInputStream(markdown.getBytes("UTF8"));
+                final Checkin checkin = new Checkin(instance);
+                checkin.execute(print.<String>getAttribute(org.efaps.ci.CIAdminProgram.Abstract.Name), in, in
+                                .available());
+
+                new HelpProvider().onReloadCache(_parameter);
+            }
         } catch (final UnsupportedEncodingException e) {
             throw new EFapsException(Markdown.class, "updateMarkdown.UnsupportedEncodingException", e);
         }

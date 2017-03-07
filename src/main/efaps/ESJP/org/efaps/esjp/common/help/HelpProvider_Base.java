@@ -17,15 +17,21 @@
 
 package org.efaps.esjp.common.help;
 
+import java.util.UUID;
+
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.user.Role;
 import org.efaps.api.ui.IHelpProvider;
+import org.efaps.db.Context;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.admin.common.IReloadCacheListener;
 import org.efaps.esjp.admin.program.Markdown;
 import org.efaps.esjp.ci.CIAdminProgram;
+import org.efaps.util.EFapsBaseException;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheLogListener;
 import org.efaps.util.cache.InfinispanCache;
@@ -46,6 +52,10 @@ public abstract class HelpProvider_Base
 
     /** The cachekey. */
     protected static final String CACHEKEY = HelpProvider.class.getName();
+
+    /** The cachekey. */
+    protected static final String TOGGLEKEY = HelpProvider.class.getName() + ".EditMode";
+
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -142,4 +152,40 @@ public abstract class HelpProvider_Base
         return 0;
     }
 
+    @Override
+    public boolean isHelpAdmin()
+        throws EFapsBaseException
+    {
+        //Administration role
+        final Role role = Role.get(UUID.fromString("1d89358d-165a-4689-8c78-fc625d37aacd"));
+        //Admin_Help_Admin
+        final Role role2 = Role.get(UUID.fromString("a2da3b6c-3e3d-4fe8-8daf-dec8ef5c2370"));
+        return role != null && Context.getThreadContext().getPerson().isAssigned(role)
+                        || role2 != null && Context.getThreadContext().getPerson().isAssigned(role2);
+    }
+
+    @Override
+    public boolean isEditMode()
+        throws EFapsBaseException
+    {
+        return Context.getThreadContext().containsSessionAttribute(HelpProvider.TOGGLEKEY);
+    }
+
+    /**
+     * Toggle edit.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return toggleEdit(final Parameter _parameter)
+        throws EFapsException
+    {
+        if (Context.getThreadContext().containsSessionAttribute(HelpProvider.TOGGLEKEY)) {
+            Context.getThreadContext().removeSessionAttribute(HelpProvider.TOGGLEKEY);
+        } else {
+            Context.getThreadContext().setSessionAttribute(HelpProvider.TOGGLEKEY, true);
+        }
+        return new Return();
+    }
 }

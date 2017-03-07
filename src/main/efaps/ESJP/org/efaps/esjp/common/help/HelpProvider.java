@@ -39,6 +39,10 @@ public class HelpProvider
     /** The cachekey. */
     public static final String CACHEKEY = HelpProvider_Base.CACHEKEY;
 
+    /** The togglekey. */
+    public static final String TOGGLEKEY = HelpProvider_Base.TOGGLEKEY;
+
+
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 

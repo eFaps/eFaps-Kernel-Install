@@ -35,6 +35,7 @@
             <child>Admin_Access_AbstractMyDesk</child>
             <child>Admin_UI_AbstractMyDesk</child>
             <child>Admin_Integration_AbstractMyDesk</child>
+            <child>Admin_Help_ToggleEdit</child>
             <child>Message_AbstractMyDesk</child>
             <child>Common_Main_Connection</child>
             <child>Common_DashboardAdminMyDesk</child>
