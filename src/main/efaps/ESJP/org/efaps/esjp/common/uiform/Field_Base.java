@@ -36,6 +36,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.EnumUtils;
@@ -216,7 +217,7 @@ public abstract class Field_Base
             final Map<Integer, String> types = analyseProperty(_parameter, "Type");
             final Map<Integer, String> selects = analyseProperty(_parameter, "Select");
             for (final Entry<Integer, String> entry : types.entrySet()) {
-                Type type;
+                final Type type;
                 if (isUUID(entry.getValue())) {
                     type = Type.get(UUID.fromString(entry.getValue()));
                 } else {
@@ -233,6 +234,26 @@ public abstract class Field_Base
             }
         }
         ret.put(ReturnValues.VALUES, value);
+        return ret;
+    }
+
+    /**
+     * Gets the distinct values. Used for UI_FIELD_FORMAT.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the unique
+     * @throws EFapsException on error
+     */
+    public Return distinct(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final UIValue uiValue = (UIValue) _parameter.get(ParameterValues.UIOBJECT);
+        if (uiValue.getDbValue() != null && uiValue.getDbValue() instanceof List) {
+            final List<?> list = (List<?>) uiValue.getDbValue();
+            final List<?> values = list.stream().distinct().collect(Collectors.toList());
+            ret.put(ReturnValues.VALUES, values.size() == 1 ? values.get(0) : values);
+        }
         return ret;
     }
 
