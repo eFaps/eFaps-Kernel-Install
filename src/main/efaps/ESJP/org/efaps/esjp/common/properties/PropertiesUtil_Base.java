@@ -17,6 +17,7 @@
 
 package org.efaps.esjp.common.properties;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -55,6 +56,9 @@ public abstract class PropertiesUtil_Base
         throws EFapsException
     {
         Map<Object, Object> ret = (Map<Object, Object>) _parameter.get(ParameterValues.PROPERTIES);
+        if (ret == null) {
+            ret = new HashMap<>();
+        }
         if (ret != null && ret.containsKey("PropertiesConfig")) {
             final String config = (String) ret.get("PropertiesConfig");
             final SystemConfiguration sysConf;
@@ -137,7 +141,7 @@ public abstract class PropertiesUtil_Base
         throws EFapsException
     {
         final String ret;
-        if (containsProperty(_parameter, _key)) {
+        if (PropertiesUtil_Base.containsProperty(_parameter, _key)) {
             final Map<?, ?> propertiesMap = PropertiesUtil.getPropertiesMap(_parameter);
             ret = String.valueOf(propertiesMap.get(_key));
         } else {
