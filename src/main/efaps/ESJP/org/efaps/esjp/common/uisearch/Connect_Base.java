@@ -231,7 +231,8 @@ public abstract class Connect_Base
                     final String childTypeStr = entry.getValue();
                     final Type childType = isUUID(childTypeStr) ? Type.get(UUID.fromString(childTypeStr)) : Type
                                     .get(childTypeStr);
-                    if (_childInst.getType().equals(childType)) {
+                    if (childType.isAbstract() && _childInst.getType().isKindOf(childType)
+                                    || _childInst.getType().equals(childType)) {
                         ret = entry.getKey();
                         break;
                     }
@@ -526,7 +527,7 @@ public abstract class Connect_Base
          */
         public Attribute getFromAttr()
         {
-            return isParentIsFrom() ?  this.getParentAttr() : this.getChildAttr();
+            return isParentIsFrom() ?  getParentAttr() : getChildAttr();
         }
 
         /**
@@ -536,7 +537,7 @@ public abstract class Connect_Base
          */
         public Attribute getToAttr()
         {
-            return isParentIsFrom() ? this.getChildAttr() :  this.getParentAttr();
+            return isParentIsFrom() ? getChildAttr() :  getParentAttr();
         }
 
         /**
