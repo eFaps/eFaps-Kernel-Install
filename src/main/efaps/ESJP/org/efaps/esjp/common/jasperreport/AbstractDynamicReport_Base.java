@@ -266,7 +266,8 @@ public abstract class AbstractDynamicReport_Base
     {
         return DynamicReports.stl.style().setPadding(DynamicReports.stl.padding(2))
                         .setLeftBorder(DynamicReports.stl.pen1Point())
-                        .setRightBorder(DynamicReports.stl.pen1Point());
+                        .setRightBorder(DynamicReports.stl.pen1Point())
+                        .setFontSize(8);
     }
 
     /**
@@ -679,7 +680,7 @@ public abstract class AbstractDynamicReport_Base
      * @return a JRDataSource
      * @throws EFapsException on error
      */
-    protected abstract JRDataSource createDataSource(final Parameter _parameter)
+    protected abstract JRDataSource createDataSource(Parameter _parameter)
         throws EFapsException;
 
     /**
@@ -687,8 +688,8 @@ public abstract class AbstractDynamicReport_Base
      * @param _builder Report builder
      * @throws EFapsException on error
      */
-    protected abstract void addColumnDefintion(final Parameter _parameter,
-                                               final JasperReportBuilder _builder)
+    protected abstract void addColumnDefintion(Parameter _parameter,
+                                               JasperReportBuilder _builder)
         throws EFapsException;
 
     /**
