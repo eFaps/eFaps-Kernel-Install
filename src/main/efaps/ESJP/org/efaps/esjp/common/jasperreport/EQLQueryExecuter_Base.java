@@ -29,14 +29,6 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRDataset;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRValueParameter;
-import net.sf.jasperreports.engine.JasperReportsContext;
-import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
-import net.sf.jasperreports.engine.query.JRQueryExecuter;
-
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
@@ -46,6 +38,14 @@ import org.efaps.eql.stmt.parts.ISelectStmtPart;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRDataset;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRValueParameter;
+import net.sf.jasperreports.engine.JasperReportsContext;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
+import net.sf.jasperreports.engine.query.JRQueryExecuter;
 
 
 /**
@@ -117,15 +117,15 @@ public abstract class EQLQueryExecuter_Base
         final List<Map<String, ?>> list = new ArrayList<>();
         try {
             final String stmtStr = this.dataset.getQuery().getText();
-            LOG.debug("Stmt: {}", stmtStr);
+            EQLQueryExecuter_Base.LOG.debug("Stmt: {}", stmtStr);
             final IEQLStmt stmt = InvokerUtil.getInvoker().invoke(replaceParameters(stmtStr));
             if (stmt instanceof ISelectStmtPart) {
                 list.addAll(((ISelectStmtPart) stmt).getData());
             }
         } catch (final EFapsException e) {
-            LOG.error("Catched Exception", e);
+            EQLQueryExecuter_Base.LOG.error("Catched Exception", e);
         } catch (final Exception e) {
-            LOG.error("Catched Exception", e);
+            EQLQueryExecuter_Base.LOG.error("Catched Exception", e);
         }
         final JRMapCollectionDataSource ret = new JRMapCollectionDataSource(list);
         return ret;
@@ -210,7 +210,7 @@ public abstract class EQLQueryExecuter_Base
         for (final Entry<String, String> entry  :replaceMap.entrySet()) {
             ret = ret.replace(entry.getKey(), entry.getValue());
         }
-        LOG.debug("Stmt with replaced Parameters: {}", ret);
+        EQLQueryExecuter_Base.LOG.debug("Stmt with replaced Parameters: {}", ret);
         return ret;
     }
 
@@ -227,9 +227,9 @@ public abstract class EQLQueryExecuter_Base
             final JRValueParameter parameter = getParameters().get(_key);
             if (parameter != null) {
                 final Object object = parameter.getValue();
-                LOG.trace("Found object to be replaced: {}", object);
+                EQLQueryExecuter_Base.LOG.trace("Found object to be replaced: {}", object);
                 if (object instanceof Instance) {
-                    if (_stmtStr.trim().startsWith("print")) {
+                    if (_stmtStr.trim().startsWith("print") || _stmtStr.trim().startsWith("execute")) {
                         ret = ((Instance) object).getOid();
                     } else {
                         ret = Long.valueOf(((Instance) object).getId()).toString();
