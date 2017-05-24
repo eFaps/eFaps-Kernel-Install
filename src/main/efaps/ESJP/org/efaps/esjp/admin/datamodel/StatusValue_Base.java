@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.efaps.admin.datamodel.Status;
@@ -43,6 +42,7 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.Update;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.uiform.Edit;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.util.EFapsException;
 
 /**
@@ -125,25 +125,38 @@ public abstract class StatusValue_Base
     public Return setStatus(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String statusName = (String) props.get("Status");
-        final boolean updateInstance = "true".equalsIgnoreCase((String) props.get("UpdateInstance"));
-        final boolean evalOID = "true".equalsIgnoreCase((String) props.get("EvalOID"));
+        final String statusName = getProperty(_parameter, "Status");
+        final boolean updateInstance = "true".equalsIgnoreCase(getProperty(_parameter, "UpdateInstance"));
+        final boolean evalOID = "true".equalsIgnoreCase(getProperty(_parameter, "EvalOID"));
         final Collection<String> noUpdateStatus = analyseProperty(_parameter, "NoUpdateStatus").values();
 
-        final Set<Instance> instances = new HashSet<Instance>();
+        final Set<Instance> instancesTmp = new HashSet<>();
         if (evalOID) {
             final String[] oids = (String[]) _parameter.get(ParameterValues.OTHERS);
             for (final String oid : oids) {
                 final Instance inst = Instance.get(oid);
                 if (inst.isValid()) {
-                    instances.add(inst);
+                    instancesTmp.add(inst);
                 }
             }
         } else {
-            instances.add(_parameter.getInstance());
+            instancesTmp.add(_parameter.getInstance());
         }
-
+        final Set<Instance> instances;
+        if (containsProperty(_parameter, "Select4Instance")) {
+            instances = new HashSet<>();
+            for (final Instance inst : instancesTmp) {
+                final PrintQuery print = new PrintQuery(inst);
+                print.addSelect(getProperty(_parameter, "Select4Instance"));
+                print.execute();
+                final Instance instTmp = print.getSelect(getProperty(_parameter, "Select4Instance"));
+                if (InstanceUtils.isValid(instTmp)) {
+                    instances.add(instTmp);
+                }
+            }
+        } else {
+            instances = instancesTmp;
+        }
         for (final Instance inst : instances) {
             final Status status = Status.find(inst.getType().getStatusAttribute().getLink().getName(), statusName);
             if (status != null) {
