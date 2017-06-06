@@ -66,8 +66,8 @@ public abstract class AbstractDashboardPanel_Base
      */
     public AbstractDashboardPanel_Base()
     {
-        if (!InfinispanCache.get().exists(AbstractDashboardPanel_Base.CACHENAME)) {
-            InfinispanCache.get().initCache(AbstractDashboardPanel_Base.CACHENAME);
+        if (!InfinispanCache.get().exists(AbstractDashboardPanel.CACHENAME)) {
+            InfinispanCache.get().initCache(AbstractDashboardPanel.CACHENAME);
         }
     }
 
@@ -78,6 +78,9 @@ public abstract class AbstractDashboardPanel_Base
      */
     public AbstractDashboardPanel_Base(final String _config)
     {
+        if (!InfinispanCache.get().exists(AbstractDashboardPanel.CACHENAME)) {
+            InfinispanCache.get().initCache(AbstractDashboardPanel.CACHENAME);
+        }
         this.config = _config;
     }
 

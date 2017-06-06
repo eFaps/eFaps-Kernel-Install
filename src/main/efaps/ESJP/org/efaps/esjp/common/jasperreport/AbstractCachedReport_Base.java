@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,6 +54,9 @@ public abstract class AbstractCachedReport_Base
      */
     public Cache<String, JRRewindableDataSource> getCache()
     {
+        if (!InfinispanCache.get().exists(AbstractCachedReport.CACHENAME)) {
+            InfinispanCache.get().initCache(AbstractCachedReport.CACHENAME);
+        }
         return InfinispanCache.get().getIgnReCache(AbstractCachedReport.CACHENAME);
     }
 
