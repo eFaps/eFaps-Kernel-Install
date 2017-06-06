@@ -141,7 +141,7 @@ public abstract class HelpProvider_Base
         if (InfinispanCache.get().exists(HelpProvider.CACHEKEY)) {
             InfinispanCache.get().<Long, String>getCache(HelpProvider.CACHEKEY).clear();
         } else {
-            final Cache<Long, String> cache = InfinispanCache.get().<Long, String>getIgnReCache(HelpProvider.CACHEKEY);
+            final Cache<Long, String> cache = InfinispanCache.get().initCache(HelpProvider.CACHEKEY);
             cache.addListener(new CacheLogListener(HelpProvider_Base.LOG));
         }
     }

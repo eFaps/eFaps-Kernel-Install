@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,6 +66,9 @@ public abstract class AbstractDashboardPanel_Base
      */
     public AbstractDashboardPanel_Base()
     {
+        if (!InfinispanCache.get().exists(AbstractDashboardPanel_Base.CACHENAME)) {
+            InfinispanCache.get().initCache(AbstractDashboardPanel_Base.CACHENAME);
+        }
     }
 
     /**
@@ -90,7 +93,7 @@ public abstract class AbstractDashboardPanel_Base
             try {
                 ret.load(new StringReader(this.config));
             } catch (final IOException e) {
-                LOG.error("Catched error on reading properties.");
+                AbstractDashboardPanel_Base.LOG.error("Catched error on reading properties.");
             }
         }
         return ret;
@@ -114,7 +117,7 @@ public abstract class AbstractDashboardPanel_Base
     public boolean isCached()
         throws EFapsException
     {
-        boolean ret;
+        final boolean ret;
         if ("true".equalsIgnoreCase(getConfig().getProperty("ForceReload", "false"))) {
             ret = false;
         } else {
