@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev:1563 $
- * Last Changed:    $Date:2007-10-28 15:07:41 +0100 (So, 28 Okt 2007) $
- * Last Changed By: $Author:tmo $
  */
 
 package org.efaps.esjp.admin.access;
@@ -23,33 +20,35 @@ package org.efaps.esjp.admin.access;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.efaps.admin.EFapsSystemConfiguration;
 import org.efaps.admin.KernelSettings;
-import org.efaps.admin.access.AccessCache;
-import org.efaps.admin.access.AccessKey;
 import org.efaps.admin.access.AccessSet;
 import org.efaps.admin.access.AccessType;
 import org.efaps.admin.access.AccessTypeEnums;
+import org.efaps.admin.access.user.Evaluation;
+import org.efaps.admin.access.user.PermissionSet;
 import org.efaps.admin.datamodel.Classification;
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.user.Company;
 import org.efaps.admin.user.Role;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.transaction.ConnectionResource;
 import org.efaps.util.EFapsException;
-import org.infinispan.Cache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This Class is used to check if a user can Access this Type.<br>
@@ -58,13 +57,16 @@ import org.infinispan.Cache;
  * has the access defined in the list of access types.
  *
  * @author The eFaps Team
- * @version $Id:SimpleAccessCheckOnType.java 1563 2007-10-28 14:07:41Z tmo $
  */
 @EFapsUUID("628a19f6-463f-415d-865b-ba72e303a507")
 @EFapsApplication("eFaps-Kernel")
 public abstract class SimpleAccessCheckOnType_Base
     extends AbstractAccessCheck
 {
+    /**
+     * Logging instance used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(SimpleAccessCheckOnType.class);
 
     /**
      * {@inheritDoc}
@@ -76,16 +78,23 @@ public abstract class SimpleAccessCheckOnType_Base
         throws EFapsException
     {
         boolean ret = false;
-        final Cache<AccessKey, Boolean> cache = AccessCache.getKeyCache();
-        final AccessKey accessKey = AccessKey.get(_instance, _accessType);
-        final Boolean access = cache.get(accessKey);
-        if (access == null) {
-            ret = checkAccessOnDB(_parameter, _instance, _accessType);
-            AbstractAccessCheck_Base.LOG.trace("access result :{} from DB for: {}", ret, _instance);
-            cache.put(accessKey, ret);
-        } else {
-            ret = access;
-            AbstractAccessCheck_Base.LOG.trace("access result :{} from Cache for: {}", ret, _instance);
+        final PermissionSet permission = Evaluation.getPermissionSet(_instance, true);
+        if (permission.getCompanyId() == 0 || permission.getCompanyId() > 0 && Context.getThreadContext().getPerson()
+                        .isAssigned(Company.get(permission.getCompanyId()))) {
+            if (permission.getAccessTypeIds().contains(_accessType.getId())) {
+                if (permission.getStatusIds().isEmpty()) {
+                    ret = true;
+                } else {
+                    final Status status = Evaluation.getStatus(_instance);
+                    if (status == null) {
+                        SimpleAccessCheckOnType_Base.LOG.error("No Status retrieved for evaluation on {}", _instance);
+                        ret = Context.getThreadContext().getPerson().isAssigned(
+                                        Role.get(KernelSettings.USER_ROLE_ADMINISTRATION));
+                    } else {
+                        ret = permission.getStatusIds().contains(status.getId());
+                    }
+                }
+            }
         }
         return ret;
     }
@@ -161,7 +170,7 @@ public abstract class SimpleAccessCheckOnType_Base
 
         if (type.isCompanyDependent() && !_accessType.equals(AccessTypeEnums.CREATE.getAccessType())) {
             if (noCompCheck) {
-                AbstractAccessCheck_Base.LOG.error("Cannot check for Company on type '{}'", type);
+                SimpleAccessCheckOnType_Base.LOG.error("Cannot check for Company on type '{}'", type);
             } else {
                 cmd.append(" and ").append(type.getMainTable().getSqlTable()).append(".")
                     .append(type.getCompanyAttribute().getSqlColNames().get(0)).append(" in (");
@@ -206,12 +215,12 @@ public abstract class SimpleAccessCheckOnType_Base
             }
             if (first) {
                 cmd.append("0");
-                AbstractAccessCheck_Base.LOG.error("Missing Group for '{}' on groupdependend Access on type '{}'",
+                SimpleAccessCheckOnType_Base.LOG.error("Missing Group for '{}' on groupdependend Access on type '{}'",
                                 context.getPerson().getName(), type);
             }
             cmd.append("))");
         }
-        AbstractAccessCheck_Base.LOG.debug("cheking access with: {}", cmd);
+        SimpleAccessCheckOnType_Base.LOG.debug("cheking access with: {}", cmd);
         return executeStatement(_parameter, context, cmd);
     }
 
@@ -220,31 +229,24 @@ public abstract class SimpleAccessCheckOnType_Base
      */
     @Override
     protected Map<Instance, Boolean> checkAccess(final Parameter _parameter,
-                                                 final List<?> _instances,
+                                                 final List<Instance> _instances,
                                                  final AccessType _accessType)
         throws EFapsException
     {
-        final Map<Instance, Boolean> ret = new HashMap<>();
-        final Cache<AccessKey, Boolean> cache = AccessCache.getKeyCache();
-        final List<Instance> checkOnDB = new ArrayList<>();
-        for (final Object instObj : _instances) {
-            final AccessKey accessKey = AccessKey.get((Instance) instObj, _accessType);
-            final Boolean access = cache.get(accessKey);
-            if (access == null) {
-                checkOnDB.add((Instance) instObj);
-            } else {
-                ret.put((Instance) instObj, access);
+        Map<Instance, Boolean> ret = new HashMap<>();
+        if (!_instances.isEmpty()) {
+            if (_instances.get(0).getType().isCheckStatus()) {
+                Evaluation.evalStatus(_instances);
             }
-        }
-        AbstractAccessCheck_Base.LOG.trace("access result from Cache: {}", ret);
-        if (!checkOnDB.isEmpty()) {
-            final Map<Instance, Boolean> accessMapTmp = checkAccessOnDB(_parameter, checkOnDB, _accessType);
-            for (final Entry<Instance, Boolean> entry : accessMapTmp.entrySet()) {
-                final AccessKey accessKey = AccessKey.get(entry.getKey(), _accessType);
-                cache.put(accessKey, entry.getValue());
-            }
-            AbstractAccessCheck_Base.LOG.trace("access result from DB: {}", accessMapTmp);
-            ret.putAll(accessMapTmp);
+            ret = _instances.stream().distinct().collect(Collectors.toMap(inst -> inst, inst -> {
+                boolean access = false;
+                try {
+                    access = checkAccess(_parameter, inst, _accessType);
+                } catch (final EFapsException e) {
+                    SimpleAccessCheckOnType_Base.LOG.error("Catched error on access evaluation", e);
+                }
+                return access;
+            }));
         }
         return ret;
     }
@@ -314,7 +316,7 @@ public abstract class SimpleAccessCheckOnType_Base
 
             if (type.isCompanyDependent()) {
                 if (noCompCheck) {
-                    AbstractAccessCheck_Base.LOG.error("Cannot check for Company on type '{}'", type);
+                    SimpleAccessCheckOnType_Base.LOG.error("Cannot check for Company on type '{}'", type);
                 } else {
                     cmd.append(" and ").append(type.getMainTable().getSqlTable()).append(".")
                         .append(type.getCompanyAttribute().getSqlColNames().get(0)).append(" in (");
@@ -360,7 +362,8 @@ public abstract class SimpleAccessCheckOnType_Base
                 }
                 if (first) {
                     cmd.append("0");
-                    AbstractAccessCheck_Base.LOG.error("Missing Group for '{}' on groupdependend Access on type '{}'",
+                    SimpleAccessCheckOnType_Base.LOG.error("Missing Group for '{}' on "
+                                    + "groupdependend Access on type '{}'",
                                     context.getPerson().getName(), type);
                 }
                 cmd.append("))");
@@ -374,7 +377,7 @@ public abstract class SimpleAccessCheckOnType_Base
 
                 Statement stmt = null;
                 try {
-                    AbstractAccessCheck_Base.LOG.debug("Checking access with: {}", cmd);
+                    SimpleAccessCheckOnType_Base.LOG.debug("Checking access with: {}", cmd);
                     stmt = con.createStatement();
 
                     final ResultSet rs = stmt.executeQuery(cmd.toString());
@@ -390,7 +393,7 @@ public abstract class SimpleAccessCheckOnType_Base
                     }
                 }
             } catch (final SQLException e) {
-                AbstractAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
+                SimpleAccessCheckOnType_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
             } finally {
                 for (final Object inst : _instances) {
                     accessMap.put((Instance) inst, idList.contains(((Instance) inst).getId()));
@@ -423,7 +426,7 @@ public abstract class SimpleAccessCheckOnType_Base
         ConnectionResource con = null;
         try {
             con = _context.getConnectionResource();
-            AbstractAccessCheck_Base.LOG.debug("Checking access with: {}", _cmd);
+            SimpleAccessCheckOnType_Base.LOG.debug("Checking access with: {}", _cmd);
             Statement stmt = null;
             try {
                 stmt = con.createStatement();
@@ -438,7 +441,7 @@ public abstract class SimpleAccessCheckOnType_Base
                 }
             }
         } catch (final SQLException e) {
-            AbstractAccessCheck_Base.LOG.error("sql statement '" + _cmd.toString() + "' not executable!", e);
+            SimpleAccessCheckOnType_Base.LOG.error("sql statement '" + _cmd.toString() + "' not executable!", e);
         }
         return hasAccess;
     }

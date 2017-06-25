@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -72,6 +69,8 @@ import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.util.EFapsException;
 import org.efaps.util.UUIDUtil;
 import org.efaps.util.cache.CacheReloadException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -117,6 +116,10 @@ import org.efaps.util.cache.CacheReloadException;
 public abstract class AccessCheck4Object_Base
     extends AbstractAccessCheck
 {
+    /**
+     * Logging instance used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(AccessCheck4Object.class);
 
     /**
      * {@inheritDoc}
@@ -186,7 +189,7 @@ public abstract class AccessCheck4Object_Base
                 }
             }
         } catch (final SQLException e) {
-            AbstractAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
+           AccessCheck4Object_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
         }
         return ret;
     }
@@ -196,7 +199,7 @@ public abstract class AccessCheck4Object_Base
      */
     @Override
     protected Map<Instance, Boolean> checkAccess(final Parameter _parameter,
-                                                 final List<?> _instances,
+                                                 final List<Instance> _instances,
                                                  final AccessType _accessType)
         throws EFapsException
     {
@@ -300,7 +303,7 @@ public abstract class AccessCheck4Object_Base
                 }
             }
         } catch (final SQLException e) {
-            AbstractAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
+           AccessCheck4Object_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
         } finally {
             for (final Object inst : _instances) {
                 ret.put((Instance) inst, instan.contains(inst));

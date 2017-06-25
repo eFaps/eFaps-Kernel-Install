@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ public abstract class InsertOnlyAccessCheck_Base
 
     @Override
     protected Map<Instance, Boolean> checkAccess(final Parameter _parameter,
-                                                 final List<?> _instances,
+                                                 final List<Instance> _instances,
                                                  final AccessType _accessType)
         throws EFapsException
     {
@@ -68,7 +68,7 @@ public abstract class InsertOnlyAccessCheck_Base
             ret = super.checkAccess(_parameter, _instances, _accessType);
         } else {
             final boolean bolVal = AccessTypeEnums.CREATE.getAccessType().equals(_accessType);
-            ret = new HashMap<Instance, Boolean>();
+            ret = new HashMap<>();
             for (final Object obj : _instances) {
                 ret.put((Instance) obj, bolVal);
             }

@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev:1563 $
- * Last Changed:    $Date:2007-10-28 15:07:41 +0100 (So, 28 Okt 2007) $
- * Last Changed By: $Author:tmo $
  */
 
 package org.efaps.esjp.admin.access;
@@ -29,7 +26,6 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("fd1ecee1-a882-4fbe-8b3c-5e5c3ed4d6b7")
 @EFapsApplication("eFaps-Kernel")

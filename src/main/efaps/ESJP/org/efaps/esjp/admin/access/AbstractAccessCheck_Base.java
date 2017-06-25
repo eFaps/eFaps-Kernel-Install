@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -35,26 +32,18 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.util.EFapsException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("3b81f1a7-8ec0-4979-859e-0bd64e4d50d7")
 @EFapsApplication("eFaps-Kernel")
 public abstract class AbstractAccessCheck_Base
     implements EventExecution
 {
-    /**
-     * Logging instance used in this class.
-     */
-    protected static final Logger LOG = LoggerFactory.getLogger(AbstractAccessCheck.class);
-
     /**
      * {@inheritDoc}
      */
@@ -71,7 +60,8 @@ public abstract class AbstractAccessCheck_Base
                 ret.put(ReturnValues.TRUE, true);
             }
         } else {
-            final List<?> instances = (List<?>) _parameter.get(ParameterValues.OTHERS);
+            @SuppressWarnings("unchecked")
+            final List<Instance> instances = (List<Instance>) _parameter.get(ParameterValues.OTHERS);
             if (instances != null) {
                 ret.put(ReturnValues.VALUES, checkAccess(_parameter, instances, accessType));
             }
@@ -89,9 +79,9 @@ public abstract class AbstractAccessCheck_Base
      * @return true if access is granted, else false
      * @throws EFapsException on error
      */
-    protected abstract boolean checkAccess(final Parameter _parameter,
-                                           final Instance _instance,
-                                           final AccessType _accessType)
+    protected abstract boolean checkAccess(Parameter _parameter,
+                                           Instance _instance,
+                                           AccessType _accessType)
         throws EFapsException;
 
 
@@ -104,8 +94,8 @@ public abstract class AbstractAccessCheck_Base
      * @return map of access to boolean
      * @throws EFapsException on error
      */
-    protected abstract Map<Instance, Boolean> checkAccess(final Parameter _parameter,
-                                                          final List<?> _instances,
-                                                          final AccessType _accessType)
+    protected abstract Map<Instance, Boolean> checkAccess(Parameter _parameter,
+                                                          List<Instance> _instances,
+                                                          AccessType _accessType)
         throws EFapsException;
 }

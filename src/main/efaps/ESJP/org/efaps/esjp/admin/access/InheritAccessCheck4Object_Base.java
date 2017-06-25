@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
-
 
 package org.efaps.esjp.admin.access;
 
@@ -50,6 +46,8 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.transaction.ConnectionResource;
 import org.efaps.util.EFapsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -66,13 +64,18 @@ import org.efaps.util.EFapsException;
  * </table>
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("6306017b-af25-4756-b19c-8ba00e51448e")
 @EFapsApplication("eFaps-Kernel")
 public abstract class InheritAccessCheck4Object_Base
     extends AccessCheck4Object
 {
+    /**
+     * Logging instance used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(InheritAccessCheck4Object.class);
+
+
     /**
      * {@inheritDoc}
      */
@@ -108,7 +111,7 @@ public abstract class InheritAccessCheck4Object_Base
                 }
             }
         } catch (final SQLException e) {
-            AbstractAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
+            InheritAccessCheck4Object_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
         }
         if (ret) {
             ret = super.getObjectAccess(_parameter, _instance, _accessType);
@@ -252,7 +255,7 @@ public abstract class InheritAccessCheck4Object_Base
                 }
             }
         } catch (final SQLException e) {
-            AbstractAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
+            InheritAccessCheck4Object_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
         } finally {
             final List<Instance> accessInst = new ArrayList<>();
             final List<Instance> inheritInst = new ArrayList<>();

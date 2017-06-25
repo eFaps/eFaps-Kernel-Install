@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
-
 
 package org.efaps.esjp.admin.access;
 
@@ -45,19 +41,24 @@ import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.transaction.ConnectionResource;
 import org.efaps.util.EFapsException;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("ef7dcf84-99ec-4caf-8422-513bfb7eab39")
 @EFapsApplication("eFaps-Kernel")
 public abstract class Linked2ObjectAccessCheck_Base
     extends AbstractAccessCheck
 {
+    /**
+     * Logging instance used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(Linked2ObjectAccessCheck.class);
+
     /**
      * {@inheritDoc}
      */
@@ -91,7 +92,7 @@ public abstract class Linked2ObjectAccessCheck_Base
             long id = 0;
             try {
                 final ConnectionResource con = Context.getThreadContext().getConnectionResource();
-                AbstractAccessCheck_Base.LOG.debug("Checking access with: {}", cmd);
+               Linked2ObjectAccessCheck_Base.LOG.debug("Checking access with: {}", cmd);
                 Statement stmt = null;
                 try {
                     stmt = con.createStatement();
@@ -106,7 +107,7 @@ public abstract class Linked2ObjectAccessCheck_Base
                     }
                 }
             } catch (final SQLException e) {
-                AbstractAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
+               Linked2ObjectAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
             }
             if (id > 0) {
                 final Instance instance = Instance.get(toAttribute.getLink(), id);
@@ -124,7 +125,7 @@ public abstract class Linked2ObjectAccessCheck_Base
      */
     @Override
     protected Map<Instance, Boolean> checkAccess(final Parameter _parameter,
-                                                 final List<?> _instances,
+                                                 final List<Instance> _instances,
                                                  final AccessType _accessType)
         throws EFapsException
     {
@@ -152,7 +153,7 @@ public abstract class Linked2ObjectAccessCheck_Base
         final Map<Long, Set<Long>> relMap = new HashMap<>();
         try {
             final ConnectionResource con = Context.getThreadContext().getConnectionResource();
-            AbstractAccessCheck_Base.LOG.debug("Checking access with: {}", cmd);
+           Linked2ObjectAccessCheck_Base.LOG.debug("Checking access with: {}", cmd);
             Statement stmt = null;
             try {
                 stmt = con.createStatement();
@@ -176,7 +177,7 @@ public abstract class Linked2ObjectAccessCheck_Base
                 }
             }
         } catch (final SQLException e) {
-            AbstractAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
+           Linked2ObjectAccessCheck_Base.LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
         }
         final SimpleAccessCheckOnType accessCheck = new SimpleAccessCheckOnType();
 
