@@ -85,13 +85,18 @@ public abstract class SimpleAccessCheckOnType_Base
                 if (permission.getStatusIds().isEmpty()) {
                     ret = true;
                 } else {
-                    final Status status = Evaluation.getStatus(_instance);
-                    if (status == null) {
-                        SimpleAccessCheckOnType_Base.LOG.error("No Status retrieved for evaluation on {}", _instance);
-                        ret = Context.getThreadContext().getPerson().isAssigned(
-                                        Role.get(KernelSettings.USER_ROLE_ADMINISTRATION));
+                    if (AccessTypeEnums.CREATE.getAccessType().equals(_accessType)) {
+                        ret = true;
                     } else {
-                        ret = permission.getStatusIds().contains(status.getId());
+                        final Status status = Evaluation.getStatus(_instance);
+                        if (status == null) {
+                            SimpleAccessCheckOnType_Base.LOG.error("No Status retrieved for evaluation on {}",
+                                            _instance);
+                            ret = Context.getThreadContext().getPerson().isAssigned(Role.get(
+                                            KernelSettings.USER_ROLE_ADMINISTRATION));
+                        } else {
+                            ret = permission.getStatusIds().contains(status.getId());
+                        }
                     }
                 }
             }
