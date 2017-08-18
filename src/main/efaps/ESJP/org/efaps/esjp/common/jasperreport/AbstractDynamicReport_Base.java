@@ -669,10 +669,21 @@ public abstract class AbstractDynamicReport_Base
 
         ret.add(dateField.setHorizontalTextAlignment(HorizontalTextAlignment.RIGHT));
         ret.newRow();
-        ret.add(DynamicReports.cmp.text(DBProperties.getProperty(getClass().getName() + ".Title"))
+        ret.add(DynamicReports.cmp.text(getTitle(_parameter))
                         .setStyle(DynamicReports.stl.style(style).setFontSize(12))
                         .setHorizontalTextAlignment(HorizontalTextAlignment.CENTER));
         return ret;
+    }
+
+    /**
+     * Gets the title.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the title
+     */
+    protected String getTitle(final Parameter _parameter)
+    {
+      return DBProperties.getProperty(getClass().getName() + ".Title");
     }
 
     /**
