@@ -18,9 +18,7 @@
 package org.efaps.esjp.common.preferences;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -43,15 +41,49 @@ public abstract class PreferencesProvider_Base
     private static final long serialVersionUID = 1L;
 
     /**
-     * Gets the preferences keys.
-     *
-     * @return the preferences keys
+     * The Enum SwitchPreference.
      */
-    public Set<String> getPreferencesKeys()
+    public enum SwitchPreference
     {
-        final Set<String> ret = new HashSet<>();
-        ret.add("org.efaps.webapp.ActivateSlideInMenu");
-        return ret;
+        /** The slidein. */
+        SLIDEIN("org.efaps.webapp.ActivateSlideInMenu", "true", "false"),
+
+        /** The TDT 4 content. */
+        TDT4Content("org.efaps.webapp.TableDefaultType4Content", "Table", "GridX"),
+
+        /** The TDT 4 content. */
+        TDT4Tree("org.efaps.webapp.TableDefaultType4Tree", "Table", "GridX"),
+
+        /** The TDT 4 content. */
+        TDT4Search("org.efaps.webapp.TableDefaultType4Search", "Table", "GridX"),
+
+        /** The TDT 4 content. */
+        TDT4Form("org.efaps.webapp.TableDefaultType4Form", "Table", "GridX");
+
+        /** The key. */
+        private final String key;
+
+        /** The on. */
+        private final String on;
+
+        /** The off. */
+        private final String off;
+
+        /**
+         * Instantiates a new switch preference.
+         *
+         * @param _key the key
+         * @param _on the on
+         * @param _off the off
+         */
+        SwitchPreference(final String _key,
+                         final String _on,
+                         final String _off)
+        {
+            this.key = _key;
+            this.on = _on;
+            this.off = _off;
+        }
     }
 
     @Override
@@ -59,8 +91,9 @@ public abstract class PreferencesProvider_Base
         throws EFapsException
     {
         final Map<String, String> ret = new HashMap<>();
-        for (final String key : getPreferencesKeys()) {
-            ret.put(key, Context.getThreadContext().getUserAttribute(key));
+        for (final SwitchPreference pref : SwitchPreference.values()) {
+            final String value = Context.getThreadContext().getUserAttribute(pref.key);
+            ret.put(pref.key, value != null && value.equals(pref.on) ? "on" : "off");
         }
         return ret;
     }
@@ -69,8 +102,17 @@ public abstract class PreferencesProvider_Base
     public void updatePreferences(final Map<String, String> _preferences)
         throws EFapsException
     {
-        for (final String key : getPreferencesKeys()) {
-            Context.getThreadContext().setUserAttribute(key, _preferences.get(key));
+        for (final SwitchPreference pref : SwitchPreference.values()) {
+            if (_preferences.containsKey(pref.key)) {
+                final String value = _preferences.get(pref.key);
+                if ("off".equals(value)) {
+                    Context.getThreadContext().setUserAttribute(pref.key, pref.off);
+                } else if ("on".equals(value)) {
+                    Context.getThreadContext().setUserAttribute(pref.key, pref.on);
+                } else {
+                    Context.getThreadContext().removeRequestAttribute(pref.key);
+                }
+            }
         }
     }
 }
