@@ -24,6 +24,7 @@ import org.efaps.admin.EFapsSystemConfiguration;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.esjp.admin.index.LucenceQueryBuilder;
+import org.efaps.esjp.common.preferences.PreferencesProvider_Base;
 
 /**
  * Add additional System Configuration attributes that belongto the kernel but
@@ -85,6 +86,17 @@ public final class KernelConfigurations
                     .description("Possibiility to set the Default Filter Values for Tables. \n"
                                     + "TABLENAME.FIELDNAME=VALUE\n"
                                     + "e.g. Accounting_PeriodDocumentSumTable.date=WEEK");
+
+    /** See description. */
+    public static final ListSysConfAttribute PREFERENCES = new ListSysConfAttribute()
+                    .sysConfUUID(EFapsSystemConfiguration.UUID)
+                    .key(KernelConfigurations.BASE + "Preferences")
+                    .addDefaultValue(PreferencesProvider_Base.SwitchPreference.SLIDEIN.getKey())
+                    .addDefaultValue(PreferencesProvider_Base.SwitchPreference.TDT4Content.getKey())
+                    .addDefaultValue(PreferencesProvider_Base.SwitchPreference.TDT4Form.getKey())
+                    .addDefaultValue(PreferencesProvider_Base.SwitchPreference.TDT4Search.getKey())
+                    .addDefaultValue(PreferencesProvider_Base.SwitchPreference.TDT4Tree.getKey())
+                    .description("List of activated Preferences");
 
     /**
      * Instantiates a new kernel configurations.

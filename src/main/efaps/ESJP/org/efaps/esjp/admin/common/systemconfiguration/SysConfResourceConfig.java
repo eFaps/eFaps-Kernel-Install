@@ -64,6 +64,8 @@ public final class SysConfResourceConfig
         ATTRS.add(KernelConfigurations.INDEXBASEFOLDER);
         ATTRS.add(KernelConfigurations.INDEXLANG);
         ATTRS.add(KernelConfigurations.INDEXQUERYBLDR);
+        ATTRS.add(KernelConfigurations.TABLEFILTERDEFAULT);
+        ATTRS.add(KernelConfigurations.PREFERENCES);
     }
 
     /**

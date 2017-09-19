@@ -18,12 +18,14 @@
 package org.efaps.esjp.common.preferences;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.api.ui.IPreferencesProvider;
 import org.efaps.db.Context;
+import org.efaps.esjp.admin.common.systemconfiguration.KernelConfigurations;
 import org.efaps.util.EFapsException;
 
 /**
@@ -63,6 +65,7 @@ public abstract class PreferencesProvider_Base
         /** The key. */
         private final String key;
 
+
         /** The on. */
         private final String on;
 
@@ -84,6 +87,16 @@ public abstract class PreferencesProvider_Base
             this.on = _on;
             this.off = _off;
         }
+
+        /**
+         * Gets the key.
+         *
+         * @return the key
+         */
+        public String getKey()
+        {
+            return this.key;
+        }
     }
 
     @Override
@@ -91,9 +104,12 @@ public abstract class PreferencesProvider_Base
         throws EFapsException
     {
         final Map<String, String> ret = new HashMap<>();
+         final List<String> prefs = KernelConfigurations.PREFERENCES.get();
         for (final SwitchPreference pref : SwitchPreference.values()) {
-            final String value = Context.getThreadContext().getUserAttribute(pref.key);
-            ret.put(pref.key, value != null && value.equals(pref.on) ? "on" : "off");
+            if (prefs.contains(pref.key)) {
+                final String value = Context.getThreadContext().getUserAttribute(pref.key);
+                ret.put(pref.key, value != null && value.equals(pref.on) ? "on" : "off");
+            }
         }
         return ret;
     }
