@@ -20,7 +20,9 @@ package org.efaps.esjp.common.preferences;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.api.ui.IPreferencesProvider;
@@ -104,10 +106,14 @@ public abstract class PreferencesProvider_Base
         throws EFapsException
     {
         final Map<String, String> ret = new HashMap<>();
-         final List<String> prefs = KernelConfigurations.PREFERENCES.get();
+        final List<String> prefs = KernelConfigurations.PREFERENCES.get();
         for (final SwitchPreference pref : SwitchPreference.values()) {
             if (prefs.contains(pref.key)) {
-                final String value = Context.getThreadContext().getUserAttribute(pref.key);
+                String value = Context.getThreadContext().getUserAttribute(pref.key);
+                if (value == null) {
+                    value = SystemConfiguration.get(UUID.fromString("50a65460-2d08-4ea8-b801-37594e93dad5"))
+                                    .getAttributeValue(pref.key);
+                }
                 ret.put(pref.key, value != null && value.equals(pref.on) ? "on" : "off");
             }
         }
