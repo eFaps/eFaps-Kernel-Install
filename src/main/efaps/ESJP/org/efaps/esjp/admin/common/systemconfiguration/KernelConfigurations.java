@@ -98,6 +98,12 @@ public final class KernelConfigurations
                     .addDefaultValue(PreferencesProvider_Base.SwitchPreference.TDT4Tree.getKey())
                     .description("List of activated Preferences");
 
+    /** See description. */
+    public static final  BooleanSysConfAttribute ACTIVATEMOSKITO = new BooleanSysConfAttribute()
+                    .sysConfUUID(EFapsSystemConfiguration.UUID)
+                    .key(KernelConfigurations.BASE + "ActivateMoskito")
+                    .description("Activate Moskito Monitoring.");
+
     /**
      * Instantiates a new kernel configurations.
      */

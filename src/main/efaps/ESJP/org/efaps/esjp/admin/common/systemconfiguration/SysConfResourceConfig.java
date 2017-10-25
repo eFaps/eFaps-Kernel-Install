@@ -66,6 +66,7 @@ public final class SysConfResourceConfig
         ATTRS.add(KernelConfigurations.INDEXQUERYBLDR);
         ATTRS.add(KernelConfigurations.TABLEFILTERDEFAULT);
         ATTRS.add(KernelConfigurations.PREFERENCES);
+        ATTRS.add(KernelConfigurations.ACTIVATEMOSKITO);
     }
 
     /**
