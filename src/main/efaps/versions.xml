@@ -108,7 +108,10 @@
             }
         </script>
     </version>
-    <version number="6" compile="true">
+    <version number="6" compile="true" reloadCache="true">
+        <description>Import Esjps</description>
+    </version>
+    <version number="7" compile="true" reloadCache="true">
         <description>Import Data</description>
         <script type="groovy"><![CDATA[
             import java.io.File;
@@ -119,8 +122,6 @@
             import org.efaps.db.QueryBuilder;
             import org.efaps.db.InstanceQuery;
             import org.efaps.db.Insert;
-
-
 
             EFAPS_LOGGER.info("    Check if Languages must be imported");
             //Admin_Language
