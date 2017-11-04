@@ -67,6 +67,8 @@ public final class SysConfResourceConfig
         ATTRS.add(KernelConfigurations.TABLEFILTERDEFAULT);
         ATTRS.add(KernelConfigurations.PREFERENCES);
         ATTRS.add(KernelConfigurations.ACTIVATEMOSKITO);
+        ATTRS.add(KernelConfigurations.SSO_PERMITROLEUPDATE);
+        ATTRS.add(KernelConfigurations.SSO_PERMITATTRIBUTEUPDATE);
     }
 
     /**

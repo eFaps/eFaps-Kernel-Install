@@ -104,6 +104,18 @@ public final class KernelConfigurations
                     .key(KernelConfigurations.BASE + "ActivateMoskito")
                     .description("Activate Moskito Monitoring.");
 
+    /** See description. */
+    public static final  BooleanSysConfAttribute SSO_PERMITROLEUPDATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(EFapsSystemConfiguration.UUID)
+                    .key(KernelConfigurations.BASE + "sso.PermitRoleUpdate")
+                    .description("Permit Role Update via SSO.");
+
+    /** See description. */
+    public static final  BooleanSysConfAttribute SSO_PERMITATTRIBUTEUPDATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(EFapsSystemConfiguration.UUID)
+                    .key(KernelConfigurations.BASE + "sso.PermitAttributeUpdate")
+                    .description("Permit Attribute Update via SSO.");
+
     /**
      * Instantiates a new kernel configurations.
      */
