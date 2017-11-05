@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.common.uiform;
@@ -40,7 +37,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.EnumUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Classification;
@@ -72,6 +68,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.util.EFapsException;
+import org.efaps.util.RandomUtil;
 import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -990,7 +987,7 @@ public abstract class Field_Base
         }
 
         for (final DropDownPosition value : _values) {
-            final String id = RandomStringUtils.random(4, true, true);
+            final String id = RandomUtil.randomAlphabetic(4);
             html.append("<input id=\"").append(id).append("\" type=\"")
                 .append(_listType.equals(Field_Base.ListType.CHECKBOX) ? "checkbox" : "radio")
                 .append("\" value=\"").append(value.getValue()).append("\" name=\"")
@@ -1582,16 +1579,8 @@ public abstract class Field_Base
             map.put("eFapsAutoCompleteCHOICE", choiceVal);
             list.add(map);
         }
-        Collections.sort(list, new Comparator<Map<String, String>>()
-        {
-
-            @Override
-            public int compare(final Map<String, String> _arg0,
-                               final Map<String, String> _arg1)
-            {
-                return _arg0.get("eFapsAutoCompleteCHOICE").compareTo(_arg1.get("eFapsAutoCompleteCHOICE"));
-            }
-        });
+        Collections.sort(list, (_arg0,
+         _arg1) -> _arg0.get("eFapsAutoCompleteCHOICE").compareTo(_arg1.get("eFapsAutoCompleteCHOICE")));
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;

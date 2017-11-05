@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.common.file;
+
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfImportedPage;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfSmartCopy;
+import com.lowagie.text.pdf.PdfWriter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,6 +48,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -54,16 +62,6 @@ import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfImportedPage;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfSmartCopy;
-import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * Utility class used to create empty files in a user depended temporarily
@@ -410,7 +408,7 @@ public abstract class FileUtil_Base
         if (_files.size() == 1) {
             ret = _files.get(0);
         } else {
-            try (final Workbook newWB = new HSSFWorkbook()) {
+            try (Workbook newWB = new HSSFWorkbook()) {
                 final List<Workbook> workBooks = new ArrayList<>();
                 for (final File file : _files) {
                     workBooks.add(new HSSFWorkbook(new FileInputStream(file)));
@@ -528,23 +526,23 @@ public abstract class FileUtil_Base
                 _newCell.setCellStyle(newCellStyle);
             }
         }
-        switch (_oldCell.getCellType()) {
-            case Cell.CELL_TYPE_STRING:
+        switch (_oldCell.getCellTypeEnum()) {
+            case STRING:
                 _newCell.setCellValue(_oldCell.getStringCellValue());
                 break;
-            case Cell.CELL_TYPE_NUMERIC:
+            case NUMERIC:
                 _newCell.setCellValue(_oldCell.getNumericCellValue());
                 break;
-            case Cell.CELL_TYPE_BLANK:
-                _newCell.setCellType(Cell.CELL_TYPE_BLANK);
+            case BLANK:
+                _newCell.setCellType(CellType.BLANK);
                 break;
-            case Cell.CELL_TYPE_BOOLEAN:
+            case BOOLEAN:
                 _newCell.setCellValue(_oldCell.getBooleanCellValue());
                 break;
-            case Cell.CELL_TYPE_ERROR:
+            case ERROR:
                 _newCell.setCellErrorValue(_oldCell.getErrorCellValue());
                 break;
-            case Cell.CELL_TYPE_FORMULA:
+            case FORMULA:
                 _newCell.setCellFormula(_oldCell.getCellFormula());
                 break;
             default:

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,6 +71,7 @@ public abstract class Tag_Base
     {
         final Return ret = new Return();
 
+        @SuppressWarnings("unchecked")
         final List<Instance> reqInstances = (List<Instance>) _parameter.get(ParameterValues.REQUEST_INSTANCES);
 
         final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
