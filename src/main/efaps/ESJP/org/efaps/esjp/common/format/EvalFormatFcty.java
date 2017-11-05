@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,10 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.ExtendedMessageFormat;
-import org.apache.commons.lang3.text.FormatFactory;
+import org.apache.commons.text.ExtendedMessageFormat;
+import org.apache.commons.text.FormatFactory;
+import org.apache.commons.text.StringEscapeUtils;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsFormatFactory;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -62,7 +62,7 @@ public class EvalFormatFcty
                             final String _arguments,
                             final Locale _locale)
     {
-        Format ret;
+        final Format ret;
         final String key = _locale.toLanguageTag() + "_" + _arguments;
         if (EvalFormatFcty.FORMATS.containsKey(key)) {
             ret = EvalFormatFcty.FORMATS.get(key);
