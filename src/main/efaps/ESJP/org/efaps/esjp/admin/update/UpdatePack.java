@@ -18,6 +18,9 @@
 
 package org.efaps.esjp.admin.update;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,15 +28,18 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.collections4.MultiMapUtils;
+import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
@@ -63,12 +69,10 @@ import org.efaps.update.Install;
 import org.efaps.update.Install.InstallFile;
 import org.efaps.update.util.InstallationException;
 import org.efaps.util.EFapsException;
+import org.efaps.util.UUIDUtil;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 /**
  * TODO comment!
@@ -162,15 +166,9 @@ public class UpdatePack
             }
 
             final List<InstallFile> installFileList = new ArrayList<>(installFiles.values());
-            Collections.sort(installFileList, new Comparator<InstallFile>()
-            {
-                @Override
-                public int compare(final InstallFile _installFile0,
-                                   final InstallFile _installFile1)
-                {
-                    return _installFile0.getName().compareTo(_installFile1.getName());
-                }
-            });
+            Collections.sort(installFileList, (_installFile0,
+                                               _installFile1) -> _installFile0.getName().compareTo(_installFile1
+                                                               .getName()));
 
             final List<InstallFile> dependendFileList = new ArrayList<>();
             // check if a object that depends on another object must be added to the update
@@ -195,7 +193,7 @@ public class UpdatePack
             }
             if (!tobeAdded.isEmpty()) {
                 i = 1;
-                // add the objects to the list taht are missing
+                // add the objects to the list that are missing
                 for (final RevItem item : allItems) {
                     if (tobeAdded.contains(item.getIdentifier())) {
                         UpdatePack.LOG.info("Adding releated Item {} / {}: {}", i, tobeAdded.size(), item);
@@ -210,19 +208,43 @@ public class UpdatePack
                     }
                 }
             }
-
+            final MultiValuedMap<String, String> updateables = MultiMapUtils.newSetValuedHashMap();
             if (!installFileList.isEmpty()) {
                 final Install install = new Install(true);
                 for (final InstallFile installFile : installFileList) {
                     UpdatePack.LOG.info("...Adding to Update: '{}' ", installFile.getName());
                     install.addFile(installFile);
                 }
-                install.updateLatest(null);
+                updateables.putAll(install.updateLatest(null));
             }
             if (!dependendFileList.isEmpty()) {
                 UpdatePack.LOG.info("Update for related Items");
                 final Install install = new Install(true);
                 for (final InstallFile installFile : dependendFileList) {
+                    UpdatePack.LOG.info("...Adding to Update: '{}' ", installFile.getName());
+                    install.addFile(installFile);
+                }
+                updateables.putAll(install.updateLatest(null));
+            }
+
+            final List<InstallFile> updateablesFileList = new ArrayList<>();
+            Collections.sort(updateablesFileList, (_installFile0,
+                                                   _installFile1) -> _installFile0.getName().compareTo(_installFile1
+                                                                   .getName()));
+            for (final Entry<String, String> entry : updateables.entries()) {
+                final String value = entry.getValue();
+                if (UUIDUtil.isUUID(value)) {
+                    final Optional<RevItem> revItemOpt = installFiles.keySet().stream().filter(item -> value.equals(item
+                                    .getIdentifier())).findFirst();
+                    if (revItemOpt.isPresent()) {
+                        updateablesFileList.add(installFiles.get(revItemOpt.get()));
+                    }
+                }
+            }
+            if (!updateablesFileList.isEmpty()) {
+                UpdatePack.LOG.info("Update for updateable Items");
+                final Install install = new Install(true);
+                for (final InstallFile installFile : updateablesFileList) {
                     UpdatePack.LOG.info("...Adding to Update: '{}' ", installFile.getName());
                     install.addFile(installFile);
                 }
