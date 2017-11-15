@@ -683,7 +683,7 @@ public abstract class AbstractDynamicReport_Base
      */
     protected String getTitle(final Parameter _parameter)
     {
-      return DBProperties.getProperty(getClass().getName() + ".Title");
+        return DBProperties.getProperty(getClass().getName() + ".Title");
     }
 
     /**
@@ -695,13 +695,29 @@ public abstract class AbstractDynamicReport_Base
         throws EFapsException;
 
     /**
+     * @deprecated will be reomved due to typo
      * @param _parameter Parameter as passed by the eFaps API
      * @param _builder Report builder
      * @throws EFapsException on error
      */
-    protected abstract void addColumnDefintion(Parameter _parameter,
-                                               JasperReportBuilder _builder)
-        throws EFapsException;
+    @Deprecated
+    protected void addColumnDefintion(final Parameter _parameter,
+                                      final JasperReportBuilder _builder)
+        throws EFapsException
+    {
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _builder Report builder
+     * @throws EFapsException on error
+     */
+    protected void addColumnDefinition(final Parameter _parameter,
+                                       final JasperReportBuilder _builder)
+        throws EFapsException
+    {
+        addColumnDefintion(_parameter, _builder);
+    }
 
     /**
      * Getter method for the instance variable {@link #report}.
@@ -755,7 +771,7 @@ public abstract class AbstractDynamicReport_Base
                 final JasperReportBuilder subreport = DynamicReports.report();
                 configure4Pdf(_parameter);
                 subreport.setTemplate(getStyleTemplate());
-                addColumnDefintion(_parameter, subreport);
+                addColumnDefinition(_parameter, subreport);
 
                 final SubreportBuilder sub = DynamicReports.cmp.subreport(subreport);
                 sub.setDataSource(createDataSource(_parameter));
@@ -772,11 +788,11 @@ public abstract class AbstractDynamicReport_Base
             } else if (getTemplateDesign() != null) {
                 final InputStream in = getTemplate(_parameter, getTemplateDesign());
                 getReport().setTemplateDesign(in);
-                addColumnDefintion(_parameter, getReport());
+                addColumnDefinition(_parameter, getReport());
                 getReport().setLocale(Context.getThreadContext().getLocale())
                                 .setDataSource(createDataSource(_parameter));
             } else {
-                addColumnDefintion(_parameter, getReport());
+                addColumnDefinition(_parameter, getReport());
                 getReport().setLocale(Context.getThreadContext().getLocale())
                                 .setDataSource(createDataSource(_parameter));
                 configurePage(_parameter, getReport());
@@ -812,7 +828,7 @@ public abstract class AbstractDynamicReport_Base
                 final JasperReportBuilder subreport = DynamicReports.report();
                 configure4Excel(_parameter);
                 subreport.setTemplate(getStyleTemplate());
-                addColumnDefintion(_parameter, subreport);
+                addColumnDefinition(_parameter, subreport);
 
                 final SubreportBuilder sub = DynamicReports.cmp.subreport(subreport);
                 sub.setDataSource(createDataSource(_parameter));
@@ -831,11 +847,11 @@ public abstract class AbstractDynamicReport_Base
                 final String template = String.valueOf(properties.get("TemplateDesign4XLS"));
                 final InputStream in = getTemplate(_parameter, template);
                 getReport().setTemplateDesign(in);
-                addColumnDefintion(_parameter, getReport());
+                addColumnDefinition(_parameter, getReport());
                 getReport().setLocale(Context.getThreadContext().getLocale())
                                 .setDataSource(createDataSource(_parameter));
             } else {
-                addColumnDefintion(_parameter, getReport());
+                addColumnDefinition(_parameter, getReport());
                 getReport().setLocale(Context.getThreadContext().getLocale())
                                 .setDataSource(createDataSource(_parameter));
             }
@@ -889,7 +905,7 @@ public abstract class AbstractDynamicReport_Base
         final Writer writer = new StringWriter();
         try {
             this.exType = ExportType.HTML;
-            addColumnDefintion(_parameter, getReport());
+            addColumnDefinition(_parameter, getReport());
 
             final JasperHtmlExporterBuilder exporter = Exporters.htmlExporter(writer);
             if (_strip) {
