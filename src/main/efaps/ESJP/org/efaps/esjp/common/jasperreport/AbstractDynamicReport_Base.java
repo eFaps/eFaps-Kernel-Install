@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -80,7 +77,6 @@ import net.sf.jasperreports.engine.JRParameter;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("599905c7-373a-4c9c-928f-2cf2714d30b3")
 @EFapsApplication("eFaps-Kernel")
@@ -695,29 +691,13 @@ public abstract class AbstractDynamicReport_Base
         throws EFapsException;
 
     /**
-     * @deprecated will be reomved due to typo
      * @param _parameter Parameter as passed by the eFaps API
      * @param _builder Report builder
      * @throws EFapsException on error
      */
-    @Deprecated
-    protected void addColumnDefintion(final Parameter _parameter,
-                                      final JasperReportBuilder _builder)
-        throws EFapsException
-    {
-    }
-
-    /**
-     * @param _parameter Parameter as passed by the eFaps API
-     * @param _builder Report builder
-     * @throws EFapsException on error
-     */
-    protected void addColumnDefinition(final Parameter _parameter,
-                                       final JasperReportBuilder _builder)
-        throws EFapsException
-    {
-        addColumnDefintion(_parameter, _builder);
-    }
+    protected abstract void addColumnDefinition(final Parameter _parameter,
+                                                final JasperReportBuilder _builder)
+        throws EFapsException;
 
     /**
      * Getter method for the instance variable {@link #report}.
