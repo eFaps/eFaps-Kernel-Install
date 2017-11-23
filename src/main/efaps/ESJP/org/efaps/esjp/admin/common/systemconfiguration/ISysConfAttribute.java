@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,8 +47,8 @@ public interface ISysConfAttribute
      * @return the JS node
      * @throws EFapsException the efaps exception
      */
-    CharSequence getHtml(final Parameter _parameter,
-                         final Object _value,
-                         final String _fieldName)
+    CharSequence getHtml(Parameter _parameter,
+                         Object _value,
+                         String _fieldName)
         throws EFapsException;
 }
