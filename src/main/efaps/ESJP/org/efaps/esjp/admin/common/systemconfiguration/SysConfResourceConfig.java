@@ -61,14 +61,16 @@ public final class SysConfResourceConfig
     private static Set<ISysConfAttribute> ATTRS = new HashSet<>();
     static {
         ATTRS.add(KernelConfigurations.ACCESS4OBJECT);
+        ATTRS.add(KernelConfigurations.ACTIVATEMOSKITO);
         ATTRS.add(KernelConfigurations.INDEXBASEFOLDER);
         ATTRS.add(KernelConfigurations.INDEXLANG);
         ATTRS.add(KernelConfigurations.INDEXQUERYBLDR);
-        ATTRS.add(KernelConfigurations.TABLEFILTERDEFAULT);
         ATTRS.add(KernelConfigurations.PREFERENCES);
-        ATTRS.add(KernelConfigurations.ACTIVATEMOSKITO);
-        ATTRS.add(KernelConfigurations.SSO_PERMITROLEUPDATE);
         ATTRS.add(KernelConfigurations.SSO_PERMITATTRIBUTEUPDATE);
+        ATTRS.add(KernelConfigurations.SSO_PERMITCOMPANYUPDATE);
+        ATTRS.add(KernelConfigurations.SSO_PERMITCREATEPERSON);
+        ATTRS.add(KernelConfigurations.SSO_PERMITROLEUPDATE);
+        ATTRS.add(KernelConfigurations.TABLEFILTERDEFAULT);
     }
 
     /**

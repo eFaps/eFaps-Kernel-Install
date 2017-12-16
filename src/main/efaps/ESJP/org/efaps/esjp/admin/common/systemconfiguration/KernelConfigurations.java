@@ -111,6 +111,12 @@ public final class KernelConfigurations
                     .description("Permit Role Update via SSO.");
 
     /** See description. */
+    public static final  BooleanSysConfAttribute SSO_PERMITCOMPANYUPDATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(EFapsSystemConfiguration.UUID)
+                    .key(KernelConfigurations.BASE + "sso.PermitCompanyUpdate")
+                    .description("Permit Compnay Update via SSO.");
+
+    /** See description. */
     public static final  BooleanSysConfAttribute SSO_PERMITATTRIBUTEUPDATE = new BooleanSysConfAttribute()
                     .sysConfUUID(EFapsSystemConfiguration.UUID)
                     .key(KernelConfigurations.BASE + "sso.PermitAttributeUpdate")
