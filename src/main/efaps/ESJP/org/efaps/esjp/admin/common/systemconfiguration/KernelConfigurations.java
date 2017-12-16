@@ -116,6 +116,12 @@ public final class KernelConfigurations
                     .key(KernelConfigurations.BASE + "sso.PermitAttributeUpdate")
                     .description("Permit Attribute Update via SSO.");
 
+    /** See description. */
+    public static final  BooleanSysConfAttribute SSO_PERMITCREATEPERSON = new BooleanSysConfAttribute()
+                    .sysConfUUID(EFapsSystemConfiguration.UUID)
+                    .key(KernelConfigurations.BASE + "sso.PermitCreatePerson")
+                    .description("Permit the Creation of Persons via SSO.");
+
     /**
      * Instantiates a new kernel configurations.
      */

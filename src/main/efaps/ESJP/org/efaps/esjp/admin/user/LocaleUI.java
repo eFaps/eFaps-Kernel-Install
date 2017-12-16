@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.admin.user;
@@ -42,7 +39,6 @@ import org.efaps.util.EFapsException;
  * ESJP is used to get the value, and to render the fields for Locale.
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("5eb52b3e-3384-4675-9a55-396cdb5228be")
 @EFapsApplication("eFaps-Kernel")
@@ -78,7 +74,7 @@ public class LocaleUI
      * Method to build a drop down field for html containing all timezone.
      *
      * @param _parameter Parameter as passed by the eFaps API
-     * @param _currentChrono the current chrono
+     * @param _currentLocale the current locale
      * @return StringBuilder with drop down
      * @throws EFapsException on error
      */
@@ -86,12 +82,12 @@ public class LocaleUI
                                              final String _currentLocale)
         throws EFapsException
     {
-        final List<DropDownPosition> ret = new ArrayList<DropDownPosition>();
+        final List<DropDownPosition> ret = new ArrayList<>();
         final Field field = new Field();
         for (final Locale locale : Locale.getAvailableLocales()) {
             final DropDownPosition val = field.getDropDownPosition(_parameter, locale.toString(), locale
                             .getDisplayName());
-            val.setSelected(locale.toString().equals(_currentLocale));
+            val.setSelected(locale.toLanguageTag().equals(_currentLocale));
             ret.add(val);
         }
         Collections.sort(ret, new Comparator<DropDownPosition>()

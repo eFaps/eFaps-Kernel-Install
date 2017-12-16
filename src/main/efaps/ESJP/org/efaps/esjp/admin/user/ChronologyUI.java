@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2017 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.admin.user;
@@ -25,6 +22,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -45,7 +43,6 @@ import org.efaps.util.EFapsException;
  * ESJP is used to get the value, and to render the fields for chronology.
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("d24a6606-95ac-427d-9689-31182dd71cd8")
 @EFapsApplication("eFaps-Kernel")
@@ -74,11 +71,13 @@ public class ChronologyUI
             final PrintQuery print = new PrintQuery(instance);
             print.addAttribute(CIAdminUser.Person.Chronology);
             if (print.execute()) {
-                actualChrono = print.<String>getAttribute(CIAdminUser.Person.Chronology);
+                final String chronoStr = print.<String>getAttribute(CIAdminUser.Person.Chronology);
+                if (StringUtils.isNotEmpty(chronoStr)) {
+                    actualChrono = chronoStr;
+                }
             }
         }
         retVal.put(ReturnValues.SNIPLETT, ChronologyType.getByKey(actualChrono).getLabel());
-
         return retVal;
     }
 
@@ -102,7 +101,10 @@ public class ChronologyUI
             final PrintQuery print = new PrintQuery(instance);
             print.addAttribute(CIAdminUser.Person.Chronology);
             if (print.execute()) {
-                actualChrono = print.<String>getAttribute(CIAdminUser.Person.Chronology);
+                final String chronoStr = print.<String>getAttribute(CIAdminUser.Person.Chronology);
+                if (StringUtils.isNotEmpty(chronoStr)) {
+                    actualChrono = chronoStr;
+                }
             }
         }
         retVal.put(ReturnValues.VALUES, getValues(_parameter, actualChrono));
@@ -138,7 +140,7 @@ public class ChronologyUI
                                              final String _currentChrono)
         throws EFapsException
     {
-        final List<DropDownPosition> ret = new ArrayList<DropDownPosition>();
+        final List<DropDownPosition> ret = new ArrayList<>();
         final Field field = new Field();
         for (final ChronologyType chronoType : ChronologyType.values()) {
             final DropDownPosition val = field.getDropDownPosition(_parameter, chronoType.getKey(), chronoType
