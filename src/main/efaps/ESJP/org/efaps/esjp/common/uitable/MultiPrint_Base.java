@@ -20,7 +20,6 @@ package org.efaps.esjp.common.uitable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -49,6 +48,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.api.ui.FilterDefault;
 import org.efaps.api.ui.FilterType;
+import org.efaps.api.ui.IClassificationFilter;
 import org.efaps.api.ui.IFilter;
 import org.efaps.api.ui.IFilterList;
 import org.efaps.api.ui.IListFilter;
@@ -301,16 +301,7 @@ public abstract class MultiPrint_Base
                     option.addStatus(statusTmp);
                 }
                 final List<StatusOption> optionList = new ArrayList<>(options.values());
-                Collections.sort(optionList, new Comparator<StatusOption>()
-                {
-
-                    @Override
-                    public int compare(final StatusOption _arg0,
-                                       final StatusOption _arg1)
-                    {
-                        return _arg0.getLabel().compareTo(_arg1.getLabel());
-                    }
-                });
+                Collections.sort(optionList, (_arg0, _arg1) -> _arg0.getLabel().compareTo(_arg1.getLabel()));
                 listFilter.addAll(optionList);
                 if (!filters.isEmpty()) {
                     _queryBldr.addWhereAttrEqValue(Field.get(listFilter.getFieldId()).getAttribute(), filters
@@ -360,14 +351,12 @@ public abstract class MultiPrint_Base
         throws EFapsException
     {
         boolean ret = false;
-        if (_filter instanceof IListFilter) {
-            final IListFilter listFilter = (IListFilter) _filter;
+        if (_filter instanceof IClassificationFilter) {
+            final IClassificationFilter classFilter = (IClassificationFilter) _filter;
             final Set<Classification> filters = new HashSet<>();
             final Set<Classification> remove = new HashSet<>();
-            for (final IOption obj : listFilter) {
-                if (obj != null) {
-                    filters.add((Classification) Type.get((UUID) obj.getValue()));
-                }
+            for (final UUID uuid : classFilter) {
+                filters.add(Classification.get(uuid));
             }
             for (final Classification clazz : filters) {
                 for (final Classification child : clazz.getChildClassifications()) {
