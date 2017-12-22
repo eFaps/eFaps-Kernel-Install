@@ -31,7 +31,7 @@
             <property name="FilterType">PICKLIST</property>
             <property name="HRef">TREE</property>
         </field>
-        <field name="id">
+        <field name="idField">
             <property name="Attribute">ID</property>
             <property name="Label">Admin_DataModel_StatusAbstract/ID.Label</property>
         </field>
