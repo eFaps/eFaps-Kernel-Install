@@ -22,6 +22,7 @@ package org.efaps.esjp.common.quartz;
 
 import java.util.UUID;
 
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -62,7 +63,7 @@ public abstract class EventDefinitionJob_Base
             final QueryBuilder attrQueryBldr2 = new QueryBuilder(Type
                             .get(UUID.fromString("847cf68b-c23a-4826-a154-dc38ff7f76fd")));
             attrQueryBldr2.addWhereAttrInQuery("QuartzDefinitionLink", attrQuery);
-            attrQueryBldr2.addWhereAttrEqValue("Active", true);
+            attrQueryBldr2.addWhereAttrEqValue("StatusAbstract", Status.find("ERP_EventDefinitionStatus", "Active"));
             final AttributeQuery attrQuery2 = attrQueryBldr2.getAttributeQuery("ID");
             attrQuery2.setCompanyDependent(false);
 

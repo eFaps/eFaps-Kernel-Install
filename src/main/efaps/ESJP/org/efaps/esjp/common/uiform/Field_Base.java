@@ -79,7 +79,6 @@ import org.slf4j.LoggerFactory;
  * based on an attribute.
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("92337601-c2df-4f78-bb80-9c9b8b81c35c")
 @EFapsApplication("eFaps-Kernel")
@@ -1579,8 +1578,8 @@ public abstract class Field_Base
             map.put("eFapsAutoCompleteCHOICE", choiceVal);
             list.add(map);
         }
-        Collections.sort(list, (_arg0,
-         _arg1) -> _arg0.get("eFapsAutoCompleteCHOICE").compareTo(_arg1.get("eFapsAutoCompleteCHOICE")));
+        Collections.sort(list, (_arg0, _arg1) -> _arg0.get("eFapsAutoCompleteCHOICE").compareTo(_arg1.get(
+                        "eFapsAutoCompleteCHOICE")));
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
