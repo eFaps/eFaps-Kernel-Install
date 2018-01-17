@@ -35,6 +35,8 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.ListValuedMap;
+import org.apache.commons.collections4.MultiMapUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -58,6 +60,7 @@ import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.api.ui.IOption;
 import org.efaps.api.ui.IUserInterface;
+import org.efaps.db.CachedMultiPrintQuery;
 import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
@@ -203,29 +206,82 @@ public abstract class Field_Base
      * @return the lazy field value
      * @throws EFapsException on error
      */
+    @SuppressWarnings("unchecked")
     public Return getLazyFieldValue(final Parameter _parameter)
         throws EFapsException
     {
         final Return ret = new Return();
+        Map<Instance, Object> values = new HashMap<>();
+        if (_parameter.get(ParameterValues.REQUEST_INSTANCES) != null) {
+            final UIValue uiValue = (UIValue)_parameter.get(ParameterValues.UIOBJECT);
+            final String key = uiValue.getField().getId() + ".LazyFieldValue";
+            if (Context.getThreadContext().containsRequestAttribute(key)) {
+                values = (Map<Instance, Object>) Context.getThreadContext().getRequestAttribute(key);
+            } else {
+                Context.getThreadContext().setRequestAttribute(key, values);
+                final List<Instance> instances = (List<Instance>) _parameter.get(ParameterValues.REQUEST_INSTANCES);
+                final ListValuedMap<Type, Instance> map = MultiMapUtils.newListValuedHashMap();
+                final Map<Integer, String> types = analyseProperty(_parameter, "Type");
+                final Map<Integer, String> selects4Type = analyseProperty(_parameter, "Select4Type");
+                final Map<Integer, String> selects = analyseProperty(_parameter, "Select");
+                if (!selects4Type.isEmpty()) {
+                    for (final String select4Type : selects4Type.values()) {
+                        final MultiPrintQuery multi = CachedMultiPrintQuery.get4Request(instances);
+                        multi.addSelect(select4Type);
+                        multi.execute();
+                        while (multi.next()) {
+                            map.put(multi.getSelect(select4Type), multi.getCurrentInstance());
+                        }
+                    }
+                } else {
+                    instances.forEach(inst -> map.put(inst.getType(), inst));
+                }
+                for (final Entry<Type, Collection<Instance>> typeEntry : map.asMap().entrySet()) {
+                    for (final Entry<Integer, String> entry : types.entrySet()) {
+                        final Type type;
+                        if (isUUID(entry.getValue())) {
+                            type = Type.get(UUID.fromString(entry.getValue()));
+                        } else {
+                            type = Type.get(entry.getValue());
+                        }
+                        if (typeEntry.getKey().isKindOf(type)) {
+                            final String select = selects.get(entry.getKey());
+                            final MultiPrintQuery multi = CachedMultiPrintQuery.get4Request(
+                                            new ArrayList<>(typeEntry.getValue()));
+                            multi.addSelect(select);
+                            multi.execute();
+                            while (multi.next()) {
+                                values.put(multi.getCurrentInstance(), multi.getSelect(select));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         Object value = null;
         final Instance instance = _parameter.getInstance();
         if (InstanceUtils.isValid(instance)) {
-            final Map<Integer, String> types = analyseProperty(_parameter, "Type");
-            final Map<Integer, String> selects = analyseProperty(_parameter, "Select");
-            for (final Entry<Integer, String> entry : types.entrySet()) {
-                final Type type;
-                if (isUUID(entry.getValue())) {
-                    type = Type.get(UUID.fromString(entry.getValue()));
-                } else {
-                    type = Type.get(entry.getValue());
-                }
-                if (instance.getType().isKindOf(type)) {
-                    final String select = selects.get(entry.getKey());
-                    final PrintQuery print = CachedPrintQuery.get4Request(instance);
-                    print.addSelect(select);
-                    print.execute();
-                    value = print.getSelect(select);
-                    break;
+            if (values.containsKey(instance)) {
+                value = values.get(instance);
+            } else {
+                final Map<Integer, String> types = analyseProperty(_parameter, "Type");
+                final Map<Integer, String> selects = analyseProperty(_parameter, "Select");
+                for (final Entry<Integer, String> entry : types.entrySet()) {
+                    final Type type;
+                    if (isUUID(entry.getValue())) {
+                        type = Type.get(UUID.fromString(entry.getValue()));
+                    } else {
+                        type = Type.get(entry.getValue());
+                    }
+                    if (instance.getType().isKindOf(type)) {
+                        final String select = selects.get(entry.getKey());
+                        final PrintQuery print = CachedPrintQuery.get4Request(instance);
+                        print.addSelect(select);
+                        print.execute();
+                        value = print.getSelect(select);
+                        break;
+                    }
                 }
             }
         }
