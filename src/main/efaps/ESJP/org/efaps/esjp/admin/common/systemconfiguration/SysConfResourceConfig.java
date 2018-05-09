@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2018 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,14 +33,13 @@ import org.efaps.admin.KernelSettings;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsClassLoader;
+import org.efaps.admin.program.esjp.EFapsResourceFinder;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
 import org.efaps.api.annotation.EFapsSysConfAttribute;
 import org.efaps.api.annotation.EFapsSysConfLink;
 import org.efaps.api.annotation.EFapsSystemConfiguration;
 import org.efaps.esjp.admin.index.Search;
-import org.efaps.rest.EFapsResourceConfig;
-import org.efaps.rest.EFapsResourceConfig.EFapsResourceFinder;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
 import org.glassfish.jersey.server.internal.scanning.AnnotationAcceptingListener;
@@ -115,7 +114,7 @@ public final class SysConfResourceConfig
         final AnnotationAcceptingListener asl = new AnnotationAcceptingListener(
                         EFapsClassLoader.getInstance(),
                         EFapsSystemConfiguration.class);
-        final EFapsResourceFinder resourceFinder = new EFapsResourceConfig.EFapsResourceFinder();
+        final EFapsResourceFinder resourceFinder = new EFapsResourceFinder();
         while (resourceFinder.hasNext()) {
             final String next = resourceFinder.next();
             if (asl.accept(next)) {
