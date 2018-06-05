@@ -591,6 +591,8 @@ public abstract class StandartReport_Base
                 docxExp.exportReport();
                 break;
             case XLSX:
+                file = new FileUtil().getFile(getFileName() == null ? "XLSX" : getFileName(),
+                                JasperMime.XLSX.getExtension());
                 final JRXlsxExporter xlsxExp = new JRXlsxExporter();
                 _jasperPrint.setName(_jasperPrint.getName().replaceAll("[\\\\/:\"*?<>|]+", "-"));
                 xlsxExp.setExporterInput(new SimpleExporterInput(_jasperPrint));
