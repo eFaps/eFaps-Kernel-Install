@@ -16,17 +16,19 @@
  limitations under the License.
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>49045413-7834-4a6d-8af7-895fe7f59967</uuid>
+    <uuid>1b098e3d-de09-4183-8f9f-c2f08c46dbbb</uuid>
     <file-application>eFaps-Kernel</file-application>
-        <definition>
+    <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Program_JasperReportTree_Menu_Action</name>
-        <childs>
-            <child>Admin_Program_JasperReportTree_Menu_Action_Upload</child>
-            <child>Admin_Program_JasperReportTree_Menu_Action_Compile</child>
-            <child>Admin_Program_JasperReportTree_Menu_Action_CreateReport</child>
-        </childs>
+        <name>Admin_Program_JasperReportTree_Menu_Action_Upload</name>
+        <target>
+            <form>Admin_Program_JasperReportUploadForm</form>
+            <execute method="execute" program="org.efaps.esjp.common.uiform.Edit" />
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
+        <property name="NoUpdateAfterCOMMAND">true</property>
     </definition>
-</ui-menu>
+</ui-command>
