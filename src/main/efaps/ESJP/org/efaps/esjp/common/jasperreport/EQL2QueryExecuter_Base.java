@@ -18,14 +18,13 @@
 package org.efaps.esjp.common.jasperreport;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.eql.InvokerUtil;
-import org.efaps.eql.stmt.IEQLStmt;
-import org.efaps.eql.stmt.parts.ISelectStmtPart;
+import org.efaps.db.stmt.AbstractStmt;
+import org.efaps.db.stmt.PrintStmt;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,21 +36,19 @@ import net.sf.jasperreports.engine.JRValueParameter;
 import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
-
 /**
- * TODO comment!
- *
- * @author The eFaps Team
+ * The Class EQL2QueryExecuter_Base.
  */
-@EFapsUUID("547e75b2-b76b-4cc6-83d7-516554fadf22")
+@EFapsUUID("9be33905-3963-482d-938b-2a391b11932b")
 @EFapsApplication("eFaps-Kernel")
-public abstract class EQLQueryExecuter_Base
+public abstract class EQL2QueryExecuter_Base
     extends AbstractEQLQueryExecuter
 {
+
     /**
      * Logger used in this class.
      */
-    private static final Logger LOG = LoggerFactory.getLogger(EQLQueryExecuter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EQL2QueryExecuter.class);
 
     /**
      * @param _jasperReportsContext the JasperReportsContext
@@ -59,9 +56,9 @@ public abstract class EQLQueryExecuter_Base
      * @param _parameters map of value parameters (instances of {@link JRValueParameter JRValueParameter})
      *  indexed by name
      */
-    public EQLQueryExecuter_Base(final JasperReportsContext _jasperReportsContext,
-                                 final JRDataset _dataset,
-                                 final Map<String, ? extends JRValueParameter> _parameters)
+    public EQL2QueryExecuter_Base(final JasperReportsContext _jasperReportsContext,
+                                  final JRDataset _dataset,
+                                  final Map<String, ? extends JRValueParameter> _parameters)
     {
         super(_jasperReportsContext, _dataset, _parameters);
     }
@@ -76,21 +73,20 @@ public abstract class EQLQueryExecuter_Base
     public JRDataSource createDatasource()
         throws JRException
     {
-        final List<Map<String, ?>> list = new ArrayList<>();
+        Collection<Map<String, ?>> list = new ArrayList<>();
         try {
             final String stmtStr = getDataset().getQuery().getText();
-            EQLQueryExecuter_Base.LOG.debug("Stmt: {}", stmtStr);
-            final IEQLStmt stmt = InvokerUtil.getInvoker().invoke(replaceParameters(stmtStr));
-            if (stmt instanceof ISelectStmtPart) {
-                list.addAll(((ISelectStmtPart) stmt).getData());
+            LOG.debug("Stmt: {}", stmtStr);
+            final AbstractStmt stmt = org.efaps.eql.EQL.getStatement(replaceParameters(stmtStr));
+            if (stmt instanceof PrintStmt) {
+                list = ((PrintStmt) stmt).evaluate().getData();
             }
         } catch (final EFapsException e) {
-            EQLQueryExecuter_Base.LOG.error("Catched Exception", e);
+            LOG.error("Catched Exception", e);
         } catch (final Exception e) {
-            EQLQueryExecuter_Base.LOG.error("Catched Exception", e);
+            LOG.error("Catched Exception", e);
         }
         final JRMapCollectionDataSource ret = new JRMapCollectionDataSource(list);
         return ret;
     }
-
 }

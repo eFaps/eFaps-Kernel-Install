@@ -33,20 +33,15 @@ import net.sf.jasperreports.engine.JasperReportsContext;
  *
  * @author The eFaps Team
  */
-@EFapsUUID("5af4d48f-f0ca-48f8-a510-37b7d928a48e")
+@EFapsUUID("244237fd-084b-4fd3-8560-15cff2faf41d")
 @EFapsApplication("eFaps-Kernel")
-public class EQLQueryExecuter
-    extends EQLQueryExecuter_Base
+public class EQL2QueryExecuter
+    extends EQL2QueryExecuter_Base
 {
-    /**
-     * @param _jasperReportsContext the JasperReportsContext
-     * @param _dataset the dataset containing the query, fields, etc
-     * @param _parameters map of value parameters (instances of {@link JRValueParameter JRValueParameter})
-     *  indexed by name
-     */
-    public EQLQueryExecuter(final JasperReportsContext _jasperReportsContext,
-                            final JRDataset _dataset,
-                            final Map<String, ? extends JRValueParameter> _parameters)
+
+    public EQL2QueryExecuter(final JasperReportsContext _jasperReportsContext,
+                             final JRDataset _dataset,
+                             final Map<String, ? extends JRValueParameter> _parameters)
     {
         super(_jasperReportsContext, _dataset, _parameters);
     }

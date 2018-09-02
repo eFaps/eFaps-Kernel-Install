@@ -23,15 +23,16 @@ package org.efaps.esjp.common.jasperreport;
 
 import java.util.Map;
 
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
+
 import net.sf.jasperreports.engine.JRDataset;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRPropertiesMap;
 import net.sf.jasperreports.engine.JRValueParameter;
 import net.sf.jasperreports.engine.JasperReportsContext;
 import net.sf.jasperreports.engine.query.JRQueryExecuter;
 import net.sf.jasperreports.engine.query.QueryExecuterFactory;
-
-import org.efaps.admin.program.esjp.EFapsApplication;
-import org.efaps.admin.program.esjp.EFapsUUID;
 
 
 /**
@@ -83,7 +84,18 @@ public abstract class EQLQueryExecuterFactory_Base
                                                final Map<String, ? extends JRValueParameter> _parameters)
         throws JRException
     {
-        return new EQLQueryExecuter(_jasperReportsContext, _dataset, _parameters);
+        final JRPropertiesMap properties = _dataset.getPropertiesMap();
+        String version = "";
+        if (properties.containsProperty("org.efaps.eql.Version")) {
+            version = properties.getProperty("org.efaps.eql.Version");
+        }
+        JRQueryExecuter executer;
+        if (version.equals("2")) {
+            executer = new EQL2QueryExecuter(_jasperReportsContext, _dataset, _parameters);
+        } else {
+            executer = new EQLQueryExecuter(_jasperReportsContext, _dataset, _parameters);
+        }
+        return executer;
     }
 
     /**
