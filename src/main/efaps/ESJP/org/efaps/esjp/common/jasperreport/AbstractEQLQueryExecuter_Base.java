@@ -176,7 +176,7 @@ public abstract class AbstractEQLQueryExecuter_Base
                 final Object object = parameter.getValue();
                 LOG.trace("Found object to be replaced: {}", object);
                 if (object instanceof Instance) {
-                    if (_stmtStr.trim().startsWith("print") || _stmtStr.trim().startsWith("execute")) {
+                    if (_stmtStr.matches("(?s)^print *obj.*") || _stmtStr.trim().startsWith("execute")) {
                         ret = ((Instance) object).getOid();
                     } else {
                         ret = Long.valueOf(((Instance) object).getId()).toString();
