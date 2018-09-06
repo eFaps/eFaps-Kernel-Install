@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2018 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
-
 
 package org.efaps.esjp.common.jasperreport;
 
@@ -36,10 +32,7 @@ import net.sf.jasperreports.engine.query.QueryExecuterFactory;
 
 
 /**
- * TODO comment!
- *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("3c343e41-5abc-4682-862f-d0ee15756663")
 @EFapsApplication("eFaps-Kernel")
@@ -62,7 +55,6 @@ public abstract class EQLQueryExecuterFactory_Base
     {
         return null;
     }
-
 
     /**
      * Creates a query executer.
@@ -89,6 +81,7 @@ public abstract class EQLQueryExecuterFactory_Base
         if (properties.containsProperty("org.efaps.eql.Version")) {
             version = properties.getProperty("org.efaps.eql.Version");
         }
+
         JRQueryExecuter executer;
         if (version.equals("2")) {
             executer = new EQL2QueryExecuter(_jasperReportsContext, _dataset, _parameters);
