@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2017 The eFaps Team
+ * Copyright 2003 - 2018 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -45,7 +46,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO comment!
  *
  * @author The eFaps Team
  */
@@ -125,7 +125,7 @@ public abstract class Linked2ObjectAccessCheck_Base
      */
     @Override
     protected Map<Instance, Boolean> checkAccess(final Parameter _parameter,
-                                                 final List<Instance> _instances,
+                                                 final Collection<Instance> _instances,
                                                  final AccessType _accessType)
         throws EFapsException
     {

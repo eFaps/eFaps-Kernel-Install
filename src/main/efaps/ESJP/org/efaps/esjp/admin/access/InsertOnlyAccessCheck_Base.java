@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2017 The eFaps Team
+ * Copyright 2003 - 2018 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 
 package org.efaps.esjp.admin.access;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.efaps.admin.access.AccessType;
@@ -30,7 +30,6 @@ import org.efaps.db.Instance;
 import org.efaps.util.EFapsException;
 
 /**
- * TODO comment!
  *
  * @author The eFaps Team
  */
@@ -58,7 +57,7 @@ public abstract class InsertOnlyAccessCheck_Base
 
     @Override
     protected Map<Instance, Boolean> checkAccess(final Parameter _parameter,
-                                                 final List<Instance> _instances,
+                                                 final Collection<Instance> _instances,
                                                  final AccessType _accessType)
         throws EFapsException
     {

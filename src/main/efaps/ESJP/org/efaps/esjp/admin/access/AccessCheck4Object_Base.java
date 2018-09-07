@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2017 The eFaps Team
+ * Copyright 2003 - 2018 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -199,7 +200,7 @@ public abstract class AccessCheck4Object_Base
      */
     @Override
     protected Map<Instance, Boolean> checkAccess(final Parameter _parameter,
-                                                 final List<Instance> _instances,
+                                                 final Collection<Instance> _instances,
                                                  final AccessType _accessType)
         throws EFapsException
     {

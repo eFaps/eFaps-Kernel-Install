@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2017 The eFaps Team
+ * Copyright 2003 - 2018 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,9 @@
  *
  */
 
-
 package org.efaps.esjp.admin.access;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 import org.efaps.admin.access.AccessType;
@@ -33,11 +32,8 @@ import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.util.EFapsException;
 
-
 /**
- * TODO comment!
- *
- * @author The eFaps Team
+ * Base access check class.
  */
 @EFapsUUID("3b81f1a7-8ec0-4979-859e-0bd64e4d50d7")
 @EFapsApplication("eFaps-Kernel")
@@ -61,7 +57,7 @@ public abstract class AbstractAccessCheck_Base
             }
         } else {
             @SuppressWarnings("unchecked")
-            final List<Instance> instances = (List<Instance>) _parameter.get(ParameterValues.OTHERS);
+            final Collection<Instance> instances = (Collection<Instance>) _parameter.get(ParameterValues.OTHERS);
             if (instances != null) {
                 ret.put(ReturnValues.VALUES, checkAccess(_parameter, instances, accessType));
             }
@@ -84,7 +80,6 @@ public abstract class AbstractAccessCheck_Base
                                            AccessType _accessType)
         throws EFapsException;
 
-
     /**
      * Method to check the access for a list of instances.
      *
@@ -95,7 +90,7 @@ public abstract class AbstractAccessCheck_Base
      * @throws EFapsException on error
      */
     protected abstract Map<Instance, Boolean> checkAccess(Parameter _parameter,
-                                                          List<Instance> _instances,
+                                                          Collection<Instance> _instances,
                                                           AccessType _accessType)
         throws EFapsException;
 }

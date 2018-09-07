@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2017 The eFaps Team
+ * Copyright 2003 - 2018 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ package org.efaps.esjp.admin.access;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -234,13 +235,13 @@ public abstract class SimpleAccessCheckOnType_Base
      */
     @Override
     protected Map<Instance, Boolean> checkAccess(final Parameter _parameter,
-                                                 final List<Instance> _instances,
+                                                 final Collection<Instance> _instances,
                                                  final AccessType _accessType)
         throws EFapsException
     {
         Map<Instance, Boolean> ret = new HashMap<>();
         if (!_instances.isEmpty()) {
-            if (_instances.get(0).getType().isCheckStatus()) {
+            if (_instances.iterator().next().getType().isCheckStatus()) {
                 Evaluation.evalStatus(_instances);
             }
             ret = _instances.stream().distinct().collect(Collectors.toMap(inst -> inst, inst -> {
@@ -437,7 +438,7 @@ public abstract class SimpleAccessCheckOnType_Base
                 stmt = con.createStatement();
                 final ResultSet rs = stmt.executeQuery(_cmd.toString());
                 if (rs.next()) {
-                    hasAccess = (rs.getLong(1) > 0) ? true : false;
+                    hasAccess = rs.getLong(1) > 0 ? true : false;
                 }
                 rs.close();
             } finally {
