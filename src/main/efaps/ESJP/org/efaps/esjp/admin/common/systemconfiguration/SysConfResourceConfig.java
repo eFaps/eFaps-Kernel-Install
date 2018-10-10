@@ -17,8 +17,6 @@
 
 package org.efaps.esjp.admin.common.systemconfiguration;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -32,9 +30,8 @@ import java.util.UUID;
 import org.efaps.admin.KernelSettings;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.program.esjp.EFapsApplication;
-import org.efaps.admin.program.esjp.EFapsClassLoader;
-import org.efaps.admin.program.esjp.EFapsResourceFinder;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.program.esjp.EsjpScanner;
 import org.efaps.admin.program.esjp.Listener;
 import org.efaps.api.annotation.EFapsSysConfAttribute;
 import org.efaps.api.annotation.EFapsSysConfLink;
@@ -42,7 +39,6 @@ import org.efaps.api.annotation.EFapsSystemConfiguration;
 import org.efaps.esjp.admin.index.Search;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
-import org.glassfish.jersey.server.internal.scanning.AnnotationAcceptingListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -109,32 +105,7 @@ public final class SysConfResourceConfig
         throws EFapsException
     {
         addKernelSysConf();
-
-        @SuppressWarnings("unchecked")
-        final AnnotationAcceptingListener asl = new AnnotationAcceptingListener(
-                        EFapsClassLoader.getInstance(),
-                        EFapsSystemConfiguration.class);
-        final EFapsResourceFinder resourceFinder = new EFapsResourceFinder();
-        while (resourceFinder.hasNext()) {
-            final String next = resourceFinder.next();
-            if (asl.accept(next)) {
-                final InputStream in = resourceFinder.open();
-                try {
-                    SysConfResourceConfig.LOG.debug("Scanning '{}' for annotations.", next);
-                    asl.process(next, in);
-                } catch (final IOException e) {
-                    SysConfResourceConfig.LOG.warn("Cannot process '{}'", next);
-                } finally {
-                    try {
-                        in.close();
-                    } catch (final IOException ex) {
-                        SysConfResourceConfig.LOG.trace("Error closing resource stream.", ex);
-                    }
-                }
-            }
-        }
-        resourceFinder.close();
-        for (final Class<?> clazz : asl.getAnnotatedClasses()) {
+        for (final Class<?> clazz : new EsjpScanner().scan(EFapsSystemConfiguration.class)) {
             final EFapsSystemConfiguration sysConfAn = clazz.getAnnotation(EFapsSystemConfiguration.class);
             final List<ISysConfAttribute> confAttrs = new ArrayList<>();
             final List<ISysConfLink> confLinks = new ArrayList<>();
