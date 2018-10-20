@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
  Copyright 2003 - 2018 The eFaps Team
@@ -16,23 +15,22 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
--->
 
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ Original Author: Aha-Soft
+ Original Name:   Diagramm.png
+ Original Web:    www.aha-soft.com
+                  [ http://www.small-icons.com/stock-icons/16x16-free-application-icons.htm ]
+ Original License:Creative Commons Attribution 3.0 License
+                  [ http://creativecommons.org/licenses/by/3.0/us/ ]
+
+-->
+<ui-image xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>87001cc3-c45c-44de-b8f1-776df507f268</uuid>
+    <uuid>942ac3ff-e5a1-42e2-b57e-bb7bc1f4f96b</uuid>
     <file-application>eFaps-Kernel</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>MainToolBar</name>
-        <childs>
-            <child>Common_Main_Home</child>
-            <child>Admin_Common_MyDesk</child>
-            <child>Common_Main_Pivot</child>
-            <child>Admin_Common_ReloadCache</child>
-            <child>Common_Main_Preferences</child>
-            <child>Common_Main_SetCompany</child>
-            <child>Common_Main_LogoutToolBar</child>
-        </childs>
+        <name>Main_Pivot</name>
+        <file>Main_Pivot.png</file>
     </definition>
-</ui-menu>
+</ui-image>
