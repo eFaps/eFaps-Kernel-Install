@@ -454,4 +454,23 @@ public class CICommon
         public final CIAttribute Modified = new CIAttribute(this, "Modified");
     }
 
+    public static final _PivotDataSource PivotDataSource = new _PivotDataSource("8cfbb519-97f4-4944-9980-eeed75e55fb9");
+
+    public static class _PivotDataSource
+        extends CIType
+    {
+
+        protected _PivotDataSource(final String _uuid)
+        {
+            super(_uuid);
+        }
+        public final CIAttribute Status = new CIAttribute(this, "Status");
+        public final CIAttribute Name = new CIAttribute(this, "Name");
+        public final CIAttribute EQLStmt = new CIAttribute(this, "EQLStmt");
+        public final CIAttribute Creator = new CIAttribute(this, "Creator");
+        public final CIAttribute Created = new CIAttribute(this, "Created");
+        public final CIAttribute Modifier = new CIAttribute(this, "Modifier");
+        public final CIAttribute Modified = new CIAttribute(this, "Modified");
+    }
+
 }

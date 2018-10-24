@@ -20,8 +20,8 @@ package org.efaps.esjp.common.pivot;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -29,8 +29,12 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.api.ui.IOption;
 import org.efaps.api.ui.IPivotProvider;
+import org.efaps.db.Instance;
 import org.efaps.db.stmt.PrintStmt;
+import org.efaps.db.stmt.selection.Evaluator;
 import org.efaps.eql.EQL;
+import org.efaps.esjp.ci.CICommon;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,30 +52,42 @@ public abstract class PivotProvider_Base
     @Override
     public List<IOption> getDataSources()
     {
-        final IOption demo = new IOption()
-        {
+       final List <IOption> ret = new ArrayList<>();
+        try {
+            final Evaluator eval = EQL.print(CICommon.PivotDataSource)
+                .attribute(CICommon.PivotDataSource.Name).stmt()
+                .evaluate();
+            while (eval.next()) {
+                final String label = eval.get(CICommon.PivotDataSource.Name);
+                final String oid = eval.inst().getOid();
+                ret.add(new IOption()
+                {
 
-            private static final long serialVersionUID = 1L;
+                    private static final long serialVersionUID = 1L;
 
-            @Override
-            public String getLabel()
-            {
-                return "Demo Data Source";
+                    @Override
+                    public String getLabel()
+                    {
+                        return label;
+                    }
+
+                    @Override
+                    public Object getValue()
+                    {
+                        return oid;
+                    }
+
+                    @Override
+                    public boolean isSelected()
+                    {
+                        return false;
+                    }
+                });
             }
-
-            @Override
-            public Object getValue()
-            {
-                return "123.456";
-            }
-
-            @Override
-            public boolean isSelected()
-            {
-                return false;
-            }
-        };
-        return Collections.singletonList(demo);
+        } catch (final EFapsException e) {
+            LOG.error("Catched", e);
+        }
+        return ret;
     }
 
     @Override
@@ -80,16 +96,17 @@ public abstract class PivotProvider_Base
         CharSequence ret = "[]";
         final ObjectMapper mapper = new ObjectMapper();
         try {
-            final StringBuilder stmtStr = new StringBuilder()
-                            .append("print query type Sales_Invoice select attribute[Name] as Name, "
-                                        + "linkto[Contact].attribute[Name] as Cliente,"
-                                        + "attribute[NetTotal] as NetTotal,"
-                                        + "attribute[Date].format[YYYY] as Year,"
-                                        + "attribute[Date].format[MM] as Month");
+            final Instance dsInt =  Instance.get(_dataSource);
+            if (InstanceUtils.isKindOf(dsInt, CICommon.PivotDataSource)) {
+                final String eqlStmt = EQL.print(dsInt).attribute(CICommon.PivotDataSource.EQLStmt)
+                    .stmt()
+                    .evaluate()
+                    .get(CICommon.PivotDataSource.EQLStmt);
 
-            final PrintStmt stmt = (PrintStmt) EQL.getStatement(stmtStr);
-            final Collection<Map<String, ?>> data = stmt.evaluate().getData();
-            ret  = mapper.writeValueAsString(data);
+                final PrintStmt stmt = (PrintStmt) EQL.getStatement(eqlStmt);
+                final Collection<Map<String, ?>> data = stmt.evaluate().getData();
+                ret  = mapper.writeValueAsString(data);
+            }
         } catch (final JsonProcessingException | EFapsException e) {
             LOG.error("Catched", e);
         }
