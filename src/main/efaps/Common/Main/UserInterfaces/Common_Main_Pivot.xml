@@ -28,11 +28,11 @@
             <role>Administration</role>
         </access>
         <target>
-            <trigger event="UI_ACCESSCHECK" method="configCheck"
-                name="Common_Main_Pivot.UI_ACCESSCHECK"
-                program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="SystemConfig">WebApp-Configuration</property>
-                <property name="Attribute">org.efaps.webapp.ConnectionManagement.activate</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
+                name="Common_PivotMyDesk.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Kernel-Configuration -->
+                <property name="SystemConfig">acf2b19b-f7c4-4e4a-a724-fb2d9ed30079</property>
+                <property name="Attribute">org.efaps.kernel.ActivatePivot</property>
             </trigger>
         </target>
         <property name="HRef">${ROOTURL}/pivot</property>

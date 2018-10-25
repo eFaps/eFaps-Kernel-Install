@@ -57,6 +57,7 @@ public final class SysConfResourceConfig
     static {
         ATTRS.add(KernelConfigurations.ACCESS4OBJECT);
         ATTRS.add(KernelConfigurations.ACTIVATEMOSKITO);
+        ATTRS.add(KernelConfigurations.ACTIVATEPIVOT);
         ATTRS.add(KernelConfigurations.INDEXBASEFOLDER);
         ATTRS.add(KernelConfigurations.INDEXLANG);
         ATTRS.add(KernelConfigurations.INDEXQUERYBLDR);

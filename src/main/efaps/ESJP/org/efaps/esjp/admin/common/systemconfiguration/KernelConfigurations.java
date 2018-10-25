@@ -105,6 +105,12 @@ public final class KernelConfigurations
                     .description("Activate Moskito Monitoring.");
 
     /** See description. */
+    public static final  BooleanSysConfAttribute ACTIVATEPIVOT = new BooleanSysConfAttribute()
+                    .sysConfUUID(EFapsSystemConfiguration.UUID)
+                    .key(KernelConfigurations.BASE + "ActivatePivot")
+                    .description("Activate PIVOT mechanism.");
+
+    /** See description. */
     public static final  BooleanSysConfAttribute SSO_PERMITROLEUPDATE = new BooleanSysConfAttribute()
                     .sysConfUUID(EFapsSystemConfiguration.UUID)
                     .key(KernelConfigurations.BASE + "sso.PermitRoleUpdate")

@@ -26,6 +26,17 @@
         <childs>
             <child>Common_PivotDataSourceMyDesk</child>
         </childs>
+        <target>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
+                name="Common_PivotMyDesk.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Kernel-Configuration -->
+                <property name="SystemConfig">acf2b19b-f7c4-4e4a-a724-fb2d9ed30079</property>
+                <property name="Attribute">org.efaps.kernel.ActivatePivot</property>
+            </trigger>
+        </target>
+        <parents>
+            <parent>Admin_Common_MyDesk</parent>
+        </parents>
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
     </definition>
