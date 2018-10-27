@@ -18,27 +18,13 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>8344cacd-ddec-44ed-b584-077011d3b94a</uuid>
+    <uuid>fdb00d58-379d-4a04-b5c2-bc4e88e7cc78</uuid>
     <file-application>eFaps-Kernel</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Common_PivotMyDesk</name>
+        <name>Common_PivotReportMyDesk_Menu</name>
         <childs>
-            <child>Common_PivotDataSourceMyDesk</child>
-            <child>Common_PivotReportMyDesk</child>
+            <child>Common_PivotReportMyDesk_Menu_Action</child>
         </childs>
-        <target>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
-                name="Common_PivotMyDesk.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Kernel-Configuration -->
-                <property name="SystemConfig">acf2b19b-f7c4-4e4a-a724-fb2d9ed30079</property>
-                <property name="Attribute">org.efaps.kernel.ActivatePivot</property>
-            </trigger>
-        </target>
-        <parents>
-            <parent>Admin_Common_MyDesk</parent>
-        </parents>
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
     </definition>
 </ui-menu>

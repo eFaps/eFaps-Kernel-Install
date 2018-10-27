@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2018 The eFaps Team
 
@@ -16,29 +15,24 @@
  limitations under the License.
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>8344cacd-ddec-44ed-b584-077011d3b94a</uuid>
+    <uuid>71913e18-8268-4c4d-b331-a2e8338cf425</uuid>
     <file-application>eFaps-Kernel</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Common_PivotMyDesk</name>
-        <childs>
-            <child>Common_PivotDataSourceMyDesk</child>
-            <child>Common_PivotReportMyDesk</child>
-        </childs>
+        <name>Common_PivotReportMyDesk</name>
+        <access>
+            <role>Administration</role>
+        </access>
         <target>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
-                name="Common_PivotMyDesk.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Kernel-Configuration -->
-                <property name="SystemConfig">acf2b19b-f7c4-4e4a-a724-fb2d9ed30079</property>
-                <property name="Attribute">org.efaps.kernel.ActivatePivot</property>
-            </trigger>
+            <menu>Common_PivotReportMyDesk_Menu</menu>
+            <table>Common_PivotReportTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Common_PivotReport</property>
+            </evaluate>
         </target>
-        <parents>
-            <parent>Admin_Common_MyDesk</parent>
-        </parents>
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
     </definition>
-</ui-menu>
+</ui-command>
