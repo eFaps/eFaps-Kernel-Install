@@ -28,7 +28,7 @@
             <table-name>T_CMPIVOT</table-name>
             <column name="COMPANYID"    type="INTEGER"                      not-null="true" />
             <column name="TYPEID"       type="INTEGER"                      not-null="true"/>
-            <column name="STATUS"       type="INTEGER"                      not-null="true"/>
+            <column name="STATUS"       type="INTEGER" />
             <column name="NAME"         type="STRING_SHORT" length="64"     not-null="true"/>
             <column name="CONTENT"      type="STRING_SHORT" length="4096"   not-null="true"/>
             <column name="CREATOR"      type="INTEGER"                      not-null="true"/>

@@ -52,11 +52,12 @@ public abstract class PivotProvider_Base
     @Override
     public List<IOption> getDataSources()
     {
-       final List <IOption> ret = new ArrayList<>();
+        final List<IOption> ret = new ArrayList<>();
         try {
             final Evaluator eval = EQL.print(CICommon.PivotDataSource)
-                .attribute(CICommon.PivotDataSource.Name).stmt()
-                .evaluate();
+                            .attribute(CICommon.PivotDataSource.Name)
+                            .stmt()
+                            .evaluate();
             while (eval.next()) {
                 final String label = eval.get(CICommon.PivotDataSource.Name);
                 final String oid = eval.inst().getOid();
@@ -108,6 +109,83 @@ public abstract class PivotProvider_Base
                 ret  = mapper.writeValueAsString(data);
             }
         } catch (final JsonProcessingException | EFapsException e) {
+            LOG.error("Catched", e);
+        }
+        return ret;
+    }
+
+    @Override
+    public List<IOption> getReports()
+    {
+        final List<IOption> ret = new ArrayList<>();
+        try {
+            final Evaluator eval = EQL.print(CICommon.PivotReport)
+                            .attribute(CICommon.PivotReport.Name)
+                            .stmt()
+                            .evaluate();
+            while (eval.next()) {
+                final String label = eval.get(CICommon.PivotReport.Name);
+                final String oid = eval.inst().getOid();
+                ret.add(new IOption()
+                {
+
+                    private static final long serialVersionUID = 1L;
+
+                    @Override
+                    public String getLabel()
+                    {
+                        return label;
+                    }
+
+                    @Override
+                    public Object getValue()
+                    {
+                        return oid;
+                    }
+
+                    @Override
+                    public boolean isSelected()
+                    {
+                        return false;
+                    }
+                });
+            }
+        } catch (final EFapsException e) {
+            LOG.error("Catched", e);
+        }
+        return ret;
+    }
+
+    @Override
+    public String save(final String _reportName, final String _pivotReport)
+    {
+        String ret = null;
+        try {
+            final Instance instance = EQL.insert(CICommon.PivotReport)
+                .set(CICommon.PivotReport.Name, _reportName)
+                .set(CICommon.PivotReport.Report, _pivotReport)
+                .stmt()
+                .execute();
+            ret = instance.getOid();
+        } catch (final EFapsException e) {
+            LOG.error("Catched", e);
+        }
+        return ret;
+    }
+
+    @Override
+    public CharSequence getReport(final String _reportKey)
+    {
+        CharSequence ret = "{}";
+        try {
+            final Instance dsInt =  Instance.get(_reportKey);
+            if (InstanceUtils.isKindOf(dsInt, CICommon.PivotReport)) {
+                ret = EQL.print(dsInt).attribute(CICommon.PivotReport.Report)
+                    .stmt()
+                    .evaluate()
+                    .get(CICommon.PivotReport.Report);
+            }
+        } catch (final EFapsException e) {
             LOG.error("Catched", e);
         }
         return ret;

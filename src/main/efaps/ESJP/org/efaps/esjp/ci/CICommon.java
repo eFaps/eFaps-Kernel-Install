@@ -473,4 +473,21 @@ public class CICommon
         public final CIAttribute Modified = new CIAttribute(this, "Modified");
     }
 
+    public static final _PivotReport PivotReport = new _PivotReport("43bd3d57-41ea-4f4c-81ef-8d31b8259e1f");
+
+    public static class _PivotReport
+        extends CIType
+    {
+
+        protected _PivotReport(final String _uuid)
+        {
+            super(_uuid);
+        }
+        public final CIAttribute Name = new CIAttribute(this, "Name");
+        public final CIAttribute Report = new CIAttribute(this, "Report");
+        public final CIAttribute Creator = new CIAttribute(this, "Creator");
+        public final CIAttribute Created = new CIAttribute(this, "Created");
+        public final CIAttribute Modifier = new CIAttribute(this, "Modifier");
+        public final CIAttribute Modified = new CIAttribute(this, "Modified");
+    }
 }
