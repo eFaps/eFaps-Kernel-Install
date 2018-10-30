@@ -161,12 +161,22 @@ public abstract class PivotProvider_Base
     {
         String ret = null;
         try {
-            final Instance instance = EQL.insert(CICommon.PivotReport)
-                .set(CICommon.PivotReport.Name, _reportName)
-                .set(CICommon.PivotReport.Report, _pivotReport)
-                .stmt()
-                .execute();
-            ret = instance.getOid();
+            if (_reportName.matches("\\d*\\.\\d*")) {
+                final Instance reportInst = Instance.get(_reportName);
+                if (InstanceUtils.isType(reportInst, CICommon.PivotReport)) {
+                    EQL.update(reportInst)
+                        .set(CICommon.PivotReport.Report, _pivotReport)
+                        .stmt()
+                        .execute();
+                }
+            } else {
+                final Instance instance = EQL.insert(CICommon.PivotReport)
+                    .set(CICommon.PivotReport.Name, _reportName)
+                    .set(CICommon.PivotReport.Report, _pivotReport)
+                    .stmt()
+                    .execute();
+                ret = instance.getOid();
+            }
         } catch (final EFapsException e) {
             LOG.error("Catched", e);
         }
