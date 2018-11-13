@@ -200,4 +200,19 @@ public abstract class PivotProvider_Base
         }
         return ret;
     }
+
+    @Override
+    public void delete(final String _reportKey)
+    {
+        try {
+            final Instance dsInt =  Instance.get(_reportKey);
+            if (InstanceUtils.isKindOf(dsInt, CICommon.PivotReport)) {
+                EQL.delete(dsInt)
+                    .stmt()
+                    .execute();
+            }
+        } catch (final EFapsException e) {
+            LOG.error("Catched", e);
+        }
+    }
 }
