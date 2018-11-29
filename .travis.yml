@@ -6,7 +6,8 @@ cache:
 
 jdk:
   - oraclejdk8
-
+  - openjdk8
+  
 install:
   - wget https://raw.githubusercontent.com/eFaps/Utils/master/settings/settings.xml -O mySettings.xml
   - mvn install -s mySettings.xml -DskipTests=true -B -V
