@@ -26,6 +26,8 @@
         <icon>Main_Pivot</icon>
         <access>
             <role>Administration</role>
+            <role>Pivot_Admin</role>
+            <role>Pivot_User</role>
         </access>
         <target>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"

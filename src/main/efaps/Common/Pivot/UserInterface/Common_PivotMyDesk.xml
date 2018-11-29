@@ -23,6 +23,10 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Common_PivotMyDesk</name>
+        <access>
+            <role>Administration</role>
+            <role>Pivot_Admin</role>
+        </access>
         <childs>
             <child>Common_PivotDataSourceMyDesk</child>
             <child>Common_PivotReportMyDesk</child>
