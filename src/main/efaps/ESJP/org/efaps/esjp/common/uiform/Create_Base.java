@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2018 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
-
 
 package org.efaps.esjp.common.uiform;
 
@@ -30,8 +26,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang3.math.NumberUtils;
-import org.efaps.admin.EFapsSystemConfiguration;
-import org.efaps.admin.KernelSettings;
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.AttributeSet;
 import org.efaps.admin.datamodel.Classification;
@@ -48,12 +42,12 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.program.esjp.Listener;
 import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.Form;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.admin.ui.field.FieldSet;
-import org.efaps.bpm.BPM;
 import org.efaps.db.Checkin;
 import org.efaps.db.Context;
 import org.efaps.db.Delete;
@@ -63,14 +57,12 @@ import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.util.EFapsException;
-import org.kie.api.runtime.process.ProcessInstance;
 
 
 /**
  * This esjp is used from the UI_COMMAND_EXECUTE from the Form on Create.
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("a76c48e2-79e4-4083-93b8-f4bc192eaa02")
 @EFapsApplication("eFaps-Kernel")
@@ -115,42 +107,9 @@ public abstract class Create_Base
                                final Instance _instance)
         throws EFapsException
     {
-        if (EFapsSystemConfiguration.get().getAttributeValueAsBoolean(KernelSettings.ACTIVATE_BPM)) {
-            if (getProperty(_parameter, "ProcessID") != null) {
-                if ("true".equalsIgnoreCase(getProperty(_parameter, "SaveContextBeforeProcessStart"))) {
-                    Context.save();
-                }
-                final Map<String, Object> params = new HashMap<String, Object>();
-                params.put("OID", _instance.getOid());
-                add2ProcessMap(_parameter, _instance, params);
-                final ProcessInstance processInstance = BPM
-                                .startProcess(getProperty(_parameter, "ProcessID"), params);
-                if ("true".equalsIgnoreCase(getProperty(_parameter, "RegisterProcess"))) {
-                    // BPM_GeneralInstance2ProcessId -- use of UUID because installed from different module
-                    final Insert insert = new Insert(UUID.fromString("f6731331-e3a7-4a98-be35-ad1bb8e88497"));
-                    insert.add("ProcessId", processInstance.getId());
-                    insert.add("GeneralInstanceLink", _instance.getGeneralId());
-                    insert.executeWithoutTrigger();
-                }
-            }
+        for (final IOnCreateListener listener : Listener.get().<IOnCreateListener>invoke(IOnCreateListener.class)) {
+            listener.executeProcess(_parameter, _instance);
         }
-    }
-
-    /**
-     * Add additional values to the map passed to the process prior to
-     * execution.
-     *
-     * @param _parameter Parameter as passed by the eFasp API
-     * @param _instance Insert the values can be added to
-     * @param _params Map passed to the Process
-     * @throws EFapsException on error
-     */
-    protected void add2ProcessMap(final Parameter _parameter,
-                                  final Instance _instance,
-                                  final Map<String, Object> _params)
-        throws EFapsException
-    {
-
     }
 
     /**
@@ -165,7 +124,7 @@ public abstract class Create_Base
     {
         final AbstractCommand command = (AbstractCommand) _parameter.get(ParameterValues.UIOBJECT);
         final Instance parent = _parameter.getInstance();
-        final List<FieldSet> fieldsets = new ArrayList<FieldSet>();
+        final List<FieldSet> fieldsets = new ArrayList<>();
 
         Status status = null;
         if (getProperty(_parameter, "StatusGroup") != null && getProperty(_parameter, "Status") != null) {
@@ -444,7 +403,7 @@ public abstract class Create_Base
 
             for (final Object object : classifications) {
                 final Classification classification = (Classification) object;
-                final List<FieldSet> fieldsets = new ArrayList<FieldSet>();
+                final List<FieldSet> fieldsets = new ArrayList<>();
 
                 final Insert relInsert = new Insert(classification.getClassifyRelationType());
                 relInsert.add(classification.getRelLinkAttributeName(), ((Long) _instance.getId()).toString());
