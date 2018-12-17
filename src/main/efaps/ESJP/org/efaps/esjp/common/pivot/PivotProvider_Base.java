@@ -54,7 +54,7 @@ public abstract class PivotProvider_Base
     {
         final List<IOption> ret = new ArrayList<>();
         try {
-            final Evaluator eval = EQL.print(CICommon.PivotDataSource)
+            final Evaluator eval = EQL.printQuery(CICommon.PivotDataSource)
                             .attribute(CICommon.PivotDataSource.Name)
                             .stmt()
                             .evaluate();
@@ -119,7 +119,7 @@ public abstract class PivotProvider_Base
     {
         final List<IOption> ret = new ArrayList<>();
         try {
-            final Evaluator eval = EQL.print(CICommon.PivotReport)
+            final Evaluator eval = EQL.printQuery(CICommon.PivotReport)
                             .attribute(CICommon.PivotReport.Name)
                             .stmt()
                             .evaluate();
