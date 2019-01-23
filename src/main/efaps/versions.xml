@@ -2,7 +2,7 @@
 
 <!--
 
-  Copyright 2003 - 2016 The eFaps Team
+  Copyright 2003 - 2019 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -118,10 +118,12 @@
             import java.util.UUID;
             import org.efaps.admin.user.JAASSystem;
             import org.efaps.admin.user.Role;
+            import org.efaps.admin.user.Person;
             import org.efaps.db.Context;
             import org.efaps.db.QueryBuilder;
             import org.efaps.db.InstanceQuery;
             import org.efaps.db.Insert;
+
 
             EFAPS_LOGGER.info("    Check if Languages must be imported");
             //Admin_Language
@@ -441,7 +443,7 @@
                 insert.add("Language", "1");
                 insert.executeWithoutTrigger();
             }
-
+            Person.initialize();
             ]]>
         </script>
     </version>
