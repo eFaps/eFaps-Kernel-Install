@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2017 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -360,7 +360,7 @@ public abstract class AccessCheck4UI_Base
             }
             for (final String attribute : analyseProperty(_parameter, "AttributeExists").values()) {
                 if (attribute.startsWith("!")) {
-                    access = config.getAttributeValue(attribute) == null;
+                    access = config.getAttributeValue(attribute.substring(1)) == null;
                 } else {
                     access = config.getAttributeValue(attribute) != null;
                 }
