@@ -110,11 +110,15 @@ public final class SysConfResourceConfig
             final EFapsSystemConfiguration sysConfAn = clazz.getAnnotation(EFapsSystemConfiguration.class);
             final List<ISysConfAttribute> confAttrs = new ArrayList<>();
             final List<ISysConfLink> confLinks = new ArrayList<>();
-            this.uuid2attr.put(sysConfAn.value(), confAttrs);
-            this.uuid2link.put(sysConfAn.value(), confLinks);
+            uuid2attr.put(sysConfAn.value(), confAttrs);
+            uuid2link.put(sysConfAn.value(), confLinks);
             LOG.debug("Found Annotation in class {}", clazz);
-            LOG.info("Found SystemConfiguration: {} - {}",
-                            SystemConfiguration.get(UUID.fromString(sysConfAn.value())).getName(), sysConfAn.value());
+            final SystemConfiguration sysConfig = SystemConfiguration.get(UUID.fromString(sysConfAn.value()));
+            if (sysConfig == null) {
+                LOG.warn("No SystemConfiguratio found for : {}", sysConfAn.value());
+            } else {
+                LOG.info("Found SystemConfiguration: {} - {}", sysConfig.getName(), sysConfAn.value());
+            }
             for (final Field field : clazz.getDeclaredFields()) {
                 if (field.isAnnotationPresent(EFapsSysConfAttribute.class)) {
                     if (Modifier.isStatic(field.getModifiers())) {
@@ -141,8 +145,8 @@ public final class SysConfResourceConfig
         }
         for (final ISysConfListener listener : Listener.get().<ISysConfListener>invoke(
                         ISysConfListener.class)) {
-            listener.addAttributes(this.uuid2attr);
-            listener.addLinks(this.uuid2link);
+            listener.addAttributes(uuid2attr);
+            listener.addLinks(uuid2link);
         }
     }
 
@@ -159,7 +163,7 @@ public final class SysConfResourceConfig
                         org.efaps.admin.EFapsSystemConfiguration.get().getUUID());
 
         final List<ISysConfAttribute> attrs = new ArrayList<>();
-        this.uuid2attr.put(org.efaps.admin.EFapsSystemConfiguration.get().getUUID().toString(), attrs);
+        uuid2attr.put(org.efaps.admin.EFapsSystemConfiguration.get().getUUID().toString(), attrs);
 
         AbstractSysConfAttribute<?, ?> attr = new BooleanSysConfAttribute()
                         .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
@@ -392,8 +396,8 @@ public final class SysConfResourceConfig
     public List<ISysConfLink> getLinks(final String _uuid)
     {
         final List<ISysConfLink> ret;
-        if (this.uuid2link.containsKey(_uuid)) {
-            ret = this.uuid2link.get(_uuid);
+        if (uuid2link.containsKey(_uuid)) {
+            ret = uuid2link.get(_uuid);
         } else {
             ret = new ArrayList<>();
         }
@@ -449,8 +453,8 @@ public final class SysConfResourceConfig
     public List<ISysConfAttribute> getAttributes(final String _uuid)
     {
         final List<ISysConfAttribute> ret;
-        if (this.uuid2attr.containsKey(_uuid)) {
-            ret = this.uuid2attr.get(_uuid);
+        if (uuid2attr.containsKey(_uuid)) {
+            ret = uuid2attr.get(_uuid);
         } else {
             ret = new ArrayList<>();
         }
