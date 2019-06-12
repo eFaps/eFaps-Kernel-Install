@@ -27,6 +27,10 @@
             <form>Admin_Common_AssociationForm</form>
         </target>
         <type>Admin_Common_Association</type>
+        <childs>
+            <child>Admin_Common_AssociationTree_Definition</child>
+            <child>Admin_Common_AssociationTree_Mapping</child>
+        </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>

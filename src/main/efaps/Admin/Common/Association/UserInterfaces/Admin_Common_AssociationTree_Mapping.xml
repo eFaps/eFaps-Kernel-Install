@@ -16,21 +16,24 @@
     limitations under the License.
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>580418c1-2e20-4c86-8a48-b9d1ac0c0063</uuid>
+    <uuid>7cd006fa-210f-4da1-afc6-2b53e45d1a4f</uuid>
     <file-application>eFaps-Kernel</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Common_AssociationDefaultTree</name>
+        <name>Admin_Common_AssociationTree_Mapping</name>
         <target>
-            <form>Admin_Common_AssociationDefaultForm</form>
+            <menu>Admin_Common_AssociationTree_Mapping_Menu</menu>
+            <table>Admin_Common_AssociationMappingTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Admin_Common_AssociationMapping</property>
+                <property name="LinkFrom">AssociationLink</property>
+            </evaluate>
         </target>
-        <type>Admin_Common_AssociationDefault</type>
-        <childs>
-            <child>Admin_Common_AssociationTree_Definition</child>
-        </childs>
+        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
+        <property name="TargetShowCheckBoxes">true</property>
     </definition>
-</ui-menu>
+</ui-command>
