@@ -40,6 +40,7 @@
             <child>Admin_Common_JmsMyDesk</child>
             <child>Admin_Common_MsgPhraseMyDesk</child>
             <child>Common_HistoryEQLMyDesk</child>
+            <child>Admin_Common_AssociationMyDesk</child>
         </childs>
     </definition>
 </ui-menu>
