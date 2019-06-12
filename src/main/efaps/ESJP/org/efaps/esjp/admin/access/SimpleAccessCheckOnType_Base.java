@@ -35,6 +35,7 @@ import org.efaps.admin.access.AccessType;
 import org.efaps.admin.access.AccessTypeEnums;
 import org.efaps.admin.access.user.Evaluation;
 import org.efaps.admin.access.user.PermissionSet;
+import org.efaps.admin.common.Association;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
@@ -140,7 +141,7 @@ public abstract class SimpleAccessCheckOnType_Base
                 .append(" on ").append(type.getMainTable().getSqlTable()).append(".")
                 .append(type.getStatusAttribute().getSqlColNames().get(0))
                 .append(" = T_ACCESSSET2STATUS.ACCESSSTATUS");
-        } else if (type.isCompanyDependent() && type.getMainTable().getSqlColType() != null
+        } else if ((type.isCompanyDependent() || type.hasAssociation()) && type.getMainTable().getSqlColType() != null
                         && !_accessType.equals(AccessTypeEnums.CREATE.getAccessType())) {
             // in case that it is companydependent but not status
             cmd.append(" join T_ACCESSSET2DMTYPE on T_ACCESSSET2USER.ACCESSSET = T_ACCESSSET2DMTYPE.ACCESSSET ")
@@ -276,7 +277,7 @@ public abstract class SimpleAccessCheckOnType_Base
         final Context context = Context.getThreadContext();
 
         final Type type = ((Instance) _instances.get(0)).getType();
-        if (type.isCheckStatus() || type.isCompanyDependent()) {
+        if (type.isCheckStatus() || type.isCompanyDependent() || type.hasAssociation()) {
             final Set<Long> users = new HashSet<>();
             final Set<Role> localRoles = new HashSet<>();
             final StringBuilder cmd = new StringBuilder();
@@ -290,7 +291,7 @@ public abstract class SimpleAccessCheckOnType_Base
                     .append(type.getMainTable().getSqlTable()).append(".")
                     .append(type.getStatusAttribute().getSqlColNames().get(0))
                     .append(" = T_ACCESSSET2STATUS.ACCESSSTATUS");
-            } else if (type.isCompanyDependent() && type.getMainTable().getSqlColType() != null) {
+            } else if ((type.isCompanyDependent() || type.hasAssociation()) && type.getMainTable().getSqlColType() != null) {
                 // in case that it is companydependent but not status
                 cmd.append(" join T_ACCESSSET2DMTYPE on T_ACCESSSET2USER.ACCESSSET = T_ACCESSSET2DMTYPE.ACCESSSET ")
                     .append(" join ").append(type.getMainTable().getSqlTable())
@@ -334,6 +335,26 @@ public abstract class SimpleAccessCheckOnType_Base
                             cmd.append(",");
                         }
                         cmd.append(compId);
+                    }
+                    cmd.append(")");
+                }
+            }
+
+            if (type.hasAssociation()) {
+                if (noCompCheck) {
+                    SimpleAccessCheckOnType_Base.LOG.error("Cannot check for Company on type '{}'", type);
+                } else {
+                    cmd.append(" and ").append(type.getMainTable().getSqlTable()).append(".")
+                        .append(type.getAssociationAttribute().getSqlColNames().get(0)).append(" in (");
+                    boolean first = true;
+                    for (final Long compId : context.getPerson().getCompanies()) {
+                        final Association association = Association.evaluate(type, compId);
+                        if (first) {
+                            first = false;
+                        } else {
+                            cmd.append(",");
+                        }
+                        cmd.append(association.getId());
                     }
                     cmd.append(")");
                 }

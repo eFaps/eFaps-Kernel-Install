@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -531,6 +531,7 @@ function _eFapsCreateDataModelTablesStep1()  {
   _eFapsCreateAttrType(conRsrc, null, 'b7c6a324-5dec-425f-b778-fa8fabf80202', 'Enum',           'org.efaps.admin.datamodel.attributetype.EnumType',           'org.efaps.admin.datamodel.ui.EnumUI',           null, null);
   _eFapsCreateAttrType(conRsrc, null, 'a9b1abde-d58d-4aea-8cdc-f2870111f1cd', 'BitEnum',        'org.efaps.admin.datamodel.attributetype.BitEnumType',        'org.efaps.admin.datamodel.ui.BitEnumUI',        null, null);
   _eFapsCreateAttrType(conRsrc, null, '58817bd8-db76-4b40-8acd-18112fe96170', 'Jaxb',           'org.efaps.admin.datamodel.attributetype.JaxbType',           'org.efaps.admin.datamodel.ui.JaxbUI',           null, null);
+  _eFapsCreateAttrType(conRsrc, null, '0d296eba-0c1e-4b78-a2e3-01b1f4991cfe', 'AssociationLink','org.efaps.admin.datamodel.attributetype.AssociationLinkType','org.efaps.admin.datamodel.ui.StringUI',         null, 1   );
 
   _eFapsCreateInsertAttr(conRsrc, ATTRTYPESQLTABLEID, ATTRTYPETYPEID, 'Classname',     'CLASSNAME',    'String', null, null);
   _eFapsCreateInsertAttr(conRsrc, ATTRTYPESQLTABLEID, ATTRTYPETYPEID, 'ClassnameUI',   'CLASSNAMEUI',  'String', null, null);
@@ -699,4 +700,8 @@ function _eFapsInitRunLevel()  {
           "T_RUNLEVELDEF",
           "RUNLEVELID,PRIORITY,CLASS,METHOD",
           "" + id + ",11, 'org.efaps.jms.JmsHandler', 'initialize'");
+  _insert(conRsrc, null, null,
+          "T_RUNLEVELDEF",
+          "RUNLEVELID,PRIORITY,CLASS,METHOD",
+          "" + id + ",12, 'org.efaps.admin.common.Association', 'initialize'");
 }

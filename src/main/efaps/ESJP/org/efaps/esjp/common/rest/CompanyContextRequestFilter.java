@@ -26,6 +26,8 @@ import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.ext.Provider;
 
 import org.apache.commons.lang3.StringUtils;
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.user.Company;
 import org.efaps.db.Context;
 import org.efaps.util.EFapsException;
@@ -35,6 +37,8 @@ import org.slf4j.LoggerFactory;
 
 @Provider
 @PreMatching
+@EFapsUUID("9a2ef131-acf5-4c45-af23-0d18c9c59293")
+@EFapsApplication("eFaps-Kernel")
 public class CompanyContextRequestFilter
     implements ContainerRequestFilter
 {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.store.Directory;
+import org.efaps.admin.common.Association;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -102,6 +103,24 @@ public abstract class Process_Base
                     }
                     instances.add(inst);
                 }
+            } else if (inst.getType().hasAssociation()) {
+                LOG.debug("Checking instance to be added {}", inst);
+                final PrintQuery print = new PrintQuery(inst);
+                print.addAttribute(inst.getType().getAssociationAttribute());
+                if (print.executeWithoutAccessCheck()) {
+                    final Association association = print.getAttribute(inst.getType().getAssociationAttribute());
+                    for (final Company company : association.getCompanies()) {
+                        final Map<Type, List<Instance>> subMap = instanceMap.get(company.getId());
+                        final List<Instance> instances;
+                        if (subMap.containsKey(inst.getType())) {
+                            instances = subMap.get(inst.getType());
+                        } else {
+                            instances = new ArrayList<>();
+                            subMap.put(inst.getType(), instances);
+                        }
+                        instances.add(inst);
+                    }
+                }
             } else {
                 for (final Entry<Long, Map<Type, List<Instance>>> entry : instanceMap.entrySet()) {
                     final List<Instance> instances;
@@ -164,6 +183,9 @@ public abstract class Process_Base
                 queryBldr.setCompanyDependent(false);
                 if (type.isCompanyDependent()) {
                     queryBldr.addWhereAttrEqValue(type.getCompanyAttribute(), compInst);
+                }
+                if (type.hasAssociation()) {
+                    queryBldr.addWhereAttrEqValue(type.getAssociationAttribute(), Association.evaluate(type, compInst.getId()));
                 }
                 final InstanceQuery query = queryBldr.getQuery();
                 final List<Instance> instances = query.executeWithoutAccessCheck();
