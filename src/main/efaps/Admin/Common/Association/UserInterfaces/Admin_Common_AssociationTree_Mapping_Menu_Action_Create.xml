@@ -16,25 +16,20 @@
     limitations under the License.
 
 -->
-<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>63c3244e-0252-4475-a234-1eb8cc6d5abe</uuid>
+    <uuid>12327075-04bb-4a60-9453-75610062fd58</uuid>
     <file-application>eFaps-Kernel</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Common_AssociationMappingTable</name>
-        <field name="typeLink">
-            <property name="HRef">TREE</property>
-            <property name="Select">linkto[TypeLink].attribute[Name]</property>
-            <property name="Label">Admin_Common_AssociationMapping/TypeLink.Label</property>
-        </field>
-        <field name="creator">
-            <property name="Attribute">Creator</property>
-            <property name="Label">Admin_Common_AssociationMapping/Creator.Label</property>
-        </field>
-        <field name="created">
-            <property name="Attribute">Created</property>
-            <property name="Label">Admin_Common_AssociationMapping/Created.Label</property>
-        </field>
+        <name>Admin_Common_AssociationTree_Mapping_Menu_Action_Create</name>
+        <target>
+            <form>Admin_Common_AssociationMappingForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Create" />
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Admin_Common_AssociationMapping</property>
+        <property name="TargetConnectAttribute">Admin_Common_AssociationMapping/AssociationLink</property>
+        <property name="TargetMode">create</property>
     </definition>
-</ui-table>
+</ui-command>

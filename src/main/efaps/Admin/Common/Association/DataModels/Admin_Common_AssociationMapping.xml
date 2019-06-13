@@ -46,7 +46,7 @@
         <attribute>
             <name>TypeLink</name>
             <type>Link</type>
-            <typelink>Admin_DataModel_Abstract</typelink>
+            <typelink>Admin_DataModel_Type</typelink>
             <sqltable>Admin_Common_AssociationMappingSQLTable</sqltable>
             <sqlcolumn>TYPEID</sqlcolumn>
         </attribute>

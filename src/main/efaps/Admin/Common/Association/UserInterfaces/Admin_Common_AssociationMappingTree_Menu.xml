@@ -16,25 +16,15 @@
     limitations under the License.
 
 -->
-<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>63c3244e-0252-4475-a234-1eb8cc6d5abe</uuid>
+    <uuid>15668751-e0de-4d44-9f63-a71a3200cdf2</uuid>
     <file-application>eFaps-Kernel</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Common_AssociationMappingTable</name>
-        <field name="typeLink">
-            <property name="HRef">TREE</property>
-            <property name="Select">linkto[TypeLink].attribute[Name]</property>
-            <property name="Label">Admin_Common_AssociationMapping/TypeLink.Label</property>
-        </field>
-        <field name="creator">
-            <property name="Attribute">Creator</property>
-            <property name="Label">Admin_Common_AssociationMapping/Creator.Label</property>
-        </field>
-        <field name="created">
-            <property name="Attribute">Created</property>
-            <property name="Label">Admin_Common_AssociationMapping/Created.Label</property>
-        </field>
+        <name>Admin_Common_AssociationMappingTree_Menu</name>
+        <childs>
+            <child>Admin_Common_AssociationMappingTree_Menu_Action</child>
+        </childs>
     </definition>
-</ui-table>
+</ui-menu>
