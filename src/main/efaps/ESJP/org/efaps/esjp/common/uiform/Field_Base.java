@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2017 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 
 package org.efaps.esjp.common.uiform;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.TextStyle;
@@ -562,6 +563,31 @@ public abstract class Field_Base
         ret.put(ReturnValues.VALUES, html.toString());
         return ret;
     }
+
+    public Return getSignumFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final IUIValue fieldvalue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+        final BigDecimal value = (BigDecimal) fieldvalue.getObject();
+        if (value != null) {
+            final Collection<String> types2negate = analyseProperty(_parameter, "Type2Negate").values() ;
+            final Set<Type> types = new HashSet<>();
+            for (final String type2negate : types2negate) {
+                if (isUUID(type2negate)) {
+                    types.add(Type.get(UUID.fromString(type2negate)));
+                } else {
+                    types.add(Type.get(type2negate));
+                }
+            }
+            if (types.contains(fieldvalue.getInstance().getType())) {
+                final BigDecimal retValue = value.negate();
+                ret.put(ReturnValues.VALUES, retValue);
+            }
+        }
+        return ret;
+    }
+
 
     /**
      * @param _parameter    Parameter as passed from the eFaps API
@@ -1692,9 +1718,9 @@ public abstract class Field_Base
                                 final Object _option,
                                 final Comparable<?> _orderValue)
         {
-            this.value = _value;
-            this.option = _option;
-            this.orderValue = _orderValue;
+            value = _value;
+            option = _option;
+            orderValue = _orderValue;
         }
 
         /**
@@ -1704,7 +1730,7 @@ public abstract class Field_Base
         @Override
         public boolean isSelected()
         {
-            return this.selected;
+            return selected;
         }
 
         /**
@@ -1715,7 +1741,7 @@ public abstract class Field_Base
          */
         public DropDownPosition setSelected(final boolean _selected)
         {
-            this.selected = _selected;
+            selected = _selected;
             return this;
         }
 
@@ -1726,7 +1752,7 @@ public abstract class Field_Base
          */
         public void setOption(final Object _option)
         {
-            this.option = _option;
+            option = _option;
         }
 
         /**
@@ -1736,7 +1762,7 @@ public abstract class Field_Base
          */
         public Object getOption()
         {
-            return this.option;
+            return option;
         }
 
         /**
@@ -1747,7 +1773,7 @@ public abstract class Field_Base
 
         public void setValue(final Object _value)
         {
-            this.value = _value;
+            value = _value;
         }
 
         /**
@@ -1758,7 +1784,7 @@ public abstract class Field_Base
         @Override
         public Object getValue()
         {
-            return this.value;
+            return value;
         }
 
         /**
@@ -1769,7 +1795,7 @@ public abstract class Field_Base
 
         public void setOrderValue(final Comparable<?> _orderValue)
         {
-            this.orderValue = _orderValue;
+            orderValue = _orderValue;
         }
 
         /**
@@ -1780,7 +1806,7 @@ public abstract class Field_Base
         @SuppressWarnings("rawtypes")
         public Comparable getOrderValue()
         {
-            return this.orderValue == null ? this.option.toString() : this.orderValue;
+            return orderValue == null ? option.toString() : orderValue;
         }
 
         @Override
