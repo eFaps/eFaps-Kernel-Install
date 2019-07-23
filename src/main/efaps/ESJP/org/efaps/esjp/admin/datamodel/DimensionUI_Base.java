@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.admin.datamodel;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -47,13 +46,13 @@ import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.util.EFapsException;
 
 /**
  * ESJP is used to get the value, and to render the fields for the BaseUoM.
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("c3d4e45f-cb46-4abf-9aa3-67703140b74b")
 @EFapsApplication("eFaps-Kernel")
@@ -73,37 +72,18 @@ public abstract class DimensionUI_Base
     public Return execute(final Parameter _parameter)
         throws EFapsException
     {
-        final Return retVal = new Return();
         final Instance instance = (Instance) _parameter.get(ParameterValues.CALL_INSTANCE);
-        Long actual = new Long(0);
-        final TreeMap<String, Long> map = new TreeMap<String, Long>();
+        final List<DropDownPosition> values = new ArrayList<>();
         if (instance != null) {
             final Dimension dim = Dimension.get(instance.getId());
-            if (dim.getBaseUoM() != null) {
-                actual = dim.getBaseUoM().getId();
-            }
             for (final UoM uoM : dim.getUoMs()) {
-                map.put(uoM.getName(), uoM.getId());
+                values.add(new DropDownPosition(uoM.getId(), uoM.getName())
+                                .setSelected(dim.getBaseUoM() != null && dim.getBaseUoM().getId() == uoM.getId()));
             }
         }
-
-        final StringBuilder ret = new StringBuilder();
-
-        ret.append("<select size=\"1\" name=\"baseOuM4Edit\">");
-        for (final Map.Entry<String, Long> entry : map.entrySet()) {
-            ret.append("<option");
-
-            if (entry.getValue().equals(actual)) {
-                ret.append(" selected=\"selected\" ");
-            }
-            ret.append(" value=\"").append(entry.getValue()).append("\">").append(entry.getKey())
-                            .append("</option>");
-        }
-
-        ret.append("</select>");
-        retVal.put(ReturnValues.SNIPLETT, ret.toString());
-
-        return retVal;
+        final Return ret = new Return();
+        ret.put(ReturnValues.VALUES, values);
+        return ret;
     }
 
     /**
@@ -160,7 +140,7 @@ public abstract class DimensionUI_Base
             values = (Map<Attribute, Map<Object, Object>>) Context.getThreadContext()
                             .getRequestAttribute(RangesValue_Base.REQUESTCACHEKEY);
         } else {
-            values = new HashMap<Attribute, Map<Object, Object>>();
+            values = new HashMap<>();
             Context.getThreadContext().setRequestAttribute(RangesValue_Base.REQUESTCACHEKEY, values);
         }
 
@@ -189,8 +169,8 @@ public abstract class DimensionUI_Base
             }
             multi.execute();
 
-            final Map<String, String> tmpMap = new TreeMap<String, String>();
-            final Map<String, Long> order = new TreeMap<String, Long>();
+            final Map<String, String> tmpMap = new TreeMap<>();
+            final Map<String, Long> order = new TreeMap<>();
             while (multi.next()) {
                 String strVal;
                 if (list != null) {
