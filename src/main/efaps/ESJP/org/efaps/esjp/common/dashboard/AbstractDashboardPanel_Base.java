@@ -20,7 +20,8 @@ package org.efaps.esjp.common.dashboard;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringReader;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -81,7 +82,7 @@ public abstract class AbstractDashboardPanel_Base
         if (!InfinispanCache.get().exists(AbstractDashboardPanel.CACHENAME)) {
             InfinispanCache.get().initCache(AbstractDashboardPanel.CACHENAME);
         }
-        this.config = _config;
+        config = _config;
     }
 
     /**
@@ -92,9 +93,9 @@ public abstract class AbstractDashboardPanel_Base
     public Properties getConfig()
     {
         final Properties ret = new Properties();
-        if (this.config != null && !this.config.isEmpty()) {
+        if (config != null && !config.isEmpty()) {
             try {
-                ret.load(new StringReader(this.config));
+                ret.load(new StringReader(config));
             } catch (final IOException e) {
                 AbstractDashboardPanel_Base.LOG.error("Catched error on reading properties.");
             }
@@ -109,7 +110,7 @@ public abstract class AbstractDashboardPanel_Base
      */
     public void setConfig(final String _config)
     {
-        this.config = _config;
+        config = _config;
     }
 
     /**
@@ -184,8 +185,8 @@ public abstract class AbstractDashboardPanel_Base
         throws EFapsException
     {
         final StringBuilder htm = new StringBuilder().append(_html).append("<div class=\"eFapsCached\">")
-                        .append(DBProperties.getFormatedDBProperty(AbstractDashboardPanel.class.getName()
-                                        + ".Cached.Label", new Date()))
+                        .append(DBProperties.getFormatedDBProperty(AbstractDashboardPanel.class.getName() + ".Cached.Label",
+                                        LocalDateTime.now(ZoneId.of(Context.getThreadContext().getTimezone().getID()))))
                         .append("</div>");
         getCache().put(getCacheKey(), htm, getLifespan(), getTimeUnit());
     }
