@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2018 The eFaps Team
+ * Copyright 2003 - 2019 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,10 @@ public abstract class PivotProvider_Base
     {
         final List<IOption> ret = new ArrayList<>();
         try {
-            final Evaluator eval = EQL.printQuery(CICommon.PivotDataSource)
+            final Evaluator eval = EQL.builder()
+                            .print()
+                            .query(CICommon.PivotDataSource)
+                            .select()
                             .attribute(CICommon.PivotDataSource.Name)
                             .stmt()
                             .evaluate();
@@ -99,7 +102,9 @@ public abstract class PivotProvider_Base
         try {
             final Instance dsInt =  Instance.get(_dataSource);
             if (InstanceUtils.isKindOf(dsInt, CICommon.PivotDataSource)) {
-                final String eqlStmt = EQL.print(dsInt).attribute(CICommon.PivotDataSource.EQLStmt)
+                final String eqlStmt = EQL.builder()
+                    .print(dsInt)
+                    .attribute(CICommon.PivotDataSource.EQLStmt)
                     .stmt()
                     .evaluate()
                     .get(CICommon.PivotDataSource.EQLStmt);
@@ -119,7 +124,11 @@ public abstract class PivotProvider_Base
     {
         final List<IOption> ret = new ArrayList<>();
         try {
-            final Evaluator eval = EQL.printQuery(CICommon.PivotReport)
+            final Evaluator eval = EQL
+                            .builder()
+                            .print()
+                            .query(CICommon.PivotReport)
+                            .select()
                             .attribute(CICommon.PivotReport.Name)
                             .stmt()
                             .evaluate();
@@ -164,13 +173,15 @@ public abstract class PivotProvider_Base
             if (_reportName.matches("\\d*\\.\\d*")) {
                 final Instance reportInst = Instance.get(_reportName);
                 if (InstanceUtils.isType(reportInst, CICommon.PivotReport)) {
-                    EQL.update(reportInst)
+                    EQL.builder()
+                        .update(reportInst)
                         .set(CICommon.PivotReport.Report, _pivotReport)
                         .stmt()
                         .execute();
                 }
             } else {
-                final Instance instance = EQL.insert(CICommon.PivotReport)
+                final Instance instance = EQL.builder()
+                    .insert(CICommon.PivotReport)
                     .set(CICommon.PivotReport.Name, _reportName)
                     .set(CICommon.PivotReport.Report, _pivotReport)
                     .stmt()
@@ -190,7 +201,8 @@ public abstract class PivotProvider_Base
         try {
             final Instance dsInt =  Instance.get(_reportKey);
             if (InstanceUtils.isKindOf(dsInt, CICommon.PivotReport)) {
-                ret = EQL.print(dsInt).attribute(CICommon.PivotReport.Report)
+                ret = EQL.builder()
+                    .print(dsInt).attribute(CICommon.PivotReport.Report)
                     .stmt()
                     .evaluate()
                     .get(CICommon.PivotReport.Report);
@@ -207,7 +219,8 @@ public abstract class PivotProvider_Base
         try {
             final Instance dsInt =  Instance.get(_reportKey);
             if (InstanceUtils.isKindOf(dsInt, CICommon.PivotReport)) {
-                EQL.delete(dsInt)
+                EQL.builder()
+                    .delete(dsInt)
                     .stmt()
                     .execute();
             }
