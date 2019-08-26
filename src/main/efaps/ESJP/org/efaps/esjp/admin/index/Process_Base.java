@@ -185,7 +185,8 @@ public abstract class Process_Base
                     queryBldr.addWhereAttrEqValue(type.getCompanyAttribute(), compInst);
                 }
                 if (type.hasAssociation()) {
-                    queryBldr.addWhereAttrEqValue(type.getAssociationAttribute(), Association.evaluate(type, compInst.getId()));
+                    queryBldr.addWhereAttrEqValue(type.getAssociationAttribute(),
+                                    Association.evaluate(type, compInst.getId()).getId());
                 }
                 final InstanceQuery query = queryBldr.getQuery();
                 final List<Instance> instances = query.executeWithoutAccessCheck();
