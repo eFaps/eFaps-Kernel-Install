@@ -61,6 +61,7 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.admin.common.systemconfiguration.KernelConfigurations;
 import org.efaps.esjp.common.AbstractCommon;
+import org.efaps.esjp.common.datetime.DateAndTimeUtils;
 import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
@@ -471,8 +472,8 @@ public abstract class MultiPrint_Base
             final String to = (String) inner.get("to");
             // Date or DateTime
             if (uiProvider instanceof DateTimeUI || uiProvider instanceof DateUI) {
-                DateTime dateFrom = null;
-                DateTime dateTo = null;
+                Object dateFrom = null;
+                Object dateTo = null;
                 if (from == null || to == null) {
                     final DateTime[] dates = (DateTime[]) getFilter(Field.get(_filter.getFieldId()));
                     if (dates == null) {
@@ -487,8 +488,13 @@ public abstract class MultiPrint_Base
                     inner.put("from", dateFrom == null ? "" : dateFrom.toString());
                     inner.put("to", dateTo == null ? "" : dateTo.toString());
                 } else {
-                    dateFrom = DateTimeUtil.translateFromUI(from).minusSeconds(1);
-                    dateTo = DateTimeUtil.translateFromUI(to).plusDays(1);
+                    if (uiProvider instanceof DateUI) {
+                        dateFrom = DateAndTimeUtils.getDateForQuery(from).minusSeconds(1);
+                        dateTo = DateAndTimeUtils.getDateForQuery(to).plusDays(1);
+                    } else {
+                        dateFrom = DateTimeUtil.translateFromUI(from).minusSeconds(1);
+                        dateTo = DateTimeUtil.translateFromUI(to).plusDays(1);
+                    }
                 }
                 if (dateFrom != null) {
                     _queryBldr.addWhereAttrGreaterValue(_attrName, dateFrom);
@@ -790,7 +796,7 @@ public abstract class MultiPrint_Base
         public String getLabel()
         {
             final Set<String> names = new TreeSet<>();
-            for (final Long id : this.ids) {
+            for (final Long id : ids) {
                 try {
                     names.add(Status.get(id).getLabel());
                 } catch (final CacheReloadException e) {
@@ -803,13 +809,13 @@ public abstract class MultiPrint_Base
         @Override
         public Object getValue()
         {
-            return this.ids.toArray();
+            return ids.toArray();
         }
 
         @Override
         public boolean isSelected()
         {
-            return this.selected;
+            return selected;
         }
 
         /**
@@ -820,7 +826,7 @@ public abstract class MultiPrint_Base
          */
         public StatusOption setSelected(final boolean _selected)
         {
-            this.selected = _selected;
+            selected = _selected;
             return this;
         }
 
@@ -832,7 +838,7 @@ public abstract class MultiPrint_Base
          */
         public StatusOption addStatus(final Status _status)
         {
-            this.ids.add(_status.getId());
+            ids.add(_status.getId());
             return this;
         }
     }

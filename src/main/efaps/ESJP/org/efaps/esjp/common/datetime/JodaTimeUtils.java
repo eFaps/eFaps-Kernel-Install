@@ -20,6 +20,7 @@
 
 package org.efaps.esjp.common.datetime;
 
+import java.time.OffsetDateTime;
 import java.util.Properties;
 
 import org.efaps.admin.event.Parameter;
@@ -468,5 +469,9 @@ public final class JodaTimeUtils
             }
         }
         return ret;
+    }
+
+    public static DateTime toDateTime(final OffsetDateTime _original) {
+        return new DateTime(_original.toInstant().toEpochMilli());
     }
 }
