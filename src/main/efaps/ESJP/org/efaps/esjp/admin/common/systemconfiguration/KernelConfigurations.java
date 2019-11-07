@@ -105,34 +105,40 @@ public final class KernelConfigurations
                     .description("Activate Moskito Monitoring.");
 
     /** See description. */
-    public static final  BooleanSysConfAttribute ACTIVATEPIVOT = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute ACTIVATEPIVOT = new BooleanSysConfAttribute()
                     .sysConfUUID(EFapsSystemConfiguration.UUID)
                     .key(KernelConfigurations.BASE + "ActivatePivot")
                     .description("Activate PIVOT mechanism.");
 
     /** See description. */
-    public static final  BooleanSysConfAttribute SSO_PERMITROLEUPDATE = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute SSO_PERMITROLEUPDATE = new BooleanSysConfAttribute()
                     .sysConfUUID(EFapsSystemConfiguration.UUID)
                     .key(KernelConfigurations.BASE + "sso.PermitRoleUpdate")
                     .description("Permit Role Update via SSO.");
 
     /** See description. */
-    public static final  BooleanSysConfAttribute SSO_PERMITCOMPANYUPDATE = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute SSO_PERMITCOMPANYUPDATE = new BooleanSysConfAttribute()
                     .sysConfUUID(EFapsSystemConfiguration.UUID)
                     .key(KernelConfigurations.BASE + "sso.PermitCompanyUpdate")
                     .description("Permit Compnay Update via SSO.");
 
     /** See description. */
-    public static final  BooleanSysConfAttribute SSO_PERMITATTRIBUTEUPDATE = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute SSO_PERMITATTRIBUTEUPDATE = new BooleanSysConfAttribute()
                     .sysConfUUID(EFapsSystemConfiguration.UUID)
                     .key(KernelConfigurations.BASE + "sso.PermitAttributeUpdate")
                     .description("Permit Attribute Update via SSO.");
 
     /** See description. */
-    public static final  BooleanSysConfAttribute SSO_PERMITCREATEPERSON = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute SSO_PERMITCREATEPERSON = new BooleanSysConfAttribute()
                     .sysConfUUID(EFapsSystemConfiguration.UUID)
                     .key(KernelConfigurations.BASE + "sso.PermitCreatePerson")
                     .description("Permit the Creation of Persons via SSO.");
+
+    /** See description. */
+    public static final ListSysConfAttribute LAZYLOAD = new ListSysConfAttribute()
+                    .sysConfUUID(EFapsSystemConfiguration.UUID)
+                    .key(KernelConfigurations.BASE + "LazyLoadElements")
+                    .description("UI Elements that can be lazy loaded for startup.");
 
     /**
      * Instantiates a new kernel configurations.
