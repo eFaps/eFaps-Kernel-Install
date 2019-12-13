@@ -159,19 +159,38 @@ public abstract class AccessCheck4UI_Base
                 final Parameter para = ParameterUtil.clone(_parameter, ParameterValues.INSTANCE, instance);
                 final List<Status> statusList = getStatusListFromProperties(para);
                 if (createStatus) {
-                    // Commons-Configuration
-                    final SystemConfiguration config = SystemConfiguration.get(UUID
-                                    .fromString("9ac2673a-18f9-41ba-b9be-5b0980bdf6f3"));
-                    if (config != null) {
-                        final Properties properties = config.getAttributeValueAsProperties(
-                                        "org.efaps.commons.DocumentStatus4Create", true);
-                        final String key = properties.getProperty(instance.getType().getName() + ".Status");
+                    if (containsProperty(_parameter, "SystemConfig")) {
+                        final String sysConfstr = getProperty(_parameter, "SystemConfig");
+                        final SystemConfiguration config;
+                        if (isUUID(sysConfstr)) {
+                            config = SystemConfiguration.get(UUID.fromString(sysConfstr));
+                        } else {
+                            config = SystemConfiguration.get(sysConfstr);
+                        }
+                        final String key = config.getAttributeValue(getProperty(_parameter, "Attribute"));
                         if (key != null) {
                             final Status status = Status.find(
                                             instance.getType().getStatusAttribute().getLink().getUUID(), key);
                             if (status != null) {
                                 statusList.clear();
                                 statusList.add(status);
+                            }
+                        }
+                    } else {
+                        // Commons-Configuration
+                        final SystemConfiguration config = SystemConfiguration.get(UUID
+                                        .fromString("9ac2673a-18f9-41ba-b9be-5b0980bdf6f3"));
+                        if (config != null) {
+                            final Properties properties = config.getAttributeValueAsProperties(
+                                            "org.efaps.commons.DocumentStatus4Create", true);
+                            final String key = properties.getProperty(instance.getType().getName() + ".Status");
+                            if (key != null) {
+                                final Status status = Status.find(
+                                                instance.getType().getStatusAttribute().getLink().getUUID(), key);
+                                if (status != null) {
+                                    statusList.clear();
+                                    statusList.add(status);
+                                }
                             }
                         }
                     }

@@ -67,6 +67,7 @@ public final class SysConfResourceConfig
         ATTRS.add(KernelConfigurations.SSO_PERMITCREATEPERSON);
         ATTRS.add(KernelConfigurations.SSO_PERMITROLEUPDATE);
         ATTRS.add(KernelConfigurations.TABLEFILTERDEFAULT);
+        ATTRS.add(KernelConfigurations.LAZYLOAD);
     }
 
     /**

@@ -27,6 +27,7 @@ import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.api.ui.DateDefaultValues;
+import org.efaps.db.Context;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.util.DateTimeUtil;
@@ -37,7 +38,7 @@ import org.efaps.util.EFapsException;
 public class DateAndTimeUtils
 {
     public static OffsetDateTime getDefaultValue(final Parameter _parameter,
-                                           final Properties _props)
+                                                 final Properties _props)
         throws EFapsException
     {
         final Parameter parameter = ParameterUtil.clone(_parameter, ParameterValues.PROPERTIES, _props);
@@ -52,7 +53,8 @@ public class DateAndTimeUtils
     public static OffsetDateTime getDefaultValue(final Parameter _parameter)
         throws EFapsException
     {
-        OffsetDateTime ret = OffsetDateTime.now(DateTimeUtil.getDBZoneId())
+
+        OffsetDateTime ret = OffsetDateTime.now(Context.getThreadContext().getZoneId())
                         .truncatedTo(ChronoUnit.DAYS);
         for (final DateDefaultValues value : DateDefaultValues.values()) {
             if (PropertiesUtil.containsProperty(_parameter, value.toString())) {
