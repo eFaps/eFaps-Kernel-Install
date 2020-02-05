@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2020 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,6 +48,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.properties.PropertiesUtil;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.util.EFapsException;
 import org.efaps.util.UUIDUtil;
 import org.efaps.util.cache.CacheReloadException;
@@ -653,7 +654,7 @@ public abstract class AbstractCommon_Base
     protected Instance getInstance4LinkFrom(final Parameter _parameter)
         throws EFapsException
     {
-        return _parameter.getInstance();
+        return InstanceUtils.isValid(_parameter.getInstance()) ? _parameter.getInstance() :_parameter.getCallInstance();
     }
 
     /**
