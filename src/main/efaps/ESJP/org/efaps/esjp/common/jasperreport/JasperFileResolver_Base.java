@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2020 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,34 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.common.jasperreport;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.sf.jasperreports.engine.util.FileResolver;
-
-import org.apache.commons.io.IOUtils;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIAdminProgram;
 import org.efaps.db.Checkout;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.QueryBuilder;
-import org.efaps.esjp.common.file.FileUtil;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.sf.jasperreports.repo.InputStreamResource;
+import net.sf.jasperreports.repo.Resource;
+import net.sf.jasperreports.repo.StreamRepositoryService;
 
 /**
  * Class is used to load files from the eFaps Database into an JasperReport.
@@ -57,13 +51,11 @@ import org.slf4j.LoggerFactory;
  * <b>Caution: The dot is expected!</b>
  *
  * @author The eFaps Team
- * @version $Id: JasperFileResolver_Base.java 8885 2016-02-20 00:32:07Z
- *          jan@moxter.net $
  */
 @EFapsUUID("4733dd43-2ef3-4572-a1e9-c820567e9a36")
 @EFapsApplication("eFaps-Kernel")
 public abstract class JasperFileResolver_Base
-    implements FileResolver
+    implements StreamRepositoryService
 {
 
     /**
@@ -76,50 +68,73 @@ public abstract class JasperFileResolver_Base
      */
     private static Pattern reportPattern = Pattern.compile("([A-Z,a-z,_,0-9])+(?=\\.)");
 
-    /**
-     * @see net.sf.jasperreports.engine.util.FileResolver#resolveFile(java.lang.String)
-     * @param _jasperFileName name of the jasper report
-     * @return File
-     */
     @Override
-    public File resolveFile(final String _jasperFileName)
+    public InputStream getInputStream(final String _uri)
     {
-        File file = null;
-        try {
-            QueryBuilder queryBldr = null;
-            String name = null;
-            if (_jasperFileName.startsWith("JasperImage.")) {
-                name = _jasperFileName.replace("JasperImage.", "");
-                queryBldr = new QueryBuilder(CIAdminProgram.JasperImage);
-            } else if (_jasperFileName.startsWith("JasperReport.")) {
-                name = _jasperFileName.replace("JasperReport.", "");
+        InputStream input = null;
+        QueryBuilder queryBldr = null;
+        String name = null;
+        if (_uri.startsWith("JasperImage.")) {
+            name = _uri.replace("JasperImage.", "");
+            queryBldr = new QueryBuilder(CIAdminProgram.JasperImage);
+        } else if (_uri.startsWith("JasperReport.")) {
+            name = _uri.replace("JasperReport.", "");
+            queryBldr = new QueryBuilder(CIAdminProgram.JasperReportCompiled);
+        } else if (_uri.endsWith("jasper") || _uri.endsWith("jrxml")) {
+            final Matcher matcher = reportPattern.matcher(_uri);
+            if (matcher.find()) {
+                name = matcher.group();
                 queryBldr = new QueryBuilder(CIAdminProgram.JasperReportCompiled);
-            } else if (_jasperFileName.endsWith("jasper") || _jasperFileName.endsWith("jrxml")) {
-                final Matcher matcher = reportPattern.matcher(_jasperFileName);
-                if (matcher.find()) {
-                    name = matcher.group();
-                    queryBldr = new QueryBuilder(CIAdminProgram.JasperReportCompiled);
-                }
             }
-            if (queryBldr != null) {
+        }
+        if (queryBldr != null) {
+            try {
                 queryBldr.addWhereAttrEqValue("Name", name);
                 final InstanceQuery query = queryBldr.getQuery();
                 query.execute();
                 if (query.next()) {
                     final Checkout checkout = new Checkout(query.getCurrentValue());
-                    final InputStream input = checkout.execute();
-                    file = new FileUtil().getFile(checkout.getFileName(), "jasper");
-                    final OutputStream out = new FileOutputStream(file);
-                    IOUtils.copy(input, out);
-                    input.close();
-                    out.close();
+                    input = checkout.execute();
                 }
+            } catch (final EFapsException e) {
+                JasperFileResolver_Base.LOG.error("error in JasperFileResolver.getInputStream", e);
             }
-        } catch (final EFapsException e) {
-            JasperFileResolver_Base.LOG.error("error in JasperFileResolver.resolveFile", e);
-        } catch (final IOException e) {
-            JasperFileResolver_Base.LOG.error("error in JasperFileResolver.resolveFile", e);
         }
-        return file;
+        return input;
+    }
+
+    @Override
+    public OutputStream getOutputStream(final String uri)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Resource getResource(final String uri)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void saveResource(final String uri, final Resource resource)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <K extends Resource> K getResource(final String _uri, final Class<K> _resourceType)
+    {
+        Resource ret = null;
+        if (_resourceType.isAssignableFrom(InputStreamResource.class)) {
+            final InputStream inputStream = getInputStream(_uri);
+            if (inputStream != null) {
+                ret = new InputStreamResource();
+                ((InputStreamResource) ret).setInputStream(inputStream);
+            }
+        }
+        return (K) ret;
     }
 }

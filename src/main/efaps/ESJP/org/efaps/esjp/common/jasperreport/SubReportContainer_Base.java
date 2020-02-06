@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2020 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.common.jasperreport;
@@ -26,11 +23,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.util.JRLoader;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
@@ -44,11 +36,14 @@ import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
+
 /**
- * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("ef631aef-45d8-4192-90c9-56898175228d")
 @EFapsApplication("eFaps-Kernel")
@@ -89,9 +84,9 @@ abstract class SubReportContainer_Base
                                    final JRDataSource _dataSource,
                                    final Map<String, Object> _jrParameters)
     {
-        this.parameter = _parameter;
-        this.dataSource = _dataSource;
-        this.jrParameters = _jrParameters;
+        parameter = _parameter;
+        dataSource = _dataSource;
+        jrParameters = _jrParameters;
     }
 
     /**
@@ -118,15 +113,15 @@ abstract class SubReportContainer_Base
                 final JasperReport jasperReport = (JasperReport) JRLoader.loadObject(iin);
                 iin.close();
                 IeFapsDataSource dataSourceNew;
-                if (this.dataSource != null) {
-                    final Class<?> clazz = Class.forName(this.dataSource.getClass().getName());
+                if (dataSource != null) {
+                    final Class<?> clazz = Class.forName(dataSource.getClass().getName());
                     final Method method = clazz.getMethod("init",
                                     new Class[] { JasperReport.class, Parameter.class, JRDataSource.class, Map.class });
-                    dataSourceNew = (IeFapsDataSource) clazz.newInstance();
-                    method.invoke(dataSourceNew, jasperReport, this.parameter, this.dataSource, this.jrParameters);
+                    dataSourceNew = (IeFapsDataSource) clazz.getDeclaredConstructor().newInstance();
+                    method.invoke(dataSourceNew, jasperReport, parameter, dataSource, jrParameters);
                 } else {
                     dataSourceNew = new EFapsDataSource();
-                    dataSourceNew.init(jasperReport, this.parameter, this.dataSource, this.jrParameters);
+                    dataSourceNew.init(jasperReport, parameter, dataSource, jrParameters);
                 }
                 ret = dataSourceNew;
                 super.put((String) _key, ret);

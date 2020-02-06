@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2020 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -70,6 +71,7 @@ import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.SimpleJasperReportsContext;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRTextExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
@@ -77,8 +79,9 @@ import net.sf.jasperreports.engine.export.oasis.JROdsExporter;
 import net.sf.jasperreports.engine.export.oasis.JROdtExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
+import net.sf.jasperreports.engine.query.JRQueryExecuterFactoryBundle;
+import net.sf.jasperreports.engine.query.QueryExecuterFactory;
 import net.sf.jasperreports.engine.util.JRLoader;
-import net.sf.jasperreports.engine.util.LocalJasperReportsContext;
 import net.sf.jasperreports.engine.xml.JRXmlDigesterFactory;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.export.SimpleExporterInput;
@@ -88,6 +91,7 @@ import net.sf.jasperreports.export.SimpleTextReportConfiguration;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
+import net.sf.jasperreports.repo.RepositoryService;
 
 /**
  * "Mime" as property in the calling command, or "mime" as parameter from a
@@ -397,18 +401,27 @@ public abstract class StandartReport_Base
             final Checkout checkout = new Checkout(jasperInst);
             final InputStream iin = checkout.execute();
             try {
-                DefaultJasperReportsContext.getInstance().setProperty(
-                                "net.sf.jasperreports.query.executer.factory.eFaps",
-                                EQLQueryExecuterFactory.class.getName());
-                final LocalJasperReportsContext ctx = new LocalJasperReportsContext(
-                                DefaultJasperReportsContext.getInstance());
-                ctx.setFileResolver(new JasperFileResolver());
-                ctx.setClassLoader(EFapsClassLoader.getInstance());
+                final SimpleJasperReportsContext ctx = new SimpleJasperReportsContext();
+                ctx.setExtensions(RepositoryService.class, Collections.singletonList(new JasperFileResolver()));
+                final EQLQueryExecuterFactory queryExecuterFactory = new EQLQueryExecuterFactory();
+                ctx.setExtensions(JRQueryExecuterFactoryBundle.class, Collections.singletonList(
+                                new JRQueryExecuterFactoryBundle() {
 
+                    @Override
+                    public String[] getLanguages()
+                    {
+                        return new String[] {"eFaps"};
+                    }
+
+                    @Override
+                    public QueryExecuterFactory getQueryExecuterFactory(final String _language)
+                        throws JRException
+                    {
+                        return queryExecuterFactory;
+                    }
+                }));
                 ctx.setProperty("net.sf.jasperreports.subreport.runner.factory",
                                 SubReportRunnerFactory.class.getName());
-                ctx.setProperty("net.sf.jasperreports.query.executer.factory.eFaps",
-                                EQLQueryExecuterFactory.class.getName());
 
                 final JasperReport jasperReport = (JasperReport) JRLoader.loadObject(iin);
                 iin.close();
@@ -418,7 +431,7 @@ public abstract class StandartReport_Base
                     final Class<?> clazz = Class.forName(dataSourceClass);
                     final Method method = clazz.getMethod("init",
                                     new Class[] { JasperReport.class, Parameter.class, JRDataSource.class, Map.class });
-                    dataSource = (IeFapsDataSource) clazz.newInstance();
+                    dataSource = (IeFapsDataSource) clazz.getDeclaredConstructor().newInstance();
                     method.invoke(dataSource, jasperReport, _parameter, null, getJrParameters());
                 }
                 if (dataSource != null) {
@@ -622,8 +635,8 @@ public abstract class StandartReport_Base
                 txtExporter.setExporterInput(new SimpleExporterInput(_jasperPrint));
                 txtExporter.setExporterOutput(new SimpleWriterExporterOutput(file));
                 final SimpleTextReportConfiguration txtConfig = new SimpleTextReportConfiguration();
-                txtConfig.setCharHeight(new Float(10));
-                txtConfig.setCharWidth(new Float(6));
+                txtConfig.setCharHeight(Float.valueOf(10));
+                txtConfig.setCharWidth(Float.valueOf(6));
                 txtExporter.exportReport();
                 break;
         }
@@ -637,7 +650,7 @@ public abstract class StandartReport_Base
      */
     public Map<String, Object> getJrParameters()
     {
-        return this.jrParameters;
+        return jrParameters;
     }
 
     /**
@@ -647,7 +660,7 @@ public abstract class StandartReport_Base
      */
     public String getFileName()
     {
-        return this.fileName;
+        return fileName;
     }
 
     /**
@@ -657,7 +670,7 @@ public abstract class StandartReport_Base
      */
     public void setFileName(final String _fileName)
     {
-        this.fileName = _fileName;
+        fileName = _fileName;
     }
 
     /**
@@ -701,7 +714,7 @@ public abstract class StandartReport_Base
          */
         JasperMime(final String _extension)
         {
-            this.extension = _extension;
+            extension = _extension;
         }
 
         /**
@@ -711,7 +724,7 @@ public abstract class StandartReport_Base
          */
         public String getExtension()
         {
-            return this.extension;
+            return extension;
         }
     }
 
