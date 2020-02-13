@@ -417,6 +417,23 @@ public class CICommon
     }
 
 
+    public static final _HistoryStatus HistoryStatus = new _HistoryStatus("95a7fae1-6f32-43a3-bddc-83d316e46a61");
+
+    public static class _HistoryStatus
+        extends CIType
+    {
+
+        protected _HistoryStatus(final String _uuid)
+        {
+            super(_uuid);
+        }
+
+        public final CIAttribute GeneralInstanceLink = new CIAttribute(this, "GeneralInstanceLink");
+        public final CIAttribute StatusLink = new CIAttribute(this, "StatusLink");
+        public final CIAttribute Creator = new CIAttribute(this, "Creator");
+        public final CIAttribute Created = new CIAttribute(this, "Created");
+    }
+
     public static final _DBPropertiesBundle DBPropertiesBundle = new _DBPropertiesBundle("03c51ba4-00a6-47ac-b987-270308fe68d8");
 
     public static class _DBPropertiesBundle
