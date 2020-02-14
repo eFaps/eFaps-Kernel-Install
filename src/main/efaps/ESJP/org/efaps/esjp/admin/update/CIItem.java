@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2017 The eFaps Team
+ * Copyright 2003 - 2020 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +35,6 @@ import org.efaps.db.Context;
 import org.efaps.db.Context.FileParameter;
 import org.efaps.rest.Update;
 import org.efaps.update.FileType;
-import org.efaps.update.Install;
 import org.efaps.update.Install.InstallFile;
 import org.efaps.update.util.InstallationException;
 import org.efaps.util.EFapsException;
@@ -53,6 +50,7 @@ import org.slf4j.LoggerFactory;
 @EFapsUUID("252d6996-ffd7-4528-b2e8-a2f272524e00")
 @EFapsApplication("eFaps-Kernel")
 public class CIItem
+    extends AbstractUpdate
 {
 
     /**
@@ -126,26 +124,7 @@ public class CIItem
                 installFiles.add(installFile);
             }
         }
-
-        Collections.sort(installFiles, new Comparator<InstallFile>()
-        {
-            @Override
-            public int compare(final InstallFile _installFile0,
-                               final InstallFile _installFile1)
-            {
-                return _installFile0.getName().compareTo(_installFile1.getName());
-            }
-        });
-
-        if (!installFiles.isEmpty()) {
-            final Install install = new Install(true);
-            for (final InstallFile installFile : installFiles) {
-                CIItem.LOG.info("...Adding to Update: '{}' ", installFile.getName());
-                install.addFile(installFile);
-            }
-            install.updateLatest(null);
-        }
-
+        install(installFiles);
         return new Return();
     }
 }
