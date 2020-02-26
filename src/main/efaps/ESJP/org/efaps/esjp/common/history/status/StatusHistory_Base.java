@@ -16,7 +16,15 @@
  */
 package org.efaps.esjp.common.history.status;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
@@ -24,18 +32,24 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.user.Person;
 import org.efaps.ci.CIAdminCommon;
+import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.transaction.ConnectionResource;
 import org.efaps.esjp.ci.CICommon;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @EFapsUUID("1d135493-bc9e-4cb9-93b2-87860993281f")
 @EFapsApplication("eFaps-Kernel")
 public abstract class StatusHistory_Base
 {
+    private static final Logger LOG = LoggerFactory.getLogger(StatusHistory.class);
 
     public Return getFieldValue(final Parameter _parameter)
         throws EFapsException
@@ -74,4 +88,63 @@ public abstract class StatusHistory_Base
         return ret;
     }
 
+    /**
+     *
+     * @param _parameter Parameter
+     * @param _date    the date to be evaluated, mining what status did the object have onthe given date
+     * @param _minDate just a min value to be included in the evaluation
+     * @param typeIds ids to be filterd for
+     * @return mapping
+     * @throws EFapsException on error
+     */
+    public Map<Instance, Long> getStatusUpdatesByDateAndTypes(final Parameter _parameter,
+                                                              final DateTime _date,
+                                                              final DateTime _minDate,
+                                                              final Long... typeIds)
+        throws EFapsException
+    {
+        // security treshhold
+        final LocalDate minDate = _minDate == null ? _date.minusYears(1).toLocalDate() : _minDate.toLocalDate();
+
+        final Map<Instance, Long> inst2status = new HashMap<>();
+        final Context context = Context.getThreadContext();
+        final StringBuilder cmd = new StringBuilder()
+                        .append("SELECT")
+                        .append(" DISTINCT ON (geninstid) geninstid,")
+                        .append(" statusid, insttypeid, instid")
+                        .append(" FROM")
+                        .append(" t_cmhistorystatus")
+                        .append(" LEFT JOIN t_cmgeninst ON t_cmgeninst.id = t_cmhistorystatus.genInstId")
+                        .append(" WHERE t_cmhistorystatus.created < '")
+                            .append(_date.withTimeAtStartOfDay().plusDays(1).toLocalDate()).append("'")
+                        .append(" AND t_cmhistorystatus.created > '").append(minDate).append("'")
+                        .append(" AND t_cmgeninst.insttypeid IN (").append(StringUtils.join(typeIds, ",")).append(")")
+                        .append(" ORDER BY geninstid, created");
+
+        ConnectionResource con = null;
+        try {
+            con = context.getConnectionResource();
+            LOG.debug("Querying StatusHistory with: {}", cmd);
+            Statement stmt = null;
+            try {
+                stmt = con.createStatement();
+                final ResultSet rs = stmt.executeQuery(cmd.toString());
+                while (rs.next()) {
+                    final long statusid = rs.getLong(2);
+                    final long insttypeid = rs.getLong(3);
+                    final long instid = rs.getLong(4);
+                    final Instance inst = Instance.get(Type.get(insttypeid), instid);
+                    inst2status.put(inst, statusid);
+                }
+                rs.close();
+            } finally {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            }
+        } catch (final SQLException e) {
+            LOG.error("sql statement '" + cmd.toString() + "' not executable!", e);
+        }
+        return inst2status;
+    }
 }
