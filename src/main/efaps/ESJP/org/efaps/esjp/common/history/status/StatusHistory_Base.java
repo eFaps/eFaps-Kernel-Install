@@ -82,7 +82,7 @@ public abstract class StatusHistory_Base
             final Status status = Status.get(multi.<Long>getAttribute(CICommon.HistoryStatus.StatusLink));
             final Person creator = multi.getAttribute(CICommon.HistoryStatus.Creator);
             html.append("<li style=\"border: 2px solid;border-radius: 20px;padding: 5px;")
-                    .append("display: flex;flex-direction: column;text-align: center;position: relative");
+                    .append("display: flex;flex-direction: column;text-align: center;position: relative;");
             if (first) {
                 html.append("margin: 0 0 10px 0;\">");
                 first = false;
@@ -95,7 +95,9 @@ public abstract class StatusHistory_Base
                     .append(status.getLabel()).append("</span>")
                 .append("<span style=\"padding: 5px;\">")
                     .append(creator.getFirstName()).append(" ").append(creator.getLastName()).append("</span>")
-                .append("<span style=\"padding: 5px;\">").append(created.toString(formatter)).append("</span>")
+                .append("<span style=\"padding: 5px;\">")
+                    .append(created.withChronology(Context.getThreadContext().getChronology()).toString(formatter))
+                .append("</span>")
                 .append("</li>");
         }
         html.append("</ul>");
