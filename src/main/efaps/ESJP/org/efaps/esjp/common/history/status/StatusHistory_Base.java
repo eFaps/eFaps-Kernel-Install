@@ -42,6 +42,8 @@ import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,18 +74,32 @@ public abstract class StatusHistory_Base
         final StringBuilder html = new StringBuilder()
                         .append("<ul style=\"list-style: disclosure-closed;")
                         .append("display: flex;flex-direction: row;flex-wrap: wrap;\">");
+        boolean first = true;
+        final DateTimeFormatter formatter = DateTimeFormat.shortDateTime()
+                        .withLocale(Context.getThreadContext().getLocale());
         while (multi.next()) {
             final DateTime created = multi.getAttribute(CICommon.HistoryStatus.Created);
             final Status status = Status.get(multi.<Long>getAttribute(CICommon.HistoryStatus.StatusLink));
             final Person creator = multi.getAttribute(CICommon.HistoryStatus.Creator);
-            html.append("<li style=\"border: 1px solid;border-radius: 20px;padding: 5px;margin: 0 0 10px 20px;\">")
-                .append("<span style=\"font-weight: bold;padding: 5px;\">").append(status.getLabel()).append("</span>")
+            html.append("<li style=\"border: 2px solid;border-radius: 20px;padding: 5px;")
+                    .append("display: flex;flex-direction: column;text-align: center;position: relative");
+            if (first) {
+                html.append("margin: 0 0 10px 0;\">");
+                first = false;
+            } else {
+                html.append("margin: 0 0 10px 30px;\">");
+                html.append("<span style=\"border-top: 6px solid;position: absolute;left: -36px;top: 26px;")
+                    .append("width: 20px;height: 20px;border-right: 6px solid;transform: rotate(45deg);\"></span>");
+            }
+            html.append("<span style=\"font-weight: bold;padding: 5px;font-size: large;\">")
+                    .append(status.getLabel()).append("</span>")
                 .append("<span style=\"padding: 5px;\">")
-                    .append(creator.getFirstName()).append(creator.getLastName()).append("</span>")
-                .append("<span style=\"padding: 5px;\">").append(created).append("</span>")
+                    .append(creator.getFirstName()).append(" ").append(creator.getLastName()).append("</span>")
+                .append("<span style=\"padding: 5px;\">").append(created.toString(formatter)).append("</span>")
                 .append("</li>");
         }
         html.append("</ul>");
+
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
     }
