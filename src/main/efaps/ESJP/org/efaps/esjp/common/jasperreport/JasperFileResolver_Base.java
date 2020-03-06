@@ -17,7 +17,9 @@
 
 package org.efaps.esjp.common.jasperreport;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,7 +34,9 @@ import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.repo.InputStreamResource;
+import net.sf.jasperreports.repo.ReportResource;
 import net.sf.jasperreports.repo.Resource;
 import net.sf.jasperreports.repo.StreamRepositoryService;
 
@@ -106,21 +110,21 @@ public abstract class JasperFileResolver_Base
     @Override
     public OutputStream getOutputStream(final String uri)
     {
-        // TODO Auto-generated method stub
+        LOG.error("This should not get called");
         return null;
     }
 
     @Override
     public Resource getResource(final String uri)
     {
-        // TODO Auto-generated method stub
+        LOG.error("This should not get called");
         return null;
     }
 
     @Override
     public void saveResource(final String uri, final Resource resource)
     {
-        // TODO Auto-generated method stub
+        LOG.error("This should not get called");
     }
 
     @SuppressWarnings("unchecked")
@@ -133,6 +137,19 @@ public abstract class JasperFileResolver_Base
             if (inputStream != null) {
                 ret = new InputStreamResource();
                 ((InputStreamResource) ret).setInputStream(inputStream);
+            }
+        }
+        if (_resourceType.isAssignableFrom(ReportResource.class)) {
+            ret = new ReportResource();
+            final InputStream inputStream = getInputStream(_uri);
+            if (inputStream != null) {
+                try {
+                    final ObjectInputStream ois = new ObjectInputStream(inputStream);
+                    final Object object = ois.readObject();
+                    ((ReportResource) ret).setValue((JasperReport) object);
+                } catch (ClassNotFoundException | IOException e) {
+                    LOG.error("Catched error", e);
+                }
             }
         }
         return (K) ret;
