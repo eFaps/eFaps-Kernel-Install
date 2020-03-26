@@ -137,7 +137,7 @@ public abstract class StatusHistory_Base
                             .append(_date.withTimeAtStartOfDay().plusDays(1).toLocalDate()).append("'")
                         .append(" AND t_cmhistorystatus.created > '").append(minDate).append("'")
                         .append(" AND t_cmgeninst.insttypeid IN (").append(StringUtils.join(typeIds, ",")).append(")")
-                        .append(" ORDER BY geninstid, created");
+                        .append(" ORDER BY geninstid, created DESC");
 
         ConnectionResource con = null;
         try {
