@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2016 The eFaps Team
+ Copyright 2003 - 2020 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,23 +14,18 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
 -->
-<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-menu xmlns="http://www.efaps.org/xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>46cd2f9f-6356-4af9-9db8-55c88bf3ba39</uuid>
+    <uuid>832ee2a2-298f-47bd-b9e7-23f6c31836c9</uuid>
     <file-application>eFaps-Kernel</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Common_History_LogForm</name>
-        <field name="log">
-            <property name="HideLabel">true</property>
-            <property name="UIType">SNIPPLET</property>
-            <property name="ModeView">READONLY</property>
-            <trigger program="org.efaps.esjp.common.history.History"
-                method="getLogFieldValue"
-                name="Common_History_LogForm.log.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE"></trigger>
-        </field>
+        <name>Admin_Common_Reload</name>
+        <childs>
+            <child>Admin_Common_ReloadCache</child>
+            <child>Admin_Common_ReloadUI</child>
+        </childs>
     </definition>
-</ui-form>
+</ui-menu>

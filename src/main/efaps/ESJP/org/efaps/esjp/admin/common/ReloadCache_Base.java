@@ -28,6 +28,7 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
 import org.efaps.admin.runlevel.RunLevel;
+import org.efaps.admin.ui.AbstractUserInterfaceObject;
 import org.efaps.db.Context;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
@@ -61,10 +62,11 @@ public abstract class ReloadCache_Base
      * @return new empty Return
      *
      */
+    @Override
     public Return execute(final Parameter _parameter)
         throws EFapsException
     {
-        ReloadCache_Base.LOG.info("reload Cache by: " + Context.getThreadContext().getPerson().getName());
+        ReloadCache_Base.LOG.info("reload Cache by: {}", Context.getThreadContext().getPerson().getName());
         RunLevel.init("webapp");
         RunLevel.execute();
         for (final IReloadCacheListener listener : Listener.get().<IReloadCacheListener>invoke(
@@ -86,14 +88,24 @@ public abstract class ReloadCache_Base
     public Return reloadSystemConfigurations(final Parameter _parameter)
         throws EFapsException
     {
-        ReloadCache_Base.LOG.info("reload SystemConfigurations by: "
-                        + Context.getThreadContext().getPerson().getName());
+        ReloadCache_Base.LOG.info("reload SystemConfigurations by: {}",
+                        Context.getThreadContext().getPerson().getName());
         SystemConfiguration.initialize();
         for (final IReloadCacheListener listener : Listener.get().<IReloadCacheListener>invoke(
                         IReloadCacheListener.class)) {
             listener.onReloadSystemConfig(_parameter);
         }
         ReloadCache_Base.LOG.info("reload SystemConfigurations finished successfully");
+        return new Return();
+    }
+
+    public Return reloadUI(final Parameter _parameter)
+        throws EFapsException
+    {
+        ReloadCache_Base.LOG.info("reload UI by: {}", Context.getThreadContext().getPerson().getName());
+        AbstractUserInterfaceObject.initialize();
+
+        ReloadCache_Base.LOG.info("reload UI finished successfully");
         return new Return();
     }
 }

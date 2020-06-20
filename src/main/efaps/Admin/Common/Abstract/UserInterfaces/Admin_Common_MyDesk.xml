@@ -28,6 +28,7 @@
         <icon>Admin_Common</icon>
         <childs>
             <child>Admin_Common_SearchMyDesk</child>
+            <child>Admin_Common_Reload</child>
             <child>Admin_Common_AbstractMyDesk</child>
             <child>Admin_User_AbstractMyDesk</child>
             <child>Admin_DataModel_AbstractMyDesk</child>

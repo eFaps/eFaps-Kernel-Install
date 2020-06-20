@@ -29,7 +29,6 @@
             <child>Common_Main_Home</child>
             <child>Admin_Common_MyDesk</child>
             <child>Common_Main_Pivot</child>
-            <child>Admin_Common_ReloadCache</child>
             <child>Common_Main_Preferences</child>
             <child>Common_Main_SetCompany</child>
             <child>Common_Main_LogoutToolBar</child>
