@@ -20,6 +20,10 @@
 
 package org.efaps.esjp.common.uitable;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -34,7 +38,8 @@ import org.efaps.util.EFapsException;
 
 /**
  * The ESJP is used to delete selected objects in a row of a web table.<br/>
- * <b>Example:</b><br/> <code>
+ * <b>Example:</b><br/>
+ * <code>
  *   &lt;execute program="org.efaps.esjp.common.uitable.CommonDelete"&gt;
  *     &lt;property name="Select4Delete"&gt;SLEECT&lt;/property&gt;
  *   &lt;/execute&gt;
@@ -50,6 +55,7 @@ public abstract class CommonDelete_Base
     extends AbstractCommon
     implements EventExecution
 {
+
     /**
      * @param _parameter parameters from the submitted web table
      * @throws EFapsException if a delete of the selected oids is not possible
@@ -60,13 +66,13 @@ public abstract class CommonDelete_Base
         throws EFapsException
     {
         final String[] oids = (String[]) _parameter.get(ParameterValues.OTHERS);
-
         if (oids != null) {
             for (final String oid : oids) {
-                final Instance instance = getInstance(_parameter, oid);
-                if (instance.isValid()) {
-                    if (getValidate4Instance(_parameter, instance)) {
-                        new Delete(instance).execute();
+                for (final Instance instance : getInstancesToDelete(_parameter, oid)) {
+                    if (instance.isValid()) {
+                        if (getValidate4Instance(_parameter, instance)) {
+                            new Delete(instance).execute();
+                        }
                     }
                 }
             }
@@ -78,29 +84,34 @@ public abstract class CommonDelete_Base
      * Method to get the instance to be deleted.
      *
      * @param _parameter Parameter as passed from the eFaps API.
-     * @param _oid of the  instance that will be deleted
+     * @param _oid of the instance that will be deleted
      * @return Instance for the oid
      * @throws EFapsException on error.
      */
-    protected Instance getInstance(final Parameter _parameter,
-                                   final String _oid) throws EFapsException
+    protected List<Instance> getInstancesToDelete(final Parameter _parameter,
+                                                  final String _oid)
+        throws EFapsException
     {
-        Instance ret = Instance.get(_oid);
-        if (ret.isValid() && containsProperty(_parameter, "Select4Delete")) {
-            final String select = getProperty(_parameter, "Select4Delete");
-            final PrintQuery print = new PrintQuery(ret);
-            print.addSelect(select);
-            print.execute();
-            final Object selObj = print.getSelect(select);
-            if (selObj instanceof Instance) {
-                ret = (Instance) selObj;
-            } else if (selObj instanceof String) {
-                ret = Instance.get((String) selObj);
+        final List<Instance> ret = new ArrayList<>();
+        final Instance inst = Instance.get(_oid);
+        final Map<Integer, String> properties = analyseProperty(_parameter, "Select4Delete");
+        if (inst.isValid() && !properties.isEmpty()) {
+            for (final String select : properties.values()) {
+                final PrintQuery print = new PrintQuery(inst);
+                print.addSelect(select);
+                print.execute();
+                final Object selObj = print.getSelect(select);
+                if (selObj instanceof Instance) {
+                    ret.add((Instance) selObj);
+                } else if (selObj instanceof String) {
+                    ret.add(Instance.get((String) selObj));
+                }
             }
+        } else {
+            ret.add(inst);
         }
         return ret;
     }
-
 
     /**
      * Method to validate instance a delete.
