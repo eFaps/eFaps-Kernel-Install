@@ -206,13 +206,13 @@ public abstract class Edit_Base
                 }
             }
         }
-        final Context context = Context.getThreadContext();
+        Context.getThreadContext();
         if (print.execute()) {
             final Update update = new Update(_instance);
             for (final Field field : fields) {
                 final String attrName = field.getAttribute();
                 final Attribute attr = _instance.getType().getAttribute(attrName);
-                if (attr != null && (context.getParameters().containsKey(field.getName())
+                if (attr != null && (_parameter.getParameters().containsKey(field.getName())
                                 || attr.getAttributeType().getUIProvider() instanceof BitEnumUI)) {
                     final String[] newValue = _parameter.getParameterValues(field.getName());
                     final Object object = print.getAttribute(attrName);
@@ -940,7 +940,7 @@ public abstract class Edit_Base
          */
         public RowUpdate(final String _rowId)
         {
-            this.rowId = _rowId;
+            rowId = _rowId;
         }
 
         /**
@@ -950,7 +950,7 @@ public abstract class Edit_Base
          */
         public String getRowId()
         {
-            return this.rowId;
+            return rowId;
         }
 
         /**
@@ -960,7 +960,7 @@ public abstract class Edit_Base
          */
         public int getIndex()
         {
-            return this.index;
+            return index;
         }
 
         /**
@@ -970,7 +970,7 @@ public abstract class Edit_Base
          */
         public Type getType()
         {
-            return this.type;
+            return type;
         }
 
         /**
@@ -980,7 +980,7 @@ public abstract class Edit_Base
          */
         public Map<String, Object> getValues()
         {
-            return this.values;
+            return values;
         }
 
         /**
@@ -1018,7 +1018,7 @@ public abstract class Edit_Base
                 } else {
                     value = _parameter.getParameterValues(_fieldName)[_idx];
                 }
-                this.values.put(_attrName, value);
+                values.put(_attrName, value);
             }
         }
 
@@ -1029,7 +1029,7 @@ public abstract class Edit_Base
          */
         public void setType(final Type _type)
         {
-            this.type = _type;
+            type = _type;
         }
 
         /**
@@ -1039,7 +1039,7 @@ public abstract class Edit_Base
          */
         public void setIndex(final int _index)
         {
-            this.index = _index;
+            index = _index;
         }
 
         /**
@@ -1049,7 +1049,7 @@ public abstract class Edit_Base
          */
         public String getLinkAttrName()
         {
-            return this.linkAttrName;
+            return linkAttrName;
         }
 
         /**
@@ -1061,7 +1061,7 @@ public abstract class Edit_Base
 
         public void setLinkAttrName(final String _linkAttrName)
         {
-            this.linkAttrName = _linkAttrName;
+            linkAttrName = _linkAttrName;
         }
     }
 }
