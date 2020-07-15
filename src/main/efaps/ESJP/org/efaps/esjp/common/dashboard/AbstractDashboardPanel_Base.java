@@ -269,4 +269,14 @@ public abstract class AbstractDashboardPanel_Base
     {
         return getConfig().getProperty("Title");
     }
+
+    protected String getCssClass()
+    {
+        return getConfig().getProperty("cssClass");
+    }
+
+    protected String getStyle()
+    {
+        return getConfig().getProperty("style");
+    }
 }
