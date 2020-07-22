@@ -21,7 +21,6 @@ import java.io.Serializable;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,8 +91,17 @@ public abstract class RangesValue_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final UIValue uiValue = (UIValue) _parameter.get(ParameterValues.UIOBJECT);
-        final Attribute attribute = uiValue.getAttribute();
+        final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
+
+        final Attribute attribute;
+        final Object objectValue;
+        if (uiObject instanceof UIValue) {
+            attribute = ((UIValue) uiObject).getAttribute();
+            objectValue = ((UIValue) uiObject).getObject();
+        } else {
+            attribute = (Attribute) uiObject;
+            objectValue = _parameter.get(ParameterValues.OTHERS);
+        }
 
         final Map<Attribute, List<IOption>> cachedValues;
         if (Context.getThreadContext().containsRequestAttribute(RangesValue.REQUESTCACHEKEY)) {
@@ -144,7 +152,7 @@ public abstract class RangesValue_Base
                     option.setSelected(isSelected(_parameter, option));
                 } else {
                     option.setSelected(Long.valueOf(
-                                    multi.getCurrentInstance().getId()).equals(uiValue.getObject()));
+                                    multi.getCurrentInstance().getId()).equals(objectValue));
                 }
                 values.add(option);
             }
@@ -155,16 +163,7 @@ public abstract class RangesValue_Base
                                 .setValue(0));
             }
 
-            Collections.sort(values, new Comparator<IOption>()
-            {
-
-                @Override
-                public int compare(final IOption _arg0,
-                                   final IOption _arg1)
-                {
-                    return _arg0.getLabel().compareTo(_arg1.getLabel());
-                }
-            });
+            Collections.sort(values, (_arg0, _arg1) -> _arg0.getLabel().compareTo(_arg1.getLabel()));
             ret.put(ReturnValues.VALUES, values);
         }
         return ret;
@@ -247,19 +246,19 @@ public abstract class RangesValue_Base
         @Override
         public String getLabel()
         {
-            return this.label;
+            return label;
         }
 
         @Override
         public Object getValue()
         {
-            return this.value;
+            return value;
         }
 
         @Override
         public boolean isSelected()
         {
-            return this.selected;
+            return selected;
         }
 
         /**
@@ -270,7 +269,7 @@ public abstract class RangesValue_Base
          */
         public RangeValueOption setLabel(final String _label)
         {
-            this.label = _label;
+            label = _label;
             return this;
         }
 
@@ -282,7 +281,7 @@ public abstract class RangesValue_Base
          */
         public RangeValueOption setSelected(final boolean _selected)
         {
-            this.selected = _selected;
+            selected = _selected;
             return this;
         }
 
@@ -294,7 +293,7 @@ public abstract class RangesValue_Base
          */
         public RangeValueOption setValue(final Object _value)
         {
-            this.value = _value;
+            value = _value;
             return this;
         }
     }
