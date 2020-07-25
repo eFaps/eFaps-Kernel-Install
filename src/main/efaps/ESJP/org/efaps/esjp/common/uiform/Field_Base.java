@@ -1511,7 +1511,11 @@ public abstract class Field_Base
         multi.execute();
         Object dbValue = null;
         final IUIValue uiObject = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
-        dbValue = ((UIValue) uiObject).getDbValue();
+        if (uiObject instanceof UIValue) {
+            dbValue = ((UIValue) uiObject).getDbValue();
+        } else {
+            dbValue = _parameter.get(ParameterValues.OTHERS);
+        }
 
         final List<DropDownPosition> values = new ArrayList<>();
         boolean selected = false;
