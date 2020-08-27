@@ -19,8 +19,11 @@ package org.efaps.esjp.common.history.status.listener;
 import org.efaps.admin.datamodel.attributetype.IStatusChangeListener;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Delete;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.eql.EQL;
+import org.efaps.eql2.StmtFlag;
 import org.efaps.esjp.ci.CICommon;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
@@ -61,10 +64,29 @@ public abstract class StatusUpdateListener_Base
             final Insert insert = new Insert(CICommon.HistoryStatus);
             insert.add(CICommon.HistoryStatus.GeneralInstanceLink, _instance.getGeneralId());
             insert.add(CICommon.HistoryStatus.StatusLink, _statusId);
-            insert.execute();
+            insert.executeWithoutTrigger();
         } else {
             LOG.warn("Could not register Status update due to not being a General Instance: {}, StatusID: {}",
                             _instance, _statusId);
+        }
+    }
+
+    @Override
+    public void onDelete(final Instance _instance)
+        throws EFapsException
+    {
+        if (_instance.getType().isGeneralInstance()) {
+            final var eval = EQL.builder()
+                            .with(StmtFlag.TRIGGEROFF)
+                            .print()
+                            .query(CICommon.HistoryStatus)
+                            .where()
+                            .attribute(CICommon.HistoryStatus.GeneralInstanceLink).eq(_instance.getGeneralId())
+                            .select().instance()
+                            .evaluate();
+            while (eval.next()) {
+                new Delete((Instance) eval.get(1)).executeWithoutTrigger();
+            }
         }
     }
 }
