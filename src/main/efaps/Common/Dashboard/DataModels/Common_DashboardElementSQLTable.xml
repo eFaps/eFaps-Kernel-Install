@@ -28,7 +28,7 @@
             <column name="TYPEID"   type="INTEGER"                      not-null="true"/>
             <column name="NAME"     type="STRING_SHORT" length="64"               not-null="true"/>
             <column name="DESCR"    type="STRING_SHORT" length="265"/>
-            <column name="CONFIG"   type="STRING_SHORT" length="1024"/>
+            <column name="CONFIG"   type="STRING_SHORT" length="2048"/>
             <column name="PRGID"    type="INTEGER"                      not-null="true"/>
             <column name="CREATOR"  type="INTEGER"                      not-null="true"/>
             <column name="CREATED"  type="DATETIME"                     not-null="true"/>
