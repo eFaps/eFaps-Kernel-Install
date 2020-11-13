@@ -140,6 +140,14 @@ public final class KernelConfigurations
                     .key(KernelConfigurations.BASE + "LazyLoadElements")
                     .description("UI Elements that can be lazy loaded for startup.");
 
+    /** See description. */
+    public static final StringSysConfAttribute JASPER_DATEFORMAT = new StringSysConfAttribute()
+                    .sysConfUUID(EFapsSystemConfiguration.UUID)
+                    .key(KernelConfigurations.BASE + "jasperReport.DateFormat")
+                    .defaultValue("M-")
+                    .description("Format for Date applied inside Dynamic Jasper Reports. "
+                                    + "Can be style or pattern. Defaults to 'M-'");
+
     /**
      * Instantiates a new kernel configurations.
      */

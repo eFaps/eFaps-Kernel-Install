@@ -26,6 +26,8 @@ import java.util.Map;
 
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.esjp.admin.common.systemconfiguration.KernelConfigurations;
+import org.efaps.util.EFapsException;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -80,8 +82,9 @@ public class DateTimeDate
      * @return the datatype instance
      */
     public static DateTimeDate get()
+        throws EFapsException
     {
-        return DateTimeDate.get("M-");
+        return DateTimeDate.get(KernelConfigurations.JASPER_DATEFORMAT.get());
     }
 
     /**
