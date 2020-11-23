@@ -60,7 +60,7 @@ public abstract class StatusUpdateListener_Base
     protected void registerUpdate(final Instance _instance, final Long _statusId)
         throws EFapsException
     {
-        if (_instance.getType().isGeneralInstance()) {
+        if (_instance.getType().isGeneralInstance() && _instance.getGeneralId() > 0) {
             final Insert insert = new Insert(CICommon.HistoryStatus);
             insert.add(CICommon.HistoryStatus.GeneralInstanceLink, _instance.getGeneralId());
             insert.add(CICommon.HistoryStatus.StatusLink, _statusId);
