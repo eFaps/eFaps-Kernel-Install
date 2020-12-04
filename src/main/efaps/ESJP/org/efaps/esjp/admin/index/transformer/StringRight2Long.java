@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2016 The eFaps Team
+ * Copyright 2003 - 2020 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,11 @@ public class StringRight2Long
                 subStr = StringUtils.right((String) _object, i);
             }
             if (i - 1 > 0) {
-                ret = Long.parseLong(StringUtils.right((String) _object, i - 1));
+                try {
+                    ret = Long.parseLong(StringUtils.right((String) _object, i - 1));
+                } catch (final NumberFormatException e) {
+                    // do nothing and just ignore it
+                }
             }
         } else {
             ret = _object;
