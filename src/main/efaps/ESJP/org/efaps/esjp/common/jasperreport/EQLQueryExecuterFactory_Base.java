@@ -21,6 +21,8 @@ import java.util.Map;
 
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.jasperreports.engine.JRDataset;
 import net.sf.jasperreports.engine.JRException;
@@ -39,6 +41,8 @@ import net.sf.jasperreports.engine.query.QueryExecuterFactory;
 public abstract class EQLQueryExecuterFactory_Base
     implements QueryExecuterFactory
 {
+    private static final Logger LOG = LoggerFactory.getLogger(EQLQueryExecuterFactory.class);
+
     /**
      * Returns the built-in parameters associated with this query type.
      * <p/>
@@ -81,7 +85,7 @@ public abstract class EQLQueryExecuterFactory_Base
         if (properties.containsProperty("org.efaps.eql.Version")) {
             version = properties.getProperty("org.efaps.eql.Version");
         }
-
+        LOG.debug("Creating JRQueryExecuter with version {}", version);
         JRQueryExecuter executer;
         if (version.equals("2")) {
             executer = new EQL2QueryExecuter(_jasperReportsContext, _dataset, _parameters);

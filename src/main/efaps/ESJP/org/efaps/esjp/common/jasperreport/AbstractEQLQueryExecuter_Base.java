@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2018 The eFaps Team
+ * Copyright 2003 - 2020 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,9 +81,9 @@ public abstract class AbstractEQLQueryExecuter_Base
                                          final JRDataset _dataset,
                                          final Map<String, ? extends JRValueParameter> _parameters)
     {
-        this.jasperReportsContext = _jasperReportsContext;
-        this.dataset = _dataset;
-        this.parameters = _parameters;
+        jasperReportsContext = _jasperReportsContext;
+        dataset = _dataset;
+        parameters = _parameters;
     }
 
     /**
@@ -93,7 +93,7 @@ public abstract class AbstractEQLQueryExecuter_Base
      */
     public JasperReportsContext getJasperReportsContext()
     {
-        return this.jasperReportsContext;
+        return jasperReportsContext;
     }
 
     /**
@@ -103,7 +103,7 @@ public abstract class AbstractEQLQueryExecuter_Base
      */
     public Map<String, ? extends JRValueParameter> getParameters()
     {
-        return this.parameters;
+        return parameters;
     }
 
     /**
@@ -113,7 +113,7 @@ public abstract class AbstractEQLQueryExecuter_Base
      */
     public JRDataset getDataset()
     {
-        return this.dataset;
+        return dataset;
     }
 
     /**
@@ -123,7 +123,7 @@ public abstract class AbstractEQLQueryExecuter_Base
      */
     protected Pattern getParameterPattern()
     {
-        return this.parameterPattern;
+        return parameterPattern;
     }
 
     /**
@@ -133,9 +133,8 @@ public abstract class AbstractEQLQueryExecuter_Base
      */
     protected Pattern getKeyPattern()
     {
-        return this.keyPattern;
+        return keyPattern;
     }
-
 
     /**
      * @param _stmtStr stamentStr the parameters will be replace for
