@@ -20,7 +20,6 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.de.GermanAnalyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
 import org.apache.lucene.analysis.es.SpanishAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.efaps.admin.index.IAnalyzerProvider;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -55,17 +54,17 @@ public abstract class AnalyzerProvider_Base
     public Analyzer getAnalyzer(final Long _companyId,
                                 final String _language)
     {
-        final StandardAnalyzer ret;
+        final Analyzer ret;
         switch (_language) {
             case "de":
-                ret = new StandardAnalyzer(GermanAnalyzer.getDefaultStopSet());
+                ret = new GermanAnalyzer();
                 break;
             case "es":
-                ret = new StandardAnalyzer(SpanishAnalyzer.getDefaultStopSet());
+                ret = new SpanishAnalyzer();
                 break;
             case "en":
             default:
-                ret = new StandardAnalyzer(EnglishAnalyzer.getDefaultStopSet());
+                ret = new EnglishAnalyzer();
                 break;
         }
         return ret;
