@@ -389,7 +389,7 @@ public abstract class AbstractUpdate
     }
 
     protected void install(final List<InstallFile> _installFiles)
-        throws InstallationException
+        throws InstallationException, EFapsException
     {
         Collections.sort(_installFiles,
                         (_installFile0, _installFile1) -> _installFile0.getName().compareTo(_installFile1.getName()));
