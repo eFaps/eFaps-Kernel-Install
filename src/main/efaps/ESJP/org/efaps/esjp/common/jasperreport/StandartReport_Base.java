@@ -33,7 +33,6 @@ import java.util.UUID;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.collections4.SetUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.efaps.admin.common.SystemConfiguration;
@@ -107,11 +106,6 @@ public abstract class StandartReport_Base
 {
 
     /**
-     * Key used to store a map in the Session.
-     */
-    protected static final String SESSIONKEY = StandartReport.class.getName() + ".SessionKey";
-
-    /**
      * Logger used in this class.
      */
     private static final Logger LOG = LoggerFactory.getLogger(StandartReport.class);
@@ -157,6 +151,49 @@ public abstract class StandartReport_Base
     {
         final Return ret = new Return();
         final StringBuilder html = new StringBuilder();
+
+        for (final JRParameter parameter : loadJRParameters(_parameter)) {
+            final String name = parameter.getName();
+            final String descr = parameter.getDescription();
+            final JRExpression expr = parameter.getDefaultValueExpression();
+            final String defaultValue;
+            if (expr != null) {
+                defaultValue = expr.getText();
+            } else {
+                defaultValue = "";
+            }
+            final String inputType;
+            switch (parameter.getValueClassName()) {
+                case "java.lang.Integer":
+                    inputType = "number";
+                    break;
+                default:
+                    inputType = "text";
+                    break;
+            }
+            html.append("<div><span>").append(name).append(": ").append(descr).append("</span>")
+                            .append("<input type=\"").append(inputType).append("\" name=\"para_")
+                            .append(name).append("\" value=\"")
+                            .append(defaultValue == null ? "" : defaultValue).append("\"></div>");
+        }
+
+        if (html.length() == 0) {
+            html.append("&nbsp;");
+        }
+        final IUIValue uiObject = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+        if (org.efaps.admin.ui.field.Field.Display.HIDDEN.equals(uiObject.getDisplay())) {
+            ret.put(ReturnValues.SNIPLETT, "<input type=\"hidden\">");
+        } else {
+            ret.put(ReturnValues.SNIPLETT, html.toString());
+        }
+        return ret;
+    }
+
+    protected Set<JRParameter> loadJRParameters(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Set<JRParameter> ret = new HashSet<>();
+
         final Instance reportInst;
         if (InstanceUtils.isValid(_parameter.getInstance())
                         && _parameter.getInstance().getType().isKindOf(CIAdminProgram.JasperReport)) {
@@ -172,52 +209,20 @@ public abstract class StandartReport_Base
         }
         final Checkout checkout = new Checkout(reportInst);
         final InputStream is = checkout.execute();
-
         DefaultJasperReportsContext.getInstance().setProperty("net.sf.jasperreports.query.executer.factory.eFaps",
                         FakeQueryExecuterFactory.class.getName());
+
         try {
             final JasperDesign jasperDesign = new JRXmlLoader(DefaultJasperReportsContext.getInstance(),
                             JRXmlDigesterFactory.createDigester(DefaultJasperReportsContext.getInstance())).loadXML(is);
             final Set<JRParameter> paras = new HashSet<>();
             for (final JRParameter parameter : jasperDesign.getParameters()) {
                 if (parameter.isForPrompting() && !parameter.isSystemDefined()) {
-                    paras.add(parameter);
-                    final String name = parameter.getName();
-                    final String descr = parameter.getDescription();
-                    final JRExpression expr = parameter.getDefaultValueExpression();
-                    final String defaultValue;
-                    if (expr != null) {
-                        defaultValue = expr.getText();
-                    } else {
-                        defaultValue = "";
-                    }
-                    final String inputType;
-                    switch (parameter.getValueClassName()) {
-                        case "java.lang.Integer":
-                            inputType = "number";
-                            break;
-                        default:
-                            inputType = "text";
-                            break;
-                    }
-                    html.append("<div><span>").append(name).append(": ").append(descr).append("</span>")
-                            .append("<input type=\"").append(inputType).append("\" name=\"para_")
-                            .append(name).append("\" value=\"")
-                            .append(defaultValue == null ? "" : defaultValue).append("\"></div>");
+                    ret.add(parameter);
                 }
             }
-            Context.getThreadContext().setSessionAttribute(SESSIONKEY, paras);
-        } catch (final JRException | ParserConfigurationException | SAXException e) {
-            LOG.error("Catched Error: ", e);
-        }
-        if (html.length() == 0) {
-            html.append("&nbsp;");
-        }
-        final IUIValue uiObject = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
-        if (org.efaps.admin.ui.field.Field.Display.HIDDEN.equals(uiObject.getDisplay())) {
-            ret.put(ReturnValues.SNIPLETT, "<input type=\"hidden\">");
-        } else {
-            ret.put(ReturnValues.SNIPLETT, html.toString());
+        } catch (JRException | ParserConfigurationException | SAXException e) {
+            LOG.error("Catched", e);
         }
         return ret;
     }
@@ -244,12 +249,7 @@ public abstract class StandartReport_Base
         }
 
         ParameterUtil.setProperty(_parameter, "NoDataSource", "true");
-        final Set<JRParameter> paras;
-        if (Context.getThreadContext().containsSessionAttribute(SESSIONKEY)) {
-            paras =  (Set<JRParameter>) Context.getThreadContext().getSessionAttribute(SESSIONKEY);
-        } else {
-            paras = SetUtils.emptySet();
-        }
+        final Set<JRParameter> paras = loadJRParameters(_parameter);
 
         for (final JRParameter jrParameter : paras) {
             final String value = _parameter.getParameterValue("para_" + jrParameter.getName());
@@ -303,6 +303,7 @@ public abstract class StandartReport_Base
      * <li>JasperConfig with JasperConfigReport</li>
      * <li>JasperKey</li>
      * </ol>
+     *
      * @param _parameter Parameter as passed by the eFasp API
      * @return Instance of the jasperreport
      * @throws EFapsException on error
@@ -405,21 +406,22 @@ public abstract class StandartReport_Base
                 ctx.setExtensions(RepositoryService.class, Collections.singletonList(new JasperFileResolver()));
                 final EQLQueryExecuterFactory queryExecuterFactory = new EQLQueryExecuterFactory();
                 ctx.setExtensions(JRQueryExecuterFactoryBundle.class, Collections.singletonList(
-                                new JRQueryExecuterFactoryBundle() {
+                                new JRQueryExecuterFactoryBundle()
+                                {
 
-                    @Override
-                    public String[] getLanguages()
-                    {
-                        return new String[] {"eFaps"};
-                    }
+                                    @Override
+                                    public String[] getLanguages()
+                                    {
+                                        return new String[] { "eFaps" };
+                                    }
 
-                    @Override
-                    public QueryExecuterFactory getQueryExecuterFactory(final String _language)
-                        throws JRException
-                    {
-                        return queryExecuterFactory;
-                    }
-                }));
+                                    @Override
+                                    public QueryExecuterFactory getQueryExecuterFactory(final String _language)
+                                        throws JRException
+                                    {
+                                        return queryExecuterFactory;
+                                    }
+                                }));
                 ctx.setProperty("net.sf.jasperreports.subreport.runner.factory",
                                 SubReportRunnerFactory.class.getName());
 
@@ -679,6 +681,7 @@ public abstract class StandartReport_Base
      */
     public enum JasperMime
     {
+
         /** The csv. */
         CSV("csv"),
         /** The docx. */
