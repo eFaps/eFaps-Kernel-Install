@@ -24,6 +24,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Common_AssociationTree</name>
         <target>
+            <menu>Admin_Common_AssociationTree_Menu</menu>
             <form>Admin_Common_AssociationForm</form>
         </target>
         <type>Admin_Common_Association</type>

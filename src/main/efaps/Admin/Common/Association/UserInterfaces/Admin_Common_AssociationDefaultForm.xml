@@ -29,6 +29,7 @@
             <property name="Attribute">UUID</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
+            <property name="Width">50</property>
         </field>
         <field character="Group" name="createGroup">
             <property name="GroupCount">2</property>
