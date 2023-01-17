@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2022 The eFaps Team
+ * Copyright 2003 - 2023 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,33 +14,34 @@
  * limitations under the License.
  *
  */
+
 package org.efaps.esjp.common.rest;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 import javax.ws.rs.ext.ParamConverter;
-import javax.ws.rs.ext.ParamConverterProvider;
-import javax.ws.rs.ext.Provider;
 
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
-@Provider
-@EFapsUUID("d2495052-5ee0-4a3c-b4b9-2531f9bbab8f")
+@EFapsUUID("faf05dc2-ce39-4cf9-9213-ea57c33959ce")
 @EFapsApplication("eFaps-Kernel")
-public class LocalDateProvider implements ParamConverterProvider
+public class OffsetDateTimeConverter
+    implements ParamConverter<OffsetDateTime>
 {
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <T> ParamConverter<T> getConverter(final Class<T> rawType, final Type genericType,
-            final Annotation[] annotations) {
-        if (rawType.equals(LocalDate.class)) {
-            return (ParamConverter<T>) new LocalDateConverter();
+    public OffsetDateTime fromString(final String value)
+    {
+        if (value == null) {
+            return null;
         }
-        return null;
+        return OffsetDateTime.parse(value);
     }
 
+    @Override
+    public String toString(final OffsetDateTime value)
+    {
+        return value.toString();
+    }
 }
