@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2014 The eFaps Team
+ Copyright 2003 - 2023 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -19,21 +20,18 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>30e581bd-ebef-4f28-a784-0365122e9cf1</uuid>
+    <uuid>82c51340-55f8-4656-98ec-c231f0632a95</uuid>
     <file-application>eFaps-Kernel</file-application>
-        <definition>
+    <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Common_MsgPhraseTree_Config</name>
+        <name>Admin_Common_MsgPhraseTree_Config_Menu_Action_CreateArgument</name>
         <target>
-            <menu>Admin_Common_MsgPhraseTree_Config_Menu</menu>
-            <table>Admin_Common_MsgPhraseConfigTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Admin_Common_MsgPhraseConfigAbstract</property>
-                <property name="LinkFrom">AbstractLink</property>
-            </evaluate>
+            <form>Admin_Common_MsgPhraseArgumentForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Create" />
         </target>
-        <property name="Target">content</property>
-        <property name="TargetMode">view</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <property name="Target">modal</property>
+        <property name="TargetMode">create</property>
+        <property name="TargetCreateType">Admin_Common_MsgPhraseArgument</property>
+        <property name="TargetConnectAttribute">Admin_Common_MsgPhraseArgument/MsgPhraseLink</property>
     </definition>
 </ui-command>
