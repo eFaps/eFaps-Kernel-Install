@@ -29,6 +29,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.QueryCache;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.util.EFapsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class contains some generic methods used by its subclasses.
@@ -43,6 +45,7 @@ public abstract class CacheUtils_Base
     extends AbstractCommon
 {
 
+  private static final Logger LOG = LoggerFactory.getLogger(CacheUtils.class);
     /**
      * Clean keys form the QueryCache on a trigger.
      * @param _parameter parameter as passed by the efasp API
@@ -54,7 +57,8 @@ public abstract class CacheUtils_Base
     {
         final Map<Integer, String> caches = analyseProperty(_parameter, "CacheName");
         for (final String cacheName : caches.values()) {
-            QueryCache.cleanByKey(cacheName);
+          LOG.debug("Clean cache by name: {}", cacheName);
+          QueryCache.cleanByKey(cacheName);
         }
         return new Return();
     }

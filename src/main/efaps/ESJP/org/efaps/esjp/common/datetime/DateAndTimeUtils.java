@@ -101,4 +101,15 @@ public class DateAndTimeUtils
             .withDayOfMonth(localDate.getDayOfMonth())
             .truncatedTo(ChronoUnit.DAYS);
     }
+
+    public static OffsetDateTime withTimeAtStartOfDay()
+        throws EFapsException
+    {
+        return OffsetDateTime.now(Context.getThreadContext().getZoneId())
+                        .withHour(0)
+                        .withMinute(0)
+                        .withSecond(0)
+                        .withNano(0);
+    }
+
 }
