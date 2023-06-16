@@ -77,10 +77,12 @@ public abstract class StatusValue_Base
             final Object object = uiValue.getDbValue();
             if (object instanceof Long) {
                 final Status status = Status.get((Long) object);
-                values.add(getOption(_parameter)
+                if (status != null) {
+                    values.add(getOption(_parameter)
                                 .setLabel(status.getLabel())
                                 .setValue(status.getId())
                                 .setSelected(true));
+                }
             }
         } else if (uiValue.getTargetMode().equals(TargetMode.CREATE)) {
             final Type type = uiValue.getAttribute().getLink();
