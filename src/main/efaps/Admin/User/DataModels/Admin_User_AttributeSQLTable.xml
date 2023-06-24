@@ -25,6 +25,7 @@
     <definition>
         <version-expression>(version==1) || (version==2) || (version==latest)</version-expression>
         <name>Admin_User_AttributeSQLTable</name>
+        <parent>Admin_User_AttributeAbstractSQLTable</parent>
         <database>
             <table-name>T_USERATTR</table-name>
             <parent-table>T_USERATTRABSTRACT</parent-table>
