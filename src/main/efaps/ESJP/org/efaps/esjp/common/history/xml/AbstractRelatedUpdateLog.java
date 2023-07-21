@@ -17,10 +17,10 @@
 
 package org.efaps.esjp.common.history.xml;
 
-import javax.xml.bind.annotation.XmlElementRef;
-
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+
+import jakarta.xml.bind.annotation.XmlElementRef;
 
 /**
  * TODO comment!
