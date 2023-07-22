@@ -20,6 +20,11 @@ package org.efaps.esjp.common.rest;
 import java.io.IOException;
 import java.util.UUID;
 
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.PreMatching;
+import javax.ws.rs.ext.Provider;
+
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -29,11 +34,6 @@ import org.efaps.util.EFapsException;
 import org.efaps.util.UUIDUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import jakarta.ws.rs.container.ContainerRequestContext;
-import jakarta.ws.rs.container.ContainerRequestFilter;
-import jakarta.ws.rs.container.PreMatching;
-import jakarta.ws.rs.ext.Provider;
 
 @Provider
 @PreMatching

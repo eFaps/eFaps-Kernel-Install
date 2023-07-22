@@ -21,12 +21,12 @@ import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
+import javax.ws.rs.ext.ParamConverter;
+import javax.ws.rs.ext.ParamConverterProvider;
+import javax.ws.rs.ext.Provider;
+
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
-
-import jakarta.ws.rs.ext.ParamConverter;
-import jakarta.ws.rs.ext.ParamConverterProvider;
-import jakarta.ws.rs.ext.Provider;
 
 @Provider
 @EFapsUUID("153a12e5-719b-43c7-9aa6-efb1ee6ff3bc")
