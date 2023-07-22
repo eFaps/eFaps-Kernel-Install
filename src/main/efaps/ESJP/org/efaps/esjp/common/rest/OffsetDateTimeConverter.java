@@ -19,10 +19,10 @@ package org.efaps.esjp.common.rest;
 
 import java.time.OffsetDateTime;
 
-import javax.ws.rs.ext.ParamConverter;
-
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+
+import jakarta.ws.rs.ext.ParamConverter;
 
 @EFapsUUID("faf05dc2-ce39-4cf9-9213-ea57c33959ce")
 @EFapsApplication("eFaps-Kernel")

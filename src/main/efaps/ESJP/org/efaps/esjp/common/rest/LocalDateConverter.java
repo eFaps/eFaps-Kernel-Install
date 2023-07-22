@@ -18,10 +18,10 @@ package org.efaps.esjp.common.rest;
 
 import java.time.LocalDate;
 
-import javax.ws.rs.ext.ParamConverter;
-
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+
+import jakarta.ws.rs.ext.ParamConverter;
 
 @EFapsUUID("d9e487bc-2d56-46f7-9032-0a58797b81da")
 @EFapsApplication("eFaps-Kernel")
