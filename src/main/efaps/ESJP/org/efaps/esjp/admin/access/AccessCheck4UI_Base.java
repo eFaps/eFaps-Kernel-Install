@@ -159,6 +159,7 @@ public abstract class AccessCheck4UI_Base
                 final Parameter para = ParameterUtil.clone(_parameter, ParameterValues.INSTANCE, instance);
                 final List<Status> statusList = getStatusListFromProperties(para);
                 if (createStatus) {
+                    // first explicitly set in the properties
                     if (containsProperty(_parameter, "SystemConfig")) {
                         final String sysConfstr = getProperty(_parameter, "SystemConfig");
                         final SystemConfiguration config;
@@ -177,20 +178,31 @@ public abstract class AccessCheck4UI_Base
                             }
                         }
                     } else {
-                        // Commons-Configuration
-                        final SystemConfiguration config = SystemConfiguration.get(UUID
-                                        .fromString("9ac2673a-18f9-41ba-b9be-5b0980bdf6f3"));
-                        if (config != null) {
-                            final Properties properties = config.getAttributeValueAsProperties(
-                                            "org.efaps.commons.DocumentStatus4Create", true);
-                            final String key = properties.getProperty(instance.getType().getName() + ".Status");
-                            if (key != null) {
-                                final Status status = Status.find(
-                                                instance.getType().getStatusAttribute().getLink().getUUID(), key);
-                                if (status != null) {
-                                    statusList.clear();
-                                    statusList.add(status);
-                                }
+                        // second specific sales systemconfiguration
+                        String key = null;
+                        // Sales-Configuration
+                        final SystemConfiguration salesConfig = SystemConfiguration.get(UUID
+                                        .fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
+                        if (salesConfig != null) {
+                            key = salesConfig.getAttributeValue("org.efaps.sales."
+                                            + instance.getType().getName().replace("Sales_", "") + ".Status4Create");
+                        }
+                        if (key == null) {
+                            // last chance Commons-Configuration
+                            final SystemConfiguration commonsConfig = SystemConfiguration.get(UUID
+                                            .fromString("9ac2673a-18f9-41ba-b9be-5b0980bdf6f3"));
+                            if (commonsConfig != null) {
+                                final Properties properties = commonsConfig.getAttributeValueAsProperties(
+                                                "org.efaps.commons.DocumentStatus4Create", true);
+                                key = properties.getProperty(instance.getType().getName() + ".Status");
+                            }
+                        }
+                        if (key != null) {
+                            final Status status = Status.find(
+                                            instance.getType().getStatusAttribute().getLink().getUUID(), key);
+                            if (status != null) {
+                                statusList.clear();
+                                statusList.add(status);
                             }
                         }
                     }
