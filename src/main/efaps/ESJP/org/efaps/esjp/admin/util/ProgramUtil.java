@@ -83,6 +83,7 @@ public class ProgramUtil
                 ProgramUtil.LOG.info("Found esjp: '{}'", name);
 
                 // Admin_Program_JavaClass
+             // Admin_Program_Javaclass
                 final QueryBuilder classQueryBldr = new QueryBuilder(
                                 UUID.fromString("9118e1e3-ed4c-425d-8578-8d1f1d385110"));
                 classQueryBldr.addWhereAttrEqValue("ProgramLink", prgInst);
@@ -91,6 +92,17 @@ public class ProgramUtil
                 while (classQuery.next()) {
                     ProgramUtil.LOG.info("Removing compiled Classes: '{}'", classQuery.getCurrentValue());
                     final Delete del = new Delete(classQuery.getCurrentValue());
+                    del.execute();
+                }
+
+                final QueryBuilder classQueryBldr2 = new QueryBuilder(
+                                UUID.fromString("12c9da04-8085-4d74-a2a8-e211d655e29a"));
+                classQueryBldr2.addWhereAttrEqValue("ProgramLink", prgInst);
+                final InstanceQuery classQuery2 = classQueryBldr2.getQuery();
+                classQuery2.execute();
+                while (classQuery2.next()) {
+                    ProgramUtil.LOG.info("Removing compiled Classes: '{}'", classQuery2.getCurrentValue());
+                    final Delete del = new Delete(classQuery2.getCurrentValue());
                     del.execute();
                 }
 
