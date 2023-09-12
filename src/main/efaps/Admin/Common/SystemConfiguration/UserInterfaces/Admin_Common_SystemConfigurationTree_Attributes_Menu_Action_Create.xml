@@ -26,6 +26,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Common_SystemConfigurationTree_Attributes_Menu_Action_Create</name>
         <target>
+            <module>Admin_Common_SystemConfigurationAttributeModule</module>
             <form>Admin_Common_SystemConfigurationAttributeForm</form>
             <execute program="org.efaps.esjp.admin.common.systemconfiguration.SystemConf" method="createAttribute" />
         </target>

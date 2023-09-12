@@ -66,7 +66,7 @@ public class CompanyContextRequestFilter
                 }
                 if (company == null) {
                     LOG.warn("Received Header to set company {} but could not find the company", companyStr);
-                } else {
+                } else if (Context.isThreadActive()) {
                     final Company currentCompany = Context.getThreadContext().getCompany();
                     if (currentCompany.getId() == company.getId()) {
                         LOG.debug("Context company unchanged");
