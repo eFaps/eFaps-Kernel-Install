@@ -35,6 +35,7 @@
             <foreign name="T_CMHISTORYSTATUS_GENINSTID" key="GENINSTID" reference="T_CMGENINST(ID)" />
             <foreign name="T_CMHISTORYSTATUS_STATUSID"  key="STATUSID"  reference="T_DMSTATUS(ID)" />
             <foreign name="T_CMHISTORYSTATUS_CRTR"      key="CREATOR"   reference="T_USERPERSON(ID)"/>
+            <index  name="T_CMHISTORYSTATUS_INDEX_GENINSTID" columns="GENINSTID"/>
         </database>
     </definition>
 </datamodel-sqltable>

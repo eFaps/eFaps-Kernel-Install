@@ -38,6 +38,7 @@
             <column name="CREATED"      type="DATETIME"      not-null="true" />
             <foreign name="T_CMHISTORY_FK_GENINSTID"    key="GENINSTID" reference="T_CMGENINST(ID)" />
             <foreign name="T_CMHISTORY_FK_CREATOR"      key="CREATOR"   reference="T_USERABSTRACT(ID)" />
+            <index  name="T_CMHISTORY_INDEX_GENINSTID" columns="GENINSTID"/>
         </database>
     </definition>
 </datamodel-sqltable>
