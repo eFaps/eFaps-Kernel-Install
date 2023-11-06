@@ -24,6 +24,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,6 +65,7 @@ import org.efaps.update.util.InstallationException;
 import org.efaps.util.EFapsException;
 import org.efaps.util.UUIDUtil;
 import org.joda.time.DateTime;
+import org.joda.time.Seconds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,10 +137,8 @@ public abstract class AbstractUpdate
         installFiles.putAll(getInstallFiles(_files, items, CIAdminAccess.AccessSet));
         installFiles.putAll(getInstallFiles(_files, items, CICommon.DBPropertiesBundle));
 
-        final Iterator<RevItem> iter = items.iterator();
         int i = 0;
-        while (iter.hasNext()) {
-            final RevItem item = iter.next();
+        for (RevItem item : items) {
             LOG.info("Adding unfound Item {} / {}: {}", i, items.size(), item.getIdentifier());
             final InstallFile installFile = new InstallFile()
                             .setName(item.getName4InstallFile())
@@ -159,9 +159,7 @@ public abstract class AbstractUpdate
             final Map<RevItem, InstallFile> installFiles = getInstallFiles(_files);
             final List<RevItem> allItems = new ArrayList<>(installFiles.keySet());
             final List<InstallFile> installFileList = new ArrayList<>(installFiles.values());
-            Collections.sort(installFileList, (_installFile0,
-                                               _installFile1) -> _installFile0.getName().compareTo(_installFile1
-                                                               .getName()));
+            Collections.sort(installFileList, Comparator.comparing(InstallFile::getName));
 
             final List<InstallFile> dependendFileList = new ArrayList<>();
             // check if a object that depends on another object must be added to
@@ -223,9 +221,7 @@ public abstract class AbstractUpdate
             }
 
             final List<InstallFile> updateablesFileList = new ArrayList<>();
-            Collections.sort(updateablesFileList, (_installFile0,
-                                                   _installFile1) -> _installFile0.getName().compareTo(_installFile1
-                                                                   .getName()));
+            Collections.sort(updateablesFileList, Comparator.comparing(InstallFile::getName));
             for (final Entry<String, String> entry : updateables.entries()) {
                 final String value = entry.getValue();
                 if (UUIDUtil.isUUID(value)) {
@@ -327,7 +323,8 @@ public abstract class AbstractUpdate
                     LOG.warn("Different Revision: {} - {}", item.getRevision(), revision);
                     update = true;
                 }
-                if (!update && item.getDate().isAfter(revDate)) {
+                if (!update && item.getDate().isAfter(revDate)
+                                && Seconds.secondsBetween(item.getDate(), revDate).getSeconds() > 2) {
                     LOG.warn("Different Date: {} - {}", item.getDate(), revDate);
                     update = true;
                 }
@@ -392,7 +389,7 @@ public abstract class AbstractUpdate
         throws InstallationException, EFapsException
     {
         Collections.sort(_installFiles,
-                        (_installFile0, _installFile1) -> _installFile0.getName().compareTo(_installFile1.getName()));
+                        Comparator.comparing(InstallFile::getName));
 
         if (!_installFiles.isEmpty()) {
             final Install install = new Install(true);
@@ -534,15 +531,10 @@ public abstract class AbstractUpdate
          */
         public String getName4InstallFile()
         {
-            final String ret;
-            switch (getFileType()) {
-                case JAVA:
-                    ret = getIdentifier() + ".java";
-                    break;
-                default:
-                    ret = getIdentifier();
-                    break;
-            }
+            final String ret = switch (getFileType()) {
+                case JAVA -> getIdentifier() + ".java";
+                default -> getIdentifier();
+            };
             return ret;
         }
 
@@ -554,15 +546,10 @@ public abstract class AbstractUpdate
          */
         public String getName4InstallFile(final String _name)
         {
-            final String ret;
-            switch (getFileType()) {
-                case JAVA:
-                    ret = getIdentifier() + ".java";
-                    break;
-                default:
-                    ret = _name;
-                    break;
-            }
+            final String ret = switch (getFileType()) {
+                case JAVA -> getIdentifier() + ".java";
+                default -> _name;
+            };
             return ret;
         }
 
@@ -574,24 +561,13 @@ public abstract class AbstractUpdate
          */
         public URL getURL(final Map<String, URL> _files)
         {
-            final URL ret;
-            switch (getFileType()) {
-                case JAVA:
-                    ret = _files.get(getIdentifier().replaceAll("\\.", "/") + ".java");
-                    break;
-                case CSS:
-                    ret = _files.get(StringUtils.removeEnd(getIdentifier(), ".css").replaceAll("\\.", "/") + ".css");
-                    break;
-                case JS:
-                    ret = _files.get(StringUtils.removeEnd(getIdentifier(), ".js").replaceAll("\\.", "/") + ".js");
-                    break;
-                case JRXML:
-                    ret = _files.get(getIdentifier() + ".jrxml");
-                    break;
-                default:
-                    ret = _files.get(getIdentifier());
-                    break;
-            }
+            final URL ret = switch (getFileType()) {
+                case JAVA -> _files.get(getIdentifier().replace('.', '/') + ".java");
+                case CSS -> _files.get(StringUtils.removeEnd(getIdentifier(), ".css").replace('.', '/') + ".css");
+                case JS -> _files.get(StringUtils.removeEnd(getIdentifier(), ".js").replace('.', '/') + ".js");
+                case JRXML -> _files.get(getIdentifier() + ".jrxml");
+                default -> _files.get(getIdentifier());
+            };
             return ret;
         }
 
