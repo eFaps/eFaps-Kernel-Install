@@ -25,6 +25,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Common_SystemConfigurationLinkTree_Menu_Action_Edit</name>
         <target>
+            <module>Admin_Common_SystemConfigurationLinkModule</module>
             <form>Admin_Common_SystemConfigurationLinkForm</form>
             <execute program="org.efaps.esjp.common.uiform.Edit" />
         </target>
