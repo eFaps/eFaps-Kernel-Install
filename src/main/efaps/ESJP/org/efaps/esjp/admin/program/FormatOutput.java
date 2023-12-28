@@ -116,7 +116,7 @@ public class FormatOutput
     {
         final Return ret = new Return();
 
-        final Instance instance = _parameter.getCallInstance();
+        final Instance instance = _parameter.getInstance();
 
         final Checkout checkout = new Checkout(instance);
         final InputStream ins = checkout.execute();
@@ -126,7 +126,7 @@ public class FormatOutput
         String line = null;
         try {
             while ((line = reader.readLine()) != null) {
-                strb.append(line.replaceAll("\\s", "&nbsp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+                strb.append(line.replaceAll("\\s", "&nbsp;").replace("<", "&lt;").replace(">", "&gt;")
                                 .replaceAll("\\s", "&nbsp;"));
                 strb.append("<br/>");
             }
@@ -168,7 +168,7 @@ public class FormatOutput
         String line = null;
         try {
             while ((line = reader.readLine()) != null) {
-                strb.append(line.replaceAll("\\s", "&nbsp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+                strb.append(line.replaceAll("\\s", "&nbsp;").replace("<", "&lt;").replace(">", "&gt;")
                                 .replaceAll("\\s", "&nbsp;"));
                 strb.append("<br/>");
             }
