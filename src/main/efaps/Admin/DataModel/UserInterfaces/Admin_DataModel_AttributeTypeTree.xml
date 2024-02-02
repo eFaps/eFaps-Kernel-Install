@@ -33,17 +33,21 @@
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Admin_DataModel_AttributeTypeTree</name>
-    <!-- targets -->
+    
+
     <target>
       <form>Admin_DataModel_AttributeTypeForm</form>
     </target>
-    <!-- type tree for -->
+    
+
     <type>Admin_DataModel_AttributeType</type>
-    <!-- childs -->
+    
+
     <childs>
       <child>Admin_DataModel_AttributeTypeTree_Attributes</child>
     </childs>
-    <!-- properties -->
+    
+
     <property name="Target">content</property>
     <property name="TargetMode">view</property>
   </definition>

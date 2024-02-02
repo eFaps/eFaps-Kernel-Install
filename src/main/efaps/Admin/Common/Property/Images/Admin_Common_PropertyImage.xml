@@ -40,7 +40,8 @@
     <version-expression>(version==latest)</version-expression>
     <name>Admin_Common_PropertyImage</name>
     <file>Admin_Common_PropertyImage.gif</file>
-    <!-- is type icon for -->
+    
+
     <type>Admin_Common_Property</type>
   </definition>
 

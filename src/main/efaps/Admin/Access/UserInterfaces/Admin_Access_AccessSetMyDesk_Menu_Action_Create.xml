@@ -33,12 +33,14 @@
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Admin_Access_AccessSetMyDesk_Menu_Action_Create</name>
-    <!-- target definitions -->
+    
+
     <target>
       <form>Admin_Access_AccessSetForm</form>
       <execute program="org.efaps.esjp.common.uiform.Create"/>
     </target>
-    <!-- properties -->
+    
+
     <property name="Target">popup</property>
     <property name="TargetCreateType">Admin_Access_AccessSet</property>
     <property name="TargetMode">create</property>

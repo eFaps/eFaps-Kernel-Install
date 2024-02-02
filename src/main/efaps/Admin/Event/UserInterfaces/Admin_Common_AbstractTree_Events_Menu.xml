@@ -33,7 +33,8 @@
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Admin_Common_AbstractTree_Events_Menu</name>
-    <!-- childs -->
+    
+
     <childs>
       <child>Admin_Common_AbstractTree_Events_Menu_Action</child>
     </childs>

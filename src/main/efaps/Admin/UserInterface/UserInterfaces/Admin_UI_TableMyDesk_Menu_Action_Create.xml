@@ -34,12 +34,14 @@
     <version-expression>(version==latest)</version-expression>
     <name>Admin_UI_TableMyDesk_Menu_Action_Create</name>
     <icon>Admin_UI_Table+Create+Image</icon>
-    <!-- target definitions -->
+    
+
     <target>
       <form>Admin_UI_AbstractForm</form>
       <execute program="org.efaps.esjp.common.uiform.Create"/>
     </target>
-    <!-- properties -->
+    
+
     <property name="Target">popup</property>
     <property name="TargetCreateType">Admin_UI_Table</property>
     <property name="TargetMode">create</property>

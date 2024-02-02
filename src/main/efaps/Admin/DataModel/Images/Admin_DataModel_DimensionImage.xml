@@ -37,7 +37,8 @@
     <version-expression>(version==latest)</version-expression>
     <name>Admin_DataModel_DimensionImage</name>
     <file>Admin_DataModel_DimensionImage.gif</file>
-    <!-- is type icon for -->
+    
+
     <type>Admin_DataModel_Dimension</type>
   </definition>
 

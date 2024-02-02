@@ -40,7 +40,8 @@
     <version-expression>(version==latest)</version-expression>
     <name>Admin_Program_CSSImage</name>
     <file>Admin_Program_CSSImage.gif</file>
-    <!-- is type icon for -->
+    
+
     <type>Admin_Program_CSS</type>
   </definition>
 

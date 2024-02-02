@@ -34,12 +34,14 @@
     <version-expression>(version==latest)</version-expression>
     <name>Admin_UI_TableTree_Fields_Menu_Action_Add</name>
     <icon>Admin_UI_Field+Create+Image</icon>
-    <!-- target definitions -->
+    
+
     <target>
       <form>Admin_UI_FieldForm</form>
       <execute program="org.efaps.esjp.common.uiform.Create"/>
     </target>
-    <!-- properties -->
+    
+
     <property name="Target">modal</property>
     <property name="TargetConnectAttribute">Admin_UI_Field/Collection</property>
     <property name="TargetCreateType">Admin_UI_Field</property>

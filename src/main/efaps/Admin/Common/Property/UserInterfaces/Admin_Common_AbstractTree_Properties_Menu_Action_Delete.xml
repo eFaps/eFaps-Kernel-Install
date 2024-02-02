@@ -34,11 +34,13 @@
     <version-expression>(version==latest)</version-expression>
     <name>Admin_Common_AbstractTree_Properties_Menu_Action_Delete</name>
     <icon>Admin_Common_Property+Delete+Image</icon>
-    <!-- target definitions -->
+    
+
     <target>
       <execute program="org.efaps.esjp.common.uitable.CommonDelete"/>
     </target>
-    <!-- properties -->
+    
+
     <property name="AskUser">true</property>
     <property name="Submit">true</property>
   </definition>

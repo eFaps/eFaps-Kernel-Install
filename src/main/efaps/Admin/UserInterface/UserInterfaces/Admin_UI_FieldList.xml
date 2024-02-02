@@ -33,7 +33,8 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_UI_FieldList</name>
-        <!-- fields -->
+        
+
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="Label">Admin_UI_Field/Type.Label</property>

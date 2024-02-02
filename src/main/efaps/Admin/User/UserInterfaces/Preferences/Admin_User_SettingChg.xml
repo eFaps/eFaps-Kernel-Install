@@ -40,7 +40,8 @@
             <form>Admin_User_SettingChgForm</form>
             <execute program="org.efaps.esjp.admin.user.ChgSetting" />
         </target>
-        <!-- properties -->
+        
+
         <property name="Target">modal</property>
         <property name="TargetCreateType">Admin_User_Person</property>
         <property name="TargetMode">create</property>

@@ -33,7 +33,8 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Access_AccessSetTree_DataModelTypes_Menu_Action_AddExisting</name>
-        <!-- target definitions -->
+        
+
         <target>
             <search>Admin_Access_AccessSetTree_DataModelTypes_Menu_Action_AddExisting_Search</search>
             <execute program="org.efaps.esjp.common.uisearch.Connect">
@@ -42,7 +43,8 @@
                 <property name="ConnectType">Admin_Access_AccessSet2DataModelType</property>
             </execute>
         </target>
-        <!-- properties -->
+        
+
         <property name="Target">modal</property>
     </definition>
 

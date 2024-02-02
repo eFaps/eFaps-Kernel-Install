@@ -33,7 +33,8 @@
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Admin_UI_TableMyDesk_Menu</name>
-    <!-- childs -->
+    
+
     <childs>
       <child>Admin_UI_TableMyDesk_Menu_Action</child>
     </childs>

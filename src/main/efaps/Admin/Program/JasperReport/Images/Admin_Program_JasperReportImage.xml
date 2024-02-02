@@ -37,7 +37,8 @@
     <version-expression>(version==latest)</version-expression>
     <name>Admin_Program_JasperReportImage</name>
     <file>Admin_Program_JasperReportImage.gif</file>
-    <!-- is type icon for -->
+    
+
     <type>Admin_Program_JasperReport</type>
   </definition>
 

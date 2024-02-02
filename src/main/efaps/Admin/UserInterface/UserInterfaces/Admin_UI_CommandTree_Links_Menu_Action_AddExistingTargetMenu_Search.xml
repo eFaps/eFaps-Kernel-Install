@@ -33,11 +33,13 @@
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Admin_UI_CommandTree_Links_Menu_Action_AddExistingTargetMenu_Search</name>
-    <!-- defaults -->
+    
+
     <default>
       <command>Admin_UI_MenuSearch</command>
     </default>
-    <!-- childs -->
+    
+
     <childs>
       <child>Admin_UI_MenuSearch</child>
     </childs>

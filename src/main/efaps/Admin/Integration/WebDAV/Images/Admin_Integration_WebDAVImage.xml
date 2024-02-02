@@ -41,7 +41,8 @@
     <version-expression>(version==latest)</version-expression>
     <name>Admin_Integration_WebDAVImage</name>
     <file>Admin_Integration_WebDAVImage.gif</file>
-    <!-- is type icon for -->
+    
+
     <type>Admin_Integration_WebDAV</type>
   </definition>
 

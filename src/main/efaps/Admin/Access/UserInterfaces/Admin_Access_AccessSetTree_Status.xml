@@ -28,7 +28,8 @@
         <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Access_AccessSetTree_Status</name>
-        <!-- target definitions -->
+        
+
         <target>
             <table>Admin_Access_AccessSet2StatusAbstractTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
@@ -36,7 +37,8 @@
                 <property name="LinkFrom">AccessSetLink</property>
             </evaluate>
         </target>
-        <!-- properties -->
+        
+
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
         <property name="TargetShowCheckBoxes">true</property>

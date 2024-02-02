@@ -33,7 +33,8 @@
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Admin_UI_CommandTree_Links_Menu_Action_AddExistingTargetForm</name>
-    <!-- target definition -->
+    
+
     <target>
       <search>Admin_UI_CommandTree_Links_Menu_Action_AddExistingTargetForm_Search</search>
       <execute program="org.efaps.esjp.common.uisearch.Connect">
@@ -42,7 +43,8 @@
         <property name="ConnectType">Admin_UI_LinkTargetForm</property>
       </execute>
     </target>
-    <!-- properties -->
+    
+
     <property name="Target">popup</property>
   </definition>
 

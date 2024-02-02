@@ -34,18 +34,21 @@
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Common_DBPropertiesMyDesk</name>
         <icon>Admin_Common_DBPropertiesImage</icon>
-        <!-- access -->
+        
+
         <access>
             <role>Administration</role>
         </access>
-        <!-- target definitions -->
+        
+
         <target>
             <table>Admin_Common_DBPropertiesTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Admin_Common_DBProperties</property>
             </evaluate>
         </target>
-        <!-- properties -->
+        
+
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
         <property name="TargetTableSortKey">key</property>

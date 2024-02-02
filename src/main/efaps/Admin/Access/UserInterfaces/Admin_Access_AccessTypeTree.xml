@@ -33,13 +33,16 @@
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Admin_Access_AccessTypeTree</name>
-    <!-- targets -->
+    
+
     <target>
       <form>Admin_Access_AccessTypeForm</form>
     </target>
-    <!-- type tree for -->
+    
+
     <type>Admin_Access_AccessType</type>
-    <!-- properties -->
+    
+
     <property name="Target">content</property>
     <property name="TargetMode">view</property>
   </definition>

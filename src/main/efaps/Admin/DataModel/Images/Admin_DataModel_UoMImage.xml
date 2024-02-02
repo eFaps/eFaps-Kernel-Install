@@ -37,7 +37,8 @@
     <version-expression>(version==latest)</version-expression>
     <name>Admin_DataModel_UoMImage</name>
     <file>Admin_DataModel_UoMImage.gif</file>
-    <!-- is type icon for -->
+    
+
     <type>Admin_DataModel_UoM</type>
   </definition>
 

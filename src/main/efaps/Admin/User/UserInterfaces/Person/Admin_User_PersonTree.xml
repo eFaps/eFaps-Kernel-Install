@@ -32,14 +32,17 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_User_PersonTree</name>
-        <!-- targets -->
+        
+
         <target>
             <menu>Admin_User_PersonTree_Menu</menu>
             <form>Admin_User_PersonForm</form>
         </target>
-        <!-- type tree for -->
+        
+
         <type>Admin_User_Person</type>
-        <!-- childs -->
+        
+
         <childs>
             <child>Admin_User_PersonTree_Roles</child>
             <child>Admin_User_PersonTree_Groups</child>
@@ -50,7 +53,8 @@
             <child>Admin_User_PersonTree_LoginOut</child>
             <child>Common_History_ObjectTree_HistoryLog</child>
         </childs>
-        <!-- properties -->
+        
+
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>

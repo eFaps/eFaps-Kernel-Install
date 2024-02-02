@@ -33,12 +33,14 @@
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Admin_UI_ImageTree_Menu_Action_Checkin</name>
-    <!-- target definitions -->
+    
+
     <target>
       <form>Admin_UI_FileCheckinForm</form>
       <execute program="org.efaps.esjp.common.uiform.Edit"/>
     </target>
-    <!-- properties -->
+    
+
     <property name="Target">modal</property>
     <property name="TargetMode">edit</property>
   </definition>

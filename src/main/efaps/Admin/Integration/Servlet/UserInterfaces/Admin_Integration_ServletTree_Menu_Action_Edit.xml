@@ -34,12 +34,14 @@
     <version-expression>(version==latest)</version-expression>
     <name>Admin_Integration_ServletTree_Menu_Action_Edit</name>
     <icon>Admin_Integration_Servlet+Edit+Image</icon>
-    <!-- target definitions -->
+    
+
     <target>
       <form>Admin_Integration_ServletForm</form>
       <execute program="org.efaps.esjp.common.uiform.Edit"/>
     </target>
-    <!-- properties -->
+    
+
     <property name="Target">modal</property>
     <property name="TargetMode">edit</property>
   </definition>

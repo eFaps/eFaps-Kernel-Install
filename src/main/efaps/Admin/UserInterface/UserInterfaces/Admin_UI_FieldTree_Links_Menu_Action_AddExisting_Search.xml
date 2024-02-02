@@ -36,7 +36,8 @@
     <default>
       <command>Admin_UI_SearchSearch</command>
     </default>
-    <!-- childs -->
+    
+
     <childs>
       <child>Admin_UI_SearchSearch</child>
     </childs>

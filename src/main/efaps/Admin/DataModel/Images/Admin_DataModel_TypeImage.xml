@@ -40,7 +40,8 @@
     <version-expression>(version==latest)</version-expression>
     <name>Admin_DataModel_TypeImage</name>
     <file>Admin_DataModel_TypeImage.gif</file>
-    <!-- is type icon for -->
+    
+
     <type>Admin_DataModel_Type</type>
   </definition>
 

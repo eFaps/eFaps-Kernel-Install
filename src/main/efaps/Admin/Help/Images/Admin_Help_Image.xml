@@ -34,7 +34,8 @@
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Help_Image</name>
         <file>Admin_Help_Image.png</file>
-        <!-- is type icon for -->
+        
+
         <type>Admin_Help_Menu</type>
     </definition>
 </ui-image>

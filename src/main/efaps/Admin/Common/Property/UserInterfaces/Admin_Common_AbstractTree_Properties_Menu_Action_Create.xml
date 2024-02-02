@@ -34,12 +34,14 @@
     <version-expression>(version==latest)</version-expression>
     <name>Admin_Common_AbstractTree_Properties_Menu_Action_Create</name>
     <icon>Admin_Common_Property+Create+Image</icon>
-    <!-- target definitions -->
+    
+
     <target>
       <form>Admin_Common_PropertyForm</form>
       <execute program="org.efaps.esjp.common.uiform.Create"/>
     </target>
-    <!-- properties -->
+    
+
     <property name="Target">modal</property>
     <property name="TargetConnectAttribute">Admin_Common_Property/Abstract</property>
     <property name="TargetCreateType">Admin_Common_Property</property>

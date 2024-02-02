@@ -34,12 +34,14 @@
     <version-expression>(version==latest)</version-expression>
     <name>Admin_Integration_ServletMyDesk_Menu_Action_Create</name>
     <icon>Admin_Integration_Servlet+Create+Image</icon>
-    <!-- target definitions -->
+    
+
     <target>
       <form>Admin_Integration_ServletForm</form>
       <execute program="org.efaps.esjp.common.uiform.Create"/>
     </target>
-    <!-- properties -->
+    
+
     <property name="Target">modal</property>
     <property name="TargetCreateType">Admin_Integration_Servlet</property>
     <property name="TargetMode">create</property>

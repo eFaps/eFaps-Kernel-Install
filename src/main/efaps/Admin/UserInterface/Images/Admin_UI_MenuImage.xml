@@ -40,7 +40,8 @@
     <version-expression>(version==latest)</version-expression>
     <name>Admin_UI_MenuImage</name>
     <file>Admin_UI_MenuImage.gif</file>
-    <!-- is type icon for -->
+    
+
     <type>Admin_UI_Menu</type>
   </definition>
 

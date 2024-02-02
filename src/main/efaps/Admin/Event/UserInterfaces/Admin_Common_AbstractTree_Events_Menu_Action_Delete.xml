@@ -34,13 +34,15 @@
     <version-expression>(version==latest)</version-expression>
     <name>Admin_Common_AbstractTree_Events_Menu_Action_Delete</name>
     <icon>Admin_Event_Definition+Delete+Image</icon>
-    <!-- target definitions -->
+    
+
     <target>
       <execute program="org.efaps.esjp.common.uitable.CommonDelete">
         <property name="DeleteIndex">0</property>
       </execute>
     </target>
-    <!-- properties -->
+    
+
     <property name="AskUser">true</property>
     <property name="Submit">true</property>
   </definition>

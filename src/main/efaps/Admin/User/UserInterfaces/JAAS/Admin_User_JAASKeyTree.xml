@@ -36,7 +36,8 @@
     <target>
       <form>Admin_User_JAASKeyForm</form>
     </target>
-    <!-- type tree for -->
+    
+
     <type>Admin_User_JAASKey</type>
   </definition>
 

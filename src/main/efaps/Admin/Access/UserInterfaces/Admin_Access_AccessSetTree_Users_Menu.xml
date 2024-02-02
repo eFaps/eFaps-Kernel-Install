@@ -33,7 +33,8 @@
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Admin_Access_AccessSetTree_Users_Menu</name>
-    <!-- childs -->
+    
+
     <childs>
       <child>Admin_Access_AccessSetTree_Users_Menu_Action</child>
     </childs>

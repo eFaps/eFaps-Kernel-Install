@@ -40,7 +40,8 @@
     <version-expression>(version==latest)</version-expression>
     <name>Admin_Program_XSLImage</name>
     <file>Admin_Program_XSLImage.gif</file>
-    <!-- is type icon for -->
+    
+
     <type>Admin_Program_XSL</type>
   </definition>
 

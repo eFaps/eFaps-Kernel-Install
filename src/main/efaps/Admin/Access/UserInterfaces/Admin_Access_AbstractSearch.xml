@@ -33,7 +33,8 @@
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Admin_Access_AbstractSearch</name>
-    <!-- childs -->
+    
+
     <childs>
       <child>Admin_Access_AccessTypeSearch</child>
     </childs>

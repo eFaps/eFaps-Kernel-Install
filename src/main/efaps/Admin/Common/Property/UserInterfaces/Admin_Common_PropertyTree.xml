@@ -33,14 +33,17 @@
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Admin_Common_PropertyTree</name>
-    <!-- targets -->
+    
+
     <target>
       <menu>Admin_Common_PropertyTree_Menu</menu>
       <form>Admin_Common_PropertyForm</form>
     </target>
-    <!-- type tree for -->
+    
+
     <type>Admin_Common_Property</type>
-    <!-- properties -->
+    
+
     <property name="Target">content</property>
     <property name="TargetMode">view</property>
   </definition>

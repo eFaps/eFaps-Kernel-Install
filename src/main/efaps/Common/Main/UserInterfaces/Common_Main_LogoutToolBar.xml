@@ -34,7 +34,8 @@
     <version-expression>(version==latest)</version-expression>
     <name>Common_Main_LogoutToolBar</name>
     <icon>Main_Logout</icon>
-    <!-- properties -->
+    
+
     <property name="HRef">${ROOTURL}/logout</property>
   </definition>
 

@@ -40,7 +40,8 @@
     <version-expression>(version==latest)</version-expression>
     <name>Admin_Common_DBPropertiesLocaleImage</name>
     <file>Admin_Common_DBPropertiesLocaleImage.gif</file>
-    <!-- is type icon for -->
+    
+
     <type>Admin_Common_DBPropertiesLocal</type>
   </definition>
 

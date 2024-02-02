@@ -37,7 +37,8 @@
     <version-expression>(version==latest)</version-expression>
     <name>Admin_Program_JavaClassImage</name>
     <file>Admin_Program_JavaClassImage.gif</file>
-    <!-- is type icon for -->
+    
+
     <type>Admin_Program_JavaClass</type>
   </definition>
 

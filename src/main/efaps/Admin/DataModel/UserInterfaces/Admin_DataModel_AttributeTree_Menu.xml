@@ -33,7 +33,8 @@
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Admin_DataModel_AttributeTree_Menu</name>
-    <!-- childs -->
+    
+
     <childs>
       <child>Admin_DataModel_AttributeTree_Menu_Action</child>
     </childs>

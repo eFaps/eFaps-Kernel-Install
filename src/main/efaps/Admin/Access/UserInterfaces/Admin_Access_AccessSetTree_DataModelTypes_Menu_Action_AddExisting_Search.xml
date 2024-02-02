@@ -33,11 +33,13 @@
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Admin_Access_AccessSetTree_DataModelTypes_Menu_Action_AddExisting_Search</name>
-    <!-- defaults -->
+    
+
     <default>
       <command>Admin_DataModel_TypeSearch</command>
     </default>
-    <!-- childs -->
+    
+
     <childs>
       <child>Admin_DataModel_TypeSearch</child>
     </childs>

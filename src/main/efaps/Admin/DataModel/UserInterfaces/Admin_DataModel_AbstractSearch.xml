@@ -33,7 +33,8 @@
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Admin_DataModel_AbstractSearch</name>
-    <!-- childs -->
+    
+
     <childs>
       <child>Admin_DataModel_TypeSearch</child>
     </childs>

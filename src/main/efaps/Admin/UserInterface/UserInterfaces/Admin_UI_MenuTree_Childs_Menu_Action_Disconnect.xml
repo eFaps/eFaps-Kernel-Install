@@ -33,13 +33,15 @@
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Admin_UI_MenuTree_Childs_Menu_Action_Disconnect</name>
-    <!-- target definitions -->
+    
+
     <target>
       <execute program="org.efaps.esjp.common.uitable.CommonDelete">
         <property name="DeleteIndex">0</property>
       </execute>
     </target>
-    <!-- properties -->
+    
+
     <property name="AskUser">true</property>
     <property name="Submit">true</property>
   </definition>

@@ -33,11 +33,13 @@
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Admin_Access_AccessSetTree_AccessTypes_Menu_Action_AddExisting_Search</name>
-    <!-- defaults -->
+    
+
     <default>
       <command>Admin_Access_AccessTypeSearch</command>
     </default>
-    <!-- childs -->
+    
+
     <childs>
       <child>Admin_Access_AccessTypeSearch</child>
     </childs>

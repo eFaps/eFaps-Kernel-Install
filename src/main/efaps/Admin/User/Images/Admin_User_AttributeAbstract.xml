@@ -37,7 +37,8 @@
     <version-expression>(version==latest)</version-expression>
     <name>Admin_User_AttributeAbstract</name>
     <file>Admin_User_AttributeAbstract.gif</file>
-    <!-- is type icon for -->
+    
+
     <type>Admin_User_AttributeAbstract</type>
   </definition>
 

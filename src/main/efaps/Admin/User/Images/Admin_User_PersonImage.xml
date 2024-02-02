@@ -36,7 +36,8 @@
     <version-expression>(version==latest)</version-expression>
     <name>Admin_User_PersonImage</name>
     <file>Admin_User_PersonImage.gif</file>
-    <!-- is type icon for -->
+    
+
     <type>Admin_User_Person</type>
   </definition>
 

@@ -33,11 +33,13 @@
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Admin_Access_AccessSetTree_Users_Menu_Action_AddExisting_Search</name>
-    <!-- defaults -->
+    
+
     <default>
       <command>Admin_User_PersonSearch</command>
     </default>
-    <!-- childs -->
+    
+
     <childs>
       <child>Admin_User_PersonSearch</child>
       <child>Admin_User_RoleSearch</child>
