@@ -17,37 +17,26 @@
 
 -->
 
-
-
-
 <ui-command xmlns="http://www.efaps.org/xsd"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>f84716ca-fd71-44ff-9907-0493e2165776</uuid>
     <file-application>eFaps-Kernel</file-application>
-    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_UI_CommandSearch</name>
         <icon>Admin_UI_CommandImage</icon>
-        
-
         <access>
             <role>Administration</role>
         </access>
-        
-
         <target>
             <form>Admin_UI_AbstractForm</form>
             <table>Admin_UI_AbstractList</table>
             <evaluate program="org.efaps.esjp.common.uisearch.Search">
                 <property name="Type">Admin_UI_Command</property>
+                <property name="ExpandChildTypes">true</property>
             </evaluate>
         </target>
-        
-
         <property name="TargetMode">search</property>
     </definition>
-
 </ui-command>
