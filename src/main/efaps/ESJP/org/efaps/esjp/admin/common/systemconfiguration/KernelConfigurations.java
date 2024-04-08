@@ -43,16 +43,17 @@ public final class KernelConfigurations
                     .sysConfUUID(EFapsSystemConfiguration.UUID)
                     .key(KernelConfigurations.BASE + "AccessCheck4Object")
                     .concatenate(true)
-                    .description("Properties to configure the Access for Object mechanism.\n"
-                                    + "TYPE.Grant.AccessSet: PropertyMap, UUID or name\n"
-                                    + "TYPE.Grant.Person.InRole: PropertyMap, UUID or name\n"
-                                    + "TYPE.Grant.User: PropertyMap, UUID or name\n"
-                                    + "TYPE.Insert.AccessSet4Creator: AccesSet to be assigned for the creator\n"
-                                    + "TYPE.Insert.User: PropertyMap, UUID or name\n"
-                                    + "TYPE.Insert.AccessSet: PropertyMap Map, UUID or name\n"
-                                    + "TYPE.SimpleAccess4Type.User: PropertyMap, UUID or name\n"
-                                    + "TYPE.Delete.User: PropertyMap, UUID or name\n"
-                                    + "TYPE.Delete.AccessSet: PropertyMap, UUID or name"
+                    .description("""
+                        Properties to configure the Access for Object mechanism.
+                        TYPE.Grant.AccessSet: PropertyMap, UUID or name
+                        TYPE.Grant.Person.InRole: PropertyMap, UUID or name
+                        TYPE.Grant.User: PropertyMap, UUID or name
+                        TYPE.Insert.AccessSet4Creator: AccesSet to be assigned for the creator
+                        TYPE.Insert.User: PropertyMap, UUID or name
+                        TYPE.Insert.AccessSet: PropertyMap Map, UUID or name
+                        TYPE.SimpleAccess4Type.User: PropertyMap, UUID or name
+                        TYPE.Delete.User: PropertyMap, UUID or name
+                        TYPE.Delete.AccessSet: PropertyMap, UUID or name"""
                                     );
 
     /** See description. */
@@ -81,9 +82,10 @@ public final class KernelConfigurations
                     .sysConfUUID(EFapsSystemConfiguration.UUID)
                     .key(KernelConfigurations.BASE + "FilterDefault4Table")
                     .concatenate(true)
-                    .description("Possibiility to set the Default Filter Values for Tables. \n"
-                                    + "TABLENAME.FIELDNAME=VALUE\n"
-                                    + "e.g. Accounting_PeriodDocumentSumTable.date=WEEK");
+                    .description("""
+                        Possibiility to set the Default Filter Values for Tables.\s
+                        TABLENAME.FIELDNAME=VALUE
+                        e.g. Accounting_PeriodDocumentSumTable.date=WEEK""");
 
     /** See description. */
     public static final ListSysConfAttribute PREFERENCES = new ListSysConfAttribute()
@@ -145,6 +147,11 @@ public final class KernelConfigurations
                     .defaultValue("M-")
                     .description("Format for Date applied inside Dynamic Jasper Reports. "
                                     + "Can be style or pattern. Defaults to 'M-'");
+
+    public static final BooleanSysConfAttribute GRAPHQL_SCHEMACACHE = new BooleanSysConfAttribute()
+                    .sysConfUUID(EFapsSystemConfiguration.UUID)
+                    .key(KernelConfigurations.BASE + "graphql.Schema.ActivateCache")
+                    .description("Activate caching for the graphql schema");
 
     /**
      * Instantiates a new kernel configurations.
