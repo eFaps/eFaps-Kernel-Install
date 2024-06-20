@@ -56,7 +56,7 @@ public abstract class AbstractCachedReport_Base
         if (!InfinispanCache.get().exists(AbstractCachedReport.CACHENAME)) {
             InfinispanCache.get().initCache(AbstractCachedReport.CACHENAME);
         }
-        return InfinispanCache.get().getIgnReCache(AbstractCachedReport.CACHENAME);
+        return InfinispanCache.get().getCache(AbstractCachedReport.CACHENAME);
     }
 
     /**
@@ -146,7 +146,7 @@ public abstract class AbstractCachedReport_Base
     protected Long getLifespan(final Parameter _parameter)
         throws EFapsException
     {
-        return Long.valueOf(5);
+        return (long) 5;
     }
 
     /**

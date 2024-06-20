@@ -146,7 +146,7 @@ public abstract class AbstractDashboardPanel_Base
      */
     public Cache<String, CharSequence> getCache()
     {
-        return InfinispanCache.get().getIgnReCache(AbstractDashboardPanel.CACHENAME);
+        return InfinispanCache.get().getCache(AbstractDashboardPanel.CACHENAME);
     }
 
     /**

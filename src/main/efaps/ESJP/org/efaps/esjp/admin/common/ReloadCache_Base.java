@@ -26,6 +26,7 @@ import org.efaps.admin.runlevel.RunLevel;
 import org.efaps.admin.ui.AbstractUserInterfaceObject;
 import org.efaps.db.Context;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.InfinispanCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,6 +63,7 @@ public abstract class ReloadCache_Base
         throws EFapsException
     {
         ReloadCache_Base.LOG.info("reload Cache by: {}", Context.getThreadContext().getPerson().getName());
+        InfinispanCache.clear();
         RunLevel.init("webapp");
         RunLevel.execute();
         for (final IReloadCacheListener listener : Listener.get().<IReloadCacheListener>invoke(
@@ -86,6 +88,7 @@ public abstract class ReloadCache_Base
         ReloadCache_Base.LOG.info("reload SystemConfigurations by: {}",
                         Context.getThreadContext().getPerson().getName());
         SystemConfiguration.initialize();
+        SystemConfiguration.clearCache();
         for (final IReloadCacheListener listener : Listener.get().<IReloadCacheListener>invoke(
                         IReloadCacheListener.class)) {
             listener.onReloadSystemConfig(_parameter);

@@ -75,7 +75,7 @@ public abstract class HelpProvider_Base
         if (!InfinispanCache.get().exists(HelpProvider.CACHEKEY)) {
             onReloadCache(null);
         }
-        return InfinispanCache.get().<Long, String>getIgnReCache(HelpProvider.CACHEKEY);
+        return InfinispanCache.get().<Long, String>getCache(HelpProvider.CACHEKEY);
     }
 
     @Override

@@ -44,7 +44,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.admin.common.systemconfiguration.KernelConfigurations;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.InfinispanCache;
-import org.infinispan.AdvancedCache;
+import org.infinispan.Cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,11 +76,10 @@ public abstract class Process_Base
         final Map<Long, Map<Type, List<Instance>>> instanceMap = new HashMap<>();
         final QueryBuilder queryBldr = new QueryBuilder(CIAdminUser.Company);
         for (final Instance inst : queryBldr.getQuery().executeWithoutAccessCheck()) {
-            instanceMap.put(inst.getId(), new HashMap<Type, List<Instance>>());
+            instanceMap.put(inst.getId(), new HashMap<>());
         }
 
-        final AdvancedCache<String, String> cache = InfinispanCache.get()
-                        .<String, String>getIgnReCache(Queue.CACHENAME);
+        final Cache<String, String> cache = InfinispanCache.get().<String, String>getCache(Queue.CACHENAME);
         final Set<String> keys = new HashSet<>();
         for (final Entry<String, String> cachEntry : cache.entrySet()) {
             keys.add(cachEntry.getKey());
