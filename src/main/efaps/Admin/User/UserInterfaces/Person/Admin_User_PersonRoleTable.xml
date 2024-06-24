@@ -16,16 +16,16 @@
     limitations under the License.
 
 -->
-<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<ui-table
+    xmlns="http://www.efaps.org/xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd"
+>
     <uuid>2c11e460-565e-4f5c-991e-cff174753574</uuid>
     <file-application>eFaps-Kernel</file-application>
-    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_User_PersonRoleTable</name>
-        
-
         <field name="name">
             <property name="SelectAlternateOID">linkto[UserFromLink].oid</property>
             <property name="Select">linkto[UserFromLink].attribute[Name]</property>
@@ -51,15 +51,7 @@
         <field name="status">
             <property name="Select">linkto[UserFromLink].attribute[Status]</property>
             <property name="Label">Admin_User_Person/Status.Label</property>
-        </field>
-        <field name="buttonOpenInNewWindow">
-            <icon>eFapsActionNewWindow</icon>
-            <property name="SelectAlternateOID">linkto[UserFromLink].oid</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Target">popup</property>
-            <property name="SortAble">false</property>
-            <property name="Width">15px</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
         </field>
     </definition>
-
 </ui-table>

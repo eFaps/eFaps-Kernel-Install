@@ -50,6 +50,7 @@
             <property name="Select">linkto[UserFromLink].attribute[Status]</property>
             <property name="Label">Admin_User_Person/Status.Label</property>
             <property name="FilterType">PICKLIST</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>
 </ui-table>
