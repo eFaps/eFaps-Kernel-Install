@@ -24,6 +24,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.QueryCache;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.InfinispanCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +55,19 @@ public abstract class CacheUtils_Base
         for (final String cacheName : caches.values()) {
           LOG.debug("Clean cache by name: {}", cacheName);
           QueryCache.cleanByKey(cacheName);
+        }
+        return new Return();
+    }
+
+    public Return cleanCache(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Map<Integer, String> caches = analyseProperty(_parameter, "CacheName");
+        for (final String cacheName : caches.values()) {
+            LOG.info("Clean cache by name: {}", cacheName);
+            if (InfinispanCache.get().exists(cacheName)) {
+                InfinispanCache.get().getCache(cacheName).clear();
+            }
         }
         return new Return();
     }
