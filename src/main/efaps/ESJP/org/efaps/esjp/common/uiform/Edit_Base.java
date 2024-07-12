@@ -210,11 +210,9 @@ public abstract class Edit_Base
                 final Attribute attr = _instance.getType().getAttribute(attrName);
                 if (attr != null && (_parameter.getParameters().containsKey(field.getName())
                                 || attr.getAttributeType().getUIProvider() instanceof BitEnumUI)) {
+                    final Object oldValue = print.getAttribute(attrName);
                     final String[] newValue = _parameter.getParameterValues(field.getName());
-                    final Object object = print.getAttribute(attrName);
-                    final String oldValue = object != null ? object.toString() : null;
-                    if (newValue == null && oldValue != null
-                                    || newValue != null && !newValue.equals(oldValue)) {
+                    if (hasChanged(oldValue, newValue)) {
                         _valueMap.put(attrName, add2Update(_parameter, update, attr, field.getName()));
                     }
                 }
@@ -227,6 +225,20 @@ public abstract class Edit_Base
             updateFieldTable(_parameter, _instance, fieldTables);
         }
         return ret;
+    }
+
+
+    protected boolean hasChanged(final Object oldValue,
+                       final String[] newValues)
+    {
+        if (newValues == null && oldValue != null) {
+            return true;
+        }
+        if (newValues.length == 1) {
+            final var newValue = newValues[0];
+            return !String.valueOf(oldValue).equals(newValue);
+        }
+        return true;
     }
 
     /**
