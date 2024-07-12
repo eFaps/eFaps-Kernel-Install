@@ -56,7 +56,6 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.util.EFapsException;
 
-
 /**
  * This esjp is used from the UI_COMMAND_EXECUTE from the Form on Create.
  *
@@ -68,6 +67,7 @@ public abstract class Create_Base
     extends AbstractCommon
     implements EventExecution
 {
+
     /**
      * Execute the esjp.
      *
@@ -154,7 +154,8 @@ public abstract class Create_Base
         for (final Field field : command.getTargetForm().getFields()) {
             final String attrName = field.getAttribute();
             if (attrName != null
-                          && (field.isEditableDisplay(TargetMode.CREATE) || field.isHiddenDisplay(TargetMode.CREATE))) {
+                            && (field.isEditableDisplay(TargetMode.CREATE)
+                                            || field.isHiddenDisplay(TargetMode.CREATE))) {
                 if (field instanceof FieldSet) {
                     fieldsets.add((FieldSet) field);
                 } else {
@@ -162,7 +163,8 @@ public abstract class Create_Base
                     final Attribute attr = command.getTargetCreateType().getAttribute(attrName);
                     // check if not a file-upload field
                     if (attr != null
-                                  && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType().getClassRepr())) {
+                                    && !AbstractFileType.class
+                                                    .isAssignableFrom(attr.getAttributeType().getClassRepr())) {
                         if (_parameter.getParameters().containsKey(field.getName())) {
                             add2Insert(_parameter, insert, attr, field.getName(), 0);
                         }
@@ -182,12 +184,11 @@ public abstract class Create_Base
         return instance;
     }
 
-
     /**
      * Add additional values to the basic insert, prior to execution.
      *
-     * @param _parameter    Parameter as passed by the eFasp API
-     * @param _insert       Insert the values can be added to
+     * @param _parameter Parameter as passed by the eFasp API
+     * @param _insert Insert the values can be added to
      * @throws EFapsException on error
      */
     protected void add2basicInsert(final Parameter _parameter,
@@ -197,14 +198,14 @@ public abstract class Create_Base
 
     }
 
-
     /**
      * Add to the given update.
-     * @param _parameter    Parameter as passed by the eFaps API
-     * @param _insert   Insert
-     * @param _attr     Attribute
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _insert Insert
+     * @param _attr Attribute
      * @param _fieldName name of the Field
-     *  @param _idx          index
+     * @param _idx index
      * @throws EFapsException on error
      */
     protected void add2Insert(final Parameter _parameter,
@@ -231,13 +232,12 @@ public abstract class Create_Base
         }
     }
 
-
     /**
      * Method to create the related fieldsets if parameters are given for them.
      *
-     * @param _parameter    Parameter as passed from the efaps API.
-     * @param _instance     Instance of the new object
-     * @param _fieldsets    fieldsets to insert
+     * @param _parameter Parameter as passed from the efaps API.
+     * @param _instance Instance of the new object
+     * @param _fieldsets fieldsets to insert
      * @throws EFapsException on error
      */
     public void insertFieldSets(final Parameter _parameter,
@@ -245,46 +245,50 @@ public abstract class Create_Base
                                 final List<FieldSet> _fieldsets)
         throws EFapsException
     {
-        for (final FieldSet fieldset : _fieldsets) {
-            if (_parameter.getParameters().containsKey(fieldset.getName() + "eFapsRemove")) {
-                // to mountain backward compatibility
-                insertFieldSetsOld(_parameter, _instance, _fieldsets);
-                break;
-            } else {
-                final String setName = fieldset.getAttribute();
-                final AttributeSet set = AttributeSet.find(_instance.getType().getName(), setName);
-                Object[] ids = null;
-                if (_parameter.getParameters().containsKey(fieldset.getName() + "_ID")) {
-                    final String[] idArray = _parameter.getParameterValues(fieldset.getName() + "_ID");
-                    ids = new Object[idArray.length];
-                    for (int i = 0; i < idArray.length; i++) {
-                        final Insert insert = new Insert(set);
-                        insert.add(set.getAttribute(setName), _instance.getId());
-                        for (final String attrName : fieldset.getOrder()) {
-                            final Attribute child = set.getAttribute(attrName);
-                            final String fieldName = fieldset.getName() + "_" + attrName;
-                            if (_parameter.getParameters().containsKey(fieldName)) {
-                                add2Insert(_parameter, insert, child, fieldName, i);
+        if (_parameter.getParameters().containsKey("eFaps-REST")) {
+            new Edit().updateFieldSetsByPayload(_parameter, _instance, _fieldsets);
+        } else {
+
+            for (final FieldSet fieldset : _fieldsets) {
+                if (_parameter.getParameters().containsKey(fieldset.getName() + "eFapsRemove")) {
+                    // to mountain backward compatibility
+                    insertFieldSetsOld(_parameter, _instance, _fieldsets);
+                    break;
+                } else {
+                    final String setName = fieldset.getAttribute();
+                    final AttributeSet set = AttributeSet.find(_instance.getType().getName(), setName);
+                    Object[] ids = null;
+                    if (_parameter.getParameters().containsKey(fieldset.getName() + "_ID")) {
+                        final String[] idArray = _parameter.getParameterValues(fieldset.getName() + "_ID");
+                        ids = new Object[idArray.length];
+                        for (int i = 0; i < idArray.length; i++) {
+                            final Insert insert = new Insert(set);
+                            insert.add(set.getAttribute(setName), _instance.getId());
+                            for (final String attrName : fieldset.getOrder()) {
+                                final Attribute child = set.getAttribute(attrName);
+                                final String fieldName = fieldset.getName() + "_" + attrName;
+                                if (_parameter.getParameters().containsKey(fieldName)) {
+                                    add2Insert(_parameter, insert, child, fieldName, i);
+                                }
                             }
+                            insert.execute();
+                            ids[i] = insert.getId();
                         }
-                        insert.execute();
-                        ids[i] = insert.getId();
                     }
-                }
-                final QueryBuilder queryBldr = new QueryBuilder(set);
-                queryBldr.addWhereAttrEqValue(set.getAttribute(setName), _instance.getId());
-                if (ids != null) {
-                    queryBldr.addWhereAttrNotEqValue("ID", ids);
-                }
-                final InstanceQuery query = queryBldr.getQuery();
-                for (final Instance toDelInst: query.execute()) {
-                    final Delete del = new Delete(toDelInst);
-                    del.execute();
+                    final QueryBuilder queryBldr = new QueryBuilder(set);
+                    queryBldr.addWhereAttrEqValue(set.getAttribute(setName), _instance.getId());
+                    if (ids != null) {
+                        queryBldr.addWhereAttrNotEqValue("ID", ids);
+                    }
+                    final InstanceQuery query = queryBldr.getQuery();
+                    for (final Instance toDelInst : query.execute()) {
+                        final Delete del = new Delete(toDelInst);
+                        del.execute();
+                    }
                 }
             }
         }
     }
-
 
     // OLD VERSION! WILL BE REMOVED (only back portability)
     private void insertFieldSetsOld(final Parameter _parameter,
@@ -293,7 +297,8 @@ public abstract class Create_Base
         throws EFapsException
     {
         final Map<?, ?> others = (HashMap<?, ?>) _parameter.get(ParameterValues.OTHERS);
-        // to find out if new values where added for a field set, first it is checked
+        // to find out if new values where added for a field set, first it is
+        // checked
         // if it exists in this map
         if (others != null) {
 
@@ -326,7 +331,6 @@ public abstract class Create_Base
             }
         }
     }
-
 
     /**
      * Method to connect the new instance to parent via middle object.
@@ -414,13 +418,15 @@ public abstract class Create_Base
                 for (final Field field : form.getFields()) {
                     final String attrName = field.getAttribute();
                     if (attrName != null
-                          && (field.isEditableDisplay(TargetMode.CREATE) || field.isHiddenDisplay(TargetMode.CREATE))) {
+                                    && (field.isEditableDisplay(TargetMode.CREATE)
+                                                    || field.isHiddenDisplay(TargetMode.CREATE))) {
                         if (field instanceof FieldSet) {
                             fieldsets.add((FieldSet) field);
                         } else {
                             final Attribute attr = classification.getAttribute(attrName);
                             if (attr != null
-                                  && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType().getClassRepr())) {
+                                            && !AbstractFileType.class
+                                                            .isAssignableFrom(attr.getAttributeType().getClassRepr())) {
                                 if (_parameter.getParameters().containsKey(field.getName())) {
                                     add2Insert(_parameter, classInsert, attr, field.getName(), 0);
                                 }

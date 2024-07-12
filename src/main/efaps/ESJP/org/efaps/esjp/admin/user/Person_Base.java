@@ -49,7 +49,6 @@ import org.efaps.esjp.admin.access.SimpleAccessCheckOnType;
 import org.efaps.esjp.common.uiform.Create;
 import org.efaps.util.EFapsException;
 
-
 /**
  * Class contains some method need to create a Person and to connect the person
  * to a role.
@@ -60,9 +59,10 @@ import org.efaps.util.EFapsException;
 @EFapsApplication("eFaps-Kernel")
 public abstract class Person_Base
 {
+
     /**
-     * The accesscheck for Admin_Person Types. It is a SimpleAccessCheckOnType with
-     * the exception of updating a password.
+     * The accesscheck for Admin_Person Types. It is a SimpleAccessCheckOnType
+     * with the exception of updating a password.
      *
      * @param _parameter Parameter as past from eFaps to an esjp
      * @return empty Return
@@ -108,7 +108,6 @@ public abstract class Person_Base
         return check.execute(_parameter);
     }
 
-
     /**
      * Method called to connect a Person to a Role.
      *
@@ -124,7 +123,10 @@ public abstract class Person_Base
 
         final Instance parent = _parameter.getInstance();
 
-        final String[] childOids = _parameter.getParameterValues("selectedRow");
+        String[] childOids = _parameter.getParameterValues("selectedRow");
+        if (childOids == null) {
+            childOids = (String[]) _parameter.get(ParameterValues.OTHERS);
+        }
 
         if (childOids != null) {
             final String type = (String) properties.get("ConnectType");
@@ -144,7 +146,8 @@ public abstract class Person_Base
     }
 
     /**
-     * This method inserts the JAASSystem for a User into the eFaps-Database.<br>
+     * This method inserts the JAASSystem for a User into the
+     * eFaps-Database.<br>
      * It is executed on a INSERT_POST Trigger on the Type User_Person.
      *
      * @param _parameter Parameter as past from eFaps to en esjp
@@ -160,7 +163,7 @@ public abstract class Person_Base
 
         final Object jaassystemid = getJAASSystemID();
         if (jaassystemid != null) {
-            final Object[] key  = (Object[]) values.get(instance.getType().getAttribute("Name"));
+            final Object[] key = (Object[]) values.get(instance.getType().getAttribute("Name"));
             final Insert insert = new Insert("Admin_User_JAASKey");
             insert.add("Key", key[0]);
             insert.add("JAASSystemLink", getJAASSystemID());
@@ -180,7 +183,7 @@ public abstract class Person_Base
         throws EFapsException
     {
         Object objId = null;
-        //"Admin_User_JAASSystem"
+        // "Admin_User_JAASSystem"
         final QueryBuilder queryBldr = new QueryBuilder(UUID.fromString("28e45c59-946d-4502-94b9-58a1bf23ab88"));
         queryBldr.addWhereAttrEqValue("Name", "eFaps");
         final InstanceQuery query = queryBldr.getQuery();
@@ -193,7 +196,8 @@ public abstract class Person_Base
     }
 
     /**
-     * This method updates the JAASKey for a User/Role into the eFaps-Database.<br>
+     * This method updates the JAASKey for a User/Role into the
+     * eFaps-Database.<br>
      * It is executed on a UPDATE_POST Trigger on the Type User_Person.
      *
      * @param _parameter Parameter as past from eFaps
@@ -228,7 +232,8 @@ public abstract class Person_Base
 
     /**
      * Get the ID of the JAASKey for eFaps.
-     * @param _id id of the instance  the JAASUSerId is searched for
+     *
+     * @param _id id of the instance the JAASUSerId is searched for
      * @return ID of the JAASKey, NULL if not found
      * @throws EFapsException on error
      */
@@ -246,9 +251,9 @@ public abstract class Person_Base
         return objId;
     }
 
-
     /**
      * Create a Person by copying from another Person.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @return new empty Return
      * @throws EFapsException on error
@@ -258,6 +263,7 @@ public abstract class Person_Base
     {
         final Create create = new Create()
         {
+
             @Override
             protected void add2basicInsert(final Parameter _parameter,
                                            final Insert _insert)
@@ -322,9 +328,9 @@ public abstract class Person_Base
         throws EFapsException
     {
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final List<Map<String, String>> list = new ArrayList<>();
         if (input.length() > 0) {
-            final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
+            final Map<String, Map<String, String>> tmpMap = new TreeMap<>();
             final QueryBuilder queryBldr = new QueryBuilder(CIAdminUser.Person);
             queryBldr.addWhereAttrMatchValue(CIAdminUser.Person.Name, input + "*").setIgnoreCase(true);
 
@@ -339,7 +345,7 @@ public abstract class Person_Base
                 final String lastname = multi.<String>getAttribute(CIAdminUser.Person.LastName);
                 final String fullName = lastname + ", " + firstname;
                 final String choice = name + " - " + fullName;
-                final Map<String, String> map = new HashMap<String, String>();
+                final Map<String, String> map = new HashMap<>();
                 map.put("eFapsAutoCompleteKEY", String.valueOf(id));
                 map.put("eFapsAutoCompleteCHOICE", choice);
                 map.put("eFapsAutoCompleteVALUE", name);

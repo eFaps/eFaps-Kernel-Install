@@ -62,6 +62,7 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.Update;
+import org.efaps.eql.EQL;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
@@ -146,7 +147,7 @@ public abstract class Edit_Base
                                      final Instance _instance)
         throws EFapsException
     {
-        return updateMainElements(_parameter, _form, _instance, new HashMap<String, Object>(), null);
+        return updateMainElements(_parameter, _form, _instance, new HashMap<>(), null);
     }
 
     /**
@@ -242,6 +243,7 @@ public abstract class Edit_Base
 
     /**
      * Add to the given update.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _update Update
      * @param _attr Attribute
@@ -284,11 +286,11 @@ public abstract class Edit_Base
     }
 
     /**
-     * @param _parameter    Parameter as passed by the eFaps API
-     * @param _update       Update to add to
-     * @param _attr         current Attribute
-     * @param _fieldName    name of the field
-     * @param _idx          index
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _update Update to add to
+     * @param _attr current Attribute
+     * @param _fieldName name of the field
+     * @param _idx index
      * @throws EFapsException obn error
      */
     protected void add2Update(final Parameter _parameter,
@@ -419,50 +421,115 @@ public abstract class Edit_Base
                                 final List<FieldSet> _fieldsets)
         throws EFapsException
     {
-        @SuppressWarnings("unchecked")
-        final Map<String, String> idmap = (Map<String, String>) _parameter.get(ParameterValues.OIDMAP4UI);
-        for (final FieldSet fieldset : _fieldsets) {
-            if (_parameter.getParameters().containsKey(fieldset.getName() + "eFapsRemove")) {
-                // to mantain backward compatibility
-                updateFieldSetsOld(_parameter, _instance, _fieldsets);
-                break;
-            } else {
-                final String setName = fieldset.getAttribute();
-                final AttributeSet set = AttributeSet.find(_instance.getType().getName(), setName);
-                Object[] ids = null;
-                if (_parameter.getParameters().containsKey(fieldset.getName() + "_ID")) {
-                    final String[] idArray = _parameter.getParameterValues(fieldset.getName() + "_ID");
-                    ids = new Object[idArray.length];
-                    for (int i = 0; i < idArray.length; i++) {
-                        final String oid = idmap.get(idArray[i]);
-                        // in case of new
-                        final Update update;
-                        if (oid == null) {
-                            update = new Insert(set);
-                            update.add(set.getAttribute(setName), _instance.getId());
-                        } else {
-                            update = new Update(oid);
-                        }
-                        for (final String attrName : fieldset.getOrder()) {
-                            final Attribute child = set.getAttribute(attrName);
-                            final String fieldName = fieldset.getName() + "_" + attrName;
-                            if (_parameter.getParameters().containsKey(fieldName)) {
-                                add2Update(_parameter, update, child, fieldName, i);
+        // check if a call from the rest API
+        if (_parameter.getParameters().containsKey("eFaps-REST")) {
+            updateFieldSetsByPayload(_parameter, _instance, _fieldsets);
+        } else {
+
+            @SuppressWarnings("unchecked") final Map<String, String> idmap = (Map<String, String>) _parameter
+                            .get(ParameterValues.OIDMAP4UI);
+            for (final FieldSet fieldset : _fieldsets) {
+                if (_parameter.getParameters().containsKey(fieldset.getName() + "eFapsRemove")) {
+                    // to mantain backward compatibility
+                    updateFieldSetsOld(_parameter, _instance, _fieldsets);
+                    break;
+                } else {
+                    final String setName = fieldset.getAttribute();
+                    final AttributeSet set = AttributeSet.find(_instance.getType().getName(), setName);
+                    Object[] ids = null;
+                    if (_parameter.getParameters().containsKey(fieldset.getName() + "_ID")) {
+                        final String[] idArray = _parameter.getParameterValues(fieldset.getName() + "_ID");
+                        ids = new Object[idArray.length];
+                        for (int i = 0; i < idArray.length; i++) {
+                            final String oid = idmap.get(idArray[i]);
+                            // in case of new
+                            final Update update;
+                            if (oid == null) {
+                                update = new Insert(set);
+                                update.add(set.getAttribute(setName), _instance.getId());
+                            } else {
+                                update = new Update(oid);
                             }
+                            for (final String attrName : fieldset.getOrder()) {
+                                final Attribute child = set.getAttribute(attrName);
+                                final String fieldName = fieldset.getName() + "_" + attrName;
+                                if (_parameter.getParameters().containsKey(fieldName)) {
+                                    add2Update(_parameter, update, child, fieldName, i);
+                                }
+                            }
+                            update.execute();
+                            ids[i] = update.getId();
                         }
-                        update.execute();
-                        ids[i] = update.getId();
+                    }
+                    final QueryBuilder queryBldr = new QueryBuilder(set);
+                    queryBldr.addWhereAttrEqValue(set.getAttribute(setName), _instance.getId());
+                    if (ids != null) {
+                        queryBldr.addWhereAttrNotEqValue("ID", ids);
+                    }
+                    final InstanceQuery query = queryBldr.getQuery();
+                    for (final Instance toDelInst : query.execute()) {
+                        final Delete del = new Delete(toDelInst);
+                        del.execute();
                     }
                 }
-                final QueryBuilder queryBldr = new QueryBuilder(set);
-                queryBldr.addWhereAttrEqValue(set.getAttribute(setName), _instance.getId());
-                if (ids != null) {
-                    queryBldr.addWhereAttrNotEqValue("ID", ids);
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public void updateFieldSetsByPayload(final Parameter parameter,
+                                         final Instance instance,
+                                         final List<FieldSet> fieldsets)
+        throws EFapsException
+    {
+
+        final var valueMap = (Map<String, Object>) parameter.get(ParameterValues.PAYLOAD);
+        for (final var fieldSet : fieldsets) {
+            final String setName = fieldSet.getAttribute();
+            final AttributeSet attributeSet = AttributeSet.find(instance.getType().getName(), setName);
+            final var setEval = EQL.builder().print()
+                            .query(attributeSet.getName())
+                            .where().attribute(attributeSet.getAttributeName()).eq(instance)
+                            .select().instance()
+                            .evaluate();
+            if (valueMap.containsKey(fieldSet.getName())) {
+                final var entryMap = (Map<String, Object>) valueMap.get(fieldSet.getName());
+                while (setEval.next()) {
+                    final var setInst = setEval.inst();
+                    LOG.debug("{}", setInst);
+                    if (entryMap.containsKey(String.valueOf(setInst.getId()))) {
+                        final var setAttrMap = (Map<String, Object>) entryMap.get(String.valueOf(setInst.getId()));
+                        final var updateBldr = EQL.builder().update(setInst);
+                        for (final var setAttr : attributeSet.getSetAttributes()) {
+                            if (setAttrMap.containsKey(setAttr)) {
+                                updateBldr.set(setAttr, setAttrMap.get(setAttr) == null ? null
+                                                : String.valueOf(setAttrMap.get(setAttr)));
+                            }
+                        }
+                        updateBldr.execute();
+                    } else {
+                        EQL.builder().delete(setInst).stmt().execute();
+                    }
                 }
-                final InstanceQuery query = queryBldr.getQuery();
-                for (final Instance toDelInst : query.execute()) {
-                    final Delete del = new Delete(toDelInst);
-                    del.execute();
+                for (final var entry : entryMap.entrySet()) {
+                    if (!StringUtils.isNumeric(entry.getKey())) {
+                        final var setAttrMap = (Map<String, Object>) entry.getValue();
+                        final var insertBldr = EQL.builder().insert(attributeSet)
+                                        .set(attributeSet.getAttributeName(), instance.getOid());
+                        for (final var setAttr : attributeSet.getSetAttributes()) {
+                            if (setAttrMap.containsKey(setAttr)) {
+                                insertBldr.set(setAttr, setAttrMap.get(setAttr) == null ? null
+                                                : String.valueOf(setAttrMap.get(setAttr)));
+                            }
+                        }
+                        insertBldr.execute();
+                    }
+                }
+
+            } else {
+                while (setEval.next()) {
+                    final var setInst = setEval.inst();
+                    LOG.debug("{}", setInst);
                 }
             }
         }
@@ -553,9 +620,9 @@ public abstract class Edit_Base
                             if (attrName != null && (field.isEditableDisplay(TargetMode.EDIT)
                                             || field.isEditableDisplay(TargetMode.CREATE))) {
                                 final Attribute attr = classification.getAttribute(attrName);
-                                if (attr != null &&  _parameter.getParameterValue(field.getName()) != null
+                                if (attr != null && _parameter.getParameterValue(field.getName()) != null
                                                 && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType()
-                                                .getClassRepr())) {
+                                                                .getClassRepr())) {
                                     add2Update(_parameter, classInsert, attr, field.getName());
                                 }
                             }
@@ -578,9 +645,9 @@ public abstract class Edit_Base
                             if (attrName != null && (field.isEditableDisplay(TargetMode.EDIT)
                                             || field.isEditableDisplay(TargetMode.CREATE))) {
                                 final Attribute attr = classification.getAttribute(attrName);
-                                if (attr != null &&  _parameter.getParameterValue(field.getName()) != null
+                                if (attr != null && _parameter.getParameterValue(field.getName()) != null
                                                 && !AbstractFileType.class.isAssignableFrom(attr.getAttributeType()
-                                                .getClassRepr())) {
+                                                                .getClassRepr())) {
                                     if (_parameter.getParameters().containsKey(field.getName())
                                                     || attr.getAttributeType().getUIProvider() instanceof BitEnumUI) {
                                         final String newValue = _parameter.getParameterValue(field.getName());
@@ -773,16 +840,14 @@ public abstract class Edit_Base
                         final String typeStr = typeatt[0];
                         type = Type.get(typeStr);
                         conattr = typeatt[1];
+                    } else if (event.getProperty("Types") != null) {
+                        Edit_Base.LOG.error("Use of deprecated api calling for Field: '%s' in Collection '%s' ",
+                                        new Object[] { fieldTable.getName(), fieldTable.getCollection().getName() });
+                        type = Type.get(event.getProperty("Types"));
+                        conattr = event.getProperty("LinkFroms");
                     } else {
-                        if (event.getProperty("Types") != null) {
-                            Edit_Base.LOG.error("Use of deprecated api calling for Field: '%s' in Collection '%s' ",
-                                           new Object[] { fieldTable.getName(), fieldTable.getCollection().getName() });
-                            type = Type.get(event.getProperty("Types"));
-                            conattr = event.getProperty("LinkFroms");
-                        } else {
-                            type = Type.get(event.getProperty("Type"));
-                            conattr = event.getProperty("LinkFrom");
-                        }
+                        type = Type.get(event.getProperty("Type"));
+                        conattr = event.getProperty("LinkFrom");
                     }
                     if (deleteAll) {
                         final RowUpdate fake = new RowUpdate(Edit_Base.FAKEROW);
@@ -829,7 +894,6 @@ public abstract class Edit_Base
         return rows;
     }
 
-
     /**
      * Update connection 2 object.
      *
@@ -849,7 +913,7 @@ public abstract class Edit_Base
             // all must be of the same size
             if (connectTypes.size() == currentLinks.size() && foreignLinks.size() == foreignFields.size()
                             && connectTypes.size() == foreignLinks.size()) {
-                for (final Entry<Integer, String> entry: connectTypes.entrySet()) {
+                for (final Entry<Integer, String> entry : connectTypes.entrySet()) {
                     final String[] foreigns = _parameter.getParameterValues(foreignFields.get(entry.getKey()));
                     if (foreigns != null) {
                         for (final String foreign : foreigns) {
@@ -897,7 +961,6 @@ public abstract class Edit_Base
     {
 
     }
-
 
     /**
      * Class for update of a row.
@@ -995,7 +1058,7 @@ public abstract class Edit_Base
             if (attribute != null) {
                 final Object value;
                 if (attribute.hasUoM()) {
-                    value =  new Object[] { _parameter.getParameterValues(_fieldName)[_idx],
+                    value = new Object[] { _parameter.getParameterValues(_fieldName)[_idx],
                                     _parameter.getParameterValues(_fieldName + "UoM")[_idx] };
                 } else if (attribute.getAttributeType().getDbAttrType() instanceof RateType) {
                     final String valueTmp = _parameter.getParameterValues(_fieldName)[_idx];
