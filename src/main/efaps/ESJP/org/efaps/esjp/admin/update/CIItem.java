@@ -31,7 +31,6 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Context.FileParameter;
-import org.efaps.rest.Update;
 import org.efaps.update.FileType;
 import org.efaps.update.Install.InstallFile;
 import org.efaps.update.util.InstallationException;
@@ -75,7 +74,7 @@ public class CIItem
             tmpfld = temp.getParentFile();
             temp.delete();
         }
-        final File updateFolder = new File(tmpfld, Update.TMPFOLDERNAME);
+        final File updateFolder = new File(tmpfld, "eFapsUpdate");
         if (!updateFolder.exists()) {
             updateFolder.mkdirs();
         }

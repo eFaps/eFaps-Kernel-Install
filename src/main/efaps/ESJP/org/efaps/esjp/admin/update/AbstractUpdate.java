@@ -56,7 +56,6 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CICommon;
-import org.efaps.rest.Update;
 import org.efaps.update.FileType;
 import org.efaps.update.Install;
 import org.efaps.update.Install.InstallFile;
@@ -95,7 +94,7 @@ public abstract class AbstractUpdate
                 tmpfld = temp.getParentFile();
                 temp.delete();
             }
-            final File updateFolder = new File(tmpfld, Update.TMPFOLDERNAME);
+            final File updateFolder = new File(tmpfld, "eFapsUpdate");
             if (!updateFolder.exists()) {
                 updateFolder.mkdirs();
             }
@@ -137,7 +136,7 @@ public abstract class AbstractUpdate
         installFiles.putAll(getInstallFiles(_files, items, CICommon.DBPropertiesBundle));
 
         int i = 0;
-        for (RevItem item : items) {
+        for (final RevItem item : items) {
             LOG.info("Adding unfound Item {} / {}: {}", i, items.size(), item.getIdentifier());
             final InstallFile installFile = new InstallFile()
                             .setName(item.getName4InstallFile())
