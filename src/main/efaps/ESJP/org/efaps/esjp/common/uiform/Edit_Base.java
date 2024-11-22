@@ -229,12 +229,12 @@ public abstract class Edit_Base
 
 
     protected boolean hasChanged(final Object oldValue,
-                       final String[] newValues)
+                                 final String[] newValues)
     {
         if (newValues == null && oldValue != null) {
             return true;
         }
-        if (newValues.length == 1) {
+        if (newValues != null && newValues.length == 1) {
             final var newValue = newValues[0];
             return !String.valueOf(oldValue).equals(newValue);
         }
