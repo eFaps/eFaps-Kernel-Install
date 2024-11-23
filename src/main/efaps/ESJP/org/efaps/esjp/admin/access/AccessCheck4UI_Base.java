@@ -265,7 +265,7 @@ public abstract class AccessCheck4UI_Base
     {
         final Return ret = new Return();
         final Instance instance = _parameter.getInstance();
-        if (instance.isValid()) {
+        if (InstanceUtils.isValid(instance)) {
             final Collection<String> accessTypes = analyseProperty(_parameter, "AccessType").values();
             final boolean conjunction = "true".equalsIgnoreCase(getProperty(_parameter, "Conjunction"));
             final boolean inverse = "true".equalsIgnoreCase(getProperty(_parameter, "Inverse"));
