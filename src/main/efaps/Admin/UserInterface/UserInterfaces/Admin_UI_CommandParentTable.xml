@@ -23,8 +23,6 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_UI_CommandParentTable</name>
-         <property name="InstanceSelect">linkto[FromMenu].instance</property>
-
         <field name="type">
             <property name="Select">linkto[FromMenu].type.label</property>
             <property name="Label">Admin_UI_Abstract/Type.Label</property>
@@ -32,6 +30,7 @@
             <property name="SortAble">false</property>
             <property name="Width">2</property>
             <property name="ModeSearch">READONLY</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="name">
             <property name="Select">linkto[FromMenu].attribute[Name]</property>
