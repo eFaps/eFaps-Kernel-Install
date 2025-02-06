@@ -17,21 +17,14 @@
 
 -->
 
-
-
-
 <ui-command xmlns="http://www.efaps.org/xsd"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>dd4731c9-a441-4405-b725-be872f3d0d87</uuid>
     <file-application>eFaps-Kernel</file-application>
-    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_UI_AbstractTree_Access</name>
-        
-
         <target>
             <menu>Admin_UI_AbstractTree_Access_Menu</menu>
             <table>Admin_UI_AbstractRoleTable</table>
@@ -40,9 +33,6 @@
                 <property name="LinkFrom">UILink</property>
             </evaluate>
         </target>
-
-        
-
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
         <property name="TargetShowCheckBoxes">true</property>

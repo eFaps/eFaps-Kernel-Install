@@ -17,33 +17,22 @@
 
 -->
 
-
-
-
 <ui-command xmlns="http://www.efaps.org/xsd"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>daeb4761-b240-4dd3-a58a-7b185a981666</uuid>
     <file-application>eFaps-Kernel</file-application>
-    
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_UI_CommandTree_Parents</name>
-        
-
         <target>
-            <table>Admin_UI_AbstractList</table>
+            <table>Admin_UI_CommandParentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Admin_UI_Menu2Command</property>
                 <property name="LinkFrom">ToCommand</property>
-                <property name="InstanceSelect">linkto[FromMenu].instance</property>
             </evaluate>
         </target>
-        
-
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>
-
 </ui-command>
