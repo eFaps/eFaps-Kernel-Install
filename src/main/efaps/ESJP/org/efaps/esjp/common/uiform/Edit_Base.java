@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.datamodel.Attribute;
@@ -187,8 +188,14 @@ public abstract class Edit_Base
                 }
             } else if (field instanceof FieldTable && field.isEditableDisplay(TargetMode.EDIT)) {
                 fieldTables.add((FieldTable) field);
-            } else if (field instanceof FieldClassification) {
-                ret = ((FieldClassification) field).getClassificationName();
+            } else if (field instanceof final FieldClassification fieldClass) {
+                final var rootClasses = fieldClass.evalRootClassifications();
+                if (rootClasses.isEmpty()) {
+                    ret = fieldClass.getClassificationName();
+                } else {
+                    ret = fieldClass.evalRootClassifications().stream().map(Classification::getName)
+                                    .collect(Collectors.joining(";"));
+                }
             } else {
                 final String attrName = field.getAttribute();
                 if (attrName != null && field.isEditableDisplay(TargetMode.EDIT)) {
@@ -226,7 +233,6 @@ public abstract class Edit_Base
         }
         return ret;
     }
-
 
     protected boolean hasChanged(final Object oldValue,
                                  final String[] newValues)
