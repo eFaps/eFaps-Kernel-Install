@@ -71,42 +71,6 @@
         <url>http://www.efaps.org</url>
     </organization>
 
-    
-
-    <issueManagement>
-        <system>eFaps Issues on Google Code</system>
-        <url>http://issues.efaps.org</url>
-    </issueManagement>
-
-    
-
-     <scm>
-        <connection>scm:git:git://github.com/eFaps/eFaps-Kernel-Install.git</connection>
-        <developerConnection>scm:git:git@github.com:eFaps/eFaps-Kernel-Install.git</developerConnection>
-        <url>https://github.com/eFaps/eFaps-Kernel-Install/</url>
-        <tag>HEAD</tag>
-    </scm>
-
-    
-
-    <distributionManagement>
-        <site>
-            <id>efaps</id>
-            <name>Maven eFaps Plug-In Site</name>
-            <url>svn:https://eFaps.googlecode.com/svn/site/eFaps-Kernel-Install</url>
-        </site>
-        <snapshotRepository>
-            <id>sonatype-nexus-snapshots</id>
-            <name>Sonatype Nexus Snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>sonatype-nexus-staging</id>
-            <name>Nexus Release Repository</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
-
     <build>
         <plugins>
              <plugin>
@@ -132,7 +96,7 @@
                     </excludes>
                 </configuration>
                 <dependencies>
-                    
+
 
                     <dependency>
                         <groupId>org.apache.commons</groupId>

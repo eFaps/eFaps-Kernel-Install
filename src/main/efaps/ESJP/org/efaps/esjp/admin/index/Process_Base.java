@@ -38,9 +38,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.user.Company;
 import org.efaps.ci.CIAdminUser;
 import org.efaps.db.Instance;
-import org.efaps.db.InstanceQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.eql.EQL;
+import org.efaps.eql2.StmtFlag;
 import org.efaps.esjp.admin.common.systemconfiguration.KernelConfigurations;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.InfinispanCache;
@@ -63,6 +64,8 @@ public abstract class Process_Base
      */
     private static final Logger LOG = LoggerFactory.getLogger(Process.class);
 
+    private static boolean indexing = false;
+
     /**
      * Re index.
      *
@@ -73,40 +76,26 @@ public abstract class Process_Base
     public Return updateIndex(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<Long, Map<Type, List<Instance>>> instanceMap = new HashMap<>();
-        final QueryBuilder queryBldr = new QueryBuilder(CIAdminUser.Company);
-        for (final Instance inst : queryBldr.getQuery().executeWithoutAccessCheck()) {
-            instanceMap.put(inst.getId(), new HashMap<>());
-        }
+        if (indexing) {
+            LOG.info("Skipping update index due to running indexing");
+        } else {
+            final Map<Long, Map<Type, List<Instance>>> instanceMap = new HashMap<>();
+            final QueryBuilder queryBldr = new QueryBuilder(CIAdminUser.Company);
+            for (final Instance inst : queryBldr.getQuery().executeWithoutAccessCheck()) {
+                instanceMap.put(inst.getId(), new HashMap<>());
+            }
 
-        final Cache<String, String> cache = InfinispanCache.get().<String, String>getCache(Queue.CACHENAME);
-        final Set<String> keys = new HashSet<>();
-        for (final Entry<String, String> cachEntry : cache.entrySet()) {
-            keys.add(cachEntry.getKey());
-            final Instance inst = Instance.get(cachEntry.getValue());
-            if (inst.getType().isCompanyDependent()) {
-                LOG.debug("Checking instance to be added {}", inst);
-                final PrintQuery print = new PrintQuery(inst);
-                print.addAttribute(inst.getType().getCompanyAttribute());
-                if (print.executeWithoutAccessCheck()) {
-                    final Company company = print.getAttribute(inst.getType().getCompanyAttribute());
-                    final Map<Type, List<Instance>> subMap = instanceMap.get(company.getId());
-                    final List<Instance> instances;
-                    if (subMap.containsKey(inst.getType())) {
-                        instances = subMap.get(inst.getType());
-                    } else {
-                        instances = new ArrayList<>();
-                        subMap.put(inst.getType(), instances);
-                    }
-                    instances.add(inst);
-                }
-            } else if (inst.getType().hasAssociation()) {
-                LOG.debug("Checking instance to be added {}", inst);
-                final PrintQuery print = new PrintQuery(inst);
-                print.addAttribute(inst.getType().getAssociationAttribute());
-                if (print.executeWithoutAccessCheck()) {
-                    final Association association = print.getAttribute(inst.getType().getAssociationAttribute());
-                    for (final Company company : association.getCompanies()) {
+            final Cache<String, String> cache = InfinispanCache.get().<String, String>getCache(Queue.CACHENAME);
+            final Set<String> keys = new HashSet<>();
+            for (final Entry<String, String> cachEntry : cache.entrySet()) {
+                keys.add(cachEntry.getKey());
+                final Instance inst = Instance.get(cachEntry.getValue());
+                if (inst.getType().isCompanyDependent()) {
+                    LOG.debug("Checking instance to be added {}", inst);
+                    final PrintQuery print = new PrintQuery(inst);
+                    print.addAttribute(inst.getType().getCompanyAttribute());
+                    if (print.executeWithoutAccessCheck()) {
+                        final Company company = print.getAttribute(inst.getType().getCompanyAttribute());
                         final Map<Type, List<Instance>> subMap = instanceMap.get(company.getId());
                         final List<Instance> instances;
                         if (subMap.containsKey(inst.getType())) {
@@ -117,43 +106,61 @@ public abstract class Process_Base
                         }
                         instances.add(inst);
                     }
-                }
-            } else {
-                for (final Entry<Long, Map<Type, List<Instance>>> entry : instanceMap.entrySet()) {
-                    final List<Instance> instances;
-                    if (entry.getValue().containsKey(inst.getType())) {
-                        instances = entry.getValue().get(inst.getType());
-                    } else {
-                        instances = new ArrayList<>();
-                        entry.getValue().put(inst.getType(), instances);
+                } else if (inst.getType().hasAssociation()) {
+                    LOG.debug("Checking instance to be added {}", inst);
+                    final PrintQuery print = new PrintQuery(inst);
+                    print.addAttribute(inst.getType().getAssociationAttribute());
+                    if (print.executeWithoutAccessCheck()) {
+                        final Association association = print.getAttribute(inst.getType().getAssociationAttribute());
+                        for (final Company company : association.getCompanies()) {
+                            final Map<Type, List<Instance>> subMap = instanceMap.get(company.getId());
+                            final List<Instance> instances;
+                            if (subMap.containsKey(inst.getType())) {
+                                instances = subMap.get(inst.getType());
+                            } else {
+                                instances = new ArrayList<>();
+                                subMap.put(inst.getType(), instances);
+                            }
+                            instances.add(inst);
+                        }
                     }
-                    instances.add(inst);
+                } else {
+                    for (final Entry<Long, Map<Type, List<Instance>>> entry : instanceMap.entrySet()) {
+                        final List<Instance> instances;
+                        if (entry.getValue().containsKey(inst.getType())) {
+                            instances = entry.getValue().get(inst.getType());
+                        } else {
+                            instances = new ArrayList<>();
+                            entry.getValue().put(inst.getType(), instances);
+                        }
+                        instances.add(inst);
+                    }
                 }
             }
-        }
-        final DirectoryProvider dirProvider = new DirectoryProvider();
-        final AnalyzerProvider analyzerProvider = new AnalyzerProvider();
-        for (final Entry<Long, Map<Type, List<Instance>>> entry : instanceMap.entrySet()) {
-            for (final String language : KernelConfigurations.INDEXLANG.get()) {
-                final Directory directory = dirProvider.getDirectory(entry.getKey(), language,
-                                DirectoryProvider.INDEXPATH);
-                final Directory taxonomyDirectory = dirProvider.getDirectory(entry.getKey(), language,
-                                DirectoryProvider.TAXONOMYPATH);
-                final Analyzer analyzer = analyzerProvider.getAnalyzer(null, language);
-                for (final Entry<Type, List<Instance>> subentry : entry.getValue().entrySet()) {
-                    final IndexContext indexContext = new IndexContext()
-                                    .setDirectory(directory)
-                                    .setTaxonomyDirectory(taxonomyDirectory)
-                                    .setAnalyzer(analyzer)
-                                    .setLanguage(language)
-                                    .setCompanyId(entry.getKey());
-                    Indexer.index(indexContext, subentry.getValue());
+            final DirectoryProvider dirProvider = new DirectoryProvider();
+            final AnalyzerProvider analyzerProvider = new AnalyzerProvider();
+            for (final Entry<Long, Map<Type, List<Instance>>> entry : instanceMap.entrySet()) {
+                for (final String language : KernelConfigurations.INDEXLANG.get()) {
+                    final Directory directory = dirProvider.getDirectory(entry.getKey(), language,
+                                    DirectoryProvider.INDEXPATH);
+                    final Directory taxonomyDirectory = dirProvider.getDirectory(entry.getKey(), language,
+                                    DirectoryProvider.TAXONOMYPATH);
+                    final Analyzer analyzer = analyzerProvider.getAnalyzer(null, language);
+                    for (final Entry<Type, List<Instance>> subentry : entry.getValue().entrySet()) {
+                        final IndexContext indexContext = new IndexContext()
+                                        .setDirectory(directory)
+                                        .setTaxonomyDirectory(taxonomyDirectory)
+                                        .setAnalyzer(analyzer)
+                                        .setLanguage(language)
+                                        .setCompanyId(entry.getKey());
+                        Indexer.index(indexContext, subentry.getValue());
+                    }
                 }
             }
-        }
-        // remove the reindexed keys from the cache
-        for (final String key: keys) {
-            cache.remove(key);
+            // remove the reindexed keys from the cache
+            for (final String key : keys) {
+                cache.remove(key);
+            }
         }
         return new Return();
     }
@@ -167,42 +174,67 @@ public abstract class Process_Base
      */
     public Return reIndex(final Parameter _parameter)
         throws EFapsException
+
     {
-        final List<IndexDefinition> defs = IndexDefinition.get();
-        final DirectoryProvider dirProvider = new DirectoryProvider();
-        final AnalyzerProvider analyzerProvider = new AnalyzerProvider();
+        try {
+            indexing = true;
+            final List<IndexDefinition> defs = IndexDefinition.get();
+            final DirectoryProvider dirProvider = new DirectoryProvider();
+            final AnalyzerProvider analyzerProvider = new AnalyzerProvider();
 
-        final QueryBuilder compQueryBldr = new QueryBuilder(CIAdminUser.Company);
-        for (final Instance compInst : compQueryBldr.getQuery().executeWithoutAccessCheck()) {
-            for (final IndexDefinition def : defs) {
-                final Type type = Type.get(def.getUUID());
-                final QueryBuilder queryBldr = new QueryBuilder(type);
-                queryBldr.setCompanyDependent(false);
-                if (type.isCompanyDependent()) {
-                    queryBldr.addWhereAttrEqValue(type.getCompanyAttribute(), compInst);
-                }
-                if (type.hasAssociation()) {
-                    queryBldr.addWhereAttrEqValue(type.getAssociationAttribute(),
-                                    Association.evaluate(type, compInst.getId()).getId());
-                }
-                final InstanceQuery query = queryBldr.getQuery();
-                final List<Instance> instances = query.executeWithoutAccessCheck();
-                for (final String language : KernelConfigurations.INDEXLANG.get()) {
-                    final Directory directory = dirProvider.getDirectory(compInst.getId(), language,
-                                    DirectoryProvider.INDEXPATH);
-                    final Directory taxonomyDirectory = dirProvider.getDirectory(compInst.getId(), language,
-                                    DirectoryProvider.TAXONOMYPATH);
+            final QueryBuilder compQueryBldr = new QueryBuilder(CIAdminUser.Company);
+            for (final Instance compInst : compQueryBldr.getQuery().executeWithoutAccessCheck()) {
+                for (final IndexDefinition def : defs) {
+                    int offset = 0;
+                    final int limit = 2000;
+                    while (offset > -1) {
+                        final Type type = Type.get(def.getUUID());
+                        LOG.info("Getting {} {} - {} for indexing", type.getName(), offset, offset + limit);
+                        final var bldr = EQL.builder().with(StmtFlag.COMPANYINDEPENDENT, StmtFlag.TRIGGEROFF)
+                                        .print().query(def.getUUID().toString())
+                                        .where();
 
-                    final Analyzer analyzer = analyzerProvider.getAnalyzer(null, language);
-                    final IndexContext indexContext = new IndexContext()
-                                    .setDirectory(directory)
-                                    .setTaxonomyDirectory(taxonomyDirectory)
-                                    .setAnalyzer(analyzer)
-                                    .setLanguage(language)
-                                    .setCompanyId(compInst.getId());
-                    Indexer.index(indexContext, instances);
+                        if (type.isCompanyDependent()) {
+                            bldr.attribute(type.getCompanyAttribute().getName()).eq(compInst);
+                        }
+                        if (type.hasAssociation()) {
+                            bldr.attribute(type.getAssociationAttribute().getName()).eq(
+                                            Association.evaluate(type, compInst.getId()).getId());
+                        }
+                        final var evaluator = bldr.select().attribute("ID").as("sorter")
+                                        .orderBy("sorter").limit(limit).offset(offset)
+                                        .evaluate();
+                        final List<Instance> instances = new ArrayList<>();
+                        while (evaluator.next()) {
+                            instances.add(evaluator.inst());
+                        }
+                        if (instances.isEmpty()) {
+                            offset = -1;
+                        } else {
+                            offset = offset + limit;
+                        }
+                        for (final String language : KernelConfigurations.INDEXLANG.get()) {
+                            final Directory directory = dirProvider.getDirectory(compInst.getId(), language,
+                                            DirectoryProvider.INDEXPATH);
+                            final Directory taxonomyDirectory = dirProvider.getDirectory(compInst.getId(), language,
+                                            DirectoryProvider.TAXONOMYPATH);
+
+                            final Analyzer analyzer = analyzerProvider.getAnalyzer(null, language);
+                            final IndexContext indexContext = new IndexContext()
+                                            .setDirectory(directory)
+                                            .setTaxonomyDirectory(taxonomyDirectory)
+                                            .setAnalyzer(analyzer)
+                                            .setLanguage(language)
+                                            .setCompanyId(compInst.getId());
+                            Indexer.index(indexContext, instances);
+                        }
+                    }
                 }
             }
+        } catch (final Exception e) {
+            throw new EFapsException("", e);
+        } finally {
+            indexing = false;
         }
         return new Return();
     }
