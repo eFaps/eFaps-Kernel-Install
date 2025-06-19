@@ -178,6 +178,25 @@ public class CICommon
         public final CIAttribute Modified = new CIAttribute(this, "Modified");
     }
 
+    public static final _DashboardTemplate DashboardTemplate = new _DashboardTemplate("1436f8dc-c8d2-4b21-aaef-efcb91365250");
+
+    public static class _DashboardTemplate
+        extends CIType
+    {
+        protected _DashboardTemplate(final String _uuid)
+        {
+            super(_uuid);
+        }
+        public final CIAttribute Name = new CIAttribute(this, "Name");
+        public final CIAttribute Description = new CIAttribute(this, "Description");
+        public final CIAttribute Config = new CIAttribute(this, "Config");
+        public final CIAttribute Creator = new CIAttribute(this, "Creator");
+        public final CIAttribute Created = new CIAttribute(this, "Created");
+        public final CIAttribute Modifier = new CIAttribute(this, "Modifier");
+        public final CIAttribute Modified = new CIAttribute(this, "Modified");
+    }
+
+
     public static final _HistoryAbstract HistoryAbstract = new _HistoryAbstract("66a75f87-1e07-410d-a0c4-c6ec1671b9a1");
 
     public static class _HistoryAbstract

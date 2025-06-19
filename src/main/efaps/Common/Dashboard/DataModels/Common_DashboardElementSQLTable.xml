@@ -27,15 +27,16 @@
         <typeid-column>TYPEID</typeid-column>
         <database>
             <table-name>T_CMDASHBOARDEL</table-name>
-            <column name="TYPEID"   type="INTEGER"                      not-null="true"/>
-            <column name="NAME"     type="STRING_SHORT" length="64"               not-null="true"/>
-            <column name="DESCR"    type="STRING_SHORT" length="265"/>
-            <column name="CONFIG"   type="STRING_SHORT" length="2048"/>
-            <column name="PRGID"    type="INTEGER" />
-            <column name="CREATOR"  type="INTEGER"                      not-null="true"/>
-            <column name="CREATED"  type="DATETIME"                     not-null="true"/>
-            <column name="MODIFIER" type="INTEGER"                      not-null="true"/>
-            <column name="MODIFIED" type="DATETIME"                     not-null="true"/>
+            <column name="TYPEID"       type="INTEGER"                      not-null="true"/>
+            <column name="COMPANYID"    type="INTEGER"                      />
+            <column name="NAME"         type="STRING_SHORT" length="64"               not-null="true"/>
+            <column name="DESCR"        type="STRING_SHORT" length="265"/>
+            <column name="CONFIG"       type="STRING_SHORT" length="2048"/>
+            <column name="PRGID"        type="INTEGER" />
+            <column name="CREATOR"      type="INTEGER"                      not-null="true"/>
+            <column name="CREATED"      type="DATETIME"                     not-null="true"/>
+            <column name="MODIFIER"     type="INTEGER"                      not-null="true"/>
+            <column name="MODIFIED"     type="DATETIME"                     not-null="true"/>
             <foreign name="T_CMDASHBOARDEL_FK_PRGID"      key="PRGID"     reference="T_CMABSTRACT(ID)"/>
             <foreign name="T_CMDASHBOARDEL_FK_CREATOR"    key="CREATOR"   reference="T_USERABSTRACT(ID)" />
             <foreign name="T_CMDASHBOARDEL_FK_MDFR"       key="MODIFIER"  reference="T_USERPERSON(ID)"/>
