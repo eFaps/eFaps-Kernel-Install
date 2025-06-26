@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.MultiMapUtils;
 import org.apache.commons.collections4.MultiValuedMap;
@@ -68,6 +69,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.exc.StreamReadException;
+import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
@@ -79,7 +82,8 @@ public abstract class AbstractUpdate
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractUpdate.class);
 
-    protected Map<String, URL> getFiles(final String _fileName, final InputStream _inputStream)
+    protected Map<String, URL> getFiles(final String _fileName,
+                                        final InputStream _inputStream)
     {
         final Map<String, URL> files = new HashMap<>();
         final boolean compress = GzipUtils.isCompressedFilename(_fileName);
@@ -155,49 +159,31 @@ public abstract class AbstractUpdate
     {
         try {
             final Map<RevItem, InstallFile> installFiles = getInstallFiles(_files);
-            final List<RevItem> allItems = new ArrayList<>(installFiles.keySet());
             final List<InstallFile> installFileList = new ArrayList<>(installFiles.values());
             Collections.sort(installFileList, Comparator.comparing(InstallFile::getName));
 
-            final List<InstallFile> dependendFileList = new ArrayList<>();
             // check if a object that depends on another object must be added to
             // the update
-            final Map<String, String> depenMap = getDependendMap();
+            final var dependendMap = getDependendMap();
+
+            final var identifierSet = installFiles.keySet().stream().map(RevItem::getIdentifier)
+                            .collect(Collectors.toSet());
+
+            // add all dependend where the source is part of the update
             final Set<String> tobeAdded = new HashSet<>();
-            for (final RevItem item : installFiles.keySet()) {
-                if (depenMap.containsKey(item.getIdentifier())) {
-                    tobeAdded.add(depenMap.get(item.getIdentifier()));
-                }
-            }
-            if (!tobeAdded.isEmpty()) {
-                // check if the object to be added is already part ot the list
-                for (final RevItem item : installFiles.keySet()) {
-                    final Iterator<String> tobeiter = tobeAdded.iterator();
-                    while (tobeiter.hasNext()) {
-                        final String ident = tobeiter.next();
-                        if (item.getIdentifier().equals(ident)) {
-                            tobeiter.remove();
+            dependendMap.keySet().forEach(key -> {
+                if (identifierSet.contains(key)) {
+                    dependendMap.get(key).forEach(dependendKey -> {
+                        if (!identifierSet.contains(dependendKey)) {
+                            tobeAdded.add(dependendKey);
                         }
-                    }
+                    });
                 }
-            }
-            int i = 0;
+            });
+
+            final List<InstallFile> dependendFileList = new ArrayList<>();
             if (!tobeAdded.isEmpty()) {
-                i = 1;
-                // add the objects to the list that are missing
-                for (final RevItem item : allItems) {
-                    if (tobeAdded.contains(item.getIdentifier())) {
-                        LOG.info("Adding releated Item {} / {}: {}", i, tobeAdded.size(), item);
-                        final InstallFile installFile = new InstallFile()
-                                        .setName(item.getName4InstallFile())
-                                        .setURL(item.getURL(_files))
-                                        .setType(item.getFileType().getType())
-                                        .setRevision(item.getRevision())
-                                        .setDate(item.getDate());
-                        dependendFileList.add(installFile);
-                        i++;
-                    }
-                }
+                dependendFileList.addAll(getInstallFilesForKeys(_files, tobeAdded));
             }
             final MultiValuedMap<String, String> updateables = MultiMapUtils.newSetValuedHashMap();
             if (!installFileList.isEmpty()) {
@@ -247,16 +233,45 @@ public abstract class AbstractUpdate
         }
     }
 
+    protected List<InstallFile> getInstallFilesForKeys(final Map<String, URL> files,
+                                                       Set<String> keys)
+        throws StreamReadException, DatabindException, IOException, URISyntaxException
+    {
+        final List<InstallFile> ret = new ArrayList<>();
+        final URL json = files.get("revisions.json");
+        final ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JodaModule());
+        final Set<RevItem> revItems = mapper.readValue(new File(json.toURI()), mapper.getTypeFactory()
+                        .constructCollectionType(Set.class, RevItem.class));
+        int idx = 1;
+        for (final var revItem : revItems) {
+            if (keys.contains(revItem.getIdentifier())) {
+                LOG.info("Adding releated Item {} / {}: {}", idx, keys.size(), revItem.getIdentifier());
+                final InstallFile installFile = new InstallFile()
+                                .setName(revItem.getName4InstallFile())
+                                .setURL(revItem.getURL(files))
+                                .setType(revItem.getFileType().getType())
+                                .setRevision(revItem.getRevision())
+                                .setDate(revItem.getDate());
+                ret.add(installFile);
+                idx++;
+            }
+        }
+        Collections.sort(ret, Comparator.comparing(InstallFile::getName));
+        return ret;
+    }
+
+
     /**
      * Gets the dependend map.
      *
      * @return the dependend map
      * @throws EFapsException the e faps exception
      */
-    protected Map<String, String> getDependendMap()
+    protected MultiValuedMap<String, String> getDependendMap()
         throws EFapsException
     {
-        final Map<String, String> ret = new HashMap<>();
+        final MultiValuedMap<String, String> map = MultiMapUtils.newSetValuedHashMap();
         final QueryBuilder queryBldr = new QueryBuilder(CIAdminUserInterface.Menu2Command);
         final MultiPrintQuery multi = queryBldr.getPrint();
         final SelectBuilder selFromUUID = SelectBuilder.get().linkto(CIAdminUserInterface.Menu2Command.FromMenu)
@@ -266,9 +281,9 @@ public abstract class AbstractUpdate
         multi.addSelect(selFromUUID, selToUUID);
         multi.executeWithoutAccessCheck();
         while (multi.next()) {
-            ret.put(multi.<String>getSelect(selFromUUID), multi.<String>getSelect(selToUUID));
+            map.put(multi.<String>getSelect(selFromUUID), multi.<String>getSelect(selToUUID));
         }
-        return ret;
+        return map;
     }
 
     /**
