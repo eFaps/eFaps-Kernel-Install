@@ -337,7 +337,7 @@ public abstract class AbstractUpdate
                     update = true;
                 }
                 if (!update && item.getDate().isAfter(revDate)
-                                && Seconds.secondsBetween(item.getDate(), revDate).getSeconds() > 2) {
+                                && Seconds.secondsBetween(revDate, item.getDate()).getSeconds() > 10) {
                     LOG.warn("Different Date: {} - {}", item.getDate(), revDate);
                     update = true;
                 }
