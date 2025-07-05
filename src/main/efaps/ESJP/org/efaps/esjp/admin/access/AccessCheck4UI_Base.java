@@ -639,4 +639,25 @@ public abstract class AccessCheck4UI_Base
         }
         return ret;
     }
+
+    public Return isRest(final Parameter parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        if (Context.getThreadContext().getRequestAttribute("REST") != null) {
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+    public Return isNotRest(final Parameter parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        if (Context.getThreadContext().getRequestAttribute("REST") == null) {
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
 }
