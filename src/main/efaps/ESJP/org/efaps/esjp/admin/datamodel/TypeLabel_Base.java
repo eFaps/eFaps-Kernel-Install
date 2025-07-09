@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.efaps.admin.datamodel.Type;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -30,7 +31,6 @@ import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.util.EFapsException;
 
-
 /**
  * TODO comment!
  *
@@ -40,6 +40,7 @@ import org.efaps.util.EFapsException;
 @EFapsApplication("eFaps-Kernel")
 public abstract class TypeLabel_Base
 {
+
     /** The Constant REQKEY. */
     private static final String REQKEY = TypeLabel.class.getName() + "ReqKey";
 
@@ -51,23 +52,30 @@ public abstract class TypeLabel_Base
      * @throws EFapsException the e faps exception
      */
     @SuppressWarnings("unchecked")
-    public Return getLabelFieldValue(final Parameter _parameter)
+    public Return getLabelFieldValue(final Parameter parameter)
         throws EFapsException
     {
         final Return ret = new Return();
+        if (Context.getThreadContext().getRequestAttribute("REST") != null) {
+            final var uiValue = (IUIValue) parameter.get(ParameterValues.UIOBJECT);
+            final var type = Type.get(uiValue.getInstance().getId());
+            ret.put(ReturnValues.VALUES, type == null ? "" : type.getLabel());
+            return ret;
+        }
+
         final Map<Instance, String> map;
         if (Context.getThreadContext().containsRequestAttribute(REQKEY)) {
             map = (Map<Instance, String>) Context.getThreadContext().getRequestAttribute(REQKEY);
         } else {
             map = new HashMap<>();
             Context.getThreadContext().setRequestAttribute(REQKEY, map);
-            final List<Instance> instances = (List<Instance>) _parameter.get(ParameterValues.REQUEST_INSTANCES);
+            final List<Instance> instances = (List<Instance>) parameter.get(ParameterValues.REQUEST_INSTANCES);
             for (final Instance instance : instances) {
                 final Type type = Type.get(instance.getId());
-                map.put(instance,  type == null ? "" : type.getLabel());
+                map.put(instance, type == null ? "" : type.getLabel());
             }
         }
-        ret.put(ReturnValues.VALUES, map.get(_parameter.getInstance()));
+        ret.put(ReturnValues.VALUES, map.get(parameter.getInstance()));
         return ret;
     }
 }
