@@ -47,4 +47,9 @@ public abstract class AbstractCommon
     {
         return AbstractCommon_Base.getQueryBldrFromProperties(_properties);
     }
+
+    public static boolean isRest()
+    {
+        return AbstractCommon_Base.isRest();
+    }
 }

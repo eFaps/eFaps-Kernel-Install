@@ -538,33 +538,29 @@ public abstract class AbstractCommon_Base
                                 .get(ParameterValues.UIOBJECT);
                 AbstractCommon_Base.LOG.error("Type Definition invalid. Object: {}, Index: {}",
                                 command == null ? "UNKNOWN" : command.getName(), typeEntry.getKey());
-            } else {
-                if (negate) {
-                    excludes.add(type);
-                } else {
-                    if (first) {
-                        ret = new QueryBuilder(type);
-                        if (linkFroms.size() == 1 && linkFroms.containsKey(typeEntry.getKey())) {
-                            ret.addWhereAttrEqValue(linkFroms.get(typeEntry.getKey()),
-                                            getInstance4LinkFrom(_parameter));
-                        }
-                        // in case of a simple query set the includechilds here
-                        if (types.size() == 1 && expands.size() == 1) {
-                            ret.setIncludeChildTypes(!"false".equalsIgnoreCase(expands.get(typeEntry.getKey())));
-                        } else if (expands.size() > 1 && "true".equalsIgnoreCase(expands.get(typeEntry.getKey()))) {
-                            final Set<Type> typeList = getTypeList(_parameter, type);
-                            ret.addType(typeList.toArray(new Type[typeList.size()]));
-                        }
-                        first = false;
-                    } else {
-                        ret.addType(type);
-                        if (expands.size() > 1 && "true".equalsIgnoreCase(expands.get(typeEntry.getKey()))) {
-                            final Set<Type> typeList = getTypeList(_parameter, type);
-                            ret.addType(typeList.toArray(new Type[typeList.size()]));
-                        }
-                        multiple = true;
-                    }
+            } else if (negate) {
+                excludes.add(type);
+            } else if (first) {
+                ret = new QueryBuilder(type);
+                if (linkFroms.size() == 1 && linkFroms.containsKey(typeEntry.getKey())) {
+                    ret.addWhereAttrEqValue(linkFroms.get(typeEntry.getKey()),
+                                    getInstance4LinkFrom(_parameter));
                 }
+                // in case of a simple query set the includechilds here
+                if (types.size() == 1 && expands.size() == 1) {
+                    ret.setIncludeChildTypes(!"false".equalsIgnoreCase(expands.get(typeEntry.getKey())));
+                } else if (expands.size() > 1 && "true".equalsIgnoreCase(expands.get(typeEntry.getKey()))) {
+                    final Set<Type> typeList = getTypeList(_parameter, type);
+                    ret.addType(typeList.toArray(new Type[typeList.size()]));
+                }
+                first = false;
+            } else {
+                ret.addType(type);
+                if (expands.size() > 1 && "true".equalsIgnoreCase(expands.get(typeEntry.getKey()))) {
+                    final Set<Type> typeList = getTypeList(_parameter, type);
+                    ret.addType(typeList.toArray(new Type[typeList.size()]));
+                }
+                multiple = true;
             }
         }
 
@@ -799,5 +795,15 @@ public abstract class AbstractCommon_Base
         {
         };
         return cm.getQueryBldrFromProperties(parameter, _properties);
+    }
+
+    protected static boolean isRest()
+    {
+        try {
+            return Context.getThreadContext().getRequestAttribute("REST") != null;
+        } catch (final EFapsException e) {
+            LOG.error("Catched", e);
+        }
+        return false;
     }
 }
