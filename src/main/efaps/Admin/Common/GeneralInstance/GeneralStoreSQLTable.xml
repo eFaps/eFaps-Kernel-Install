@@ -28,7 +28,7 @@
             <parent-table>T_CMGENINST</parent-table>
             <column name="FILENAME"     not-null="true" type="STRING_SHORT" length="255"/>
             <column name="FILELENGTH"   not-null="true" type="INTEGER"/>
-            <column name="MODIFIED"     not-null="true" type="DATETIME"/>
+            <column name="MODIFIED"     type="DATETIME"/>
         </database>
     </definition>
 </datamodel-sqltable>
