@@ -16,8 +16,8 @@
     limitations under the License.
 
 -->
-<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>5248c84b-2724-4c46-afd3-b937959a74d7</uuid>
     <file-application>eFaps-Kernel</file-application>
         <definition>
@@ -25,8 +25,6 @@
         <name>GeneralStoreAbstract</name>
         <parent>GeneralInstance</parent>
         <purpose abstract="true"/>
-        
-
         <attribute>
             <name>FileLength</name>
             <type>Long</type>
@@ -38,6 +36,12 @@
             <type>String</type>
             <sqltable>GeneralStoreSQLTable</sqltable>
             <sqlcolumn>FILENAME</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Modified</name>
+            <type>Modified</type>
+            <sqltable>GeneralStoreSQLTable</sqltable>
+            <sqlcolumn>MODIFIED</sqlcolumn>
         </attribute>
     </definition>
 </datamodel-type>

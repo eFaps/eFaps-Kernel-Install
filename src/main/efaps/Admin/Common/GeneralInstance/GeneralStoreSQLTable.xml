@@ -16,21 +16,19 @@
     limitations under the License.
 
 -->
-<datamodel-sqltable xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<datamodel-sqltable xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>9b300792-8b3a-4b83-b2cf-fc9abd6a33f3</uuid>
     <file-application>eFaps-Kernel</file-application>
-    
     <definition>
         <version-expression>(version==1) || (version==2) || (version==latest)</version-expression>
         <name>GeneralStoreSQLTable</name>
         <database>
             <table-name>T_CMGENSTORE</table-name>
             <parent-table>T_CMGENINST</parent-table>
-            
-
             <column name="FILENAME"     not-null="true" type="STRING_SHORT" length="255"/>
             <column name="FILELENGTH"   not-null="true" type="INTEGER"/>
+            <column name="MODIFIED"     not-null="true" type="DATETIME"/>
         </database>
     </definition>
 </datamodel-sqltable>
