@@ -37,6 +37,7 @@ import org.joda.time.field.DividedDateTimeField;
 import org.joda.time.field.OffsetDateTimeField;
 import org.joda.time.field.RemainderDateTimeField;
 import org.joda.time.field.ScaledDurationField;
+import org.joda.time.format.DateTimeFormat;
 
 /**
  * Joda extensions for business cases.
@@ -466,7 +467,16 @@ public final class JodaTimeUtils
         return ret;
     }
 
-    public static DateTime toDateTime(final OffsetDateTime _original) {
+    public static DateTime toDateTime(final OffsetDateTime _original)
+    {
         return new DateTime(_original.toInstant().toEpochMilli());
+    }
+
+    public static DateTime getDateFromParameter(final String dateStr)
+        throws EFapsException
+    {
+        final var shortFormat = DateTimeFormat.shortDate().withLocale(Context.getThreadContext()
+                        .getLocale());
+        return shortFormat.parseDateTime(dateStr);
     }
 }
