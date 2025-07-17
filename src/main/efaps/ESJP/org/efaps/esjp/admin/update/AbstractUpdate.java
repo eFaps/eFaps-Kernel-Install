@@ -22,18 +22,14 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.MultiMapUtils;
 import org.apache.commons.collections4.MultiValuedMap;
@@ -56,13 +52,13 @@ import org.efaps.ci.CIType;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.eql.EQL;
 import org.efaps.esjp.ci.CICommon;
 import org.efaps.update.FileType;
 import org.efaps.update.Install;
 import org.efaps.update.Install.InstallFile;
 import org.efaps.update.util.InstallationException;
 import org.efaps.util.EFapsException;
-import org.efaps.util.UUIDUtil;
 import org.joda.time.DateTime;
 import org.joda.time.Seconds;
 import org.slf4j.Logger;
@@ -73,6 +69,7 @@ import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
 @EFapsUUID("97f7ea4f-cacf-41e1-9b0e-8d1aefd4089a")
@@ -124,27 +121,22 @@ public abstract class AbstractUpdate
         return files;
     }
 
-    protected Map<RevItem, InstallFile> getInstallFiles(final Map<String, URL> _files)
+    protected Map<RevItem, InstallFile> getInstallFiles(final Map<String, URL> files,
+                                                        final List<RevItem> items)
         throws JsonParseException, JsonMappingException, IOException, URISyntaxException, EFapsException
     {
         final Map<RevItem, InstallFile> installFiles = new HashMap<>();
-        final URL json = _files.get("revisions.json");
-        final ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JodaModule());
-        final List<RevItem> items = mapper.readValue(new File(json.toURI()), mapper.getTypeFactory()
-                        .constructCollectionType(List.class, RevItem.class));
-
-        installFiles.putAll(getInstallFiles(_files, items, CIAdmin.Abstract));
-        installFiles.putAll(getInstallFiles(_files, items, CIAdminUser.Abstract));
-        installFiles.putAll(getInstallFiles(_files, items, CIAdminAccess.AccessSet));
-        installFiles.putAll(getInstallFiles(_files, items, CICommon.DBPropertiesBundle));
+        installFiles.putAll(getInstallFiles(files, items, CIAdmin.Abstract));
+        installFiles.putAll(getInstallFiles(files, items, CIAdminUser.Abstract));
+        installFiles.putAll(getInstallFiles(files, items, CIAdminAccess.AccessSet));
+        installFiles.putAll(getInstallFiles(files, items, CICommon.DBPropertiesBundle));
 
         int i = 0;
         for (final RevItem item : items) {
             LOG.info("Adding unfound Item {} / {}: {}", i, items.size(), item.getIdentifier());
             final InstallFile installFile = new InstallFile()
                             .setName(item.getName4InstallFile())
-                            .setURL(item.getURL(_files))
+                            .setURL(item.getURL(files))
                             .setType(item.getFileType().getType())
                             .setRevision(item.getRevision())
                             .setDate(item.getDate());
@@ -154,37 +146,27 @@ public abstract class AbstractUpdate
         return installFiles;
     }
 
-    protected void update(final Map<String, URL> _files)
+    protected List<RevItem> getRevItemList(final Map<String, URL> files)
+        throws StreamReadException, DatabindException, IOException, URISyntaxException
+    {
+        final URL json = files.get("revisions.json");
+        final ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JodaModule());
+        return mapper.readValue(new File(json.toURI()), mapper.getTypeFactory()
+                        .constructCollectionType(List.class, RevItem.class));
+
+    }
+
+    protected void update(final Map<String, URL> files)
         throws InstallationException, EFapsException
     {
         try {
-            final Map<RevItem, InstallFile> installFiles = getInstallFiles(_files);
+            final var items = getRevItemList(files);
+
+            final Map<RevItem, InstallFile> installFiles = getInstallFiles(files, items);
             final List<InstallFile> installFileList = new ArrayList<>(installFiles.values());
             Collections.sort(installFileList, Comparator.comparing(InstallFile::getName));
 
-            // check if a object that depends on another object must be added to
-            // the update
-            final var dependendMap = getDependendMap();
-
-            final var identifierSet = installFiles.keySet().stream().map(RevItem::getIdentifier)
-                            .collect(Collectors.toSet());
-
-            // add all dependend where the source is part of the update
-            final Set<String> tobeAdded = new HashSet<>();
-            dependendMap.keySet().forEach(key -> {
-                if (identifierSet.contains(key)) {
-                    dependendMap.get(key).forEach(dependendKey -> {
-                        if (!identifierSet.contains(dependendKey)) {
-                            tobeAdded.add(dependendKey);
-                        }
-                    });
-                }
-            });
-
-            final List<InstallFile> dependendFileList = new ArrayList<>();
-            if (!tobeAdded.isEmpty()) {
-                dependendFileList.addAll(getInstallFilesForKeys(_files, tobeAdded));
-            }
             final MultiValuedMap<String, String> updateables = MultiMapUtils.newSetValuedHashMap();
             if (!installFileList.isEmpty()) {
                 final Install install = new Install(true);
@@ -194,37 +176,9 @@ public abstract class AbstractUpdate
                 }
                 updateables.putAll(install.updateLatest(null));
             }
-            if (!dependendFileList.isEmpty()) {
-                LOG.info("Update for related Items");
-                final Install install = new Install(true);
-                for (final InstallFile installFile : dependendFileList) {
-                    LOG.info("...Adding to Update: '{}' ", installFile.getName());
-                    install.addFile(installFile);
-                }
-                updateables.putAll(install.updateLatest(null));
-            }
+            final var disconnectedChildren = updateables.get(CIAdminUserInterface.Menu.uuid.toString());
+            reconnectChildren(files, disconnectedChildren);
 
-            final List<InstallFile> updateablesFileList = new ArrayList<>();
-            Collections.sort(updateablesFileList, Comparator.comparing(InstallFile::getName));
-            for (final Entry<String, String> entry : updateables.entries()) {
-                final String value = entry.getValue();
-                if (UUIDUtil.isUUID(value)) {
-                    final Optional<RevItem> revItemOpt = installFiles.keySet().stream().filter(item -> value.equals(item
-                                    .getIdentifier())).findFirst();
-                    if (revItemOpt.isPresent()) {
-                        updateablesFileList.add(installFiles.get(revItemOpt.get()));
-                    }
-                }
-            }
-            if (!updateablesFileList.isEmpty()) {
-                LOG.info("Update for updateable Items");
-                final Install install = new Install(true);
-                for (final InstallFile installFile : updateablesFileList) {
-                    LOG.info("...Adding to Update: '{}' ", installFile.getName());
-                    install.addFile(installFile);
-                }
-                install.updateLatest(null);
-            }
             LOG.info("Terminated update.");
         } catch (final IOException e) {
             LOG.error("Catched", e);
@@ -233,20 +187,61 @@ public abstract class AbstractUpdate
         }
     }
 
+    protected void reconnectChildren(final Map<String, URL> files,
+                                     final Collection<String> disconnectedChildren)
+        throws IOException, EFapsException
+    {
+        if (disconnectedChildren != null) {
+            LOG.info("Checking disconnected Children of Menus for reconnect");
+            final var mapper = new XmlMapper();
+            for (final var disconnectedChild : disconnectedChildren) {
+                final var url = files.get(disconnectedChild);
+                final var node = mapper.readTree(url);
+                final var definition = node.get("definition");
+                if (definition.has("parents")) {
+                    final var parents = definition.get("parents");
+                    final var parentList = parents.get("parent");
+                    for (final var parent : parentList) {
+                        final var parentName = parent.asText();
+                        LOG.info("Tyring to reconnect: {} with  {}", disconnectedChild, parentName);
+                        final var parentEval = EQL.builder()
+                                        .print().query(CIAdminUserInterface.Menu)
+                                        .where()
+                                        .attribute(CIAdminUserInterface.Menu.Name).eq(parentName)
+                                        .select().oid()
+                                        .evaluate();
+                        if (parentEval.next()) {
+                            final var childEval = EQL.builder()
+                                            .print().query(CIAdmin.Abstract)
+                                            .where()
+                                            .attribute(CIAdmin.Abstract.UUID).eq(disconnectedChild)
+                                            .select().oid()
+                                            .evaluate();
+                            if (childEval.next()) {
+                                EQL.builder().insert(CIAdminUserInterface.Menu2Command)
+                                                .set(CIAdminUserInterface.Menu2Command.FromMenu, parentEval.inst())
+                                                .set(CIAdminUserInterface.Menu2Command.ToCommand, childEval.inst())
+                                                .execute();
+                                LOG.info("Connected successfull");
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
     protected List<InstallFile> getInstallFilesForKeys(final Map<String, URL> files,
-                                                       Set<String> keys)
+                                                       final Collection<String> keys)
         throws StreamReadException, DatabindException, IOException, URISyntaxException
     {
         final List<InstallFile> ret = new ArrayList<>();
-        final URL json = files.get("revisions.json");
-        final ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JodaModule());
-        final Set<RevItem> revItems = mapper.readValue(new File(json.toURI()), mapper.getTypeFactory()
-                        .constructCollectionType(Set.class, RevItem.class));
+        final List<RevItem> revItems = getRevItemList(files);
         int idx = 1;
         for (final var revItem : revItems) {
             if (keys.contains(revItem.getIdentifier())) {
-                LOG.info("Adding releated Item {} / {}: {}", idx, keys.size(), revItem.getIdentifier());
+                LOG.info("Getting install file for Item {} / {}: {}", idx, keys.size(), revItem.getIdentifier());
                 final InstallFile installFile = new InstallFile()
                                 .setName(revItem.getName4InstallFile())
                                 .setURL(revItem.getURL(files))
@@ -259,31 +254,6 @@ public abstract class AbstractUpdate
         }
         Collections.sort(ret, Comparator.comparing(InstallFile::getName));
         return ret;
-    }
-
-
-    /**
-     * Gets the dependend map.
-     *
-     * @return the dependend map
-     * @throws EFapsException the e faps exception
-     */
-    protected MultiValuedMap<String, String> getDependendMap()
-        throws EFapsException
-    {
-        final MultiValuedMap<String, String> map = MultiMapUtils.newSetValuedHashMap();
-        final QueryBuilder queryBldr = new QueryBuilder(CIAdminUserInterface.Menu2Command);
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        final SelectBuilder selFromUUID = SelectBuilder.get().linkto(CIAdminUserInterface.Menu2Command.FromMenu)
-                        .attribute(CIAdminUserInterface.Menu.UUID);
-        final SelectBuilder selToUUID = SelectBuilder.get().linkto(CIAdminUserInterface.Menu2Command.ToCommand)
-                        .attribute(CIAdminUserInterface.Command.UUID);
-        multi.addSelect(selFromUUID, selToUUID);
-        multi.executeWithoutAccessCheck();
-        while (multi.next()) {
-            map.put(multi.<String>getSelect(selFromUUID), multi.<String>getSelect(selToUUID));
-        }
-        return map;
     }
 
     /**

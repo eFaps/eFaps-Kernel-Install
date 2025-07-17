@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.efaps.admin.event.Parameter;
@@ -51,11 +52,9 @@ public class Extension
                 final var checkout = new Checkout(instance);
                 final var inputStream = checkout.execute();
                 final var files = getFiles(checkout.getFileName(), inputStream);
-                final var installFiles = getInstallFiles(files);
+                final var installFiles = getInstallFiles(files, getRevItemList(files));
                 final List<InstallFile> installFileList = new ArrayList<>(installFiles.values());
-                Collections.sort(installFileList, (_installFile0,
-                                                   _installFile1) -> _installFile0.getName().compareTo(_installFile1
-                                                                   .getName()));
+                Collections.sort(installFileList, Comparator.comparing(InstallFile::getName));
                 install(installFileList);
             } catch (IOException | URISyntaxException e) {
                 LOG.error("Catched", e);
