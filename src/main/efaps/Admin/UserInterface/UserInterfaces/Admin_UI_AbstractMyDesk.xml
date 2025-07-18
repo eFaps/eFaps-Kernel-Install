@@ -20,10 +20,8 @@
 <ui-menu xmlns="http://www.efaps.org/xsd"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
   <uuid>1519c538-ef1f-4a7a-bbb4-3fcccd38b5b3</uuid>
   <file-application>eFaps-Kernel</file-application>
-  
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Admin_UI_AbstractMyDesk</name>
@@ -34,8 +32,8 @@
       <child>Admin_UI_TableMyDesk</child>
       <child>Admin_UI_SearchMyDesk</child>
       <child>Admin_UI_ImageMyDesk</child>
+      <child>Admin_UI_ModuleMyDesk</child>
       <child>Admin_Help_MenuMyDesk</child>
     </childs>
   </definition>
-
 </ui-menu>
