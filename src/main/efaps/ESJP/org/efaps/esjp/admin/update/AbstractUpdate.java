@@ -299,16 +299,16 @@ public abstract class AbstractUpdate
                                 multi.getCurrentInstance().getType().getName(), name,
                                 app, revDate, revision);
                 if (!item.getApplication().equals(app)) {
-                    LOG.warn("Different Application: {} - {}", item.getApplication(), app);
+                    LOG.warn("Different Application: {} - {} for: {}", item.getApplication(), app, item.identifier);
                     update = true;
                 }
                 if (!item.getRevision().equals(revision)) {
-                    LOG.warn("Different Revision: {} - {}", item.getRevision(), revision);
+                    LOG.warn("Different Revision: {} - {} for: {}", item.getRevision(), revision, item.identifier);
                     update = true;
                 }
                 if (!update && item.getDate().isAfter(revDate)
                                 && Seconds.secondsBetween(revDate, item.getDate()).getSeconds() > 10) {
-                    LOG.warn("Different Date: {} - {}", item.getDate(), revDate);
+                    LOG.warn("Different Date: {} - {} for: {}", item.getDate(), revDate, item.identifier);
                     update = true;
                 }
 
