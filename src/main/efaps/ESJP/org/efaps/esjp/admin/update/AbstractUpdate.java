@@ -196,38 +196,39 @@ public abstract class AbstractUpdate
             final var mapper = new XmlMapper();
             for (final var disconnectedChild : disconnectedChildren) {
                 final var url = files.get(disconnectedChild);
-                final var node = mapper.readTree(url);
-                final var definition = node.get("definition");
-                if (definition.has("parents")) {
-                    final var parents = definition.get("parents");
-                    final var parentList = parents.get("parent");
-                    for (final var parent : parentList) {
-                        final var parentName = parent.asText();
-                        LOG.info("Tyring to reconnect: {} with  {}", disconnectedChild, parentName);
-                        final var parentEval = EQL.builder()
-                                        .print().query(CIAdminUserInterface.Menu)
-                                        .where()
-                                        .attribute(CIAdminUserInterface.Menu.Name).eq(parentName)
-                                        .select().oid()
-                                        .evaluate();
-                        if (parentEval.next()) {
-                            final var childEval = EQL.builder()
-                                            .print().query(CIAdmin.Abstract)
+                if (url != null) {
+                    final var node = mapper.readTree(url);
+                    final var definition = node.get("definition");
+                    if (definition.has("parents")) {
+                        final var parents = definition.get("parents");
+                        final var parentList = parents.get("parent");
+                        for (final var parent : parentList) {
+                            final var parentName = parent.asText();
+                            LOG.info("Tyring to reconnect: {} with  {}", disconnectedChild, parentName);
+                            final var parentEval = EQL.builder()
+                                            .print().query(CIAdminUserInterface.Menu)
                                             .where()
-                                            .attribute(CIAdmin.Abstract.UUID).eq(disconnectedChild)
+                                            .attribute(CIAdminUserInterface.Menu.Name).eq(parentName)
                                             .select().oid()
                                             .evaluate();
-                            if (childEval.next()) {
-                                EQL.builder().insert(CIAdminUserInterface.Menu2Command)
-                                                .set(CIAdminUserInterface.Menu2Command.FromMenu, parentEval.inst())
-                                                .set(CIAdminUserInterface.Menu2Command.ToCommand, childEval.inst())
-                                                .execute();
-                                LOG.info("Connected successfull");
+                            if (parentEval.next()) {
+                                final var childEval = EQL.builder()
+                                                .print().query(CIAdmin.Abstract)
+                                                .where()
+                                                .attribute(CIAdmin.Abstract.UUID).eq(disconnectedChild)
+                                                .select().oid()
+                                                .evaluate();
+                                if (childEval.next()) {
+                                    EQL.builder().insert(CIAdminUserInterface.Menu2Command)
+                                                    .set(CIAdminUserInterface.Menu2Command.FromMenu, parentEval.inst())
+                                                    .set(CIAdminUserInterface.Menu2Command.ToCommand, childEval.inst())
+                                                    .execute();
+                                    LOG.info("Connected successfull");
+                                }
                             }
                         }
                     }
                 }
-
             }
         }
     }
