@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIAdminEvent;
@@ -33,6 +35,7 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,44 +78,7 @@ public class ProgramUtil
             if (query.next()) {
                 final Instance prgInst = query.getCurrentValue();
                 ProgramUtil.LOG.info("Found esjp: '{}'", name);
-
-                // Admin_Program_JavaClass
-             // Admin_Program_Javaclass
-                final QueryBuilder classQueryBldr = new QueryBuilder(
-                                UUID.fromString("9118e1e3-ed4c-425d-8578-8d1f1d385110"));
-                classQueryBldr.addWhereAttrEqValue("ProgramLink", prgInst);
-                final InstanceQuery classQuery = classQueryBldr.getQuery();
-                classQuery.execute();
-                while (classQuery.next()) {
-                    ProgramUtil.LOG.info("Removing compiled Classes: '{}'", classQuery.getCurrentValue());
-                    final Delete del = new Delete(classQuery.getCurrentValue());
-                    del.execute();
-                }
-
-                final QueryBuilder classQueryBldr2 = new QueryBuilder(
-                                UUID.fromString("12c9da04-8085-4d74-a2a8-e211d655e29a"));
-                classQueryBldr2.addWhereAttrEqValue("ProgramLink", prgInst);
-                final InstanceQuery classQuery2 = classQueryBldr2.getQuery();
-                classQuery2.execute();
-                while (classQuery2.next()) {
-                    ProgramUtil.LOG.info("Removing compiled Classes: '{}'", classQuery2.getCurrentValue());
-                    final Delete del = new Delete(classQuery2.getCurrentValue());
-                    del.execute();
-                }
-
-                final QueryBuilder eventQueryBldr = new QueryBuilder(CIAdminEvent.Definition);
-                eventQueryBldr.addWhereAttrEqValue("JavaProg", prgInst);
-                final InstanceQuery eventQuery = eventQueryBldr.getQuery();
-                eventQuery.execute();
-                while (eventQuery.next()) {
-                    ProgramUtil.LOG.info("Removing related EventDefintion: '{}'", eventQuery.getCurrentValue());
-                    final Delete del = new Delete(eventQuery.getCurrentValue());
-                    del.execute();
-                }
-
-                final Delete del = new Delete(prgInst);
-                del.execute();
-                ProgramUtil.LOG.info("Removed esjp sucessfully");
+                delete(prgInst);
             }
         }
     }
@@ -192,4 +158,63 @@ public class ProgramUtil
             }
         }
     }
+
+    public Return deleteEsjps(final Parameter parameter)
+        throws EFapsException
+    {
+        final String[] oids = (String[]) parameter.get(ParameterValues.OTHERS);
+        if (oids != null) {
+            for (final String oid : oids) {
+                final var prgInst = Instance.get(oid);
+                if (InstanceUtils.isType(prgInst, CIAdminProgram.Java)) {
+                    ProgramUtil.LOG.info("Deleting esjp: '{}'", oid);
+                    delete(prgInst);
+                }
+            }
+        }
+        return new Return();
+    }
+
+    protected void delete(final Instance prgInst)
+        throws EFapsException
+    {
+
+        // Admin_Program_JavaClass
+        // Admin_Program_Javaclass
+        final QueryBuilder classQueryBldr = new QueryBuilder(
+                        UUID.fromString("9118e1e3-ed4c-425d-8578-8d1f1d385110"));
+        classQueryBldr.addWhereAttrEqValue("ProgramLink", prgInst);
+        final InstanceQuery classQuery = classQueryBldr.getQuery();
+        classQuery.execute();
+        while (classQuery.next()) {
+            ProgramUtil.LOG.info("Removing compiled Classes: '{}'", classQuery.getCurrentValue());
+            final Delete del = new Delete(classQuery.getCurrentValue());
+            del.execute();
+        }
+
+        final QueryBuilder classQueryBldr2 = new QueryBuilder(
+                        UUID.fromString("12c9da04-8085-4d74-a2a8-e211d655e29a"));
+        classQueryBldr2.addWhereAttrEqValue("ProgramLink", prgInst);
+        final InstanceQuery classQuery2 = classQueryBldr2.getQuery();
+        classQuery2.execute();
+        while (classQuery2.next()) {
+            ProgramUtil.LOG.info("Removing compiled Classes: '{}'", classQuery2.getCurrentValue());
+            final Delete del = new Delete(classQuery2.getCurrentValue());
+            del.execute();
+        }
+
+        final QueryBuilder eventQueryBldr = new QueryBuilder(CIAdminEvent.Definition);
+        eventQueryBldr.addWhereAttrEqValue("JavaProg", prgInst);
+        final InstanceQuery eventQuery = eventQueryBldr.getQuery();
+        eventQuery.execute();
+        while (eventQuery.next()) {
+            ProgramUtil.LOG.info("Removing related EventDefintion: '{}'", eventQuery.getCurrentValue());
+            final Delete del = new Delete(eventQuery.getCurrentValue());
+            del.execute();
+        }
+        final Delete del = new Delete(prgInst);
+        del.execute();
+        ProgramUtil.LOG.info("Removed esjp sucessfully");
+    }
+
 }
