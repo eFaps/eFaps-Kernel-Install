@@ -35,7 +35,7 @@
             <child>Admin_DataModel_TypeTree_ChildClass</child>
             <child>Admin_Common_AbstractTree_Properties</child>
             <child>Admin_Common_AbstractTree_Events</child>
-            <child>Admin_DataModel_TypeTree_AllowedEventTypes</child>
+            <!-- <child>Admin_DataModel_TypeTree_AllowedEventTypes</child> -->
         </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
