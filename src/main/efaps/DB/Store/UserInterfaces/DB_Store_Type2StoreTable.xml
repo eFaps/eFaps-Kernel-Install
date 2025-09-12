@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+    Copyright © 2003 - 2024 The eFaps Team (-)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>9ab31c96-0467-40d7-a211-30bbfcdeb65e</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>DB_Store_Type2StoreTable</name>
+        <field name="name">
+            <property name="Select">linkto[From].attribute[Name]</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Admin_DataModel_Type/Name.Label</property>
+            <property name="ShowTypeIcon">true</property>
+            <property name="ModeSearch">READONLY</property>
+        </field>
+        <field name="uuid">
+            <property name="Select">linkto[From].attribute[UUID</property>
+            <property name="Label">Admin_DataModel_Type/UUID.Label</property>
+            <property name="ModeSearch">READONLY</property>
+        </field>
+        <field name="parentType">
+            <property name="SelectAlternateOID">linkto[From].linkto[ParentType].oid</property>
+            <property name="Select">linkto[From].linkto[ParentType].attribute[Name]</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Admin_DataModel_Type/ParentType.Label</property>
+            <property name="ShowTypeIcon">true</property>
+            <property name="ModeSearch">READONLY</property>
+        </field>
+    </definition>
+</ui-table>
