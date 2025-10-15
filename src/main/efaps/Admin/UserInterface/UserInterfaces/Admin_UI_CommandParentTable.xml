@@ -33,6 +33,7 @@
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="name">
+            <property name="SelectAlternateOID">linkto[FromMenu].oid</property>
             <property name="Select">linkto[FromMenu].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Admin_UI_Abstract/Name.Label</property>
