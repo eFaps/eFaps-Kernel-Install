@@ -44,6 +44,10 @@
             <property name="Label">DB_Store/UUID.Label</property>
             <property name="Width">3</property>
         </field>
+        <field name="resourceClazz">
+            <property name="Select">linkfrom[DB_Store2Resource#From].linkto[To].attribute[Name]</property>
+            <property name="Label">DB_Resource/Name.Label</property>
+        </field>
         <field name="revision">
             <property name="SelectAlternateOID">linkto[RevisionLink].oid</property>
             <property name="Label">DB_Store/Revision.Label</property>
@@ -51,13 +55,6 @@
             <property name="Label">Admin_Common_ApplicationRevision.Label</property>
             <property name="HRef">true</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-        </field>
-        <field name="buttonOpenInNewWindow">
-            <icon>eFapsActionNewWindow</icon>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Target">popup</property>
-            <property name="SortAble">false</property>
-            <property name="Width">15px</property>
         </field>
     </definition>
 </ui-table>

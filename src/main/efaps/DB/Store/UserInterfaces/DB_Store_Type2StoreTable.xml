@@ -30,7 +30,7 @@
             <property name="ModeSearch">READONLY</property>
         </field>
         <field name="uuid">
-            <property name="Select">linkto[From].attribute[UUID</property>
+            <property name="Select">linkto[From].attribute[UUID]</property>
             <property name="Label">Admin_DataModel_Type/UUID.Label</property>
             <property name="ModeSearch">READONLY</property>
         </field>

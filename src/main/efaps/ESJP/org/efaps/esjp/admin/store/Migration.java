@@ -20,7 +20,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 
@@ -36,10 +38,14 @@ import org.efaps.db.Checkin;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.store.JCRStoreResource;
+import org.efaps.db.store.S3StoreResource;
+import org.efaps.db.store.Store;
+import org.efaps.eql.EQL;
 import org.efaps.util.EFapsException;
+import org.glassfish.hk2.api.ServiceLocatorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * TODO comment!
@@ -59,8 +65,8 @@ public class Migration
     /**
      * Migrate the files from a vfs repository to jcr repository;
      * <ol>
-     *  <li>Change the repository definition for the type to be migrated</li>
-     *  <li>Get the files from the file system.</li>
+     * <li>Change the repository definition for the type to be migrated</li>
+     * <li>Get the files from the file system.</li>
      * </ol>
      *
      * @param _parameter Parameter as passed by the eFaps API
@@ -80,7 +86,7 @@ public class Migration
             final Instance inst = Instance.get(file.getName());
             try {
                 Migration.LOG.info("Migrating: {}", file);
-                //GeneralStoreVFS
+                // GeneralStoreVFS
                 final QueryBuilder queryBldr = new QueryBuilder(
                                 UUID.fromString("cd21d9e9-9009-46bf-9ed7-26bedc623149"));
                 queryBldr.addWhereAttrEqValue("InstanceID", inst.getId());
@@ -103,4 +109,67 @@ public class Migration
         }
         return new Return();
     }
+
+    @SuppressWarnings("deprecation")
+    public Return jcs2s3(final Parameter parameter)
+        throws EFapsException
+    {
+        LOG.info("Got storeInstance: {}", parameter.getInstance());
+
+        final var factory = ServiceLocatorFactory.getInstance();
+        factory.create("eFaps-Core").inject(this);
+
+        final var store = Store.get(parameter.getInstance().getId());
+
+        final var eval = EQL.builder().print()
+                        .query("Admin_DataModel_Type2Store")
+                        .where().attribute("To").eq(store.getId())
+                        .select().oid()
+                        .linkto("From").attribute("Name").as("typeName")
+                        .evaluate();
+
+        final List<Instance> instances = new ArrayList<>();
+
+        while (eval.next()) {
+            final String typeName = eval.get("typeName");
+            final var objEval = EQL.builder()
+                            .print()
+                            .query(typeName)
+                            .select()
+                            .oid()
+                            .evaluate();
+            while (objEval.next()) {
+                instances.add(objEval.inst());
+            }
+        }
+        LOG.info("Found {} objectInstances", instances.size());
+
+        for (final var instance : instances) {
+            LOG.info("checking for instance: {}", instance);
+            final var jcr = new JCRStoreResource();
+            jcr.initialize(instance, store);
+            if (jcr.exists()) {
+                try {
+                    final InputStream in = jcr.read();
+                    if (in == null) {
+                        LOG.info("No stream");
+                    } else {
+                        LOG.info("in: {}", in.available());
+
+                        var s3 = new S3StoreResource();
+                        s3.initialize(instance, store);
+                        s3.write(in, jcr.getFileLength(), jcr.getFileName());
+                    }
+                } catch (final IOException | EFapsException e) {
+                    LOG.info("No resource with e");
+                } catch (final Exception e) {
+                    LOG.error("Something else", e);
+                }
+            } else {
+                LOG.info("No resource");
+            }
+        }
+        return new Return();
+    }
+
 }
