@@ -15,10 +15,13 @@
  */
 package org.efaps.esjp.common.history;
 
+import java.time.OffsetDateTime;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
@@ -27,10 +30,14 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.user.Person;
+import org.efaps.ci.CIType;
+import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.eql.EQL;
 import org.efaps.esjp.ci.CICommon;
 import org.efaps.esjp.common.AbstractCommon;
+import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -47,7 +54,7 @@ public abstract class History_Base
 {
 
     /**
-     * @param _parameter Parameter as passed by  the efasp API
+     * @param _parameter Parameter as passed by the efasp API
      * @return filed for the history
      * @throws EFapsException on error
      */
@@ -57,16 +64,16 @@ public abstract class History_Base
         final Return ret = new Return();
         final StringBuilder html = new StringBuilder();
         html.append("<table>")
-            .append("<tr>")
-            .append("<th>").append(DBProperties.getProperty("org.efaps.esjp.common.history.History.Date"))
-            .append("</th>")
-            .append("<th>").append(DBProperties.getProperty("org.efaps.esjp.common.history.History.User"))
-            .append("</th>")
-            .append("<th>").append(DBProperties.getProperty("org.efaps.esjp.common.history.History.Type"))
-            .append("</th>")
-            .append("<th>").append(DBProperties.getProperty("org.efaps.esjp.common.history.History.Desc"))
-            .append("</th>")
-            .append("</tr>");
+                        .append("<tr>")
+                        .append("<th>").append(DBProperties.getProperty("org.efaps.esjp.common.history.History.Date"))
+                        .append("</th>")
+                        .append("<th>").append(DBProperties.getProperty("org.efaps.esjp.common.history.History.User"))
+                        .append("</th>")
+                        .append("<th>").append(DBProperties.getProperty("org.efaps.esjp.common.history.History.Type"))
+                        .append("</th>")
+                        .append("<th>").append(DBProperties.getProperty("org.efaps.esjp.common.history.History.Desc"))
+                        .append("</th>")
+                        .append("</tr>");
 
         final Map<Integer, String> types = analyseProperty(_parameter, "Type");
         final QueryBuilder queryBldr;
@@ -96,7 +103,7 @@ public abstract class History_Base
             group.append("<tr>");
             final DateTime created = multi.<DateTime>getAttribute(CICommon.HistoryAbstract.Created);
             final Person person = multi.<Person>getAttribute(CICommon.HistoryAbstract.Creator);
-            final String name =   person.getLastName() + ", " + person.getFirstName();
+            final String name = person.getLastName() + ", " + person.getFirstName();
             final String compareKey = created + name;
 
             if (!compare.equals(compareKey)) {
@@ -121,5 +128,48 @@ public abstract class History_Base
         html.append("</table>");
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
+    }
+
+    public HashSet<Instance> getLatest(final OffsetDateTime afterDateTime,
+                                       final CIType... ciTypes)
+        throws EFapsException
+    {
+        final var typeIds = new HashSet<Long>();
+        if (ArrayUtils.isNotEmpty(ciTypes)) {
+            for (final var ciType : ciTypes) {
+                final var type = ciType.getType();
+                typeIds.add(type.getId());
+                type.getChildTypes().forEach(child -> {
+                    typeIds.add(child.getId());
+                });
+            }
+        }
+        return getLatest(afterDateTime, typeIds.toArray(new Long[typeIds.size()]));
+    }
+
+    public HashSet<Instance> getLatest(final OffsetDateTime afterDateTime,
+                                       final Long... typeIds)
+        throws EFapsException
+    {
+        final var instances = new HashSet<Instance>();
+        final var after = afterDateTime.atZoneSameInstant(DateTimeUtil.getDBZoneId()).toLocalDateTime().toString();
+
+        final var query = EQL.builder().print()
+                        .query(CICommon.HistoryLatest)
+                        .where().attribute(CICommon.HistoryLatest.Latest).greater(after);
+
+        if (ArrayUtils.isNotEmpty(typeIds)) {
+            query.and().attribute(CICommon.HistoryLatest.InstTypeId).in(typeIds);
+        }
+
+        final var eval = query.select()
+                        .attribute(CICommon.HistoryLatest.InstTypeId, CICommon.HistoryLatest.InstId)
+                        .evaluate();
+        while (eval.next()) {
+            final Long instTypeId = eval.get(CICommon.HistoryLatest.InstTypeId);
+            final Long instId = eval.get(CICommon.HistoryLatest.InstId);
+            instances.add(Instance.get(Type.get(instTypeId), instId));
+        }
+        return instances;
     }
 }

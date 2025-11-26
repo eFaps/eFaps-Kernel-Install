@@ -197,6 +197,23 @@ public class CICommon
     }
 
 
+    public static final _HistoryLatest HistoryLatest = new _HistoryLatest("3be80810-ee70-4528-bc22-219b67c3da65");
+
+    public static class _HistoryLatest
+        extends CIType
+    {
+
+        protected _HistoryLatest(final String _uuid)
+        {
+            super(_uuid);
+        }
+
+        public final CIAttribute InstTypeId = new CIAttribute(this, "InstTypeId");
+        public final CIAttribute InstId = new CIAttribute(this, "InstId");
+        public final CIAttribute Latest = new CIAttribute(this, "Latest");
+    }
+
+
     public static final _HistoryAbstract HistoryAbstract = new _HistoryAbstract("66a75f87-1e07-410d-a0c4-c6ec1671b9a1");
 
     public static class _HistoryAbstract
