@@ -18,13 +18,10 @@ package org.efaps.esjp.common.history;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.efaps.admin.access.AccessTypeEnums;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
@@ -43,6 +40,8 @@ import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO description.
@@ -55,6 +54,7 @@ import org.joda.time.DateTime;
 public abstract class History_Base
     extends AbstractCommon
 {
+    private static final Logger LOG = LoggerFactory.getLogger(History.class);
 
     /**
      * @param _parameter Parameter as passed by the efasp API
@@ -154,6 +154,7 @@ public abstract class History_Base
                                        final Long... typeIds)
         throws EFapsException
     {
+        LOG.debug("Call for latest by history with {} and {}", afterDateTime, typeIds);
         final var instancesTmp = new HashSet<Instance>();
         final var after = afterDateTime.atZoneSameInstant(DateTimeUtil.getDBZoneId()).toLocalDateTime().toString();
 
@@ -174,18 +175,17 @@ public abstract class History_Base
             instancesTmp.add(Instance.get(Type.get(instTypeId), instId));
         }
 
+        LOG.debug("Found instances {}", instancesTmp);
+
         final var instances = new HashSet<Instance>();
 
-        // check access to the instances
-        final Map<Type, List<Instance>> typeMap = instancesTmp.stream()
-                        .collect(Collectors.groupingBy(Instance::getType));
-
-        for (final var entry : typeMap.entrySet()) {
-            final var access = entry.getKey().checkAccess(entry.getValue(), AccessTypeEnums.READ.getAccessType());
-            for (final var accessEntry : access.entrySet()) {
-                if (accessEntry.getValue()) {
-                    instances.add(accessEntry.getKey());
-                }
+        if (!instancesTmp.isEmpty()) {
+            // check access to the instances
+            final var verifyEval = EQL.builder().print(instancesTmp.toArray(new Instance[instancesTmp.size()]))
+                            .oid()
+                            .evaluate();
+            while (verifyEval.next()) {
+                instances.add(verifyEval.inst());
             }
         }
         return instances;
