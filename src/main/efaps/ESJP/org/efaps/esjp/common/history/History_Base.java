@@ -18,10 +18,13 @@ package org.efaps.esjp.common.history;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.efaps.admin.access.AccessTypeEnums;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
@@ -151,7 +154,7 @@ public abstract class History_Base
                                        final Long... typeIds)
         throws EFapsException
     {
-        final var instances = new HashSet<Instance>();
+        final var instancesTmp = new HashSet<Instance>();
         final var after = afterDateTime.atZoneSameInstant(DateTimeUtil.getDBZoneId()).toLocalDateTime().toString();
 
         final var query = EQL.builder().print()
@@ -168,7 +171,22 @@ public abstract class History_Base
         while (eval.next()) {
             final Long instTypeId = eval.get(CICommon.HistoryLatest.InstTypeId);
             final Long instId = eval.get(CICommon.HistoryLatest.InstId);
-            instances.add(Instance.get(Type.get(instTypeId), instId));
+            instancesTmp.add(Instance.get(Type.get(instTypeId), instId));
+        }
+
+        final var instances = new HashSet<Instance>();
+
+        // check access to the instances
+        final Map<Type, List<Instance>> typeMap = instancesTmp.stream()
+                        .collect(Collectors.groupingBy(Instance::getType));
+
+        for (final var entry : typeMap.entrySet()) {
+            final var access = entry.getKey().checkAccess(entry.getValue(), AccessTypeEnums.READ.getAccessType());
+            for (final var accessEntry : access.entrySet()) {
+                if (accessEntry.getValue()) {
+                    instances.add(accessEntry.getKey());
+                }
+            }
         }
         return instances;
     }
