@@ -35,6 +35,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Checkin;
+import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
@@ -110,7 +111,6 @@ public class Migration
         return new Return();
     }
 
-    @SuppressWarnings("deprecation")
     public Return jcs2s3(final Parameter parameter)
         throws EFapsException
     {
@@ -143,9 +143,9 @@ public class Migration
             }
         }
         LOG.info("Found {} objectInstances", instances.size());
-
+        int idx = 1;
         for (final var instance : instances) {
-            LOG.info("checking for instance: {}", instance);
+            LOG.info("   checking {}/{} for instance: {}", idx, instances.size(), instance);
             final var jcr = new JCRStoreResource();
             jcr.initialize(instance, store);
             if (jcr.exists()) {
@@ -154,11 +154,13 @@ public class Migration
                     if (in == null) {
                         LOG.info("No stream");
                     } else {
-                        LOG.info("in: {}", in.available());
+                        LOG.info("availabe data: {}", in.available());
 
-                        var s3 = new S3StoreResource();
+                        final var s3 = new S3StoreResource();
                         s3.initialize(instance, store);
-                        s3.write(in, jcr.getFileLength(), jcr.getFileName());
+                        if (!s3.exists()) {
+                            s3.write(in, jcr.getFileLength(), jcr.getFileName());
+                        }
                     }
                 } catch (final IOException | EFapsException e) {
                     LOG.info("No resource with e");
@@ -168,6 +170,12 @@ public class Migration
             } else {
                 LOG.info("No resource");
             }
+
+            if (idx % 500 == 0) {
+                LOG.info("Context save!!");
+                Context.save();
+            }
+            idx++;
         }
         return new Return();
     }
