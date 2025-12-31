@@ -196,6 +196,23 @@ public class CICommon
         public final CIAttribute Modified = new CIAttribute(this, "Modified");
     }
 
+    public static final _UserDashboard UserDashboard = new _UserDashboard("c7bfacd2-c4b8-4f8b-ae56-afd5e50924e6");
+
+    public static class _UserDashboard
+        extends CIType
+    {
+        protected _UserDashboard(final String _uuid)
+        {
+            super(_uuid);
+        }
+        public final CIAttribute Person = new CIAttribute(this, "Person");
+        public final CIAttribute Config = new CIAttribute(this, "Config");
+        public final CIAttribute Creator = new CIAttribute(this, "Creator");
+        public final CIAttribute Created = new CIAttribute(this, "Created");
+        public final CIAttribute Modifier = new CIAttribute(this, "Modifier");
+        public final CIAttribute Modified = new CIAttribute(this, "Modified");
+    }
+
 
     public static final _HistoryLatest HistoryLatest = new _HistoryLatest("3be80810-ee70-4528-bc22-219b67c3da65");
 
