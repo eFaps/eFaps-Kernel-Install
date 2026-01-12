@@ -50,7 +50,7 @@ public class TmpFileCleanup
                 while (fileIterator.hasNext()) {
                     final var file = fileIterator.next();
                     final BasicFileAttributes attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
-                    LOG.info("Checking file: {} - creationTime: {}", attr.creationTime());
+                    LOG.info("Checking file: {} - creationTime: {}", file, attr.creationTime());
                     final var fileCreationTime = attr.creationTime().toInstant();
                     final Duration duration = Duration.between(fileCreationTime, Instant.now());
                     if (duration.toHours() != 0) {
