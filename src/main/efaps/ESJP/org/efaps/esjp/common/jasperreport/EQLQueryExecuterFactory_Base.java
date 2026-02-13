@@ -107,6 +107,7 @@ public abstract class EQLQueryExecuterFactory_Base
         return false;
     }
 
+    // EFAPSMIGRATE_DELSTART
     @Override
     public JRQueryExecuter createQueryExecuter(final JRDataset _dataset,
                                                final Map<String, ? extends JRValueParameter> _parameters)
@@ -115,4 +116,5 @@ public abstract class EQLQueryExecuterFactory_Base
         // deprecated therefore empty
         return null;
     }
+    // EFAPSMIGRATE_DELSTOP
 }
