@@ -35,7 +35,7 @@
             <menu>Admin_Program_JasperReportMyDesk_Menu</menu>
             <table>Admin_Program_AbstractTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Admin_Program_JasperReport</property>
+                <property name="Type">Admin_Program_JasperReportAbstract</property>
             </evaluate>
         </target>
         <property name="Target">content</property>

@@ -29,8 +29,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.efaps.admin.common.SystemConfiguration;
@@ -43,6 +41,7 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsClassLoader;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.program.jasper.JasperUtil;
 import org.efaps.ci.CIAdminProgram;
 import org.efaps.db.Checkout;
 import org.efaps.db.Context;
@@ -50,17 +49,15 @@ import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.eql.EQL;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.file.FileUtil;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.db.InstanceUtils;
-import org.efaps.update.schema.program.jasperreport.JasperReportImporter.FakeQueryExecuterFactory;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
 
-import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExpression;
@@ -69,7 +66,6 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.SimpleJasperReportsContext;
-import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.export.JRTextExporter;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.oasis.JROdsExporter;
@@ -79,8 +75,6 @@ import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.engine.query.JRQueryExecuterFactoryBundle;
 import net.sf.jasperreports.engine.query.QueryExecuterFactory;
 import net.sf.jasperreports.engine.util.JRLoader;
-import net.sf.jasperreports.engine.xml.JRXmlDigesterFactory;
-import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOdtReportConfiguration;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
@@ -160,15 +154,10 @@ public abstract class StandartReport_Base
             } else {
                 defaultValue = "";
             }
-            final String inputType;
-            switch (parameter.getValueClassName()) {
-                case "java.lang.Integer":
-                    inputType = "number";
-                    break;
-                default:
-                    inputType = "text";
-                    break;
-            }
+            final String inputType = switch (parameter.getValueClassName()) {
+                case "java.lang.Integer" -> "number";
+                default -> "text";
+            };
             html.append("<div><span>").append(name).append(": ").append(descr).append("</span>")
                             .append("<input type=\"").append(inputType).append("\" name=\"para_")
                             .append(name).append("\" value=\"")
@@ -205,22 +194,11 @@ public abstract class StandartReport_Base
             query.next();
             reportInst = query.getCurrentValue();
         }
-        final Checkout checkout = new Checkout(reportInst);
-        final InputStream is = checkout.execute();
-        DefaultJasperReportsContext.getInstance().setProperty("net.sf.jasperreports.query.executer.factory.eFaps",
-                        FakeQueryExecuterFactory.class.getName());
-
-        try {
-            final JasperDesign jasperDesign = new JRXmlLoader(DefaultJasperReportsContext.getInstance(),
-                            JRXmlDigesterFactory.createDigester(DefaultJasperReportsContext.getInstance())).loadXML(is);
-            final Set<JRParameter> paras = new HashSet<>();
-            for (final JRParameter parameter : jasperDesign.getParameters()) {
-                if (parameter.isForPrompting() && !parameter.isSystemDefined()) {
-                    ret.add(parameter);
-                }
+        final var jasperDesign = JasperUtil.getJasperDesign(reportInst);
+        for (final JRParameter parameter : jasperDesign.getParameters()) {
+            if (parameter.isForPrompting() && !parameter.isSystemDefined()) {
+                ret.add(parameter);
             }
-        } catch (JRException | ParserConfigurationException | SAXException e) {
-            LOG.error("Catched", e);
         }
         return ret;
     }
@@ -252,20 +230,12 @@ public abstract class StandartReport_Base
         for (final JRParameter jrParameter : paras) {
             final String value = _parameter.getParameterValue("para_" + jrParameter.getName());
             Object obj = null;
-            switch (jrParameter.getValueClassName()) {
-                case "java.lang.Integer":
-                    obj = Integer.valueOf(value);
-                    break;
-                case "java.lang.Long":
-                    obj = Long.valueOf(value);
-                    break;
-                case "java.lang.Boolean":
-                    obj = BooleanUtils.toBoolean(value);
-                    break;
-                default:
-                    obj = value;
-                    break;
-            }
+            obj = switch (jrParameter.getValueClassName()) {
+                case "java.lang.Integer" -> Integer.valueOf(value);
+                case "java.lang.Long" -> Long.valueOf(value);
+                case "java.lang.Boolean" -> BooleanUtils.toBoolean(value);
+                default -> value;
+            };
             getJrParameters().put(jrParameter.getName(), obj);
         }
         return execute(_parameter);
@@ -340,12 +310,16 @@ public abstract class StandartReport_Base
         if (name == null) {
             StandartReport_Base.LOG.debug("Neither JasperReport, JasperKey nor properties lead to valid Report Name");
         } else {
-            final QueryBuilder queryBldr = new QueryBuilder(CIAdminProgram.JasperReportCompiled);
-            queryBldr.addWhereAttrEqValue(CIAdminProgram.JasperReportCompiled.Name, name);
-            final InstanceQuery query = queryBldr.getQuery();
-            query.execute();
-            if (query.next()) {
-                ret = query.getCurrentValue();
+            final var type = isRest() ? CIAdminProgram.JasperReport7 : CIAdminProgram.JasperReport;
+            final var eval = EQL.builder().print().query(type)
+                .where()
+                .attribute(CIAdminProgram.JasperReportAbstract.Name).eq(name)
+                .select()
+                .linkfrom(CIAdminProgram.JasperReportCompiled.ProgramLink).instance().first().as("compInst")
+                .evaluate();
+
+            if (eval.next()) {
+                ret = eval.get("compInst");
             }
         }
         return ret;
@@ -552,14 +526,14 @@ public abstract class StandartReport_Base
     {
         File file = null;
         switch (_mime) {
-            case PDF:
+            case PDF -> {
                 file = new FileUtil().getFile(getFileName() == null ? "PDF" : getFileName(),
                                 JasperMime.PDF.getExtension());
                 final FileOutputStream os = new FileOutputStream(file);
                 JasperExportManager.exportReportToPdfStream(_jasperPrint, os);
                 os.close();
-                break;
-            case ODT:
+            }
+            case ODT -> {
                 file = new FileUtil().getFile(getFileName() == null ? "ODT" : getFileName(),
                                 JasperMime.ODT.getExtension());
                 final SimpleOdtReportConfiguration config = new SimpleOdtReportConfiguration();
@@ -568,16 +542,16 @@ public abstract class StandartReport_Base
                 odtExp.setExporterInput(new SimpleExporterInput(_jasperPrint));
                 odtExp.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
                 odtExp.exportReport();
-                break;
-            case ODS:
+            }
+            case ODS -> {
                 file = new FileUtil().getFile(getFileName() == null ? "ODS" : getFileName(),
                                 JasperMime.ODS.getExtension());
                 final JROdsExporter odsExp = new JROdsExporter();
                 odsExp.setExporterInput(new SimpleExporterInput(_jasperPrint));
                 odsExp.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
                 odsExp.exportReport();
-                break;
-            case XLS:
+            }
+            case XLS -> {
                 file = new FileUtil().getFile(getFileName() == null ? "XLS" : getFileName(),
                                 JasperMime.XLS.getExtension());
                 final JRXlsExporter xlsExp = new JRXlsExporter();
@@ -594,16 +568,16 @@ public abstract class StandartReport_Base
                 xlsConfig.setIgnorePageMargins(true);
                 xlsExp.setConfiguration(xlsConfig);
                 xlsExp.exportReport();
-                break;
-            case DOCX:
+            }
+            case DOCX -> {
                 file = new FileUtil().getFile(getFileName() == null ? "DOCX" : getFileName(),
                                 JasperMime.DOCX.getExtension());
                 final JRDocxExporter docxExp = new JRDocxExporter();
                 docxExp.setExporterInput(new SimpleExporterInput(_jasperPrint));
                 docxExp.setExporterOutput(new SimpleOutputStreamExporterOutput(file));
                 docxExp.exportReport();
-                break;
-            case XLSX:
+            }
+            case XLSX -> {
                 file = new FileUtil().getFile(getFileName() == null ? "XLSX" : getFileName(),
                                 JasperMime.XLSX.getExtension());
                 final JRXlsxExporter xlsxExp = new JRXlsxExporter();
@@ -620,26 +594,32 @@ public abstract class StandartReport_Base
                 xlsxConfig.setIgnorePageMargins(true);
                 xlsxExp.setConfiguration(xlsxConfig);
                 xlsxExp.exportReport();
-                break;
-            case CSV:
-            case HTML:
-            case RTF:
-            case XML:
-                LOG.warn("NOT IMPLEMENTED YET!");
-                break;
-            case TXT:
-            default:
+            }
+            case CSV, HTML, RTF, XML -> LOG.warn("NOT IMPLEMENTED YET!");
+            case TXT -> {
                 file = new FileUtil().getFile(getFileName() == null ? "TXT" : getFileName(),
                                 JasperMime.TXT.getExtension());
                 final JRTextExporter txtExporter = new JRTextExporter();
                 txtExporter.setExporterInput(new SimpleExporterInput(_jasperPrint));
                 txtExporter.setExporterOutput(new SimpleWriterExporterOutput(file));
                 final SimpleTextReportConfiguration txtConfig = new SimpleTextReportConfiguration();
-                txtConfig.setCharHeight(Float.valueOf(10));
-                txtConfig.setCharWidth(Float.valueOf(6));
+                txtConfig.setCharHeight((float) 10);
+                txtConfig.setCharWidth((float) 6);
                 txtExporter.exportReport();
-                break;
+            }
+            default -> {
+                file = new FileUtil().getFile(getFileName() == null ? "TXT" : getFileName(),
+                                JasperMime.TXT.getExtension());
+                final JRTextExporter txtExporter = new JRTextExporter();
+                txtExporter.setExporterInput(new SimpleExporterInput(_jasperPrint));
+                txtExporter.setExporterOutput(new SimpleWriterExporterOutput(file));
+                final SimpleTextReportConfiguration txtConfig = new SimpleTextReportConfiguration();
+                txtConfig.setCharHeight((float) 10);
+                txtConfig.setCharWidth((float) 6);
+                txtExporter.exportReport();
+            }
         }
+
         return file;
     }
 

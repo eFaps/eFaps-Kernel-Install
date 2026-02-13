@@ -17,29 +17,21 @@
 
 -->
 
-
-
-
 <datamodel-type xmlns="http://www.efaps.org/xsd"
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>c2ed3807-efc1-497a-b4c4-c0f8ba27beb3</uuid>
-  <file-application>eFaps-Kernel</file-application>
-  
-  <definition>
-    <version-expression>(version==3) || (version==latest)</version-expression>
-    <name>Admin_Program_JasperReportCompiled</name>
-    <parent>Admin_Program_StaticCompiled</parent>
-    
-
-    <attribute>
-      <name>ProgramLink</name>
-      <type>Link</type>
-      <typelink>Admin_Program_JasperReport</typelink>
-      <sqltable>Admin_Program_CompiledSQLTable</sqltable>
-      <sqlcolumn>PROGRAM</sqlcolumn>
-    </attribute>
-  </definition>
-
+    <uuid>c2ed3807-efc1-497a-b4c4-c0f8ba27beb3</uuid>
+    <file-application>eFaps-Kernel</file-application>
+    <definition>
+        <version-expression>(version==3) || (version==latest)</version-expression>
+        <name>Admin_Program_JasperReportCompiled</name>
+        <parent>Admin_Program_StaticCompiled</parent>
+        <attribute>
+            <name>ProgramLink</name>
+            <type>Link</type>
+            <typelink>Admin_Program_JasperReportAbstract</typelink>
+            <sqltable>Admin_Program_CompiledSQLTable</sqltable>
+            <sqlcolumn>PROGRAM</sqlcolumn>
+        </attribute>
+    </definition>
 </datamodel-type>

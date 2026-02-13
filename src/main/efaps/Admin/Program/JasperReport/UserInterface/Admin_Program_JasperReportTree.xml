@@ -30,7 +30,7 @@
             <menu>Admin_Program_JasperReportTree_Menu</menu>
             <form>Admin_Program_JasperReportForm</form>
         </target>
-        <type>Admin_Program_JasperReport</type>
+        <type>Admin_Program_JasperReportAbstract</type>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>

@@ -28,6 +28,10 @@
             <form>Admin_Program_JasperReportCreateReportForm</form>
             <execute method="create4Jasper"
                 program="org.efaps.esjp.common.jasperreport.StandartReport"/>
+            <trigger event="UI_ACCESSCHECK" method="isNotRest"
+                name="Admin_Program_JasperReportTree_Menu_Action_CreateReport.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+            </trigger>
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
