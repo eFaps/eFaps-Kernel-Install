@@ -16,20 +16,13 @@
     limitations under the License.
 
 -->
-
-
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-module xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>49045413-7834-4a6d-8af7-895fe7f59967</uuid>
+    <uuid>afdf3af5-be96-4bd5-af9a-947cc7f5a89e</uuid>
     <file-application>eFaps-Kernel</file-application>
-        <definition>
+    <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Program_JasperReportTree_Menu_Action</name>
-        <childs>
-            <child>Admin_Program_JasperReportTree_Menu_Action_Upload</child>
-            <child>Admin_Program_JasperReportTree_Menu_Action_Compile</child>
-            <child>Admin_Program_JasperReportTree_Menu_Action_CreateReport</child>
-            <child>Admin_Program_JasperReportTree_Menu_Action_CreateReport7</child>
-        </childs>
+        <name>Admin_Program_JasperReportCreateReportModule</name>
+        <property name="ModuleKey">JasperReportCreateReport</property>
     </definition>
-</ui-menu>
+</ui-module>

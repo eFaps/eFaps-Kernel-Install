@@ -49,7 +49,6 @@ import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
-import org.efaps.eql.EQL;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.file.FileUtil;
 import org.efaps.esjp.common.parameter.ParameterUtil;
@@ -211,7 +210,6 @@ public abstract class StandartReport_Base
      * @throws EFapsException on error
      * @see org.efaps.admin.event.EventExecution#execute(org.efaps.admin.event.Parameter)
      */
-    @SuppressWarnings("unchecked")
     public Return create4Jasper(final Parameter _parameter)
         throws EFapsException
     {
@@ -310,16 +308,12 @@ public abstract class StandartReport_Base
         if (name == null) {
             StandartReport_Base.LOG.debug("Neither JasperReport, JasperKey nor properties lead to valid Report Name");
         } else {
-            final var type = isRest() ? CIAdminProgram.JasperReport7 : CIAdminProgram.JasperReport;
-            final var eval = EQL.builder().print().query(type)
-                .where()
-                .attribute(CIAdminProgram.JasperReportAbstract.Name).eq(name)
-                .select()
-                .linkfrom(CIAdminProgram.JasperReportCompiled.ProgramLink).instance().first().as("compInst")
-                .evaluate();
-
-            if (eval.next()) {
-                ret = eval.get("compInst");
+            final QueryBuilder queryBldr = new QueryBuilder(CIAdminProgram.JasperReportCompiled);
+            queryBldr.addWhereAttrEqValue(CIAdminProgram.JasperReportCompiled.Name, name);
+            final InstanceQuery query = queryBldr.getQuery();
+            query.execute();
+            if (query.next()) {
+                ret = query.getCurrentValue();
             }
         }
         return ret;
