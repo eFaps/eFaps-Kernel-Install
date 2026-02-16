@@ -175,17 +175,17 @@ public abstract class StandartReport_Base
         return ret;
     }
 
-    protected Set<JRParameter> loadJRParameters(final Parameter _parameter)
+    public Set<JRParameter> loadJRParameters(final Parameter _parameter)
         throws EFapsException
     {
         final Set<JRParameter> ret = new HashSet<>();
 
         final Instance reportInst;
         if (InstanceUtils.isValid(_parameter.getInstance())
-                        && _parameter.getInstance().getType().isKindOf(CIAdminProgram.JasperReport)) {
+                        && _parameter.getInstance().getType().isKindOf(CIAdminProgram.JasperReportAbstract)) {
             reportInst = _parameter.getInstance();
         } else {
-            final QueryBuilder queryBldr = new QueryBuilder(CIAdminProgram.JasperReport);
+            final QueryBuilder queryBldr = new QueryBuilder(CIAdminProgram.JasperReportAbstract);
             queryBldr.addWhereAttrEqValue(CIAdminProgram.JasperReport.Name,
                             getProperty(_parameter, "JasperReport"));
             final InstanceQuery query = queryBldr.getQuery();
