@@ -66,7 +66,6 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.SimpleJasperReportsContext;
 import net.sf.jasperreports.engine.export.JRTextExporter;
-import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.oasis.JROdsExporter;
 import net.sf.jasperreports.engine.export.oasis.JROdtExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
@@ -81,6 +80,7 @@ import net.sf.jasperreports.export.SimpleTextReportConfiguration;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
+import net.sf.jasperreports.poi.export.JRXlsExporter;
 import net.sf.jasperreports.repo.RepositoryService;
 
 /**
@@ -308,6 +308,7 @@ public abstract class StandartReport_Base
         if (name == null) {
             StandartReport_Base.LOG.debug("Neither JasperReport, JasperKey nor properties lead to valid Report Name");
         } else {
+            LOG.info("Looking up compiled jasper with name: {}", name);
             final QueryBuilder queryBldr = new QueryBuilder(CIAdminProgram.JasperReportCompiled);
             queryBldr.addWhereAttrEqValue(CIAdminProgram.JasperReportCompiled.Name, name);
             final InstanceQuery query = queryBldr.getQuery();
