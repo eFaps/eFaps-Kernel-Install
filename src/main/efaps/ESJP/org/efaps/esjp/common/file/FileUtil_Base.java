@@ -15,16 +15,6 @@
  */
 package org.efaps.esjp.common.file;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfImportedPage;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfSmartCopy;
-import com.lowagie.text.pdf.PdfWriter;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -34,23 +24,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellRangeAddress;
 import org.efaps.admin.AppConfigHandler;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
@@ -60,6 +37,16 @@ import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfImportedPage;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfSmartCopy;
+import com.lowagie.text.pdf.PdfWriter;
 
 /**
  * Utility class used to create empty files in a user depended temporarily
@@ -113,26 +100,33 @@ public abstract class FileUtil_Base
     {
         File ret = null;
         try {
-            File tmpfld = AppConfigHandler.get().getTempFolder();
-            if (tmpfld == null) {
-                final File temp = File.createTempFile("eFaps", ".tmp");
-                tmpfld = temp.getParentFile();
-                temp.delete();
-            }
-            final File storeFolder = new File(tmpfld, FileUtil_Base.TMPFOLDERNAME);
-            final NumberFormat formater = NumberFormat.getInstance();
-            formater.setMinimumIntegerDigits(8);
-            formater.setGroupingUsed(false);
-            final File userFolder = new File(storeFolder, formater.format(Context.getThreadContext().getPersonId()));
-            if (!userFolder.exists()) {
-                userFolder.mkdirs();
-            }
+            final var userFolder = getUserTemp();
             final String name = StringUtils.stripAccents(_name);
             ret = new File(userFolder, name.replaceAll("[^a-zA-Z0-9.-]", "_"));
         } catch (final IOException e) {
             throw new EFapsException(FileUtil_Base.class, "IOException", e);
         }
         return ret;
+    }
+
+    public File getUserTemp()
+        throws IOException, EFapsException
+    {
+        File tmpfld = AppConfigHandler.get().getTempFolder();
+        if (tmpfld == null) {
+            final File temp = File.createTempFile("eFaps", ".tmp");
+            tmpfld = temp.getParentFile();
+            temp.delete();
+        }
+        final File storeFolder = new File(tmpfld, FileUtil_Base.TMPFOLDERNAME);
+        final NumberFormat formater = NumberFormat.getInstance();
+        formater.setMinimumIntegerDigits(8);
+        formater.setGroupingUsed(false);
+        final File userFolder = new File(storeFolder, formater.format(Context.getThreadContext().getPersonId()));
+        if (!userFolder.exists()) {
+            userFolder.mkdirs();
+        }
+        return userFolder;
     }
 
     /**
@@ -162,20 +156,17 @@ public abstract class FileUtil_Base
                 try {
                     final List<PdfReader> readers = new ArrayList<>();
                     int totalPages = 0;
-                    final Iterator<InputStream> iteratorPDFs = pdfs.iterator();
+
 
                     // Create Readers for the pdfs.
-                    while (iteratorPDFs.hasNext()) {
-                        final InputStream pdf = iteratorPDFs.next();
+                    for (final InputStream pdf : pdfs) {
                         final PdfReader pdfReader = new PdfReader(pdf);
                         readers.add(pdfReader);
                         totalPages += pdfReader.getNumberOfPages();
                     }
                     final PdfSmartCopy copy = new PdfSmartCopy(document, outputStream);
-                    final Iterator<PdfReader> iteratorPDFReader = readers.iterator();
                     document.open();
-                    while (iteratorPDFReader.hasNext()) {
-                        final PdfReader pdfReader = iteratorPDFReader.next();
+                    for (final PdfReader pdfReader : readers) {
                         for (int i = 0; i < pdfReader.getNumberOfPages(); i++) {
                             final PdfImportedPage importedPage = copy.getImportedPage(pdfReader, i + 1);
                             copy.addPage(importedPage);
