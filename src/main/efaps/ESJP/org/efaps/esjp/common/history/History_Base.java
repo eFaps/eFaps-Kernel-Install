@@ -37,7 +37,6 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.eql.EQL;
 import org.efaps.esjp.ci.CICommon;
 import org.efaps.esjp.common.AbstractCommon;
-import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -156,11 +155,10 @@ public abstract class History_Base
     {
         LOG.debug("Call for latest by history with {} and {}", afterDateTime, typeIds);
         final var instancesTmp = new HashSet<Instance>();
-        final var after = afterDateTime.atZoneSameInstant(DateTimeUtil.getDBZoneId()).toLocalDateTime().toString();
 
         final var query = EQL.builder().print()
                         .query(CICommon.HistoryLatest)
-                        .where().attribute(CICommon.HistoryLatest.Latest).greater(after);
+                        .where().attribute(CICommon.HistoryLatest.Latest).greater(afterDateTime.toString());
 
         if (ArrayUtils.isNotEmpty(typeIds)) {
             query.and().attribute(CICommon.HistoryLatest.InstTypeId).in(typeIds);
