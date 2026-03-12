@@ -37,7 +37,7 @@ import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.efaps.admin.AppConfigHandler;
 import org.efaps.admin.program.esjp.EFapsApplication;
@@ -79,15 +79,13 @@ public abstract class AbstractUpdate
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractUpdate.class);
 
-    protected Map<String, URL> getFiles(final String _fileName,
-                                        final InputStream _inputStream)
+    protected Map<String, URL> getFiles(final String fileName,
+                                        final InputStream inputStream)
     {
         final Map<String, URL> files = new HashMap<>();
-        final boolean compress = GzipUtils.isCompressedFilename(_fileName);
-        try (
-
-                        TarArchiveInputStream tarInput = new TarArchiveInputStream(
-                                        compress ? new GzipCompressorInputStream(_inputStream) : _inputStream);) {
+        final boolean compress = GzipUtils.isCompressedFileName(fileName);
+        try (var tarInput = new TarArchiveInputStream(
+                        compress ? new GzipCompressorInputStream(inputStream) : inputStream);) {
 
             File tmpfld = AppConfigHandler.get().getTempFolder();
             if (tmpfld == null) {
@@ -102,7 +100,7 @@ public abstract class AbstractUpdate
             final File dateFolder = new File(updateFolder, ((Long) new Date().getTime()).toString());
             dateFolder.mkdirs();
 
-            TarArchiveEntry currentEntry = tarInput.getNextTarEntry();
+            TarArchiveEntry currentEntry = tarInput.getNextEntry();
             while (currentEntry != null) {
                 final byte[] bytess = new byte[(int) currentEntry.getSize()];
                 tarInput.read(bytess);
@@ -112,7 +110,7 @@ public abstract class AbstractUpdate
                 output.write(bytess);
                 output.close();
                 files.put(currentEntry.getName(), file.toURI().toURL());
-                currentEntry = tarInput.getNextTarEntry();
+                currentEntry = tarInput.getNextEntry();
             }
 
         } catch (final IOException e) {
@@ -547,8 +545,8 @@ public abstract class AbstractUpdate
         {
             final URL ret = switch (getFileType()) {
                 case JAVA -> _files.get(getIdentifier().replace('.', '/') + ".java");
-                case CSS -> _files.get(StringUtils.removeEnd(getIdentifier(), ".css").replace('.', '/') + ".css");
-                case JS -> _files.get(StringUtils.removeEnd(getIdentifier(), ".js").replace('.', '/') + ".js");
+                case CSS -> _files.get(Strings.CS.removeEnd(getIdentifier(), ".css").replace('.', '/') + ".css");
+                case JS -> _files.get(Strings.CS.removeEnd(getIdentifier(), ".js").replace('.', '/') + ".js");
                 case JRXML -> _files.get(getIdentifier() + ".jrxml");
                 default -> _files.get(getIdentifier());
             };
