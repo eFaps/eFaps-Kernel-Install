@@ -27,12 +27,6 @@ import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 
-/**
- * TODO comment!
- *
- * @author The eFaps Team
- * @version $Id$
- */
 @EFapsUUID("aecad2e9-b378-447a-a56d-4b29c3622af9")
 @EFapsApplication("eFaps-Kernel")
 @XmlAccessorType(XmlAccessType.NONE)
@@ -58,7 +52,7 @@ public class CreateRelatedLog
         if (getRelatedInstObj() != null) {
             final Type type = Type.get(getRelatedInstObj().getTypeUUID());
             if (type != null) {
-                ret.append(": ").append(type.getLabel());
+                ret.append(": ").append(type.getLabel()).append(" - ").append(getRelatedInstObj().getOid());
             }
         }
         return ret.toString();

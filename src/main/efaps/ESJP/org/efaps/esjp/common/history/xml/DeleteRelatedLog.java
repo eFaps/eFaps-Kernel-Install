@@ -58,7 +58,7 @@ public class DeleteRelatedLog
         if (getRelatedInstObj() != null) {
             final Type type = Type.get(getRelatedInstObj().getTypeUUID());
             if (type != null) {
-                ret.append(": ").append(type.getLabel());
+                ret.append(": ").append(type.getLabel()).append(" - ").append(getRelatedInstObj().getOid());
             }
         }
         return ret.toString();
