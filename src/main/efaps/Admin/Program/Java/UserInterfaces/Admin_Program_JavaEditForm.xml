@@ -30,6 +30,7 @@
             <property name="Columns">140</property>
             <property name="Rows">80</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="ValueType">TEXTAREA</property>
             <trigger event="UI_FIELD_VALUE" method="getCSSFieldValue"
                 name="Admin_Program_CSSEditForm.css.UI_FIELD_VALUE"
                 program="org.efaps.esjp.admin.program.CSS" />
