@@ -23,6 +23,7 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -40,6 +41,7 @@ import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.file.FileUtil;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeExpression;
+import org.efaps.rest.Compile;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -66,8 +68,10 @@ import net.sf.dynamicreports.report.constant.PageType;
 import net.sf.dynamicreports.report.constant.VerticalTextAlignment;
 import net.sf.dynamicreports.report.definition.datatype.DRIDataType;
 import net.sf.dynamicreports.report.exception.DRException;
+import net.sf.jasperreports.engine.DefaultJasperReportsContext;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.design.JRCompiler;
 
 
 /**
@@ -149,7 +153,7 @@ public abstract class AbstractDynamicReport_Base
     /**
      * Parameters.
      */
-    private Map<String, Object> parameters = new HashMap<>();;
+    private Map<String, Object> parameters = new HashMap<>();
 
     /**
      * Get the style for the columns in case of a html document.
@@ -706,6 +710,9 @@ public abstract class AbstractDynamicReport_Base
         throws EFapsException
     {
         if (this.report == null) {
+            final var context = DefaultJasperReportsContext.getInstance();
+            context.setProperty(JRCompiler.COMPILER_CLASSPATH, Compile.getClassPathElements().stream()
+                            .collect(Collectors.joining(":")));
             this.report = DynamicReports.report().setLocale(Context.getThreadContext().getLocale());
         }
         return this.report;
