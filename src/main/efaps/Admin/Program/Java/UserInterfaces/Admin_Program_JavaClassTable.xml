@@ -17,9 +17,6 @@
 
 -->
 
-
-
-
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>89dd39dc-709f-456e-b1a1-44f73e426df3</uuid>
@@ -27,11 +24,13 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Admin_Program_JavaClassTable</name>
-        
-
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Label">Admin_Program_JavaClass/Name.Label</property>
+        </field>
+         <field name="version">
+            <property name="Attribute">Version</property>
+            <property name="Label">Admin_Program_Compiled/Version.Label</property>
         </field>
         <field name="filelength">
             <property name="Select">file.length</property>
@@ -55,5 +54,4 @@
             <property name="Label">Admin_Program_JavaClass/Modified.Label</property>
         </field>
     </definition>
-
 </ui-table>
