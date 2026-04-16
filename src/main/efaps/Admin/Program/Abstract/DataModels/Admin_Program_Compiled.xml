@@ -23,18 +23,12 @@
 <datamodel-type xmlns="http://www.efaps.org/xsd"
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>f67dd041-e09f-4ff6-93f3-a2ac219b8684</uuid>
     <file-application>eFaps-Kernel</file-application>
-    
     <definition>
         <version-expression>(version==4) || (version==latest)</version-expression>
         <name>Admin_Program_Compiled</name>
-        
-
         <purpose GeneralInstance="true" abstract="true"/>
-        
-
         <attribute>
             <name>Type</name>
             <type>Type</type>
@@ -58,6 +52,12 @@
             <type>String</type>
             <sqltable>Admin_Program_CompiledSQLTable</sqltable>
             <sqlcolumn>NAME</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Version</name>
+            <type>Integer</type>
+            <sqltable>Admin_Program_CompiledSQLTable</sqltable>
+            <sqlcolumn>VERSION</sqlcolumn>
         </attribute>
         <attribute>
             <name>Creator</name>
@@ -85,15 +85,10 @@
         </attribute>
         <store name="Admin_Program_Compiled_JDBCStore" />
     </definition>
-
     <definition>
         <version-expression>(version==3)</version-expression>
         <name>Admin_Program_Compiled</name>
-        
-
         <purpose GeneralInstance="true" />
-        
-
         <attribute>
             <name>Type</name>
             <type>Type</type>
@@ -117,6 +112,12 @@
             <type>String</type>
             <sqltable>Admin_Program_CompiledSQLTable</sqltable>
             <sqlcolumn>NAME</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Version</name>
+            <type>Integer</type>
+            <sqltable>Admin_Program_CompiledSQLTable</sqltable>
+            <sqlcolumn>VERSION</sqlcolumn>
         </attribute>
         <attribute>
             <name>Creator</name>
