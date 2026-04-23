@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 import org.apache.commons.collections4.BidiMap;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 import org.efaps.admin.datamodel.Attribute;
+import org.efaps.admin.datamodel.IEnum;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.attributetype.BitEnumType;
 import org.efaps.admin.datamodel.attributetype.EnumType;
@@ -157,42 +158,44 @@ public abstract class AbstractUpdateHistoryTrigger_Base
                             }
                         }
                     } else if (attr.getAttributeType().getDbAttrType() instanceof EnumType) {
-                        final Object objArr = entry.getValue();
-                        if (objArr instanceof Object[]) {
-                            final Object val = attr.getAttributeType().getDbAttrType()
-                                            .readValue(attr, Arrays.asList((Object[]) objArr));
-                            if (val == null) {
-                                attrValue.setValue(val);
+                        final Object obj = entry.getValue();
+                        if (obj instanceof final Object[] objArr) {
+                            if (objArr[0] instanceof final IEnum enumVal) {
+                                attrValue.setValue(String.valueOf(enumVal.getInt()));
                             } else {
-                                attrValue.setValue(val.toString());
+                                final Object val = attr.getAttributeType().getDbAttrType()
+                                                .readValue(attr, Arrays.asList(objArr));
+                                if (val == null) {
+                                    attrValue.setValue(val);
+                                } else {
+                                    attrValue.setValue(val.toString());
+                                }
                             }
                         }
+                    } else // check is a select exists
+                    if (selectAttributes.containsValue(attr.getName())) {
+                        final String select = selects.get(selectAttributes.getKey(attr.getName()));
+                        final PrintQuery print = new PrintQuery(_instance);
+                        print.addSelect(select);
+                        print.executeWithoutAccessCheck();
+                        attrValue.setValue(print.getSelect(select));
+                    } else if (phraseAttributes.containsValue(attr.getName())) {
+                        final String phrase = phrases.get(phraseAttributes.getKey(attr.getName()));
+                        final PrintQuery print = new PrintQuery(_instance);
+                        print.addPhrase("SelectPhrase", phrase);
+                        print.executeWithoutAccessCheck();
+                        attrValue.setValue(print.getPhrase("SelectPhrase"));
                     } else {
-                        // check is a select exists
-                        if (selectAttributes.containsValue(attr.getName())) {
-                            final String select = selects.get(selectAttributes.getKey(attr.getName()));
-                            final PrintQuery print = new PrintQuery(_instance);
-                            print.addSelect(select);
-                            print.executeWithoutAccessCheck();
-                            attrValue.setValue(print.getSelect(select));
-                        } else if (phraseAttributes.containsValue(attr.getName())) {
-                            final String phrase = phrases.get(phraseAttributes.getKey(attr.getName()));
-                            final PrintQuery print = new PrintQuery(_instance);
-                            print.addPhrase("SelectPhrase", phrase);
-                            print.executeWithoutAccessCheck();
-                            attrValue.setValue(print.getPhrase("SelectPhrase"));
-                        } else {
-                            final Object obj = entry.getValue();
-                            if (obj instanceof Object[]) {
-                                final Object tmpObj = ((Object[]) obj)[0];
-                                if (tmpObj instanceof DateTime) {
-                                    attrValue.setValue(((DateTime) tmpObj).toString());
-                                } else {
-                                    attrValue.setValue(tmpObj);
-                                }
+                        final Object obj = entry.getValue();
+                        if (obj instanceof Object[]) {
+                            final Object tmpObj = ((Object[]) obj)[0];
+                            if (tmpObj instanceof DateTime) {
+                                attrValue.setValue(((DateTime) tmpObj).toString());
                             } else {
-                                attrValue.setValue(obj);
+                                attrValue.setValue(tmpObj);
                             }
+                        } else {
+                            attrValue.setValue(obj);
                         }
                     }
                     ret.add(attrValue);
