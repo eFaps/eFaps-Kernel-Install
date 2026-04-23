@@ -86,6 +86,7 @@ public abstract class Process_Base
             }
 
             final Cache<String, String> cache = InfinispanCache.get().<String, String>getCache(Queue.CACHENAME);
+            LOG.debug("Preparing to index: {} instances", cache.size());
             final Set<String> keys = new HashSet<>();
             for (final Entry<String, String> cachEntry : cache.entrySet()) {
                 keys.add(cachEntry.getKey());
