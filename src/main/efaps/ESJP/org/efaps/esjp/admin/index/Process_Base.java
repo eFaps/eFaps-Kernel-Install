@@ -37,6 +37,7 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.user.Company;
 import org.efaps.ci.CIAdminUser;
+import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
@@ -230,6 +231,7 @@ public abstract class Process_Base
                             Indexer.index(indexContext, instances);
                         }
                     }
+                Context.save();
                 }
             }
         } catch (final Exception e) {
