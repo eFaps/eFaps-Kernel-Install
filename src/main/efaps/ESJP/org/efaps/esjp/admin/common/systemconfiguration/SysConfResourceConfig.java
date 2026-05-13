@@ -209,19 +209,23 @@ public final class SysConfResourceConfig
         attr = new IntegerSysConfAttribute()
                         .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
                         .key(KernelSettings.LOGIN_MAX_TRIES)
-                        .description(" Maximum number of tries to login with the wrong Password into\n"
-                                        + " eFaps, before the User is going to be deactivated. To deactivate this\n"
-                                        + " mechanism set the value to 0.");
+                        .description("""
+                             Maximum number of tries to login with the wrong Password into
+                             eFaps, before the User is going to be deactivated. To deactivate this
+                             mechanism set the value to 0.\
+                            """);
         LOG.info("    Add Attribute: {}", attr);
         attrs.add(attr);
 
         attr = new IntegerSysConfAttribute()
                         .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
                         .key(KernelSettings.LOGIN_TIME_RETRY)
-                        .description(" This attribute defines the time in minutes which must elapse\n"
-                                        + " after trying n-times to login with the wrong password, before the user\n"
-                                        + " has again the possibility to try to login. To deactivate this mechanism\n"
-                                        + " set the value to 0.");
+                        .description("""
+                             This attribute defines the time in minutes which must elapse
+                             after trying n-times to login with the wrong password, before the user
+                             has again the possibility to try to login. To deactivate this mechanism
+                             set the value to 0.\
+                            """);
         LOG.info("    Add Attribute: {}", attr);
         attrs.add(attr);
 
@@ -236,13 +240,6 @@ public final class SysConfResourceConfig
                         .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
                         .key(KernelSettings.DEACTIVATE_QUERYCACHE)
                         .description("Deactivate the Caching mechanism for Access");
-        LOG.info("    Add Attribute: {}", attr);
-        attrs.add(attr);
-
-        attr = new IntegerSysConfAttribute()
-                        .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
-                        .key(KernelSettings.JMS_TIMEOOUT)
-                        .description("TimeOut for JMS sessions. Default: 0");
         LOG.info("    Add Attribute: {}", attr);
         attrs.add(attr);
 
@@ -321,9 +318,11 @@ public final class SysConfResourceConfig
         attr = new StringSysConfAttribute()
                         .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
                         .key(KernelSettings.CLASSPATHS)
-                        .description(" The path to the libaries the webapp is build on. Needed for\n"
-                                        + " compilation of java and Jasperreports. e.g.\n"
-                                        + " \"/tmp/Jetty_0_0_0_0_8060_efaps.war__efaps__.bo28gn/webapp/WEB-INF/lib/");
+                        .description("""
+                             The path to the libaries the webapp is build on. Needed for
+                             compilation of java and Jasperreports. e.g.
+                             "/tmp/Jetty_0_0_0_0_8060_efaps.war__efaps__.bo28gn/webapp/WEB-INF/lib/\
+                            """);
         LOG.info("    Add Attribute: {}", attr);
         attrs.add(attr);
 
@@ -331,10 +330,12 @@ public final class SysConfResourceConfig
                         .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
                         .key(KernelSettings.PROFILES4UPDATE)
                         .concatenate(true)
-                        .description("   Profiles to be applied on update if not specified explicitly.\n"
-                                        + " Properties. Can be Concatenated.\n"
-                                        + " e.g. for Archives:\n"
-                                        + " eFapsApp-Sales=Role.AsList=ubicaciones;products");
+                        .description("""
+                               Profiles to be applied on update if not specified explicitly.
+                             Properties. Can be Concatenated.
+                             e.g. for Archives:
+                             eFapsApp-Sales=Role.AsList=ubicaciones;products\
+                            """);
         LOG.info("    Add Attribute: {}", attr);
         attrs.add(attr);
 
