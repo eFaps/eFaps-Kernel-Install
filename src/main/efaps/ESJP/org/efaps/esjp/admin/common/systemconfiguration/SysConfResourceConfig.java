@@ -107,40 +107,44 @@ public final class SysConfResourceConfig
     {
         addKernelSysConf();
         for (final Class<?> clazz : new EsjpScanner().scan(EFapsSystemConfiguration.class)) {
-            final EFapsSystemConfiguration sysConfAn = clazz.getAnnotation(EFapsSystemConfiguration.class);
-            final List<ISysConfAttribute> confAttrs = new ArrayList<>();
-            final List<ISysConfLink> confLinks = new ArrayList<>();
-            uuid2attr.put(sysConfAn.value(), confAttrs);
-            uuid2link.put(sysConfAn.value(), confLinks);
-            LOG.debug("Found Annotation in class {}", clazz);
-            final SystemConfiguration sysConfig = SystemConfiguration.get(UUID.fromString(sysConfAn.value()));
-            if (sysConfig == null) {
-                LOG.warn("No SystemConfiguratio found for : {}", sysConfAn.value());
-            } else {
-                LOG.info("Found SystemConfiguration: {} - {}", sysConfig.getName(), sysConfAn.value());
-            }
-            for (final Field field : clazz.getDeclaredFields()) {
-                if (field.isAnnotationPresent(EFapsSysConfAttribute.class)) {
-                    if (Modifier.isStatic(field.getModifiers())) {
-                        try {
-                            final ISysConfAttribute attr = (ISysConfAttribute) field.get(null);
-                            confAttrs.add(attr);
-                            LOG.info("    Found Attribute: {}", attr);
-                        } catch (final IllegalArgumentException | IllegalAccessException e) {
-                            LOG.error("Catched error", e);
+            try {
+                final EFapsSystemConfiguration sysConfAn = clazz.getAnnotation(EFapsSystemConfiguration.class);
+                final List<ISysConfAttribute> confAttrs = new ArrayList<>();
+                final List<ISysConfLink> confLinks = new ArrayList<>();
+                uuid2attr.put(sysConfAn.value(), confAttrs);
+                uuid2link.put(sysConfAn.value(), confLinks);
+                LOG.debug("Found Annotation in class {}", clazz);
+                final SystemConfiguration sysConfig = SystemConfiguration.get(UUID.fromString(sysConfAn.value()));
+                if (sysConfig == null) {
+                    LOG.warn("No SystemConfiguration found for : {}", sysConfAn.value());
+                } else {
+                    LOG.info("Found SystemConfiguration: {} - {}", sysConfig.getName(), sysConfAn.value());
+                }
+                for (final Field field : clazz.getDeclaredFields()) {
+                    if (field.isAnnotationPresent(EFapsSysConfAttribute.class)) {
+                        if (Modifier.isStatic(field.getModifiers())) {
+                            try {
+                                final ISysConfAttribute attr = (ISysConfAttribute) field.get(null);
+                                confAttrs.add(attr);
+                                LOG.info("    Found Attribute: {}", attr);
+                            } catch (final IllegalArgumentException | IllegalAccessException e) {
+                                LOG.error("Catched error", e);
+                            }
                         }
-                    }
-                } else if (field.isAnnotationPresent(EFapsSysConfLink.class)) {
-                    if (Modifier.isStatic(field.getModifiers())) {
-                        try {
-                            final ISysConfLink link = (ISysConfLink) field.get(null);
-                            confLinks.add(link);
-                            LOG.info("    Found Link     : {}", link);
-                        } catch (final IllegalArgumentException | IllegalAccessException e) {
-                            LOG.error("Catched error", e);
+                    } else if (field.isAnnotationPresent(EFapsSysConfLink.class)) {
+                        if (Modifier.isStatic(field.getModifiers())) {
+                            try {
+                                final ISysConfLink link = (ISysConfLink) field.get(null);
+                                confLinks.add(link);
+                                LOG.info("    Found Link     : {}", link);
+                            } catch (final IllegalArgumentException | IllegalAccessException e) {
+                                LOG.error("Catched error", e);
+                            }
                         }
                     }
                 }
+            } catch (final java.lang.Error e) {
+                LOG.error("Something went wrong while inititalising SystemConfiguration", e);
             }
         }
         for (final ISysConfListener listener : Listener.get().<ISysConfListener>invoke(
@@ -394,11 +398,11 @@ public final class SysConfResourceConfig
      * @param _uuid the _uuid
      * @return the links
      */
-    public List<ISysConfLink> getLinks(final String _uuid)
+    public List<ISysConfLink> getLinks(final String uuid)
     {
         final List<ISysConfLink> ret;
-        if (uuid2link.containsKey(_uuid)) {
-            ret = uuid2link.get(_uuid);
+        if (uuid2link.containsKey(uuid)) {
+            ret = uuid2link.get(uuid);
         } else {
             ret = new ArrayList<>();
         }
@@ -412,12 +416,12 @@ public final class SysConfResourceConfig
      * @param _key the _key
      * @return the link
      */
-    public ISysConfLink getLink(final String _uuid,
-                                     final String _key)
+    public ISysConfLink getLink(final String uuid,
+                                final String key)
     {
         ISysConfLink ret = null;
-        for (final ISysConfLink link : getLinks(_uuid)) {
-            if (link.getKey().equals(_key)) {
+        for (final ISysConfLink link : getLinks(uuid)) {
+            if (link.getKey().equals(key)) {
                 ret = link;
                 break;
             }
@@ -432,12 +436,12 @@ public final class SysConfResourceConfig
      * @param _key the _key
      * @return the attributes
      */
-    public ISysConfAttribute getAttribute(final String _uuid,
-                                          final String _key)
+    public ISysConfAttribute getAttribute(final String uuid,
+                                          final String key)
     {
         ISysConfAttribute ret = null;
-        for (final ISysConfAttribute attr : getAttributes(_uuid)) {
-            if (attr.getKey().equals(_key)) {
+        for (final ISysConfAttribute attr : getAttributes(uuid)) {
+            if (attr.getKey().equals(key)) {
                 ret = attr;
                 break;
             }
@@ -451,11 +455,11 @@ public final class SysConfResourceConfig
      * @param _uuid the _uuid
      * @return the attributes
      */
-    public List<ISysConfAttribute> getAttributes(final String _uuid)
+    public List<ISysConfAttribute> getAttributes(final String uuid)
     {
         final List<ISysConfAttribute> ret;
-        if (uuid2attr.containsKey(_uuid)) {
-            ret = uuid2attr.get(_uuid);
+        if (uuid2attr.containsKey(uuid)) {
+            ret = uuid2attr.get(uuid);
         } else {
             ret = new ArrayList<>();
         }

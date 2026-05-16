@@ -20,9 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -32,9 +30,9 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.stmt.PrintStmt;
 import org.efaps.eql.EQL;
 import org.efaps.eql2.IPrintQueryStatement;
+import org.efaps.esjp.admin.common.systemconfiguration.SystemConfigUtil;
 import org.efaps.esjp.common.properties.PropertiesUtil;
 import org.efaps.util.EFapsException;
-import org.efaps.util.UUIDUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,23 +51,21 @@ public class BaseAutoComplete
         if (systemConfigKey == null) {
             LOG.warn("Missing property SystemConfig");
         }
-        SystemConfiguration sysConf;
-        if (UUIDUtil.isUUID(systemConfigKey)) {
-            sysConf = SystemConfiguration.get(UUID.fromString(systemConfigKey));
-        } else {
-            sysConf = SystemConfiguration.get(systemConfigKey);
-        }
 
         final var systemConfigAttribute = PropertiesUtil.getProperty(parameter, "SystemConfigAttribute");
         if (systemConfigAttribute == null) {
             LOG.warn("Missing property SystemConfigAttribute");
         }
-        final var props = sysConf.getAttributeValueAsProperties(systemConfigAttribute);
+
+        final var props = SystemConfigUtil.getProperties(systemConfigKey, systemConfigAttribute);
 
         String eql = props.getProperty("eql");
         final String valueMsgFormat = props.getProperty("valueMsgFormat");
         final String choiceMsgFormat = props.getProperty("choiceMsgFormat");
         final String keySelect = props.getProperty("keySelect");
+
+        LOG.info("AutoComplete properties: \neql: {},\nvalueMsgFormat: {},\nchoiceMsgFormat: {},\nkeySelect: {}",
+                        eql, valueMsgFormat, choiceMsgFormat, keySelect);
 
         String term = (String) parameter.get(ParameterValues.OTHERS);
 
