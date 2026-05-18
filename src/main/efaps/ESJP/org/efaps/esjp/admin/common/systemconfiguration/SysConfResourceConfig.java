@@ -261,13 +261,6 @@ public final class SysConfResourceConfig
         LOG.info("    Add Attribute: {}", attr);
         attrs.add(attr);
 
-        attr = new BooleanSysConfAttribute()
-                        .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
-                        .key(KernelSettings.MSGTRIGGERACTIVE)
-                        .description("Activate the Javascript Compiler Warning mechanism");
-        LOG.info("    Add Attribute: {}", attr);
-        attrs.add(attr);
-
         attr = new PropertiesSysConfAttribute()
                         .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
                         .key(KernelSettings.QUARTZPROPS)
@@ -323,6 +316,7 @@ public final class SysConfResourceConfig
                         .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
                         .key(KernelSettings.CLASSPATHS)
                         .description("""
+                                        DEPRECATED
                              The path to the libaries the webapp is build on. Needed for
                              compilation of java and Jasperreports. e.g.
                              "/tmp/Jetty_0_0_0_0_8060_efaps.war__efaps__.bo28gn/webapp/WEB-INF/lib/\
@@ -383,6 +377,25 @@ public final class SysConfResourceConfig
                         .defaultValue("AND")
                         .description("The default operator for the QueryParser Can be 'AND' or 'OR'. Default is set\n"
                                         + " to 'AND' for eFaps.");
+        LOG.info("    Add Attribute: {}", attr);
+        attrs.add(attr);
+
+        attr = new StringSysConfAttribute()
+                        .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
+                        .key(KernelSettings.CLASSPATH)
+                        .description("""
+                             The path to the libaries the webapp is build on. Needed for
+                             compilation of java and Jasperreports. e.g.
+                             "/tmp/Jetty_0_0_0_0_8060_efaps.war__efaps__.bo28gn/webapp/WEB-INF/lib/\
+                            """);
+        LOG.info("    Add Attribute: {}", attr);
+        attrs.add(attr);
+
+        attr = new IntegerSysConfAttribute()
+                        .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
+                        .key(KernelSettings.S3STORECACHELIFESPAN)
+                        .defaultValue(60)
+                        .description("  Lifespan fore the exist cache i minutes, defaults to 60 minutes");
         LOG.info("    Add Attribute: {}", attr);
         attrs.add(attr);
 
