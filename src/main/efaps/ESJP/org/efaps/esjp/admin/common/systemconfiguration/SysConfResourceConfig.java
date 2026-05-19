@@ -268,13 +268,6 @@ public final class SysConfResourceConfig
         LOG.info("    Add Attribute: {}", attr);
         attrs.add(attr);
 
-        attr = new IntegerSysConfAttribute()
-                        .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
-                        .key(KernelSettings.MSGTRIGGERINTERVAL)
-                        .description("Interval for the SystemMessage Trigge");
-        LOG.info("    Add Attribute: {}", attr);
-        attrs.add(attr);
-
         attr = new StringSysConfAttribute()
                         .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
                         .key(KernelSettings.DBTIMEZONE)
