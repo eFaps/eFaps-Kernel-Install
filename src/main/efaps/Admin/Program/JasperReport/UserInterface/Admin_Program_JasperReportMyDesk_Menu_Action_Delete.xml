@@ -16,17 +16,18 @@
     limitations under the License.
 
 -->
-
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>30f55baf-f47e-4954-a4ce-fab0a048e8e2</uuid>
+    <uuid>48f74956-5bf0-4be2-8819-71c3c6a6fc58</uuid>
     <file-application>eFaps-Kernel</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_Program_JasperReportMyDesk_Menu_Action</name>
-        <childs>
-            <child>Admin_Program_JasperReportMyDesk_Menu_Action_Compile</child>
-            <child>Admin_Program_JasperReportMyDesk_Menu_Action_Delete</child>
-        </childs>
+        <name>Admin_Program_JasperReportMyDesk_Menu_Action_Delete</name>
+        <target>
+            <execute method="deleteJasper" program="org.efaps.esjp.admin.util.ProgramUtil"/>
+        </target>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
     </definition>
-</ui-menu>
+</ui-command>

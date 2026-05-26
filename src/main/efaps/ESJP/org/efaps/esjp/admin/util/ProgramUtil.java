@@ -40,7 +40,6 @@ import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * TODO comment!
  *
@@ -58,9 +57,9 @@ public class ProgramUtil
      */
     private static final Logger LOG = LoggerFactory.getLogger(ProgramUtil.class);
 
-
     /**
      * Delete all events related to Attributes, Commands and Menus.
+     *
      * @param _parameter Parameter as passed by the eFasp API
      * @throws EFapsException on error
      */
@@ -78,7 +77,7 @@ public class ProgramUtil
             if (query.next()) {
                 final Instance prgInst = query.getCurrentValue();
                 ProgramUtil.LOG.info("Found esjp: '{}'", name);
-                delete(prgInst);
+                deleteJava(prgInst);
             }
         }
     }
@@ -168,14 +167,14 @@ public class ProgramUtil
                 final var prgInst = Instance.get(oid);
                 if (InstanceUtils.isType(prgInst, CIAdminProgram.Java)) {
                     ProgramUtil.LOG.info("Deleting esjp: '{}'", oid);
-                    delete(prgInst);
+                    deleteJava(prgInst);
                 }
             }
         }
         return new Return();
     }
 
-    protected void delete(final Instance prgInst)
+    protected void deleteJava(final Instance prgInst)
         throws EFapsException
     {
 
@@ -212,6 +211,43 @@ public class ProgramUtil
             final Delete del = new Delete(eventQuery.getCurrentValue());
             del.execute();
         }
+        final Delete del = new Delete(prgInst);
+        del.execute();
+        ProgramUtil.LOG.info("Removed esjp sucessfully");
+    }
+
+    public Return deleteJasper(final Parameter parameter)
+        throws EFapsException
+    {
+        final String[] oids = (String[]) parameter.get(ParameterValues.OTHERS);
+        if (oids != null) {
+            for (final String oid : oids) {
+                final var prgInst = Instance.get(oid);
+                if (InstanceUtils.isKindOf(prgInst, CIAdminProgram.JasperReportAbstract)) {
+                    ProgramUtil.LOG.info("Deleting JasperReport: '{}'", oid);
+                    deleteJasper(prgInst);
+                }
+            }
+        }
+        return new Return();
+    }
+
+    protected void deleteJasper(final Instance prgInst)
+        throws EFapsException
+    {
+
+        // Admin_Program_JasperReportCompiled
+        final QueryBuilder classQueryBldr = new QueryBuilder(
+                        UUID.fromString("c2ed3807-efc1-497a-b4c4-c0f8ba27beb3"));
+        classQueryBldr.addWhereAttrEqValue("ProgramLink", prgInst);
+        final InstanceQuery classQuery = classQueryBldr.getQuery();
+        classQuery.execute();
+        while (classQuery.next()) {
+            ProgramUtil.LOG.info("Removing compiled Jasper: '{}'", classQuery.getCurrentValue());
+            final Delete del = new Delete(classQuery.getCurrentValue());
+            del.execute();
+        }
+
         final Delete del = new Delete(prgInst);
         del.execute();
         ProgramUtil.LOG.info("Removed esjp sucessfully");
