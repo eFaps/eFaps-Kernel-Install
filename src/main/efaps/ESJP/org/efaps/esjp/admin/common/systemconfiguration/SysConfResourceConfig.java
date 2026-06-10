@@ -388,7 +388,23 @@ public final class SysConfResourceConfig
                         .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
                         .key(KernelSettings.S3STORECACHELIFESPAN)
                         .defaultValue(60)
-                        .description("  Lifespan fore the exist cache i minutes, defaults to 60 minutes");
+                        .description("Lifespan fore the exist cache in minutes, defaults to 60 minutes");
+        LOG.info("    Add Attribute: {}", attr);
+        attrs.add(attr);
+
+        attr = new IntegerSysConfAttribute()
+                        .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
+                        .key(KernelSettings.STORERESOURCELIFESPAN)
+                        .defaultValue(60)
+                        .description("Lifespan fore the store resource cache in minutes, defaults to 60 minutes");
+        LOG.info("    Add Attribute: {}", attr);
+        attrs.add(attr);
+
+        attr = new IntegerSysConfAttribute()
+                        .sysConfUUID(org.efaps.admin.EFapsSystemConfiguration.get().getUUID())
+                        .key(KernelSettings.GENINSTCACHELIFESPAN)
+                        .defaultValue(60)
+                        .description("Lifespan fore the general instance cache in minutes, defaults to 60 minutes");
         LOG.info("    Add Attribute: {}", attr);
         attrs.add(attr);
 
