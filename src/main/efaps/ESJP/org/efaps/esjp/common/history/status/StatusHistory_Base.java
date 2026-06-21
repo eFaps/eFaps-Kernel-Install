@@ -18,6 +18,7 @@ package org.efaps.esjp.common.history.status;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,7 +41,6 @@ import org.efaps.esjp.ci.CICommon;
 import org.efaps.esjp.db.InstanceUtils;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
@@ -108,20 +108,20 @@ public abstract class StatusHistory_Base
     /**
      *
      * @param _parameter Parameter
-     * @param _date    the date to be evaluated, mining what status did the object have onthe given date
-     * @param _minDate just a min value to be included in the evaluation
+     * @param _date    the date to be evaluated, mining what status did the object have on the given date
+     * @param _minDate just a minimum value to be included in the evaluation
      * @param typeIds ids to be filterd for
      * @return mapping
      * @throws EFapsException on error
      */
-    public Map<Instance, Long> getStatusUpdatesByDateAndTypes(final Parameter _parameter,
-                                                              final DateTime _date,
-                                                              final DateTime _minDate,
+    public Map<Instance, Long> getStatusUpdatesByDateAndTypes(final Parameter parameter,
+                                                              final LocalDate date,
+                                                              final LocalDate minimumDate,
                                                               final Long... typeIds)
         throws EFapsException
     {
         // security treshhold
-        final LocalDate minDate = _minDate == null ? _date.minusYears(1).toLocalDate() : _minDate.toLocalDate();
+        final LocalDate minDate = minimumDate == null ? date.minusYears(1) : minimumDate;
 
         final Map<Instance, Long> inst2status = new HashMap<>();
         final Context context = Context.getThreadContext();
@@ -133,7 +133,7 @@ public abstract class StatusHistory_Base
                         .append(" t_cmhistorystatus")
                         .append(" LEFT JOIN t_cmgeninst ON t_cmgeninst.id = t_cmhistorystatus.genInstId")
                         .append(" WHERE t_cmhistorystatus.created < '")
-                            .append(_date.withTimeAtStartOfDay().plusDays(1).toLocalDate()).append("'")
+                            .append(date.plusDays(1)).append("'")
                         .append(" AND t_cmhistorystatus.created > '").append(minDate).append("'")
                         .append(" AND t_cmgeninst.insttypeid IN (").append(StringUtils.join(typeIds, ",")).append(")")
                         .append(" ORDER BY geninstid, created DESC");

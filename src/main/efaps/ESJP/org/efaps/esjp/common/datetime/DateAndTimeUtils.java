@@ -19,6 +19,9 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Properties;
 
 import org.efaps.admin.event.Parameter;
@@ -36,6 +39,7 @@ import org.efaps.util.EFapsException;
 @EFapsApplication("eFaps-Kernel")
 public class DateAndTimeUtils
 {
+
     public static OffsetDateTime getDefaultValue(final Parameter _parameter,
                                                  final Properties _props)
         throws EFapsException
@@ -95,10 +99,10 @@ public class DateAndTimeUtils
     {
         final LocalDate localDate = LocalDate.parse(_isoDateTime.subSequence(0, 10));
         return OffsetDateTime.now(DateTimeUtil.getDBZoneId())
-            .withYear(localDate.getYear())
-            .withMonth(localDate.getMonthValue())
-            .withDayOfMonth(localDate.getDayOfMonth())
-            .truncatedTo(ChronoUnit.DAYS);
+                        .withYear(localDate.getYear())
+                        .withMonth(localDate.getMonthValue())
+                        .withDayOfMonth(localDate.getDayOfMonth())
+                        .truncatedTo(ChronoUnit.DAYS);
     }
 
     public static OffsetDateTime withTimeAtStartOfDay()
@@ -109,6 +113,23 @@ public class DateAndTimeUtils
                         .withMinute(0)
                         .withSecond(0)
                         .withNano(0);
+    }
+
+    public static TemporalAdjuster getTemporalAdjuster(String value)
+    {
+        return switch (value) {
+            case "firstDayOfMonth" -> TemporalAdjusters.firstDayOfMonth();
+            case "lastDayOfMonth" -> TemporalAdjusters.lastDayOfMonth();
+            default -> new TemporalAdjuster()
+            {
+
+                @Override
+                public Temporal adjustInto(Temporal temporal)
+                {
+                    return temporal;
+                }
+            };
+        };
     }
 
 }
