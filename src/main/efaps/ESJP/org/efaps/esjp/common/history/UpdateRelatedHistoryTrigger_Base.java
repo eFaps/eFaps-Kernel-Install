@@ -27,6 +27,8 @@ import org.efaps.esjp.ci.CICommon;
 import org.efaps.esjp.common.history.xml.AbstractHistoryLog;
 import org.efaps.esjp.common.history.xml.UpdateRelatedLog;
 import org.efaps.util.EFapsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -39,19 +41,22 @@ import org.efaps.util.EFapsException;
 public abstract class UpdateRelatedHistoryTrigger_Base
     extends AbstractRelatedUpdateHistoryTrigger
 {
+    private static final Logger LOG = LoggerFactory.getLogger(UpdateRelatedHistoryTrigger.class);
+
     /**
-     * @param _parameter Parameter as passed by the eFaps API
+     * @param parameter Parameter as passed by the eFaps API
      * @return new Return
      * @throws EFapsException on error
      */
     @Override
-    public Return execute(final Parameter _parameter)
+    public Return execute(final Parameter parameter)
         throws EFapsException
     {
+        LOG.debug("Executing UpdateRelatedHistoryTrigger for {}", parameter);
         Return ret = new Return();
-        final Map<?, ?> values = (Map<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
+        final Map<?, ?> values = (Map<?, ?>) parameter.get(ParameterValues.NEW_VALUES);
         if (!values.isEmpty()) {
-            ret = super.execute(_parameter);
+            ret = super.execute(parameter);
         }
         return ret;
     }
