@@ -16,6 +16,7 @@
 package org.efaps.esjp.admin.common;
 
 import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsListener;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -28,6 +29,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  */
 @EFapsUUID("0af0d01f-2fad-43ae-9239-9214feddbcba")
 @EFapsApplication("eFaps-Kernel")
+@EFapsListener
 public class ReloadCache
     extends  ReloadCache_Base
 {

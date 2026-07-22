@@ -15,6 +15,8 @@
  */
 package org.efaps.esjp.admin.common;
 
+import java.io.Serializable;
+
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.EventExecution;
 import org.efaps.admin.event.Parameter;
@@ -24,9 +26,15 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
 import org.efaps.admin.runlevel.RunLevel;
 import org.efaps.admin.ui.AbstractUserInterfaceObject;
+import org.efaps.cluster.ClusterCommunication;
+import org.efaps.cluster.IClusterMsgListener;
+import org.efaps.cluster.StreamableWrapper;
 import org.efaps.db.Context;
+import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.InfinispanCache;
+import org.jgroups.JChannel;
+import org.jgroups.ObjectMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +50,7 @@ import org.slf4j.LoggerFactory;
 @EFapsUUID("1d4f1263-9315-4f59-bd5e-bd364f907bac")
 @EFapsApplication("eFaps-Kernel")
 public abstract class ReloadCache_Base
-    implements EventExecution
+    implements EventExecution, IClusterMsgListener
 {
 
     /**
@@ -87,14 +95,21 @@ public abstract class ReloadCache_Base
     {
         ReloadCache_Base.LOG.info("reload SystemConfigurations by: {}",
                         Context.getThreadContext().getPerson().getName());
+        inform("reloadSystemConfigurations");
+        reloadSystemConfigurations();
+        ReloadCache_Base.LOG.info("reload SystemConfigurations finished successfully");
+        return new Return();
+    }
+
+    public void reloadSystemConfigurations()
+        throws EFapsException
+    {
         SystemConfiguration.initialize();
         SystemConfiguration.clearCache();
         for (final IReloadCacheListener listener : Listener.get().<IReloadCacheListener>invoke(
                         IReloadCacheListener.class)) {
-            listener.onReloadSystemConfig(_parameter);
+            listener.onReloadSystemConfig(ParameterUtil.instance());
         }
-        ReloadCache_Base.LOG.info("reload SystemConfigurations finished successfully");
-        return new Return();
     }
 
     public Return reloadUI(final Parameter _parameter)
@@ -105,5 +120,51 @@ public abstract class ReloadCache_Base
 
         ReloadCache_Base.LOG.info("reload UI finished successfully");
         return new Return();
+    }
+
+    protected void inform(String key)
+    {
+        final JChannel channel = ClusterCommunication.getChannel();
+        if (channel != null) {
+            final var msg = new ObjectMessage();
+
+            final var object = new StreamableWrapper(key);
+            msg.setObject(object);
+            try {
+                channel.send(msg);
+            } catch (final Exception e) {
+                LOG.error("error on sending ckuser message: {}", key);
+            }
+        }
+    }
+
+    @Override
+    public boolean onPayload(final Serializable obj)
+    {
+        LOG.debug("on payload for {}", obj);
+        if (obj instanceof final String key && key.equals("reloadSystemConfigurations")) {
+            LOG.info("received trigger for {}", key);
+            try {
+                Context.begin();
+                reloadSystemConfigurations();
+            } catch (final EFapsException e) {
+                LOG.error("error on reloadSystemConfigurations via cluster message");
+            } finally {
+                try {
+                    Context.rollback();
+                } catch (final EFapsException e) {
+                    LOG.error("error on reloadSystemConfigurations via cluster message");
+                }
+            }
+            LOG.info("reload SystemConfigurations via cluster message finished successfully");
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int getWeight()
+    {
+        return 0;
     }
 }
