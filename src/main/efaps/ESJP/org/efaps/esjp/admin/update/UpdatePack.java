@@ -17,6 +17,7 @@ package org.efaps.esjp.admin.update;
 
 import java.io.IOException;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsApplication;
@@ -42,13 +43,13 @@ public class UpdatePack
      * @throws InstallationException on error
      * @throws IOException
      */
-    public Return execute(final Parameter _parameter)
+    public Return execute(final Parameter parameter)
         throws EFapsException, InstallationException, IOException
     {
         final Context context = Context.getThreadContext();
         final Context.FileParameter fileItem = context.getFileParameters().get("pack");
         final var files = getFiles(fileItem.getName(), fileItem.getInputStream());
-        update(files);
+        update(files, BooleanUtils.toBoolean(parameter.getParameterValue("forceUpdate")));
         return new Return();
     }
 }

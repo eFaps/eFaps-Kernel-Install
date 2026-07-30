@@ -120,14 +120,15 @@ public abstract class AbstractUpdate
     }
 
     protected Map<RevItem, InstallFile> getInstallFiles(final Map<String, URL> files,
-                                                        final List<RevItem> items)
+                                                        final List<RevItem> items,
+                                                        boolean forceUpdate)
         throws JsonParseException, JsonMappingException, IOException, URISyntaxException, EFapsException
     {
         final Map<RevItem, InstallFile> installFiles = new HashMap<>();
-        installFiles.putAll(getInstallFiles(files, items, CIAdmin.Abstract));
-        installFiles.putAll(getInstallFiles(files, items, CIAdminUser.Abstract));
-        installFiles.putAll(getInstallFiles(files, items, CIAdminAccess.AccessSet));
-        installFiles.putAll(getInstallFiles(files, items, CICommon.DBPropertiesBundle));
+        installFiles.putAll(getInstallFiles(files, items, CIAdmin.Abstract, forceUpdate));
+        installFiles.putAll(getInstallFiles(files, items, CIAdminUser.Abstract, forceUpdate));
+        installFiles.putAll(getInstallFiles(files, items, CIAdminAccess.AccessSet, forceUpdate));
+        installFiles.putAll(getInstallFiles(files, items, CICommon.DBPropertiesBundle, forceUpdate));
 
         int i = 0;
         for (final RevItem item : items) {
@@ -155,13 +156,12 @@ public abstract class AbstractUpdate
 
     }
 
-    protected void update(final Map<String, URL> files)
+    protected void update(final Map<String, URL> files, boolean forceUpdate)
         throws InstallationException, EFapsException
     {
         try {
             final var items = getRevItemList(files);
-
-            final Map<RevItem, InstallFile> installFiles = getInstallFiles(files, items);
+            final Map<RevItem, InstallFile> installFiles = getInstallFiles(files, items, forceUpdate);
             final List<InstallFile> installFileList = new ArrayList<>(installFiles.values());
             Collections.sort(installFileList, Comparator.comparing(InstallFile::getName));
 
@@ -258,25 +258,26 @@ public abstract class AbstractUpdate
     /**
      * Gets the install files.
      *
-     * @param _files the files
-     * @param _items the items
-     * @param _ciType the ci type
+     * @param files the files
+     * @param items the items
+     * @param ciType the ci type
      * @return the install files
      * @throws EFapsException on error
      */
-    protected Map<RevItem, InstallFile> getInstallFiles(final Map<String, URL> _files,
-                                                        final List<RevItem> _items,
-                                                        final CIType _ciType)
+    protected Map<RevItem, InstallFile> getInstallFiles(final Map<String, URL> files,
+                                                        final List<RevItem> items,
+                                                        final CIType ciType,
+                                                        final boolean forceUpdate)
         throws EFapsException
     {
         final Map<RevItem, InstallFile> ret = new HashMap<>();
-        final Iterator<RevItem> iter = _items.iterator();
+        final Iterator<RevItem> iter = items.iterator();
         int i = 0;
         while (iter.hasNext()) {
             final RevItem item = iter.next();
-            LOG.info("Checking Item {} / {}: {}", i, _items.size(), item.getIdentifier());
+            LOG.info("Checking Item {} / {}: {}", i, items.size(), item.getIdentifier());
 
-            final MultiPrintQuery multi = getQueryBldr(item, _ciType).getPrint();
+            final MultiPrintQuery multi = getQueryBldr(item, ciType).getPrint();
             final SelectBuilder selRevision = SelectBuilder.get().linkto(CIAdmin.Abstract.RevisionLink)
                             .attribute(CIAdminCommon.ApplicationRevision.Revision);
             final SelectBuilder selRevDate = SelectBuilder.get().linkto(CIAdmin.Abstract.RevisionLink)
@@ -297,6 +298,11 @@ public abstract class AbstractUpdate
                                 multi.getCurrentInstance().getOid(),
                                 multi.getCurrentInstance().getType().getName(), name,
                                 app, revDate, revision);
+                if (forceUpdate) {
+                    update = true;
+                    LOG.warn("ForceUpdate -Adding {} - {} for: {}", item.getApplication(), app, item.identifier);
+                }
+
                 if (!item.getApplication().equals(app)) {
                     LOG.warn("Different Application: {} - {} for: {}", item.getApplication(), app, item.identifier);
                     update = true;
@@ -314,7 +320,7 @@ public abstract class AbstractUpdate
                 if (update) {
                     final InstallFile installFile = new InstallFile()
                                     .setName(item.getName4InstallFile(name))
-                                    .setURL(item.getURL(_files))
+                                    .setURL(item.getURL(files))
                                     .setType(item.getFileType().getType())
                                     .setRevision(item.getRevision())
                                     .setDate(item.getDate());

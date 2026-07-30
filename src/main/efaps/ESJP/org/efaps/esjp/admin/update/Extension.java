@@ -52,7 +52,7 @@ public class Extension
                 final var checkout = new Checkout(instance);
                 final var inputStream = checkout.execute();
                 final var files = getFiles(checkout.getFileName(), inputStream);
-                final var installFiles = getInstallFiles(files, getRevItemList(files));
+                final var installFiles = getInstallFiles(files, getRevItemList(files), false);
                 final List<InstallFile> installFileList = new ArrayList<>(installFiles.values());
                 Collections.sort(installFileList, Comparator.comparing(InstallFile::getName));
                 install(installFileList);
