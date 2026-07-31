@@ -24,6 +24,15 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Common_Update_UpdatePackForm</name>
+        <field name="forceUpdate">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Common_Update_UpdatePackForm.forceUpdate.Label</property>
+            <property name="UIType">CHECKBOX</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field" method="getDefault4BooleanValue"
+                name="Common_Update_UpdatePackForm.forceUpdate.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                <property name="DefaultValue">false</property>
+            </trigger>
+        </field>
         <field name="pack">
             <property name="UIType">UPLOAD</property>
             <property name="ModeCreate">EDITABLE</property>
