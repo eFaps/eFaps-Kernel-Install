@@ -145,6 +145,11 @@
             <version>0.8.0</version>
         </dependency>
         <dependency>
+            <groupId>dev.failsafe</groupId>
+            <artifactId>failsafe</artifactId>
+            <version>3.3.2</version>
+        </dependency>
+        <dependency>
             <groupId>org.efaps</groupId>
             <artifactId>efaps-tests</artifactId>
             <version>${efaps.app.dependencies}</version>

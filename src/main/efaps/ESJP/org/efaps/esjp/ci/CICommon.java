@@ -572,4 +572,38 @@ public class CICommon
         public final CIAttribute Modifier = new CIAttribute(this, "Modifier");
         public final CIAttribute Modified = new CIAttribute(this, "Modified");
     }
+
+    public static final _Webhook Webhook = new _Webhook("2c2f0886-8a37-40c9-b6c1-5255b8b2e904");
+
+    public static class _Webhook
+        extends CIType
+    {
+
+        protected _Webhook(final String _uuid)
+        {
+            super(_uuid);
+        }
+        public final CIAttribute Status = new CIAttribute(this, "Status");
+        public final CIAttribute Name = new CIAttribute(this, "Name");
+        public final CIAttribute Description = new CIAttribute(this, "Description");
+        public final CIAttribute EventTypes = new CIAttribute(this, "EventTypes");
+        public final CIAttribute SignKeys = new CIAttribute(this, "SignKeys");
+        public final CIAttribute URL = new CIAttribute(this, "URL");
+        public final CIAttribute Creator = new CIAttribute(this, "Creator");
+        public final CIAttribute Created = new CIAttribute(this, "Created");
+        public final CIAttribute Modifier = new CIAttribute(this, "Modifier");
+        public final CIAttribute Modified = new CIAttribute(this, "Modified");
+    }
+
+    public static final _WebhookStatus WebhookStatus = new _WebhookStatus("af3e0799-c7c4-411f-83cf-a3524d03f6d1");
+    public static class _WebhookStatus extends org.efaps.esjp.ci.CIAdmin._DataModel_StatusAbstract
+    {
+        protected _WebhookStatus(final String _uuid)
+        {
+            super(_uuid);
+        }
+        public final CIStatus Active = new CIStatus(this, "Active");
+        public final CIStatus Inactive = new CIStatus(this, "Inactive");
+    }
+
 }
