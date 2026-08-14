@@ -38,6 +38,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
 import org.efaps.eql.EQL;
 import org.efaps.esjp.ci.CICommon;
 import org.efaps.esjp.common.rest.client.RestClientManager;
@@ -51,6 +52,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import dev.failsafe.Failsafe;
 import dev.failsafe.RetryPolicy;
 import dev.failsafe.function.ContextualSupplier;
+import jakarta.transaction.Synchronization;
 
 @EFapsUUID("55cb620a-5ed4-4862-abaa-b336df87cda7")
 @EFapsApplication("eFaps-Kernel")
@@ -63,10 +65,84 @@ public class Webhook
 
     private static final String HMAC_SHA256 = "HmacSHA256";
 
-    public final String sign(final String signKeys,
-                             final String msgId,
-                             final long timestamp,
-                             final String payload)
+    public void init()
+        throws EFapsException
+    {
+        // ensure RestClientManager is loaded
+        RestClientManager.getClient();
+        WEBHOOKS = MultiMapUtils.newListValuedHashMap();
+        final var eval = EQL.builder().print().query(CICommon.Webhook)
+                        .where().attribute(CICommon.Webhook.Status).eq(CICommon.WebhookStatus.Active)
+                        .select().attribute(CICommon.Webhook.Name, CICommon.Webhook.EventTypes,
+                                        CICommon.Webhook.SignKeys, CICommon.Webhook.URL)
+                        .evaluate();
+        while (eval.next()) {
+            final String eventTypesStr = eval.get(CICommon.Webhook.EventTypes);
+            final String name = eval.get(CICommon.Webhook.Name);
+            final String signKeys = eval.get(CICommon.Webhook.SignKeys);
+            final String url = eval.get(CICommon.Webhook.URL);
+            Arrays.stream(eventTypesStr.split("\n")).forEach(eventType -> {
+                final var entry = new Entry();
+                entry.name = name;
+                entry.signKeys = signKeys;
+                entry.url = url;
+                WEBHOOKS.put(eventType, entry);
+            });
+        }
+    }
+
+    private void send(final String eventType,
+                      final Entry entry,
+                      final String payloadStr)
+    {
+        try {
+            final var msgId = getMsgId();
+
+            LOG.info("Calling webhook with content: {}", payloadStr);
+
+            final var client = RestClientManager.getClient();
+            LOG.info("client {}", client);
+
+            final var retryPolicy = RetryPolicy.<Boolean>builder()
+                            .withMaxAttempts(10)
+                            .withBackoff(Duration.ofSeconds(1), Duration.ofSeconds(600))
+                            .handleResultIf(e -> !e)
+                            .build();
+            Failsafe.with(retryPolicy).getAsync((ContextualSupplier<Boolean, Boolean>) context -> {
+                var result = false;
+                try {
+                    final var count = context.getAttemptCount();
+                    LOG.info("intent {}", count);
+
+                    final var request = client.target(entry.url)
+                                    .request();
+                    request.header("webhook-id", msgId);
+                    final var timeStamp = Instant.now().getEpochSecond();
+                    request.header("webhook-timestamp", timeStamp);
+                    request.header("webhook-signature", sign(entry.signKeys, msgId, timeStamp, payloadStr));
+
+                    LOG.info("request {}", request);
+
+                    final var response = request.buildPost(Entity.entity(payloadStr, MediaType.APPLICATION_JSON))
+                                    .invoke();
+
+                    if (Status.Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
+                        result = true;
+                    }
+                } catch (final Exception e) {
+                    LOG.error("Catched", e);
+                }
+                return result;
+            });
+        } catch (final Exception e) {
+            LOG.error("Catched error on send", e);
+        }
+    }
+
+    protected final String sign(final String signKeys,
+                                final String msgId,
+                                final long timestamp,
+                                final String payload)
     {
         LOG.info("signKeys {}", signKeys);
         final StringBuilder strBldr = new StringBuilder();
@@ -93,86 +169,6 @@ public class Webhook
         return strBldr.toString();
     }
 
-    public void init()
-        throws EFapsException
-    {
-        WEBHOOKS = MultiMapUtils.newListValuedHashMap();
-        final var eval = EQL.builder().print().query(CICommon.Webhook)
-                        .where().attribute(CICommon.Webhook.Status).eq(CICommon.WebhookStatus.Active)
-                        .select().attribute(CICommon.Webhook.Name, CICommon.Webhook.EventTypes,
-                                        CICommon.Webhook.SignKeys, CICommon.Webhook.URL)
-                        .evaluate();
-        while (eval.next()) {
-            final String eventTypesStr = eval.get(CICommon.Webhook.EventTypes);
-            final String name = eval.get(CICommon.Webhook.Name);
-            final String signKeys = eval.get(CICommon.Webhook.SignKeys);
-            final String url = eval.get(CICommon.Webhook.URL);
-            Arrays.stream(eventTypesStr.split("\n")).forEach(eventType -> {
-                final var entry = new Entry();
-                entry.name = name;
-                entry.signKeys = signKeys;
-                entry.url = url;
-                WEBHOOKS.put(eventType, entry);
-            });
-        }
-    }
-
-    public void send(String eventType,
-                     Entry entry,
-                     Object data)
-        throws JsonProcessingException
-    {
-        final var msgId = getMsgId();
-        final var payload = PayloadDto.builder()
-                        .withType(eventType)
-                        .withTimestamp(OffsetDateTime.now())
-                        .withData(data)
-                        .build();
-        final var objectMapper = SerializationUtil.getObjectMapper();
-        final var payloadStr = objectMapper.writeValueAsString(payload);
-
-        LOG.info("Calling webhook with content: {}", payloadStr);
-
-        final var client = RestClientManager.getClient();
-        LOG.info("client {}", client);
-
-        final var retryPolicy = RetryPolicy.<Boolean>builder()
-                        .withMaxAttempts(10)
-                        .withBackoff(Duration.ofSeconds(1), Duration.ofSeconds(600))
-                        .handleResultIf(e -> !e)
-                        .build();
-        Failsafe.with(retryPolicy).getAsync((ContextualSupplier<Boolean, Boolean>) context -> {
-            var result = false;
-            try {
-                final var count = context.getAttemptCount();
-                LOG.info("intent {}", count);
-
-                final var request = client.target(entry.url)
-                                .request();
-                request.header("webhook-id", msgId);
-                final var timeStamp = Instant.now().getEpochSecond();
-                request.header("webhook-timestamp", timeStamp);
-                request.header("webhook-signature", sign(entry.signKeys, msgId, timeStamp, payloadStr));
-
-                LOG.info("request {}", request);
-
-                final var response = request.buildPost(Entity.entity(payloadStr, MediaType.APPLICATION_JSON)).invoke();
-
-                if (Status.Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
-                    result = true;
-                }
-            } catch (final Exception e) {
-                LOG.error("Catched", e);
-            }
-            return result;
-        });
-    }
-
-    public Boolean connect()
-    {
-        return true;
-    }
-
     private String getMsgId()
     {
         final var random = RandomStringUtils.insecure().nextAlphanumeric(28);
@@ -183,6 +179,8 @@ public class Webhook
         throws EFapsException, JsonProcessingException
     {
         LOG.info("Sending ping to: {}", parameter.getInstance());
+        // ensure RestClientManager is loaded
+        RestClientManager.getClient();
         final var eval = EQL.builder().print(parameter.getInstance())
                         .attribute(CICommon.Webhook.Name, CICommon.Webhook.EventTypes,
                                         CICommon.Webhook.SignKeys, CICommon.Webhook.URL)
@@ -197,9 +195,50 @@ public class Webhook
             entry.url = url;
 
             LOG.info("entry: {}", entry);
-            send("ping", entry, PingDto.builder().withMsg("Hello World").build());
+            register("ping", entry, PingDto.builder().withMsg("Hello World").build());
         }
         return new Return();
+    }
+
+    public void register(final String eventType,
+                         final Entry entry,
+                         final Object data)
+        throws EFapsException
+    {
+        final var payload = PayloadDto.builder()
+                        .withType(eventType)
+                        .withTimestamp(OffsetDateTime.now())
+                        .withData(data)
+                        .build();
+        final var objectMapper = SerializationUtil.getObjectMapper();
+
+        try {
+            final var payloadStr = objectMapper.writeValueAsString(payload);
+
+            final var syncReg = Context.getThreadContext().getSynchronizationRegistry();
+            syncReg.registerInterposedSynchronization(new Synchronization()
+            {
+
+                @Override
+                public void beforeCompletion()
+                {
+                    // not used here
+                }
+
+                @Override
+                public void afterCompletion(int status)
+                {
+                    if (jakarta.transaction.Status.STATUS_COMMITTED == status) {
+                        send(eventType, entry, payloadStr);
+                    } else {
+                        LOG.warn("After completion with status: {}", status);
+                    }
+                }
+            });
+        } catch (final JsonProcessingException e) {
+            LOG.error("Catched error on sending webhook", e);
+        }
+
     }
 
     public static class Entry
