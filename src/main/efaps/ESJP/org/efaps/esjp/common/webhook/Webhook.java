@@ -65,7 +65,7 @@ public class Webhook
 
     private static final String HMAC_SHA256 = "HmacSHA256";
 
-    public void init()
+    private void init()
         throws EFapsException
     {
         // ensure RestClientManager is loaded
@@ -173,6 +173,20 @@ public class Webhook
     {
         final var random = RandomStringUtils.insecure().nextAlphanumeric(28);
         return "msg_" + random;
+    }
+
+    public void trigger(final String eventType,
+                        final Object data)
+        throws EFapsException
+    {
+        if (WEBHOOKS == null) {
+            init();
+        }
+        if (WEBHOOKS.containsKey(eventType)) {
+            for (final var entry : WEBHOOKS.get(eventType)) {
+                register(eventType, entry, data);
+            }
+        }
     }
 
     public Return ping(final Parameter parameter)
