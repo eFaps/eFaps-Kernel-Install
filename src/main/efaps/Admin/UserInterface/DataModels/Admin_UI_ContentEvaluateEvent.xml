@@ -17,31 +17,24 @@
 
 -->
 
-
-
-
 <datamodel-type xmlns="http://www.efaps.org/xsd"
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>71b3a912-ec7a-4ab9-81f2-59b4b3db808d</uuid>
     <file-application>eFaps-Kernel</file-application>
-    
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Admin_UI_TableEvaluateEvent</name>
+        <name>Admin_UI_ContentEvaluateEvent</name>
         <parent>Admin_Event_Definition</parent>
         <purpose GeneralInstance="false" />
         <trigger program="org.efaps.esjp.admin.event.EventDeleteTrigger"
-            name="Admin_UI_TableEvaluateEvent.DELETE_PRE" event="DELETE_PRE" />
-        <!-- event for type? -->
+            name="Admin_UI_ContentEvaluateEvent.DELETE_PRE" event="DELETE_PRE" />
         <event-for type="Admin_UI_Command" />
         <event-for type="Admin_UI_Field" />
     </definition>
-
     <definition>
         <version-expression>(version==3)</version-expression>
-        <name>Admin_UI_TableEvaluateEvent</name>
+        <name>Admin_UI_ContentEvaluateEvent</name>
         <parent>Admin_Event_Definition</parent>
         <purpose GeneralInstance="false" />
     </definition>

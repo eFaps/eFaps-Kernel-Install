@@ -844,7 +844,7 @@ public abstract class Edit_Base
         for (final FieldTable fieldTable : _fieldTables) {
             if (fieldTable.isEditableDisplay(TargetMode.EDIT)) {
                 // get the type of the table object
-                final List<EventDefinition> events = fieldTable.getEvents(EventType.UI_TABLE_EVALUATE);
+                final List<EventDefinition> events = fieldTable.getEvents(EventType.UI_CONTENT_EVALUATE);
                 if (events.size() > 0) {
                     final EventDefinition event = events.get(0);
                     final Type type;
