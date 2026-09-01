@@ -37,9 +37,11 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsListener;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.eql.EQL;
+import org.efaps.esjp.admin.common.IReloadCacheListener;
 import org.efaps.esjp.ci.CICommon;
 import org.efaps.esjp.common.rest.client.RestClientManager;
 import org.efaps.esjp.common.serialization.SerializationUtil;
@@ -56,7 +58,9 @@ import jakarta.transaction.Synchronization;
 
 @EFapsUUID("55cb620a-5ed4-4862-abaa-b336df87cda7")
 @EFapsApplication("eFaps-Kernel")
+@EFapsListener
 public class Webhook
+    implements IReloadCacheListener
 {
 
     private static final Logger LOG = LoggerFactory.getLogger(Webhook.class);
@@ -182,10 +186,13 @@ public class Webhook
         if (WEBHOOKS == null) {
             init();
         }
+        LOG.debug("Trigger request for eventType: {}, data: {}", eventType, data);
         if (WEBHOOKS.containsKey(eventType)) {
             for (final var entry : WEBHOOKS.get(eventType)) {
                 register(eventType, entry, data);
             }
+        } else {
+            LOG.debug("no register required");
         }
     }
 
@@ -224,6 +231,7 @@ public class Webhook
                         .withTimestamp(OffsetDateTime.now())
                         .withData(data)
                         .build();
+        LOG.debug("Register for entry: {}, payload: {}", entry, payload);
         final var objectMapper = SerializationUtil.getObjectMapper();
 
         try {
@@ -269,4 +277,23 @@ public class Webhook
         }
     }
 
+    @Override
+    public int getWeight()
+    {
+        return 0;
+    }
+
+    @Override
+    public void onReloadSystemConfig(Parameter parameter)
+        throws EFapsException
+    {
+        // Nothing to do here
+    }
+
+    @Override
+    public void onReloadCache(Parameter parameter)
+        throws EFapsException
+    {
+        WEBHOOKS = null;
+    }
 }
