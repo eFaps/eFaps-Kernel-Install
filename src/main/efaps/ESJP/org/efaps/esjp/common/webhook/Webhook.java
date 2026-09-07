@@ -186,13 +186,13 @@ public class Webhook
         if (WEBHOOKS == null) {
             init();
         }
-        LOG.debug("Trigger request for eventType: {}, data: {}", eventType, data);
+        LOG.info("Trigger request for eventType: {}, data: {}", eventType, data);
         if (WEBHOOKS.containsKey(eventType)) {
             for (final var entry : WEBHOOKS.get(eventType)) {
                 register(eventType, entry, data);
             }
         } else {
-            LOG.debug("no register required");
+            LOG.info("no register required");
         }
     }
 

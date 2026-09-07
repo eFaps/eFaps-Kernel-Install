@@ -21,7 +21,7 @@ public class WebhookTrigger
     public Return execute(final Parameter parameter)
         throws EFapsException
     {
-        LOG.info("WebhookTrigger for {}", parameter);
+        LOG.debug("WebhookTrigger for {}", parameter);
         @SuppressWarnings("unchecked") final var eventType = (String) ((Map<Object, Object>) parameter
                         .get(ParameterValues.PROPERTIES)).get("Event");
         new Webhook().trigger(eventType, BaseDataDto.builder().withOid(parameter.getInstance().getOid()).build());
