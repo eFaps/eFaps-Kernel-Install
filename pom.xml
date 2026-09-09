@@ -128,6 +128,12 @@
             <groupId>org.efaps</groupId>
             <artifactId>efaps-kernel</artifactId>
             <version>${efaps.app.dependencies}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.efaps</groupId>

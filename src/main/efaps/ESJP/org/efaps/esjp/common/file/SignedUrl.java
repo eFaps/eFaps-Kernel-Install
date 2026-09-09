@@ -13,33 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.efaps.esjp.common.webhook;
+package org.efaps.esjp.common.file;
 
-import java.util.Map;
+import java.io.File;
 
-import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Parameter.ParameterValues;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.program.esjp.Listener;
+import org.efaps.esjp.common.listener.ISignedUrl;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@EFapsUUID("6cc773ca-14be-46d3-9f53-80e7e00e19d9")
+@EFapsUUID("a9e3cc6c-23fd-45d9-9d85-fef9b88f345c")
 @EFapsApplication("eFaps-Kernel")
-public class WebhookTrigger
+public class SignedUrl
+
 {
 
-    private static final Logger LOG = LoggerFactory.getLogger(WebhookTrigger.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SignedUrl.class);
 
-    public Return execute(final Parameter parameter)
+    public Object onUpload(final File file,
+                           final String reference)
         throws EFapsException
     {
-        LOG.debug("WebhookTrigger for {}", parameter);
-        @SuppressWarnings("unchecked") final var eventType = (String) ((Map<Object, Object>) parameter
-                        .get(ParameterValues.PROPERTIES)).get("Event");
-        new Webhook().trigger(eventType, BaseDataDto.builder().withOid(parameter.getInstance().getOid()).build());
-        return new Return();
+        LOG.info("OnUpload for: {}, ref: {}", file, reference);
+        Object ret = null;
+        for (final var listener : Listener.get().<ISignedUrl>invoke(ISignedUrl.class)) {
+            if (listener.applies(reference)) {
+                ret = listener.onUpload(file, reference);
+            }
+        }
+        return ret;
     }
 }
