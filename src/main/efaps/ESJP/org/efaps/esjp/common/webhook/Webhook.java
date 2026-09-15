@@ -186,13 +186,13 @@ public class Webhook
         if (WEBHOOKS == null) {
             init();
         }
-        LOG.info("Trigger request for eventType: {}, data: {}", eventType, data);
+        LOG.info("Trigger request to register webhook for eventType: {}, data: {}", eventType, data);
         if (WEBHOOKS.containsKey(eventType)) {
             for (final var entry : WEBHOOKS.get(eventType)) {
                 register(eventType, entry, data);
             }
         } else {
-            LOG.info("no register required");
+            LOG.debug("no register required");
         }
     }
 
@@ -231,7 +231,7 @@ public class Webhook
                         .withTimestamp(OffsetDateTime.now())
                         .withData(data)
                         .build();
-        LOG.debug("Register for entry: {}, payload: {}", entry, payload);
+        LOG.info("Register for entry: {}, payload: {}", entry, payload);
         final var objectMapper = SerializationUtil.getObjectMapper();
 
         try {
