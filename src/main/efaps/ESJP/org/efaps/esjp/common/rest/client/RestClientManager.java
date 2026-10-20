@@ -18,15 +18,15 @@ package org.efaps.esjp.common.rest.client;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.jackson.JacksonFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.util.JacksonFeature;
+
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
 
 @EFapsUUID("e791f0cc-2c5a-4f3e-ae84-991d585a6929")
 @EFapsApplication("eFaps-Kernel")
@@ -42,14 +42,14 @@ public class RestClientManager
     protected void initClient()
     {
         LOG.debug("Getting Client");
-        final ClientConfig clientConfig = new ClientConfig();
+        final ClientBuilder bldr = ClientBuilder.newBuilder();
         try {
             final Class<?> clazz = Class.forName("org.efaps.esjp.logback.jersey.JerseyLogFeature");
             if (clazz != null) {
                 final Object filter = clazz.getDeclaredConstructor().newInstance();
                 final Method method = clazz.getMethod("setLogger", Logger.class);
                 method.invoke(filter, LOG);
-                clientConfig.register(filter);
+                bldr.register(filter);
                 // force load just in case
                 Class.forName("org.efaps.esjp.logback.jersey.JerseyLogFilter");
             }
@@ -57,8 +57,7 @@ public class RestClientManager
                         | SecurityException | IllegalArgumentException | InvocationTargetException e) {
             LOG.error("Catched", e);
         }
-        client = ClientBuilder.newClient(clientConfig)
-                        .register(JacksonFeature.class);
+        client = bldr.register(JacksonFeature.class).build();
     }
 
     public static Client getClient()

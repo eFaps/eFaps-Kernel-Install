@@ -26,14 +26,12 @@ import java.util.Base64;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.collections4.MultiMapUtils;
 import org.apache.commons.collections4.MultiValuedMap;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsApplication;
@@ -55,6 +53,9 @@ import dev.failsafe.Failsafe;
 import dev.failsafe.RetryPolicy;
 import dev.failsafe.function.ContextualSupplier;
 import jakarta.transaction.Synchronization;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response.Status;
 
 @EFapsUUID("55cb620a-5ed4-4862-abaa-b336df87cda7")
 @EFapsApplication("eFaps-Kernel")
@@ -108,15 +109,16 @@ public class Webhook
             LOG.info("client {}", client);
 
             final var retryPolicy = RetryPolicy.<Boolean>builder()
-                            .withMaxAttempts(10)
+                            .withMaxAttempts(20)
                             .withBackoff(Duration.ofSeconds(1), Duration.ofSeconds(600))
                             .handleResultIf(e -> !e)
+                            .onRetriesExceeded(e -> LOG.warn("Failed to connect. Max retries exceeded."))
                             .build();
             Failsafe.with(retryPolicy).getAsync((ContextualSupplier<Boolean, Boolean>) context -> {
                 var result = false;
                 try {
                     final var count = context.getAttemptCount();
-                    LOG.info("intent {}", count);
+                    LOG.info("webhook attempt {}", count);
 
                     final var request = client.target(entry.url)
                                     .request();
@@ -125,13 +127,14 @@ public class Webhook
                     request.header("webhook-timestamp", timeStamp);
                     request.header("webhook-signature", sign(entry.signKeys, msgId, timeStamp, payloadStr));
 
-                    LOG.info("request {}", request);
-
                     final var response = request.buildPost(Entity.entity(payloadStr, MediaType.APPLICATION_JSON))
                                     .invoke();
 
                     if (Status.Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
                         result = true;
+                        LOG.info("attempt {} --> successful", count);
+                    } else {
+                        LOG.warn("attempt {} --> not successful for {}", count, entry);
                     }
                 } catch (final Exception e) {
                     LOG.error("Catched", e);
@@ -273,7 +276,7 @@ public class Webhook
         @Override
         public String toString()
         {
-            return ToStringBuilder.reflectionToString(this);
+            return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
         }
     }
 
