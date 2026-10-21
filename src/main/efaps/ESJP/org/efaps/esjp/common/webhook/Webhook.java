@@ -109,10 +109,10 @@ public class Webhook
             LOG.info("client {}", client);
 
             final var retryPolicy = RetryPolicy.<Boolean>builder()
-                            .withMaxAttempts(20)
+                            .withMaxAttempts(12)
                             .withBackoff(Duration.ofSeconds(1), Duration.ofSeconds(600))
                             .handleResultIf(e -> !e)
-                            .onRetriesExceeded(e -> LOG.warn("Failed to connect. Max retries exceeded."))
+                            .onRetriesExceeded(e -> LOG.error("Failed to connect. Max retries exceeded for {}", entry))
                             .build();
             Failsafe.with(retryPolicy).getAsync((ContextualSupplier<Boolean, Boolean>) context -> {
                 var result = false;
