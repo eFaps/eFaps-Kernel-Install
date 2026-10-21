@@ -15,6 +15,7 @@
  */
 package org.efaps.esjp.common.history;
 
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -189,8 +190,10 @@ public abstract class AbstractUpdateHistoryTrigger_Base
                         final Object obj = entry.getValue();
                         if (obj instanceof Object[]) {
                             final Object tmpObj = ((Object[]) obj)[0];
-                            if (tmpObj instanceof DateTime) {
-                                attrValue.setValue(((DateTime) tmpObj).toString());
+                            if (tmpObj instanceof final DateTime dateTimeObject) {
+                                attrValue.setValue(dateTimeObject.toString());
+                            } else if (tmpObj instanceof final Temporal temporalObject) {
+                                attrValue.setValue(temporalObject.toString());
                             } else {
                                 attrValue.setValue(tmpObj);
                             }
