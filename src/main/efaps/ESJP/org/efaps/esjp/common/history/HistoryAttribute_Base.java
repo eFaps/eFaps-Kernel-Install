@@ -15,11 +15,6 @@
  */
 package org.efaps.esjp.common.history;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-
 import org.efaps.admin.datamodel.IJaxb;
 import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.program.esjp.EFapsApplication;
@@ -71,8 +66,7 @@ public abstract class HistoryAttribute_Base
             LoginLog.class, LogoutLog.class, CreateClassificationLog.class, UpdateClassificationLog.class,
             DeleteClassificationLog.class, ClassInstObj.class, DeleteLog.class,
             CreateRelatedLog.class, UpdateRelatedLog.class, DeleteRelatedLog.class,
-            CreateAttributeSetLog.class, DeleteAttributeSetLog.class, UpdateAttributeSetLog.class,
-            LocalTime.class, LocalDate.class, LocalDateTime.class, OffsetDateTime.class};
+            CreateAttributeSetLog.class, DeleteAttributeSetLog.class, UpdateAttributeSetLog.class};
     }
 
     @Override

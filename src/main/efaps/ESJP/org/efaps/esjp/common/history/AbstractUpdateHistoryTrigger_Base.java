@@ -197,6 +197,10 @@ public abstract class AbstractUpdateHistoryTrigger_Base
                             } else {
                                 attrValue.setValue(tmpObj);
                             }
+                        } else if (obj instanceof final DateTime dateTimeObject) {
+                            attrValue.setValue(dateTimeObject.toString());
+                        } else if (obj instanceof final Temporal temporalObject) {
+                            attrValue.setValue(temporalObject.toString());
                         } else {
                             attrValue.setValue(obj);
                         }
