@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.rest.ObjectMapperResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +58,9 @@ public class RestClientManager
                         | SecurityException | IllegalArgumentException | InvocationTargetException e) {
             LOG.error("Catched", e);
         }
-        client = bldr.register(JacksonFeature.class).build();
+        client = bldr.register(JacksonFeature.class)
+                        .register(ObjectMapperResolver.class)
+                        .build();
     }
 
     public static Client getClient()
